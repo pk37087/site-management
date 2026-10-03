@@ -464,11 +464,6 @@ let bulkParsedSites = [];
 let collapsedAreas = null;
 let areaFilters = {};
 
-const DB_NAME = "SiteManagerDB";
-const DB_VERSION = 1;
-const STORE = "images";
-let idb = null;
-
 function openDB(){ return Promise.resolve(); }
 
 async function saveImage(key, dataUrl){
@@ -684,13 +679,14 @@ function populateAreaDropdowns(){
   });
 }
 
-function quickAddArea(){
+async function quickAddArea(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin area add kar sakta hai"); return; }
   const name = prompt("Naya area ka naam likhein:");
   if(!name || name.trim() === "") return;
   if(areas.includes(name.trim())){ alert("Yeh area pehle se hai"); return; }
   areas.push(name.trim());
-  persist();
+  await persist();
+  await loadDataFromCloud();
   populateAreaDropdowns();
   render();
   alert(" Area add ho gaya: " + name.trim());
@@ -770,39 +766,42 @@ async function bulkDeleteAreas(){
   sites.forEach(s => { if(selectedAreas.has(s.area)) s.area = "Unassigned"; });
   areas = areas.filter(a => !selectedAreas.has(a));
   selectedAreas.clear();
-  persist();
+  await persist();
+  await loadDataFromCloud();
   populateAreaDropdowns();
   renderAreaList();
   render();
   alert(" " + selectedArr.length + " area(s) deleted");
 }
 
-function addNewArea(){
+async function addNewArea(){
   const name = document.getElementById("newAreaName").value.trim();
   if(!name){ alert("Area ka naam likhein"); return; }
   if(areas.includes(name)){ alert("Yeh area pehle se hai"); return; }
   areas.push(name);
-  persist();
+  await persist();
+  await loadDataFromCloud();
   document.getElementById("newAreaName").value = "";
   renderAreaList();
   populateAreaDropdowns();
   render();
 }
 
-function renameArea(index){
+async function renameArea(index){
   const oldName = areas[index];
   const newName = prompt("Naya area name:", oldName);
   if(!newName || newName.trim() === "") return;
   if(newName !== oldName && areas.includes(newName)){ alert("Yeh area pehle se hai"); return; }
   areas[index] = newName.trim();
   sites.forEach(s => { if(s.area === oldName) s.area = newName.trim(); });
-  persist();
+  await persist();
+  await loadDataFromCloud();
   renderAreaList();
   populateAreaDropdowns();
   render();
 }
 
-function deleteArea(index){
+async function deleteArea(index){
   const areaName = areas[index];
   const count = sites.filter(s => s.area === areaName).length;
   if(count > 0){
@@ -812,7 +811,8 @@ function deleteArea(index){
     if(!confirm("Delete area '" + areaName + "'?")) return;
   }
   areas.splice(index, 1);
-  persist();
+  await persist();
+  await loadDataFromCloud();
   renderAreaList();
   populateAreaDropdowns();
   render();
@@ -917,7 +917,7 @@ function updateCalcPreview(){
   document.getElementById("calcPreview").innerHTML = " From: " + (from||"") + "  To: " + (to||"") + "  Days: " + days + extra;
 }
 
-function autoReleaseExpiredSites(){
+async function autoReleaseExpiredSites(){
   const today = new Date();
   today.setHours(0,0,0,0);
   let changed = false;
@@ -941,12 +941,11 @@ function autoReleaseExpiredSites(){
       }
     }
   });
-  if(changed){ persist(); }
+  if(changed){ await persist(); }
   return changed;
 }
 
 function render(){
-  autoReleaseExpiredSites();
   syncCardHighlight();
   const q = (document.getElementById("search").value || "").toLowerCase().trim();
   const f = document.getElementById("filter").value;
@@ -1189,7 +1188,7 @@ function updateBulkStatusPreview(){
   text += "<br><span style='color:#047857;font-weight:600'>Ye status aaj turant apply hoga.</span>";
   preview.innerHTML = text;
 }
-function applyBulkStatus(){
+async function applyBulkStatus(){
   if(!currentUser || currentUser.role !== "Admin"){
     alert("Sirf Admin bulk status change kar sakta hai");
     return;
@@ -1226,7 +1225,8 @@ function applyBulkStatus(){
       s.toDate = toLabel;
     }
   });
-  persist();
+  await persist();
+  await loadDataFromCloud();
   render();
   closeBulkStatusModal();
   clearSelection();
@@ -1355,7 +1355,8 @@ async function saveSite(){
   }
   if(editIndex < 0) sites.push(newSite);
   else sites[editIndex] = newSite;
-  persist();
+  await persist();
+  await loadDataFromCloud();
   closeModal();
   render();
 }
@@ -1773,7 +1774,7 @@ function parseCSV(text){
   btn.style.color = "#fff";
   btn.style.cursor = "pointer";
 }
-function confirmBulkUpload(){
+async function confirmBulkUpload(){
   if(bulkParsedSites.length === 0) return;
   let added = 0;
   bulkParsedSites.forEach(n => {
@@ -1781,7 +1782,8 @@ function confirmBulkUpload(){
     if(existing >= 0){ sites[existing] = { ...sites[existing], ...n, id: sites[existing].id }; }
     else { sites.push(n); added++; }
   });
-  persist(); populateAreaDropdowns(); render(); closeBulkModal();
+  await persist(); await loadDataFromCloud();
+  populateAreaDropdowns(); render(); closeBulkModal();
   alert(" Added: " + added + ", Total: " + bulkParsedSites.length);
 }
 
@@ -1854,7 +1856,8 @@ async function handleImportFile(e){
       }
       collapsedAreas = null;
       areaFilters = {};
-      persist(); populateAreaDropdowns(); render(); hideProgress();
+      await persist(); await loadDataFromCloud();
+      populateAreaDropdowns(); render(); hideProgress();
       alert(" Imported "+sites.length+" sites");
     } catch(err){ hideProgress(); alert("Error: "+err.message); }
   };
@@ -1862,7 +1865,7 @@ async function handleImportFile(e){
   e.target.value = "";
 }
 
-function bulkDeleteSelected(){
+async function bulkDeleteSelected(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin delete kar sakta hai"); return; }
   if(selectedSites.size === 0){ alert("No sites selected"); return; }
   const count = selectedSites.size;
@@ -1874,7 +1877,8 @@ function bulkDeleteSelected(){
   });
   sites = sites.filter(s => !selectedSites.has(s.id));
   selectedSites.clear();
-  persist();
+  await persist();
+  await loadDataFromCloud();
   render();
   alert(" " + count + " site(s) deleted successfully!");
 }
@@ -1899,18 +1903,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   populateAreaDropdowns();
 
   await loadDataFromCloud();
-
-  autoReleaseExpiredSites();
+  await autoReleaseExpiredSites();
   checkSession();
 
-  setInterval(() => {
-    if(autoReleaseExpiredSites()){ render(); }
+  setInterval(async () => {
+    if(await autoReleaseExpiredSites()){ render(); }
   }, 60 * 60 * 1000);
 
+  let syncLock = false;
   setInterval(async () => {
-    if (currentUser) {
-      await loadDataFromCloud();
-      render();
+    if (currentUser && !syncLock) {
+      syncLock = true;
+      try {
+        await loadDataFromCloud();
+        render();
+      } finally {
+        syncLock = false;
+      }
     }
   }, 15000);
 
