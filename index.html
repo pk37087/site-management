@@ -1,1 +1,1930 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>Site Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{max-width:100%}
+html{overflow-x:hidden}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#0f172a;-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5;-webkit-tap-highlight-color:transparent;overflow-x:clip}
+.hidden{display:none !important}
+button{touch-action:manipulation}
+input,select,textarea{font-size:16px !important}
+.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+.login-box{background:#fff;border-radius:20px;padding:32px 24px;width:min(420px,100%);box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-box h1{font-size:22px;font-weight:700;color:#0f172a;margin-bottom:8px;text-align:center}
+.login-box .subtitle{text-align:center;color:#64748b;font-size:13px;margin-bottom:24px}
+.login-box label{display:block;font-size:12px;font-weight:600;color:#475569;margin-bottom:6px;margin-top:16px}
+.login-box input{width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;outline:none}
+.login-box input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+.login-box button{width:100%;padding:15px;background:#1d4ed8;color:#fff;border:0;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:24px;min-height:48px}
+.login-box button:disabled{background:#94a3b8;cursor:not-allowed}
+.login-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:12px;border-radius:8px;font-size:13px;margin-top:16px;display:none}
+.login-error.show{display:block}
+header{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #1e40af;position:fixed;top:0;left:0;right:0;width:100%;z-index:1000;transition:box-shadow 0.2s ease;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
+.header-left h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
+.header-left h1::before{content:'';display:inline-block;width:8px;height:8px;background:#fff;border-radius:2px;box-shadow:0 0 0 3px rgba(255,255,255,0.25);flex-shrink:0}
+.header-user{background:rgba(255,255,255,0.15);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap}
+.header-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.header-actions button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;white-space:nowrap;transition:all 0.15s ease;min-height:36px}
+.btn-green{background:#059669;color:#fff}
+.btn-yellow{background:#f59e0b;color:#fff}
+.btn-gray{background:#6b7280;color:#fff}
+.btn-red{background:#dc2626;color:#fff}
+.btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
+#app{padding-top:70px}
+.container{max-width:1600px;margin:20px auto;padding:0 20px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;position:relative;overflow:hidden;cursor:pointer;transition:all 0.15s ease;user-select:none}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(15,23,42,0.08)}
+.card.active-filter{box-shadow:0 0 0 3px rgba(59,130,246,0.25);border-color:#3b82f6}
+.card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
+.card span{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px}
+.card b{display:block;font-size:28px;font-weight:700;color:#0f172a;margin-top:8px;line-height:1}
+.card.available::before{background:#10b981}.card.available b{color:#047857}
+.card.notavailable::before{background:#ef4444}.card.notavailable b{color:#b91c1c}
+.card.maintenance::before{background:#f59e0b}.card.maintenance b{color:#b45309}
+.toolbar{background:#fff;padding:12px;border-radius:12px;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;border:1px solid #e2e8f0;align-items:center}
+.toolbar input,.toolbar select{padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;background:#fff;outline:none;color:#0f172a}
+.toolbar input:focus,.toolbar select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+.toolbar input{min-width:200px;flex:1}
+.toolbar button{padding:11px 16px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;transition:all 0.15s ease;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px}
+.toolbar button:hover{background:#f1f5f9}
+.toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
+.toolbar button.refresh-btn:active{transform:scale(0.96)}
+.toolbar button.refresh-btn.loading{background:#0369a1;pointer-events:none;opacity:0.9}
+.select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:10px 14px;border-radius:10px;margin-bottom:14px;display:none;align-items:center;gap:8px;flex-wrap:wrap}
+.select-bar.show{display:flex}
+.select-bar .count-badge{background:#f59e0b;color:#fff;padding:6px 12px;border-radius:6px;font-weight:700;font-size:12px}
+.select-bar button{padding:8px 14px;font-size:12px;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;color:#fff;min-height:36px}
+.select-bar .share-sel{background:#059669}
+.select-bar .pdf-sel{background:#dc2626}
+.select-bar .clear-sel{background:#fff;color:#334155;border-color:#e2e8f0}
+.select-bar .delete-sel{background:#dc2626}
+#areaContainer{display:grid;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:12px;align-items:start;grid-auto-rows:min-content}
+.area-block{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,0.04);height:fit-content;align-self:start}
+.area-header{background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;flex-wrap:wrap;gap:8px;border-radius:14px 14px 0 0}
+.area-header .area-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;margin-left:2px}
+.area-header .area-count{background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.area-header .area-actions{display:flex;gap:6px;align-items:center}
+.area-header .area-actions button{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;min-height:28px}
+.area-header .toggle-icon{font-size:13px}
+.area-block.collapsed .toggle-icon{transform:rotate(-90deg);display:inline-block}
+.area-block.collapsed .area-content{display:none}
+.area-header .select-all-cb{width:18px;height:18px;cursor:pointer;accent-color:#fff;margin-right:4px;flex-shrink:0}
+.area-content{padding:0}
+.area-filter-bar{padding:8px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.area-filter-bar select{padding:6px 10px;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;font-family:inherit;cursor:pointer;outline:none;color:#334155}
+.area-filter-count{font-size:11px;color:#64748b;margin-left:auto;font-weight:600}
+.empty-area{padding:18px;text-align:center;color:#94a3b8;font-style:italic;font-size:12px}
+.site-cards-grid{display:grid;grid-template-columns:1fr;gap:4px;padding:6px}
+.site-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px;display:flex;flex-direction:row;align-items:flex-start;gap:8px;transition:all 0.12s;min-width:0}
+.site-card:hover{border-color:#3b82f6}
+.site-card.not-card{background:#fef2f2;border-color:#fecaca}
+.site-card.maint-card{background:#fffbeb;border-color:#fcd34d}
+.site-card.selected-card{background:#fef3c7;border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.2)}
+.site-card-top{display:flex;align-items:center;gap:5px;flex-shrink:0;padding-top:2px}
+.site-card-cb{width:16px;height:16px;cursor:pointer;accent-color:#3b82f6;flex-shrink:0}
+.site-card-num{font-size:9px;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:1px 5px;border-radius:3px;min-width:24px;text-align:center}
+.site-card-img{width:40px;height:40px;border-radius:6px;object-fit:cover;border:1px solid #e2e8f0;cursor:pointer;flex-shrink:0}
+.site-card-img.no-img{display:flex;align-items:center;justify-content:center;font-size:14px;color:#cbd5e1;background:#f8fafc;border:1px dashed #e2e8f0}
+.site-card-body{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.site-card-name{font-size:13px;font-weight:700;color:#0f172a;line-height:1.35;word-break:break-word;overflow-wrap:anywhere}
+.site-card-loc-inline{font-size:10px;color:#0891b2;font-weight:500;background:#f0f9ff;padding:2px 6px;border-radius:3px;border:1px solid #bae6fd;margin-left:6px;display:inline-block;vertical-align:middle;line-height:1.3;word-break:break-word;max-width:100%}
+.site-card-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:10px;color:#64748b}
+.site-card-meta .site-card-comp{font-size:10px;color:#334155;font-weight:500;word-break:break-word}
+.site-card-meta .site-card-dates{font-size:10px;color:#64748b;display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.site-card-status{flex-shrink:0;display:flex;align-items:center;padding-top:2px}
+.site-card-status .status{font-size:9px;padding:3px 8px;white-space:nowrap}
+.site-card-actions{display:flex;gap:4px;flex-shrink:0;padding-top:2px;flex-direction:column}
+.site-card-actions button{padding:5px 10px;font-size:11px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;background:#f1f5f9;color:#334155;white-space:nowrap;min-height:30px}
+.site-card-actions button.history-btn{background:#ede9fe;color:#6d28d9}
+.site-card-actions button.map-btn{background:#cffafe;color:#0e7490}
+.status{font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;font-size:9px;text-transform:uppercase;letter-spacing:0.3px}
+.s-available{background:#d1fae5;color:#065f46}
+.s-not{background:#fee2e2;color:#991b1b}
+.s-maintenance{background:#fef3c7;color:#92400e}
+.days-badge{background:#eef2ff;color:#4338ca;font-weight:600;padding:1px 5px;border-radius:3px;font-size:9px;display:inline-block;border:1px solid #c7d2fe}
+.modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;z-index:2000;overflow-y:auto}
+.modal.show{display:flex}
+.box{background:#fff;border-radius:16px;padding:24px;width:min(700px,100%);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,0.3);margin:auto}
+.box h2{margin:0 0 18px 0;font-size:19px;font-weight:700}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.formgrid label{font-size:12px;color:#475569;font-weight:600;display:block}
+.formgrid input,.formgrid select{width:100%;margin-top:6px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none}
+.formgrid input:focus,.formgrid select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+.full-width{grid-column:1/-1}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px;padding-top:18px;border-top:1px solid #f1f5f9;flex-wrap:wrap}
+.modal-actions button{padding:11px 18px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;border:1px solid transparent;min-height:44px}
+.modal-actions button.secondary{background:#fff;color:#334155;border-color:#e2e8f0}
+.modal-actions button:not(.secondary){background:#3b82f6;color:#fff}
+.gps-box{background:#fef2f2;border:1.5px dashed #fca5a5;border-radius:10px;padding:10px;margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.gps-box .gps-status{font-size:12px;color:#991b1b;font-weight:600;flex:1;min-width:140px}
+.gps-box .gps-status.ok{color:#065f46}
+.gps-box .gps-btn{background:#dc2626;color:#fff;padding:9px 14px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid #dc2626;cursor:pointer;font-family:inherit;min-height:38px}
+.image-upload-box{background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px;padding:16px;margin-top:10px;text-align:center;cursor:pointer}
+.image-upload-box .iu-icon{font-size:28px;margin-bottom:6px}
+.image-upload-box .iu-title{font-size:13px;font-weight:600;color:#334155;margin-bottom:4px}
+.image-upload-box .iu-sub{font-size:11px;color:#94a3b8}
+.image-preview-wrap{position:relative;display:inline-block;margin-top:12px}
+.image-preview-wrap img{max-width:200px;max-height:200px;border-radius:10px;border:2px solid #e2e8f0;display:block}
+.image-preview-wrap .remove-img{position:absolute;top:-8px;right:-8px;background:#dc2626;color:#fff;width:30px;height:30px;border-radius:50%;border:2px solid #fff;cursor:pointer;font-size:14px;font-weight:700}
+.date-row{display:flex;gap:6px}
+.date-row select{flex:1;padding:11px 6px;min-width:0}
+.calc-preview{background:#f0f9ff;border:1px solid #bae6fd;padding:12px 14px;border-radius:8px;margin-top:12px;font-size:12px;color:#0c4a6e}
+.date-warning{background:#fffbeb;border:1px solid #fcd34d;color:#92400e;padding:10px 14px;border-radius:8px;font-size:12px;margin-top:8px;display:none;font-weight:600}
+.date-warning.show{display:block}
+.history-item{background:#f8fafc;border-left:3px solid #7c3aed;padding:12px 14px;margin-bottom:10px;border-radius:8px;font-size:13px;border:1px solid #e2e8f0}
+.empty-history{text-align:center;color:#94a3b8;padding:40px 20px;font-style:italic;font-size:13px}
+.image-viewer{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.95);z-index:3000;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+.image-viewer.show{display:flex}
+.image-viewer img{max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain}
+.image-viewer .close-viewer{position:absolute;top:16px;right:16px;background:#fff;color:#0f172a;width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.drop-zone{border:2px dashed #cbd5e1;border-radius:12px;padding:32px 16px;text-align:center;background:#f8fafc;cursor:pointer;margin-bottom:16px}
+.drop-zone .dz-icon{font-size:40px;margin-bottom:10px}
+.bulk-preview{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-bottom:14px;max-height:280px;overflow:auto}
+.bulk-preview table{font-size:11px;width:100%;min-width:500px}
+.bulk-preview th,.bulk-preview td{padding:6px 8px;font-size:11px;border-bottom:1px solid #f1f5f9;white-space:nowrap}
+.bulk-summary{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;font-weight:600}
+.bulk-info{background:#fffbeb;border:1px solid #fcd34d;padding:12px 14px;border-radius:8px;margin-bottom:14px;font-size:12px;color:#92400e;line-height:1.6}
+.bulk-info code{background:#fff;padding:2px 6px;border-radius:4px;font-family:monospace;color:#1e40af;font-size:11px;word-break:break-all}
+.storage-status{position:fixed;bottom:12px;right:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;color:#64748b;box-shadow:0 4px 12px rgba(0,0,0,0.08);z-index:500;display:flex;align-items:center;gap:8px}
+.storage-status .dot{width:8px;height:8px;border-radius:50%;background:#10b981}
+.progress-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:4000;align-items:center;justify-content:center;flex-direction:column;gap:20px;color:#fff;padding:20px;text-align:center}
+.progress-overlay.show{display:flex}
+.progress-overlay .spinner{width:56px;height:56px;border:4px solid rgba(255,255,255,0.2);border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.area-list-item{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px;background:#f8fafc;flex-wrap:wrap}
+.area-list-item.sel{background:#fef3c7;border-color:#fcd34d}
+.area-list-item input[type="checkbox"]{width:20px;height:20px;cursor:pointer;accent-color:#3b82f6}
+.area-list-item .name{flex:1;font-weight:600;color:#0f172a;min-width:120px}
+@media (max-width: 1024px) { #areaContainer{grid-template-columns:1fr} }
+@media (max-width: 768px) {
+  body{font-size:14px}
+  header{padding:10px 12px;gap:8px}
+  .header-left h1{font-size:15px}
+  .header-user{font-size:11px;padding:5px 10px;order:2}
+  .header-actions{width:100%;justify-content:flex-start;order:3;gap:5px}
+  .header-actions button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center}
+  #app{padding-top:130px}
+  .container{padding:0 12px;margin:14px auto}
+  .cards{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .card{padding:14px}
+  .card span{font-size:10px}
+  .card b{font-size:24px;margin-top:6px}
+  .toolbar{padding:10px;gap:8px}
+  .toolbar input{min-width:100%;flex:1 1 100%}
+  .toolbar select{flex:1 1 100%;width:100%}
+  .toolbar button{flex:1;min-width:calc(50% - 4px);padding:11px 8px;font-size:12px;justify-content:center}
+  .toolbar button.refresh-btn{flex:1 1 100%}
+  .select-bar{padding:10px 12px}
+  .select-bar .count-badge{width:100%;text-align:center}
+  .select-bar button{flex:1;min-width:calc(50% - 4px);font-size:11px;padding:8px 8px}
+  .area-block{border-radius:12px}
+  .area-header{padding:10px 10px;border-radius:12px 12px 0 0}
+  .area-header .area-name{font-size:13px}
+  .area-header > div{flex-wrap:wrap;justify-content:flex-end}
+  .area-count{font-size:9px !important;padding:2px 6px !important}
+  .site-card{padding:10px;flex-wrap:wrap;gap:8px;position:relative}
+  .site-card-top{flex-direction:row;align-items:center;width:auto}
+  .site-card-img{width:44px;height:44px}
+  .site-card-body{flex:1 1 100%;order:3;margin-top:2px;padding-right:0}
+  .site-card-status{position:absolute;top:10px;right:10px;padding-top:0}
+  .site-card-actions{flex-direction:row;flex-wrap:wrap;width:100%;order:4;padding-top:0;gap:6px}
+  .site-card-actions button{flex:1;min-width:calc(33% - 4px);padding:7px 6px;font-size:11px;min-height:34px;justify-content:center}
+  .site-card-name{font-size:13px}
+  .site-card-loc-inline{margin-left:0;margin-top:2px;display:inline-block}
+  .box{padding:20px 16px;border-radius:14px;max-height:94vh}
+  .box h2{font-size:17px;margin-bottom:14px}
+  .formgrid{grid-template-columns:1fr;gap:12px}
+  .date-row select{padding:11px 4px;font-size:14px !important}
+  .modal-actions{flex-direction:column-reverse}
+  .modal-actions button{width:100%}
+  .image-preview-wrap img{max-width:100%}
+  .area-list-item{padding:10px}
+  .area-list-item .name{width:100%;flex:1 1 100%}
+  .area-list-item button{flex:1;min-width:calc(50% - 4px);padding:8px !important;font-size:12px !important}
+  .storage-status{display:none}
+  .image-viewer .close-viewer{top:12px;right:12px;width:40px;height:40px}
+}
+@media (max-width: 380px) {
+  .cards{grid-template-columns:1fr}
+  .header-actions button{min-width:100%}
+  .toolbar button{min-width:100%}
+  .select-bar button{min-width:100%}
+  .site-card-actions button{min-width:calc(50% - 3px)}
+  #app{padding-top:160px}
+}
+</style>
+</head>
+<body>
 
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h1> Site Management</h1>
+    <p class="subtitle">Sign in to continue</p>
+    <label for="loginUser">Username</label>
+    <input id="loginUser" type="text" placeholder="Enter username" autocomplete="off">
+    <label for="loginPass">Password</label>
+    <input id="loginPass" type="password" placeholder="Enter password" autocomplete="off">
+    <button id="loginBtn" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<header id="mainHeader">
+  <div class="header-left"><h1>Site Management</h1></div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;width:auto;flex:1;justify-content:flex-end">
+    <span class="header-user" id="userInfo"> Loading...</span>
+    <div class="header-actions">
+      <button class="btn-green" onclick="shareAllOnWhatsApp()"> Share</button>
+      <button class="btn-yellow admin-only" onclick="openBulkUpload()"> Bulk</button>
+      <button class="btn-gray admin-only" onclick="downloadBackup()"> Backup</button>
+      <button class="btn-light admin-only" onclick="triggerImport()"> Import</button>
+      <button class="btn-red" onclick="doLogout()"> Logout</button>
+    </div>
+  </div>
+</header>
+<div class="container">
+<div class="cards">
+<div class="card" id="cardTotal" onclick="filterByCard('ALL')" title="Show all sites"><span>Total Sites</span><b id="total">0</b></div>
+<div class="card available" id="cardAvailable" onclick="filterByCard('Available')" title="Show Available sites"><span>Available</span><b id="avail">0</b></div>
+<div class="card notavailable" id="cardNotAvailable" onclick="filterByCard('Not Available')" title="Show Not Available sites"><span>Not Available</span><b id="notavail">0</b></div>
+<div class="card maintenance" id="cardMaintenance" onclick="filterByCard('Under Maintenance')" title="Show Under Maintenance sites"><span>Under Maintenance</span><b id="maintenance">0</b></div>
+</div>
+<div class="toolbar">
+<input id="search" placeholder=" Search sites..." oninput="render()">
+<select id="filter" onchange="onMainFilterChange()">
+<option value="ALL">All Status</option>
+<option>Available</option>
+<option>Not Available</option>
+<option>Under Maintenance</option>
+</select>
+<button class="admin-only" onclick="openAreaManager()"> Manage Areas</button>
+<button class="admin-only" onclick="quickAddArea()">+ Add Area</button>
+<button onclick="openAdd()">+ Add Site</button>
+<button onclick="openHistorySearch()"> History</button>
+<button onclick="exportCSV()"> Export</button>
+<button class="refresh-btn" onclick="refreshPage(event)" title="Refresh Data"><span class="refresh-icon"></span> Refresh</button>
+</div>
+<div class="select-bar" id="selectBar">
+  <span class="count-badge" id="selCount">0 selected</span>
+  <button class="share-sel" onclick="shareSelectedOnWhatsApp()"> Share Selected</button>
+  <button class="pdf-sel" onclick="generatePDFSelected()"> PDF Report</button>
+  <button onclick="openBulkStatusModal()" style="background:#7c3aed;color:#fff;border:0;border-radius:6px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer"> Bulk Status</button>
+  <button class="clear-sel" onclick="clearSelection()"> Clear</button>
+  <button class="delete-sel" id="deleteBtn" onclick="bulkDeleteSelected()" style="display:none"> Delete</button>
+</div>
+
+<div id="areaContainer"></div>
+
+</div>
+<div class="storage-status" id="storageStatus">
+  <span class="dot"></span>
+  <span id="storageText">Ready</span>
+</div>
+<div class="progress-overlay" id="progressOverlay">
+  <div class="spinner"></div>
+  <div id="progressText" style="font-size:16px;font-weight:600">Working...</div>
+  <div id="progressSub" style="font-size:13px;opacity:0.7">Please wait</div>
+</div>
+<div class="modal" id="modal"><div class="box">
+<h2 id="modalTitle">Add Site</h2>
+<div class="formgrid">
+<label class="full-width"> Area
+  <select id="farea"></select>
+</label>
+<label class="full-width">Site Name / ID<div><input id="fsite"></div></label>
+<label class="full-width"> Location / Address
+  <div><input id="flocation" placeholder="Address ya GPS location" oninput="onLocationManualChange()"></div>
+  <div class="gps-box">
+    <span class="gps-status" id="gpsStatus"> GPS not captured</span>
+    <button type="button" class="gps-btn" onclick="captureGPS()" id="gpsBtn"> Use GPS</button>
+  </div>
+</label>
+<label class="full-width"> Site Image (optional)
+  <div class="image-upload-box" id="imageUploadBox" onclick="document.getElementById('fimage').click()">
+    <div class="iu-icon"></div>
+    <div class="iu-title">Click to upload image</div>
+    <div class="iu-sub">JPG, PNG  Max 3 MB</div>
+  </div>
+  <input type="file" id="fimage" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+  <div id="imagePreviewWrap" style="display:none;text-align:center">
+    <div class="image-preview-wrap">
+      <img id="imagePreview" src="" alt="preview">
+      <button type="button" class="remove-img" onclick="removeImage()"></button>
+    </div>
+  </div>
+</label>
+<label>Company<div><input id="fcustomer" placeholder="Enter company name"></div></label>
+<label>Status<div><select id="fstatus"><option>Available</option><option>Not Available</option><option>Under Maintenance</option></select></div></label>
+<label>Booking From<div class="date-row"><select id="ffrom_d"></select><select id="ffrom_m"></select><select id="ffrom_y"></select></div></label>
+<label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
+</div>
+<div class="calc-preview" id="calcPreview">Enter dates to see auto-calculation</div>
+<div class="date-warning" id="dateWarning"> Past date select ki hai. Booking ho jayegi lekin please confirm karein.</div>
+<div class="modal-actions"><button class="secondary" onclick="closeModal()">Cancel</button><button onclick="saveSite()">Save Site</button></div>
+</div></div>
+
+<div class="modal" id="areaModal"><div class="box">
+<h2> Manage Areas</h2>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Add, edit, or delete areas. Select multiple to bulk delete.</p>
+
+<div style="display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+  <button onclick="toggleAllAreas()" id="areaSelAllBtn" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px"> Select All</button>
+  <button onclick="bulkDeleteAreas()" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px"> Delete Selected</button>
+  <span id="areaSelCount" style="font-size:12px;color:#64748b;font-weight:600">0 selected</span>
+</div>
+
+<div id="areaList" style="margin-bottom:20px;"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+  <input id="newAreaName" placeholder="New area name" style="flex:1;min-width:180px;padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none">
+  <button onclick="addNewArea()" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;min-height:44px">+ Add Area</button>
+</div>
+<div class="modal-actions"><button class="secondary" onclick="closeAreaModal()">Close</button></div>
+</div></div>
+
+<div class="modal" id="bulkModal"><div class="box">
+<h2> Bulk Site Upload</h2>
+<div class="bulk-info">
+  <b> CSV Format:</b><br>
+  Column order: <code>area, site, location, company, status, from, to</code><br>
+  <b>Example:</b> <code>Chandigarh,CG01,Sector 17 Bus Stand,ABC Media,Available,,</code><br>
+  <b>Note:</b> First row must be header. Dates in DD/MM/YYYY.
+</div>
+<button class="secondary" onclick="downloadSampleCSV()" style="margin-bottom:16px;padding:11px 16px;border-radius:8px;font-weight:600;border:1px solid #e2e8f0;background:#fff;color:#334155;cursor:pointer;width:100%;min-height:44px"> Download Sample CSV</button>
+<div class="drop-zone" id="dropZone" onclick="document.getElementById('bulkFile').click()">
+  <div class="dz-icon"></div>
+  <div style="font-size:15px;font-weight:700;margin-bottom:6px">Click or drag CSV here</div>
+  <div style="font-size:12px;color:#64748b">Only .csv files</div>
+</div>
+<input type="file" id="bulkFile" accept=".csv" style="display:none" onchange="handleBulkFile(event)">
+<div id="bulkPreviewWrap" style="display:none">
+  <div class="bulk-summary" id="bulkSummary"></div>
+  <div class="bulk-preview" id="bulkPreview"></div>
+</div>
+<div class="modal-actions">
+  <button class="secondary" onclick="closeBulkModal()">Cancel</button>
+  <button id="bulkUploadBtn" onclick="confirmBulkUpload()" disabled style="background:#cbd5e1;color:#64748b;cursor:not-allowed">Upload Sites</button>
+</div>
+</div></div>
+
+<div class="modal" id="bulkStatusModal"><div class="box">
+<h2> Bulk Status Update</h2>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px;">
+  Selected sites ka status aaj se set karein. Not Available / Under Maintenance ke liye From aur To date bhi set kar sakte hain.
+</p>
+
+<div class="formgrid">
+  <div style="grid-column:1/-1">
+    <label>Status
+      <select id="bulkStatusValue">
+        <option value="Available"> Available</option>
+        <option value="Not Available"> Not Available</option>
+        <option value="Under Maintenance"> Under Maintenance</option>
+      </select>
+    </label>
+  </div>
+  <div class="bulk-date-field">
+    <label>From Date (DD/MM/YYYY)
+      <div class="date-row">
+        <select id="bulkStatusFrom_d"></select>
+        <select id="bulkStatusFrom_m"></select>
+        <select id="bulkStatusFrom_y"></select>
+      </div>
+    </label>
+  </div>
+  <div class="bulk-date-field">
+    <label>To Date (DD/MM/YYYY)
+      <div class="date-row">
+        <select id="bulkStatusTo_d"></select>
+        <select id="bulkStatusTo_m"></select>
+        <select id="bulkStatusTo_y"></select>
+      </div>
+    </label>
+  </div>
+</div>
+
+<div id="bulkStatusPreview" style="margin-top:14px;background:#f8fafc;border:1px solid #e2e8f0;padding:12px 14px;border-radius:8px;font-size:12px;color:#475569"></div>
+
+<div class="modal-actions">
+  <button class="secondary" onclick="closeBulkStatusModal()">Cancel</button>
+  <button onclick="applyBulkStatus()">Apply Status</button>
+</div>
+</div></div>
+
+<div class="modal" id="historyModal"><div class="box">
+<h2 id="historyTitle">Booking History</h2>
+<div id="historyContent"></div>
+<div class="modal-actions"><button class="secondary" onclick="closeHistoryModal()">Close</button></div>
+</div></div>
+<div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
+  <button class="close-viewer" onclick="closeImageViewer()"></button>
+  <img id="viewerImage" src="" alt="" onclick="event.stopPropagation()">
+</div>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
+
+<script>
+const API_URL = "https://api.dsent.workers.dev";
+const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
+
+let currentUser = null;
+let sites = [];
+let areas = [...DEFAULT_AREAS];
+let bookingHistory = [];
+
+async function loadDataFromCloud() {
+  try {
+    const res = await fetch(API_URL + "/data");
+    const data = await res.json();
+    sites = (data.sites || []).map((s, i) => {
+      if (!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
+      return s;
+    });
+    areas = (data.areas && data.areas.length) ? data.areas : [...DEFAULT_AREAS];
+    bookingHistory = data.history || [];
+  } catch (e) {
+    console.error("Cloud load failed:", e);
+  }
+}
+let imageCache = {};
+let selectedSites = new Set();
+let selectedAreas = new Set();
+let visibleSites = [];
+let editIndex = -1;
+let currentImageData = "";
+let bulkParsedSites = [];
+let collapsedAreas = null;
+let areaFilters = {};
+
+const DB_NAME = "SiteManagerDB";
+const DB_VERSION = 1;
+const STORE = "images";
+let idb = null;
+
+function openDB(){ return Promise.resolve(); }
+
+async function saveImage(key, dataUrl){
+  imageCache[key] = dataUrl;
+  try {
+    await fetch(API_URL + "/image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: key, data: dataUrl })
+    });
+  } catch(e){ console.error("Image save failed:", e); }
+}
+
+async function getImage(key){
+  if (imageCache[key]) return imageCache[key];
+  try {
+    const res = await fetch(API_URL + "/image/" + key);
+    const j = await res.json();
+    if (j.data) imageCache[key] = j.data;
+    return j.data;
+  } catch(e){ return null; }
+}
+
+async function deleteImage(key){
+  delete imageCache[key];
+  try {
+    await fetch(API_URL + "/image/" + key, { method: "DELETE" });
+  } catch(e){}
+}
+
+function clearAllImages(){
+  imageCache = {};
+  return Promise.resolve();
+}
+
+function initStickyHeader(){
+  const header = document.getElementById("mainHeader");
+  if(!header) return;
+  const onScroll = () => {
+    if(window.scrollY > 8){
+      header.classList.add("scrolled");
+    } else {
+      header.classList.remove("scrolled");
+    }
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+}
+
+async function refreshPage(e){
+  const btn = e ? e.currentTarget : document.querySelector(".refresh-btn");
+  if(btn){
+    btn.classList.add("loading");
+    setTimeout(() => btn.classList.remove("loading"), 600);
+  }
+
+  await loadDataFromCloud();
+  autoReleaseExpiredSites();
+  selectedSites.clear();
+
+  document.getElementById("filter").value = "ALL";
+  areaFilters = {};
+  document.getElementById("search").value = "";
+
+  collapsedAreas = new Set(areas);
+
+  render();
+  setTimeout(() => { if(btn) btn.classList.remove("loading"); }, 400);
+}
+
+async function doLogin(){
+  const username = document.getElementById("loginUser").value.trim();
+  const password = document.getElementById("loginPass").value;
+  const btn = document.getElementById("loginBtn");
+  const err = document.getElementById("loginError");
+
+  if(!username || !password){
+    err.textContent = "Username aur password required hai";
+    err.classList.add("show");
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = "Signing in...";
+  err.classList.remove("show");
+
+  try {
+    const res = await fetch(API_URL + "/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+
+    if(!data.success){
+      err.textContent = data.error || "Login failed";
+      err.classList.add("show");
+      btn.disabled = false;
+      btn.textContent = "Sign In";
+      return;
+    }
+    currentUser = data.user;
+    localStorage.setItem("sms_user", JSON.stringify(currentUser));
+    showApp();
+  } catch(e){
+    err.textContent = "Connection error: " + e.message;
+    err.classList.add("show");
+    btn.disabled = false;
+    btn.textContent = "Sign In";
+  }
+}
+
+function showApp(){
+  document.getElementById("loginOverlay").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("userInfo").textContent = " " + currentUser.username + " (" + currentUser.role + ")";
+
+  if(currentUser.role !== "Admin"){
+    document.querySelectorAll(".admin-only").forEach(el => {
+      el.style.display = "none";
+    });
+  }
+  populateAreaDropdowns();
+  autoReleaseExpiredSites();
+  render();
+  initStickyHeader();
+}
+
+function doLogout(){
+  if(!confirm("Logout karna hai?")) return;
+  currentUser = null;
+  localStorage.removeItem("sms_user");
+  location.reload();
+}
+
+function checkSession(){
+  const saved = localStorage.getItem("sms_user");
+  if(saved){
+    try {
+      currentUser = JSON.parse(saved);
+      showApp();
+    } catch(e){ localStorage.removeItem("sms_user"); }
+  }
+}
+
+function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function todayISO(){
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+function isoToDDMMYYYY(iso){
+  if(!iso) return "";
+  const p = String(iso).split("-");
+  if(p.length !== 3) return "";
+  return p[2] + "/" + p[1] + "/" + p[0];
+}
+function normalizeStatus(s){
+  s = String(s||"Available").trim().toLowerCase();
+  if(s.includes("maint") || s.includes("under")) return "Under Maintenance";
+  if(s.includes("not") || s.includes("unavail")) return "Not Available";
+  return "Available";
+}
+async function persist(){
+  try {
+    await fetch(API_URL + "/data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sites, areas, history: bookingHistory })
+    });
+  } catch (e) {
+    console.error("Cloud save failed:", e);
+  }
+}
+function showProgress(t, s){
+  document.getElementById("progressText").textContent = t || "Working...";
+  document.getElementById("progressSub").textContent = s || "";
+  document.getElementById("progressOverlay").classList.add("show");
+}
+function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
+
+function onMainFilterChange(){
+  areaFilters = {};
+  document.getElementById("areaContainer").innerHTML = "";
+  setTimeout(() => { render(); }, 10);
+}
+
+function filterByCard(status){
+  const sel = document.getElementById("filter");
+  sel.value = status;
+  document.getElementById("search").value = "";
+  areaFilters = {};
+  onMainFilterChange();
+  syncCardHighlight();
+}
+function syncCardHighlight(){
+  const f = document.getElementById("filter").value;
+  const map = {
+    "ALL": "cardTotal",
+    "Available": "cardAvailable",
+    "Not Available": "cardNotAvailable",
+    "Under Maintenance": "cardMaintenance"
+  };
+  document.querySelectorAll(".card").forEach(c => c.classList.remove("active-filter"));
+  const el = document.getElementById(map[f]);
+  if(el) el.classList.add("active-filter");
+}
+
+function populateAreaDropdowns(){
+  const formSel = document.getElementById("farea");
+  if(!formSel) return;
+  formSel.innerHTML = '';
+  areas.forEach(a => {
+    formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>';
+  });
+}
+
+function quickAddArea(){
+  if(currentUser.role !== "Admin"){ alert("Sirf Admin area add kar sakta hai"); return; }
+  const name = prompt("Naya area ka naam likhein:");
+  if(!name || name.trim() === "") return;
+  if(areas.includes(name.trim())){ alert("Yeh area pehle se hai"); return; }
+  areas.push(name.trim());
+  persist();
+  populateAreaDropdowns();
+  render();
+  alert(" Area add ho gaya: " + name.trim());
+}
+
+function openAreaManager(){
+  if(currentUser.role !== "Admin"){ alert("Sirf Admin area manage kar sakta hai"); return; }
+  selectedAreas.clear();
+  renderAreaList();
+  document.getElementById("areaModal").classList.add("show");
+}
+function closeAreaModal(){
+  selectedAreas.clear();
+  document.getElementById("areaModal").classList.remove("show");
+}
+
+function renderAreaList(){
+  const list = document.getElementById("areaList");
+  if(areas.length === 0){
+    list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;font-style:italic">No areas. Add one below.</div>';
+    updateAreaSelCount();
+    return;
+  }
+  let html = '';
+  areas.forEach((a, i) => {
+    const count = sites.filter(s => s.area === a).length;
+    const isSel = selectedAreas.has(a);
+    html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '">';
+    html += '<input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\')">';
+    html += '<span class="name"> ' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + count + ')</span></span>';
+    html += '<button onclick="renameArea(' + i + ')" style="padding:6px 12px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Rename</button>';
+    html += '<button onclick="deleteArea(' + i + ')" style="padding:6px 12px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Delete</button>';
+    html += '</div>';
+  });
+  list.innerHTML = html;
+  updateAreaSelCount();
+}
+
+function toggleAreaSelect(areaName){
+  if(selectedAreas.has(areaName)) selectedAreas.delete(areaName);
+  else selectedAreas.add(areaName);
+  renderAreaList();
+}
+
+function toggleAllAreas(){
+  if(selectedAreas.size === areas.length){
+    selectedAreas.clear();
+  } else {
+    areas.forEach(a => selectedAreas.add(a));
+  }
+  renderAreaList();
+}
+
+function updateAreaSelCount(){
+  const el = document.getElementById("areaSelCount");
+  const btn = document.getElementById("areaSelAllBtn");
+  if(el) el.textContent = selectedAreas.size + " selected";
+  if(btn){
+    if(selectedAreas.size === areas.length && areas.length > 0){
+      btn.textContent = " Deselect All";
+    } else {
+      btn.textContent = " Select All";
+    }
+  }
+}
+
+async function bulkDeleteAreas(){
+  if(selectedAreas.size === 0){ alert("Koi area select nahi ki"); return; }
+  const selectedArr = [...selectedAreas];
+  const totalSitesAffected = sites.filter(s => selectedAreas.has(s.area)).length;
+  let msg = "Delete " + selectedArr.length + " area(s)?\n\n";
+  msg += "Areas: " + selectedArr.join(", ") + "\n";
+  if(totalSitesAffected > 0){
+    msg += "\n In areas mein " + totalSitesAffected + " sites hain. Woh 'Unassigned' mein chali jayengi.";
+  }
+  if(!confirm(msg)) return;
+  sites.forEach(s => { if(selectedAreas.has(s.area)) s.area = "Unassigned"; });
+  areas = areas.filter(a => !selectedAreas.has(a));
+  selectedAreas.clear();
+  persist();
+  populateAreaDropdowns();
+  renderAreaList();
+  render();
+  alert(" " + selectedArr.length + " area(s) deleted");
+}
+
+function addNewArea(){
+  const name = document.getElementById("newAreaName").value.trim();
+  if(!name){ alert("Area ka naam likhein"); return; }
+  if(areas.includes(name)){ alert("Yeh area pehle se hai"); return; }
+  areas.push(name);
+  persist();
+  document.getElementById("newAreaName").value = "";
+  renderAreaList();
+  populateAreaDropdowns();
+  render();
+}
+
+function renameArea(index){
+  const oldName = areas[index];
+  const newName = prompt("Naya area name:", oldName);
+  if(!newName || newName.trim() === "") return;
+  if(newName !== oldName && areas.includes(newName)){ alert("Yeh area pehle se hai"); return; }
+  areas[index] = newName.trim();
+  sites.forEach(s => { if(s.area === oldName) s.area = newName.trim(); });
+  persist();
+  renderAreaList();
+  populateAreaDropdowns();
+  render();
+}
+
+function deleteArea(index){
+  const areaName = areas[index];
+  const count = sites.filter(s => s.area === areaName).length;
+  if(count > 0){
+    if(!confirm("Is area mein " + count + " sites hain. Delete karne par woh 'Unassigned' mein chali jayengi. Continue?")) return;
+    sites.forEach(s => { if(s.area === areaName) s.area = "Unassigned"; });
+  } else {
+    if(!confirm("Delete area '" + areaName + "'?")) return;
+  }
+  areas.splice(index, 1);
+  persist();
+  renderAreaList();
+  populateAreaDropdowns();
+  render();
+}
+
+function toggleAreaCollapse(areaName){
+  if(collapsedAreas.has(areaName)) collapsedAreas.delete(areaName);
+  else collapsedAreas.add(areaName);
+  render();
+}
+
+function setAreaFilter(areaName, value){
+  areaFilters[areaName] = value;
+  render();
+}
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const YEARS = [];
+const CUR_YEAR = new Date().getFullYear();
+for(let y = CUR_YEAR - 2; y <= CUR_YEAR + 5; y++) YEARS.push(y);
+
+function initDateDropdowns(){
+  [["ffrom_d","ffrom_m","ffrom_y"],["fto_d","fto_m","fto_y"]].forEach(ids => {
+    const d = document.getElementById(ids[0]);
+    const m = document.getElementById(ids[1]);
+    const y = document.getElementById(ids[2]);
+    d.innerHTML = ""; m.innerHTML = ""; y.innerHTML = "";
+    for(let i=1;i<=31;i++) d.innerHTML += '<option value="'+String(i).padStart(2,"0")+'">'+String(i).padStart(2,"0")+'</option>';
+    for(let i=0;i<12;i++) m.innerHTML += '<option value="'+String(i+1).padStart(2,"0")+'">'+String(i+1).padStart(2,"0")+' ('+MONTHS[i]+')</option>';
+    YEARS.forEach(yy => y.innerHTML += '<option value="'+yy+'">'+yy+'</option>');
+  });
+}
+
+function initBulkDateDropdowns(){
+  [["bulkStatusFrom_d","bulkStatusFrom_m","bulkStatusFrom_y"],
+   ["bulkStatusTo_d","bulkStatusTo_m","bulkStatusTo_y"]].forEach(ids => {
+    const d = document.getElementById(ids[0]);
+    const m = document.getElementById(ids[1]);
+    const y = document.getElementById(ids[2]);
+    if(!d) return;
+    d.innerHTML = ""; m.innerHTML = ""; y.innerHTML = "";
+    for(let i=1;i<=31;i++) d.innerHTML += '<option value="'+String(i).padStart(2,"0")+'">'+String(i).padStart(2,"0")+'</option>';
+    for(let i=0;i<12;i++) m.innerHTML += '<option value="'+String(i+1).padStart(2,"0")+'">'+String(i+1).padStart(2,"0")+' ('+MONTHS[i]+')</option>';
+    YEARS.forEach(yy => y.innerHTML += '<option value="'+yy+'">'+yy+'</option>');
+  });
+}
+
+function setDateDropdowns(prefix, ddmmYYYY){
+  const d = document.getElementById(prefix+"_d");
+  const m = document.getElementById(prefix+"_m");
+  const y = document.getElementById(prefix+"_y");
+  if(!d || !m || !y) return;
+  if(!ddmmYYYY || !/^\d{2}\/\d{2}\/\d{4}$/.test(ddmmYYYY)){
+    const t = new Date();
+    d.value = String(t.getDate()).padStart(2,"0");
+    m.value = String(t.getMonth()+1).padStart(2,"0");
+    y.value = t.getFullYear();
+    return;
+  }
+  const p = ddmmYYYY.split("/");
+  d.value = p[0]; m.value = p[1]; y.value = p[2];
+}
+function getDateFromDropdowns(prefix){
+  const d = document.getElementById(prefix+"_d");
+  const m = document.getElementById(prefix+"_m");
+  const y = document.getElementById(prefix+"_y");
+  if(!d || !m || !y) return "";
+  const dv = d.value, mv = m.value, yv = y.value;
+  return dv && mv && yv ? dv+"/"+mv+"/"+yv : "";
+}
+function ddmmyyyyToISO(s){
+  if(!s) return "";
+  const p = String(s).trim().split("/");
+  if(p.length !== 3) return "";
+  return p[2]+"-"+p[1].padStart(2,"0")+"-"+p[0].padStart(2,"0");
+}
+function calcDays(f, t){
+  if(!f || !t) return 0;
+  const fd = new Date(ddmmyyyyToISO(f));
+  const td = new Date(ddmmyyyyToISO(t));
+  if(isNaN(fd) || isNaN(td) || td < fd) return 0;
+  return Math.floor((td - fd) / 86400000) + 1;
+}
+function isPastDate(ddmmYYYY){
+  if(!ddmmYYYY) return false;
+  const p = ddmmYYYY.split("/");
+  if(p.length !== 3) return false;
+  const d = new Date(p[2], p[1]-1, p[0]);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  d.setHours(0,0,0,0);
+  return d < today;
+}
+function updateCalcPreview(){
+  const from = getDateFromDropdowns("ffrom");
+  const to = getDateFromDropdowns("fto");
+  const days = calcDays(from, to);
+  const warn = document.getElementById("dateWarning");
+  warn.classList.remove("show");
+  let extra = "";
+  if(from && to && days === 0) extra = "  To date From se pehle hai!";
+  document.getElementById("calcPreview").innerHTML = " From: " + (from||"") + "  To: " + (to||"") + "  Days: " + days + extra;
+}
+
+function autoReleaseExpiredSites(){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  let changed = false;
+  sites.forEach(x => {
+    if(x.toDate){
+      const toDate = new Date(ddmmyyyyToISO(x.toDate));
+      toDate.setHours(0,0,0,0);
+      if(toDate < today && (x.status === "Not Available" || x.status === "Under Maintenance")){
+        bookingHistory.push({
+          site: x.site, customer: x.customer || "",
+          fromDate: x.fromDate || "", toDate: x.toDate || "",
+          days: calcDays(x.fromDate, x.toDate),
+          endedOn: today.toLocaleDateString('en-GB'),
+          status: x.status, location: x.location || ""
+        });
+        x.status = "Available";
+        x.customer = "";
+        x.fromDate = "";
+        x.toDate = "";
+        changed = true;
+      }
+    }
+  });
+  if(changed){ persist(); }
+  return changed;
+}
+
+function render(){
+  autoReleaseExpiredSites();
+  syncCardHighlight();
+  const q = (document.getElementById("search").value || "").toLowerCase().trim();
+  const f = document.getElementById("filter").value;
+  const counts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
+  sites.forEach(x => counts[x.status] = (counts[x.status] || 0) + 1);
+  document.getElementById("total").textContent = sites.length;
+  document.getElementById("avail").textContent = counts.Available;
+  document.getElementById("notavail").textContent = counts["Not Available"];
+  document.getElementById("maintenance").textContent = counts["Under Maintenance"];
+
+  if(collapsedAreas === null){ collapsedAreas = new Set(areas); }
+  const isFiltering = (f !== "ALL") || (q && q.length > 0);
+  if(isFiltering){ collapsedAreas.clear(); }
+
+  const container = document.getElementById("areaContainer");
+  container.innerHTML = "";
+  visibleSites = [];
+  let areasToShow = [...areas];
+  const unassignedCount = sites.filter(s => !s.area || s.area === "Unassigned").length;
+  if(unassignedCount > 0){ areasToShow.push("Unassigned"); }
+  let totalShown = 0;
+
+  areasToShow.forEach(areaName => {
+    const areaFilter = areaFilters[areaName] || "ALL";
+    const areaSites = sites.filter(s => {
+      const sArea = s.area || "Unassigned";
+      if(sArea !== areaName) return false;
+      if(f !== "ALL" && s.status !== f) return false;
+      if(areaFilter !== "ALL" && s.status !== areaFilter) return false;
+      const hay = (s.site + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
+      if(q && !hay.includes(q)) return false;
+      return true;
+    });
+    if(isFiltering && areaSites.length === 0) return;
+    totalShown += areaSites.length;
+    areaSites.forEach(s => visibleSites.push(s));
+    const isCollapsed = collapsedAreas.has(areaName);
+    const block = document.createElement("div");
+    block.className = "area-block" + (isCollapsed ? " collapsed" : "");
+    const header = document.createElement("div");
+    header.className = "area-header";
+    header.onclick = (e) => {
+      if(e.target.tagName === "BUTTON" || e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+      toggleAreaCollapse(areaName);
+    };
+    const areaAvail = areaSites.filter(s => s.status === "Available").length;
+    const areaNot = areaSites.filter(s => s.status === "Not Available").length;
+    const areaMaint = areaSites.filter(s => s.status === "Under Maintenance").length;
+    const allAreaSel = areaSites.length > 0 && areaSites.every(s => selectedSites.has(s.id));
+    let headerHTML = '<input type="checkbox" class="select-all-cb" ' + (allAreaSel ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectAllInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.checked)">';
+    headerHTML += '<div class="area-name">' + esc(areaName) + '</div>';
+    headerHTML += '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">';
+    headerHTML += '<span class="area-count" style="background:#ffffff;color:#1f2937;border:1px solid #e5e7eb">' + areaSites.length + '</span>';
+    headerHTML += '<span class="area-count" style="background:#16a34a;color:#ffffff"> ' + areaAvail + '</span>';
+    headerHTML += '<span class="area-count" style="background:#dc2626;color:#ffffff"> ' + areaNot + '</span>';
+    headerHTML += '<span class="area-count" style="background:#facc15;color:#111827"> ' + areaMaint + '</span>';
+    if(currentUser.role === "Admin"){
+      headerHTML += '<div class="area-actions">';
+      headerHTML += '<button onclick="event.stopPropagation(); quickAddSiteInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">+ Add</button>';
+      headerHTML += '</div>';
+    }
+    headerHTML += '<span class="toggle-icon">' + (isCollapsed ? '' : '') + '</span>';
+    headerHTML += '</div>';
+    header.innerHTML = headerHTML;
+    block.appendChild(header);
+
+    const content = document.createElement("div");
+    content.className = "area-content";
+    if(areaSites.length === 0 && areaFilter === "ALL"){
+      content.innerHTML = '<div class="empty-area">No sites in this area yet.</div>';
+    } else {
+      let filterBarHTML = '<div class="area-filter-bar" onclick="event.stopPropagation()">';
+      filterBarHTML += '<span style="font-size:11px;font-weight:600;color:#64748b">Filter:</span>';
+      filterBarHTML += '<select onchange="setAreaFilter(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.value)">';
+      filterBarHTML += '<option value="ALL"' + (areaFilter === "ALL" ? ' selected' : '') + '>All</option>';
+      filterBarHTML += '<option value="Available"' + (areaFilter === "Available" ? ' selected' : '') + '> Available</option>';
+      filterBarHTML += '<option value="Not Available"' + (areaFilter === "Not Available" ? ' selected' : '') + '> Not Available</option>';
+      filterBarHTML += '<option value="Under Maintenance"' + (areaFilter === "Under Maintenance" ? ' selected' : '') + '> Under Maintenance</option>';
+      filterBarHTML += '</select>';
+      filterBarHTML += '<span class="area-filter-count">Showing ' + areaSites.length + '</span>';
+      filterBarHTML += '</div>';
+
+      let cardsHTML = filterBarHTML + '<div class="site-cards-grid">';
+      if(areaSites.length === 0){
+        cardsHTML += '<div style="text-align:center;padding:20px;color:#94a3b8;font-style:italic;font-size:12px">No sites match this filter</div>';
+      }
+      areaSites.forEach((x, idx) => {
+        const globalIdx = sites.indexOf(x);
+        const isSel = selectedSites.has(x.id);
+        const days = calcDays(x.fromDate, x.toDate);
+        let sc = "s-available";
+        if(x.status === "Not Available") sc = "s-not";
+        else if(x.status === "Under Maintenance") sc = "s-maintenance";
+        let cardCls = "site-card";
+        if(x.status === "Not Available") cardCls += " not-card";
+        else if(x.status === "Under Maintenance") cardCls += " maint-card";
+        if(isSel) cardCls += " selected-card";
+        const histCount = bookingHistory.filter(h => h.site === x.site).length;
+        const histBtn = histCount > 0 ? '<button class="history-btn" onclick="showHistory(' + globalIdx + ')">' + histCount + '</button>' : '';
+        const mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
+        const imgHTML = x.hasImage
+          ? '<img class="site-card-img" data-img-id="' + x.id + '" onclick="openImageViewer(\'' + x.id + '\')" alt="site">'
+          : '<div class="site-card-img no-img" onclick="editSite(' + globalIdx + ')" title="Add image"></div>';
+        const actionBtns = (currentUser.role === "Admin" || currentUser.role === "Viewer")
+          ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' + mapBtn + histBtn
+          : mapBtn + histBtn;
+        cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
+        cardsHTML += '<div class="site-card-top">';
+        cardsHTML += '<input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' onchange="toggleSelect(\'' + x.id + '\')">';
+        cardsHTML += '<span class="site-card-num">#' + (idx + 1) + '</span>';
+        cardsHTML += imgHTML;
+        cardsHTML += '</div>';
+        cardsHTML += '<div class="site-card-body">';
+        cardsHTML += '<div class="site-card-name">' + esc(x.site) + (x.location ? ' <span class="site-card-loc-inline"> ' + esc(x.location) + '</span>' : '') + '</div>';
+        if(x.customer || ((x.status !== "Available") && (x.fromDate || x.toDate))){
+          cardsHTML += '<div class="site-card-meta">';
+          if(x.customer) cardsHTML += '<span class="site-card-comp"> ' + esc(x.customer) + '</span>';
+          if(x.status !== "Available" && (x.fromDate || x.toDate)) cardsHTML += '<span class="site-card-dates"> ' + esc(x.fromDate || "") + '  ' + esc(x.toDate || "") + (days > 0 ? ' <span class="days-badge">' + days + 'd</span>' : '') + '</span>';
+          cardsHTML += '</div>';
+        }
+        cardsHTML += '</div>';
+        cardsHTML += '<div class="site-card-status"><span class="status ' + sc + '">' + esc(x.status) + '</span></div>';
+        cardsHTML += '<div class="site-card-actions">' + actionBtns + '</div>';
+        cardsHTML += '</div>';
+      });
+      cardsHTML += '</div>';
+      content.innerHTML = cardsHTML;
+    }
+    block.appendChild(content);
+    container.appendChild(block);
+  });
+
+  if(totalShown === 0 && (q || f !== "ALL")){
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic;grid-column:1/-1">No sites match your filter.</div>';
+  }
+  loadVisibleImages();
+  updateSelectBar();
+}
+
+async function loadVisibleImages(){
+  const imgs = document.querySelectorAll("img.site-card-img[data-img-id]");
+  for(const img of imgs){
+    const id = img.dataset.imgId;
+    if(imageCache[id]){ img.src = imageCache[id]; }
+    else {
+      const data = await getImage(id);
+      if(data){ imageCache[id] = data; img.src = data; }
+    }
+  }
+}
+
+function toggleSelect(id){
+  if(selectedSites.has(id)) selectedSites.delete(id);
+  else selectedSites.add(id);
+  document.querySelectorAll("div.site-card[data-site-id]").forEach(card => {
+    if(card.dataset.siteId === id){
+      if(selectedSites.has(id)) card.classList.add("selected-card");
+      else card.classList.remove("selected-card");
+      const cb = card.querySelector('input.site-card-cb');
+      if(cb) cb.checked = selectedSites.has(id);
+    }
+  });
+  updateSelectBar();
+}
+function toggleSelectAllInArea(areaName, checked){
+  sites.forEach(s => {
+    const sArea = s.area || "Unassigned";
+    if(sArea === areaName){
+      if(checked) selectedSites.add(s.id);
+      else selectedSites.delete(s.id);
+    }
+  });
+  render();
+}
+function clearSelection(){ selectedSites.clear(); render(); }
+function updateSelectBar(){
+  const bar = document.getElementById("selectBar");
+  document.getElementById("selCount").textContent = selectedSites.size + " selected";
+  if(selectedSites.size > 0) bar.classList.add("show");
+  else bar.classList.remove("show");
+  const delBtn = document.getElementById("deleteBtn");
+  if(delBtn){
+    if(currentUser && currentUser.role === "Admin"){
+      delBtn.style.display = "inline-flex";
+    } else {
+      delBtn.style.display = "none";
+    }
+  }
+}
+
+function openBulkStatusModal(){
+  if(currentUser && currentUser.role !== "Admin"){
+    alert("Sirf Admin bulk status change kar sakta hai");
+    return;
+  }
+  if(selectedSites.size === 0){
+    alert("Pehle kam se kam ek site select karein");
+    return;
+  }
+  document.getElementById("bulkStatusValue").value = "Not Available";
+  const t = new Date();
+  const today = String(t.getDate()).padStart(2,"0")+"/"+String(t.getMonth()+1).padStart(2,"0")+"/"+t.getFullYear();
+  setDateDropdowns("bulkStatusFrom", today);
+  setDateDropdowns("bulkStatusTo", today);
+  updateBulkStatusDateFields();
+  updateBulkStatusPreview();
+  document.getElementById("bulkStatusModal").classList.add("show");
+}
+function closeBulkStatusModal(){
+  document.getElementById("bulkStatusModal").classList.remove("show");
+}
+function updateBulkStatusDateFields(){
+  const status = document.getElementById("bulkStatusValue").value;
+  const showDates = status !== "Available";
+  document.querySelectorAll(".bulk-date-field").forEach(el => {
+    el.style.display = showDates ? "block" : "none";
+  });
+  if(showDates){
+    const fromEmpty = !getDateFromDropdowns("bulkStatusFrom");
+    const toEmpty = !getDateFromDropdowns("bulkStatusTo");
+    if(fromEmpty || toEmpty){
+      const t = new Date();
+      const today = String(t.getDate()).padStart(2,"0")+"/"+String(t.getMonth()+1).padStart(2,"0")+"/"+t.getFullYear();
+      if(fromEmpty) setDateDropdowns("bulkStatusFrom", today);
+      if(toEmpty) setDateDropdowns("bulkStatusTo", today);
+    }
+  }
+}
+function updateBulkStatusPreview(){
+  const status = document.getElementById("bulkStatusValue").value;
+  const from = getDateFromDropdowns("bulkStatusFrom");
+  const to = getDateFromDropdowns("bulkStatusTo");
+  const count = selectedSites.size;
+  const preview = document.getElementById("bulkStatusPreview");
+  if(!preview) return;
+  let text = "<b>" + count + " site(s)</b> ko <b>" + esc(status) + "</b> status aaj set kiya jayega.";
+  if(status !== "Available"){
+    text += "<br>From: <b>" + esc(from) + "</b> &nbsp; To: <b>" + esc(to) + "</b>";
+  }
+  text += "<br><span style='color:#047857;font-weight:600'>Ye status aaj turant apply hoga.</span>";
+  preview.innerHTML = text;
+}
+function applyBulkStatus(){
+  if(!currentUser || currentUser.role !== "Admin"){
+    alert("Sirf Admin bulk status change kar sakta hai");
+    return;
+  }
+  const selectedIds = new Set([...selectedSites].map(String));
+  const targets = sites.filter(s => selectedIds.has(String(s.id)));
+  if(targets.length === 0){
+    alert("Selected sites nahi mil rahi hain. Please sites ko dobara select karein.");
+    return;
+  }
+  const rawStatus = document.getElementById("bulkStatusValue").value;
+  const status = normalizeStatus(rawStatus);
+  let fromLabel = getDateFromDropdowns("bulkStatusFrom");
+  let toLabel = getDateFromDropdowns("bulkStatusTo");
+  if(status !== "Available"){
+    if(!fromLabel || !toLabel){ alert("From aur To date select karein"); return; }
+    const fd = new Date(ddmmyyyyToISO(fromLabel));
+    const td = new Date(ddmmyyyyToISO(toLabel));
+    if(isNaN(fd) || isNaN(td)){ alert("Invalid date"); return; }
+    if(td < fd){ alert("To Date, From Date se pehle nahi ho sakti"); return; }
+  } else {
+    fromLabel = "";
+    toLabel = "";
+  }
+  if(!confirm(targets.length + " site(s) par '" + status + "' status aaj apply hoga.\n\nContinue?")) return;
+  targets.forEach(s => {
+    s.status = status;
+    if(status === "Available"){
+      s.fromDate = "";
+      s.toDate = "";
+      s.customer = "";
+    } else {
+      s.fromDate = fromLabel;
+      s.toDate = toLabel;
+    }
+  });
+  persist();
+  render();
+  closeBulkStatusModal();
+  clearSelection();
+  alert(targets.length + " site(s) ka status successfully update ho gaya.");
+}
+document.addEventListener("change", function(e){
+  if(e.target && ["bulkStatusValue","bulkStatusFrom_d","bulkStatusFrom_m","bulkStatusFrom_y",
+                   "bulkStatusTo_d","bulkStatusTo_m","bulkStatusTo_y"].includes(e.target.id)){
+    if(e.target.id === "bulkStatusValue") updateBulkStatusDateFields();
+    updateBulkStatusPreview();
+  }
+});
+
+function openAdd(){
+  editIndex = -1;
+  document.getElementById("modalTitle").textContent = "Add New Site";
+  document.getElementById("fsite").value = "";
+  document.getElementById("flocation").value = "";
+  document.getElementById("flocation").dataset.lat = "";
+  document.getElementById("flocation").dataset.lng = "";
+  document.getElementById("fcustomer").value = "";
+  document.getElementById("fstatus").value = "Available";
+  currentImageData = "";
+  removeImage();
+  document.getElementById("farea").value = areas[0] || "";
+  const t = new Date();
+  const today = String(t.getDate()).padStart(2,"0")+"/"+String(t.getMonth()+1).padStart(2,"0")+"/"+t.getFullYear();
+  setDateDropdowns("ffrom", today);
+  setDateDropdowns("fto", today);
+  document.getElementById("gpsStatus").textContent = " GPS not captured";
+  document.getElementById("gpsStatus").className = "gps-status";
+  document.getElementById("dateWarning").classList.remove("show");
+  updateCalcPreview();
+  document.getElementById("modal").classList.add("show");
+}
+
+function quickAddSiteInArea(areaName){
+  openAdd();
+  document.getElementById("farea").value = areaName;
+}
+
+async function editSite(i){
+  if(currentUser.role !== "Admin" && currentUser.role !== "Viewer"){
+    alert("Aapko edit karne ki permission nahi hai");
+    return;
+  }
+  editIndex = i;
+  const x = sites[i];
+  document.getElementById("modalTitle").textContent = "Edit Site";
+  if(x.area && !areas.includes(x.area)){
+    areas.push(x.area);
+    populateAreaDropdowns();
+  }
+  document.getElementById("farea").value = x.area || areas[0] || "";
+  document.getElementById("fsite").value = x.site || "";
+  document.getElementById("flocation").value = x.location || "";
+  document.getElementById("flocation").dataset.lat = x.lat || "";
+  document.getElementById("flocation").dataset.lng = x.lng || "";
+  document.getElementById("fcustomer").value = x.customer || "";
+  document.getElementById("fstatus").value = x.status;
+  setDateDropdowns("ffrom", x.fromDate || "");
+  setDateDropdowns("fto", x.toDate || "");
+  if(x.lat && x.lng){
+    document.getElementById("gpsStatus").textContent = " GPS: " + x.lat + ", " + x.lng;
+    document.getElementById("gpsStatus").className = "gps-status ok";
+  } else {
+    document.getElementById("gpsStatus").textContent = " GPS not captured";
+    document.getElementById("gpsStatus").className = "gps-status";
+  }
+  if(x.hasImage){
+    let data = imageCache[x.id];
+    if(!data) data = await getImage(x.id);
+    if(data){ currentImageData = data; showImagePreview(data); }
+    else { currentImageData = ""; removeImage(); }
+  } else { currentImageData = ""; removeImage(); }
+  updateCalcPreview();
+  document.getElementById("modal").classList.add("show");
+}
+function closeModal(){ document.getElementById("modal").classList.remove("show"); }
+
+async function saveSite(){
+  const fromVal = getDateFromDropdowns("ffrom");
+  const toVal = getDateFromDropdowns("fto");
+  const areaVal = document.getElementById("farea").value;
+
+  if(!areaVal){
+    alert("Kripya area select karein");
+    return;
+  }
+  if(fromVal && isPastDate(fromVal)){
+    if(!confirm(" WARNING: Booking 'From' date previous hai!\n\nAapne chuni: " + fromVal + "\n\nKya aap phir bhi booking karna chahte hain?")){
+      return;
+    }
+  }
+  if(toVal && isPastDate(toVal)){
+    if(!confirm(" WARNING: Booking 'To' date previous hai!\n\nAapne chuni: " + toVal + "\n\nKya aap phir bhi booking karna chahte hain?")){
+      return;
+    }
+  }
+  if(fromVal && toVal && calcDays(fromVal, toVal) === 0){
+    alert(" 'To' date 'From' date se pehle nahi ho sakti!");
+    return;
+  }
+
+  let statusVal = document.getElementById("fstatus").value;
+  const id = editIndex < 0 ? "id_"+Math.random().toString(36).slice(2,10) : sites[editIndex].id;
+  const hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
+  const loc = document.getElementById("flocation");
+  const newSite = {
+    id, area: areaVal,
+    site: document.getElementById("fsite").value.trim() || "Unnamed Site",
+    location: loc.value.trim(),
+    lat: loc.dataset.lat || "",
+    lng: loc.dataset.lng || "",
+    customer: document.getElementById("fcustomer").value.trim(),
+    status: statusVal,
+    fromDate: fromVal, toDate: toVal,
+    hasImage: !!currentImageData
+  };
+  if(currentImageData){
+    await saveImage(id, currentImageData);
+    imageCache[id] = currentImageData;
+  } else if(hadImage){
+    await deleteImage(id);
+    delete imageCache[id];
+  }
+  if(editIndex < 0) sites.push(newSite);
+  else sites[editIndex] = newSite;
+  persist();
+  closeModal();
+  render();
+}
+
+function handleImageUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith("image/")){ alert("Only images allowed"); return; }
+  if(file.size > 3*1024*1024){ alert("Max 3 MB"); return; }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    compressImage(ev.target.result, 1200, 0.85, (compressed) => {
+      currentImageData = compressed;
+      showImagePreview(compressed);
+    });
+  };
+  reader.readAsDataURL(file);
+  e.target.value = "";
+}
+function compressImage(dataUrl, maxW, quality, cb){
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    let w = img.width, h = img.height;
+    if(w > maxW){ h = Math.round(h * (maxW/w)); w = maxW; }
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, w, h);
+    cb(canvas.toDataURL("image/jpeg", quality));
+  };
+  img.src = dataUrl;
+}
+function showImagePreview(data){
+  document.getElementById("imagePreview").src = data;
+  document.getElementById("imagePreviewWrap").style.display = "block";
+  document.getElementById("imageUploadBox").style.display = "none";
+}
+function removeImage(){
+  currentImageData = "";
+  document.getElementById("imagePreview").src = "";
+  document.getElementById("imagePreviewWrap").style.display = "none";
+  document.getElementById("imageUploadBox").style.display = "block";
+}
+async function openImageViewer(siteId){
+  let data = imageCache[siteId];
+  if(!data) data = await getImage(siteId);
+  if(!data){ alert("Image not found"); return; }
+  document.getElementById("viewerImage").src = data;
+  document.getElementById("imageViewer").classList.add("show");
+}
+function closeImageViewer(){
+  document.getElementById("imageViewer").classList.remove("show");
+}
+
+function captureGPS(){
+  const btn = document.getElementById("gpsBtn");
+  const status = document.getElementById("gpsStatus");
+  if(!navigator.geolocation){ alert("GPS not supported"); return; }
+  btn.disabled = true; btn.textContent = " Getting...";
+  status.className = "gps-status";
+  status.textContent = " Getting GPS...";
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude.toFixed(7);
+      const lng = pos.coords.longitude.toFixed(7);
+      document.getElementById("flocation").dataset.lat = lat;
+      document.getElementById("flocation").dataset.lng = lng;
+      const cur = document.getElementById("flocation").value.trim();
+      const coordText = " "+lat+", "+lng;
+      document.getElementById("flocation").value = cur ? cur + " | " + coordText : coordText;
+      status.className = "gps-status ok";
+      status.textContent = " "+Math.round(pos.coords.accuracy)+"m";
+      btn.disabled = false; btn.textContent = " Re-capture";
+    },
+    (err) => {
+      btn.disabled = false; btn.textContent = " Use GPS";
+      status.textContent = " " + (err.code === 1 ? "Permission denied" : "GPS error");
+    },
+    { enableHighAccuracy: true, timeout: 15000 }
+  );
+}
+function onLocationManualChange(){
+  document.getElementById("flocation").dataset.lat = "";
+  document.getElementById("flocation").dataset.lng = "";
+}
+function onStatusChange(){}
+function getGoogleMapsUrl(site){
+  if(site.lat && site.lng) return "https://www.google.com/maps?q="+site.lat+","+site.lng;
+  if(site.location) return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(site.location);
+  return "";
+}
+function openMap(i){
+  const url = getGoogleMapsUrl(sites[i]);
+  if(!url){ alert("No location set"); return; }
+  window.open(url, "_blank");
+}
+
+function shareSelectedOnWhatsApp(){
+  if(selectedSites.size === 0){ alert("No sites selected"); return; }
+  const sel = sites.filter(s => selectedSites.has(s.id));
+  let text = " *SELECTED SITES*\n "+new Date().toLocaleDateString('en-GB')+"\n\n\n";
+  sel.forEach((x, i) => {
+    const days = calcDays(x.fromDate, x.toDate);
+    text += "*"+(i+1)+". "+x.site+"*";
+    if(x.area) text += " ["+x.area+"]";
+    text += "\n";
+    if(x.location) text += "    "+x.location+"\n";
+    if(x.customer) text += "    "+x.customer+"\n";
+    text += "   Status: "+x.status+"\n";
+    if(x.fromDate) text += "   From: "+x.fromDate+"\n";
+    if(x.toDate) text += "   To: "+x.toDate+"\n";
+    if(days > 0) text += "   Days: "+days+"\n";
+    const map = getGoogleMapsUrl(x);
+    if(map) text += "    "+map+"\n";
+    text += "\n";
+  });
+  text += "\n Site Management";
+  window.open("https://web.whatsapp.com/send?text="+encodeURIComponent(text), "_blank");
+}
+function shareAllOnWhatsApp(){
+  const booked = sites.filter(x => x.status !== "Available");
+  if(booked.length === 0){ alert("No booked sites"); return; }
+  let text = " *SITE REPORT*\n "+new Date().toLocaleDateString('en-GB')+"\n\n";
+  text += "Total: "+sites.length+" | Booked: "+booked.length+"\n\n\n";
+  areas.forEach(area => {
+    const areaBooked = booked.filter(s => (s.area || "Unassigned") === area);
+    if(areaBooked.length === 0) return;
+    text += " *" + area + "*\n";
+    areaBooked.forEach((x, i) => {
+      text += "   "+(i+1)+". "+x.site;
+      if(x.customer) text += " ("+x.customer+")";
+      text += "\n";
+    });
+    text += "\n";
+  });
+  window.open("https://web.whatsapp.com/send?text="+encodeURIComponent(text), "_blank");
+}
+
+async function generatePDF(list, title){
+  if(list.length === 0){ alert("No sites"); return; }
+  showProgress("Generating PDF...", "0 / "+list.length);
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const pw = doc.internal.pageSize.getWidth();
+    const ph = doc.internal.pageSize.getHeight();
+    const m = 12;
+
+    doc.setFillColor(30, 58, 138);
+    doc.rect(0, 0, pw, 40, "F");
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(22);
+    doc.setFont("helvetica","bold");
+    doc.text("SITE MANAGEMENT REPORT", pw/2, 20, { align: "center" });
+    doc.setFontSize(11);
+    doc.setFont("helvetica","normal");
+    doc.text(title, pw/2, 30, { align: "center" });
+    doc.setTextColor(15,23,42);
+    doc.setFontSize(10);
+    doc.text("Generated: "+new Date().toLocaleString('en-GB'), m, 50);
+    doc.text("Total: "+list.length, m, 56);
+
+    let y = 68;
+    let lastArea = "";
+
+    for(let i=0; i<list.length; i++){
+      const x = list[i];
+      document.getElementById("progressSub").textContent = "Site "+(i+1)+" / "+list.length;
+      const areaName = x.area || "Unassigned";
+
+      if(areaName !== lastArea){
+        if(y + 20 > ph - 15){ doc.addPage(); y = m + 5; }
+        doc.setFillColor(37, 99, 235);
+        doc.roundedRect(m, y, pw-2*m, 10, 2, 2, "F");
+        doc.setTextColor(255,255,255);
+        doc.setFontSize(12);
+        doc.setFont("helvetica","bold");
+        doc.text(" " + areaName, m + 4, y + 7);
+        y += 14;
+        lastArea = areaName;
+      }
+
+      const imgW = 38, imgH = 38, imgX = m+5, imgY = y+6;
+      const textX = imgX+imgW+5;
+      const textW = m + (pw-2*m) - textX - 5;
+
+      doc.setFontSize(11);
+      doc.setFont("helvetica","bold");
+      const siteLines = doc.splitTextToSize(x.site, textW);
+
+      let rightH = siteLines.length * 5;
+      if(x.location) rightH += 4 + doc.splitTextToSize(x.location, textW-2).length * 4;
+      if(x.customer) rightH += 4 + doc.splitTextToSize(x.customer, textW-2).length * 4;
+      rightH += 6;
+      if(x.fromDate || x.toDate) rightH += 4.5;
+      const mapUrl = getGoogleMapsUrl(x);
+      if(mapUrl) rightH += 4 + doc.splitTextToSize(mapUrl, textW-2).length * 4 + 2;
+
+      let blockH = Math.max(rightH + 8, imgH + 12) + 4;
+      if(blockH < 52) blockH = 52;
+
+      if(y + blockH + 5 > ph - 15){ doc.addPage(); y = m + 5; }
+
+      doc.setDrawColor(226,232,240);
+      doc.setFillColor(248,250,252);
+      doc.roundedRect(m, y, pw-2*m, blockH, 2, 2, "FD");
+
+      doc.setFillColor(30,58,138);
+      doc.circle(m+4, y+4, 3.5, "F");
+      doc.setTextColor(255,255,255);
+      doc.setFontSize(7);
+      doc.setFont("helvetica","bold");
+      doc.text(String(i+1), m+4, y+5.2, { align: "center" });
+
+      if(x.hasImage){
+        let data = imageCache[x.id];
+        if(!data) data = await getImage(x.id);
+        if(data){
+          try { doc.addImage(data, "JPEG", imgX, imgY, imgW, imgH); } catch(e){}
+        }
+      } else {
+        doc.setDrawColor(203,213,225);
+        doc.setFillColor(241,245,249);
+        doc.roundedRect(imgX, imgY, imgW, imgH, 2, 2, "FD");
+        doc.setTextColor(148,163,184);
+        doc.setFontSize(8);
+        doc.text("No Image", imgX+imgW/2, imgY+imgH/2, { align: "center" });
+      }
+
+      let tY = y + 7;
+      doc.setTextColor(15,23,42);
+      doc.setFontSize(11);
+      doc.setFont("helvetica","bold");
+      doc.text(siteLines, textX, tY);
+      tY += siteLines.length * 5;
+
+      if(x.location){
+        doc.setFontSize(9);
+        doc.setFont("helvetica","bold");
+        doc.setTextColor(51,65,85);
+        doc.text("Location:", textX, tY);
+        tY += 4;
+        doc.setFont("helvetica","normal");
+        doc.setTextColor(30,64,175);
+        const locLines = doc.splitTextToSize(x.location, textW-2);
+        doc.text(locLines, textX+2, tY);
+        tY += locLines.length * 4;
+      }
+
+      if(x.customer){
+        doc.setFontSize(9);
+        doc.setFont("helvetica","bold");
+        doc.setTextColor(51,65,85);
+        doc.text("Company:", textX, tY);
+        tY += 4;
+        doc.setFont("helvetica","normal");
+        doc.setTextColor(15,23,42);
+        const cLines = doc.splitTextToSize(x.customer, textW-2);
+        doc.text(cLines, textX+2, tY);
+        tY += cLines.length * 4;
+      }
+
+      const colors = { "Available": [16,185,129], "Not Available": [239,68,68], "Under Maintenance": [245,158,11] };
+      const c = colors[x.status] || [100,116,139];
+      doc.setFillColor(c[0], c[1], c[2]);
+      const stText = x.status.toUpperCase();
+      doc.setTextColor(255,255,255);
+      doc.setFontSize(7);
+      doc.setFont("helvetica","bold");
+      const stW = doc.getTextWidth(stText) + 6;
+      doc.roundedRect(textX, tY-3, stW, 5, 1, 1, "F");
+      doc.text(stText, textX + stW/2, tY+0.3, { align: "center" });
+      tY += 5.5;
+
+      if(x.fromDate || x.toDate){
+        doc.setFontSize(9);
+        doc.setFont("helvetica","bold");
+        doc.setTextColor(51,65,85);
+        const days = calcDays(x.fromDate, x.toDate);
+        doc.text("Booking: "+(x.fromDate||"")+"  "+(x.toDate||"")+(days > 0 ? " ("+days+" days)" : ""), textX, tY);
+        tY += 4.5;
+      }
+
+      if(mapUrl){
+        doc.setFontSize(9);
+        doc.setFont("helvetica","bold");
+        doc.setTextColor(8,145,178);
+        doc.text("Map:", textX, tY);
+        tY += 4;
+        doc.setFont("helvetica","normal");
+        const urlLines = doc.splitTextToSize(mapUrl, textW-2);
+        for(let li=0; li<urlLines.length; li++){
+          doc.textWithLink(urlLines[li], textX+2, tY + li*4, { url: mapUrl });
+        }
+        tY += urlLines.length * 4 + 1.5;
+      }
+
+      y += blockH + 4;
+    }
+
+    const total = doc.internal.getNumberOfPages();
+    for(let p=1; p<=total; p++){
+      doc.setPage(p);
+      doc.setFontSize(8);
+      doc.setTextColor(148,163,184);
+      doc.text("Site Management System  Page "+p+" of "+total, pw/2, ph-6, { align: "center" });
+    }
+
+    doc.save("site_report_"+new Date().toISOString().slice(0,10)+".pdf");
+  } catch(e){ alert("PDF error: "+e.message); }
+  finally { hideProgress(); }
+}
+function generatePDFSelected(){
+  if(selectedSites.size === 0){ alert("No sites selected"); return; }
+  generatePDF(sites.filter(s => selectedSites.has(s.id)), "Selected Sites Report");
+}
+
+function openBulkUpload(){
+  if(currentUser.role !== "Admin"){ alert("Sirf Admin bulk upload kar sakta hai"); return; }
+  bulkParsedSites = [];
+  document.getElementById("bulkPreviewWrap").style.display = "none";
+  document.getElementById("bulkFile").value = "";
+  const btn = document.getElementById("bulkUploadBtn");
+  btn.disabled = true; btn.style.background = "#cbd5e1";
+  document.getElementById("bulkModal").classList.add("show");
+}
+function closeBulkModal(){ document.getElementById("bulkModal").classList.remove("show"); }
+
+function downloadSampleCSV(){
+  const sample = "area,site,location,company,status,from,to\nChandigarh,CG01,Sector 17 Bus Stand,ABC Media,Available,,\nGurgaon,GG01,Cyber Hub,X Ads,Not Available,,";
+  const blob = new Blob(["\ufeff"+sample], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sample_sites.csv";
+  a.click();
+}
+
+const dropZone = document.getElementById("dropZone");
+if(dropZone){
+  dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.style.background = "#dbeafe"; });
+  dropZone.addEventListener("dragleave", () => dropZone.style.background = "");
+  dropZone.addEventListener("drop", e => {
+    e.preventDefault(); dropZone.style.background = "";
+    const f = e.dataTransfer.files[0];
+    if(f) processBulkFile(f);
+  });
+}
+function handleBulkFile(e){ const f = e.target.files[0]; if(f) processBulkFile(f); }
+
+function processBulkFile(file){
+  if(!file.name.toLowerCase().endsWith(".csv")){ alert("Only .csv"); return; }
+  const reader = new FileReader();
+  reader.onload = (e) => parseCSV(e.target.result);
+  reader.readAsText(file);
+}
+function parseCSVLine(line){
+  const res = []; let cur = ""; let inQ = false;
+  for(let i=0; i<line.length; i++){
+    const c = line[i];
+    if(c === '"'){ if(inQ && line[i+1] === '"'){ cur += '"'; i++; } else inQ = !inQ; }
+    else if(c === ',' && !inQ){ res.push(cur.trim()); cur = ""; }
+    else cur += c;
+  }
+  res.push(cur.trim());
+  return res;
+}
+function parseCSV(text){
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if(lines.length < 2){ alert("CSV needs header + data"); return; }
+  const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().trim());
+  if(!headers.includes("site")){ alert("'site' column missing"); return; }
+  const idx = {};
+  headers.forEach((h, i) => idx[h] = i);
+
+  bulkParsedSites = [];
+  for(let i=1; i<lines.length; i++){
+    const cells = parseCSVLine(lines[i]);
+    if(!cells[idx.site]) continue;
+    let areaVal = idx.area !== undefined ? (cells[idx.area]||"").trim() : "";
+    if(!areaVal) areaVal = "Unassigned";
+    if(areaVal !== "Unassigned" && !areas.includes(areaVal)) areas.push(areaVal);
+    bulkParsedSites.push({
+      id: "id_"+Math.random().toString(36).slice(2,10),
+      area: areaVal,
+      site: cells[idx.site],
+      location: idx.location !== undefined ? (cells[idx.location]||"") : "",
+      customer: idx.company !== undefined ? (cells[idx.company]||"") : "",
+      status: normalizeStatus(idx.status !== undefined ? cells[idx.status] : "Available"),
+      fromDate: idx.from !== undefined ? (cells[idx.from]||"") : "",
+      toDate: idx.to !== undefined ? (cells[idx.to]||"") : "",
+      lat: "", lng: "", hasImage: false
+    });
+  }
+
+  const wrap = document.getElementById("bulkPreviewWrap");
+  const sum = document.getElementById("bulkSummary");
+  const prev = document.getElementById("bulkPreview");
+  const btn = document.getElementById("bulkUploadBtn");
+
+  if(bulkParsedSites.length === 0){
+    sum.textContent = " No valid sites";
+    wrap.style.display = "block";
+    return;
+  }
+  sum.textContent = " " + bulkParsedSites.length + " valid sites ready";
+  let html = '<table><thead><tr><th>#</th><th>Area</th><th>Site</th><th>Location</th><th>Company</th><th>Status</th></tr></thead><tbody>';
+  bulkParsedSites.slice(0, 30).forEach((p, i) => {
+    html += '<tr><td>'+(i+1)+'</td><td>'+esc(p.area)+'</td><td>'+esc(p.site)+'</td><td>'+esc(p.location)+'</td><td>'+esc(p.customer)+'</td><td>'+esc(p.status)+'</td></tr>';
+  });
+  html += '</tbody></table>';
+  prev.innerHTML = html;
+  wrap.style.display = "block";
+  btn.disabled = false;
+  btn.style.background = "#3b82f6";
+  btn.style.color = "#fff";
+  btn.style.cursor = "pointer";
+}
+function confirmBulkUpload(){
+  if(bulkParsedSites.length === 0) return;
+  let added = 0;
+  bulkParsedSites.forEach(n => {
+    const existing = sites.findIndex(s => s.site === n.site);
+    if(existing >= 0){ sites[existing] = { ...sites[existing], ...n, id: sites[existing].id }; }
+    else { sites.push(n); added++; }
+  });
+  persist(); populateAreaDropdowns(); render(); closeBulkModal();
+  alert(" Added: " + added + ", Total: " + bulkParsedSites.length);
+}
+
+function showHistory(siteIndex){
+  const siteName = sites[siteIndex].site;
+  const hist = bookingHistory.filter(h => h.site === siteName);
+  document.getElementById("historyTitle").textContent = "History  " + siteName;
+  const c = document.getElementById("historyContent");
+  if(hist.length === 0){ c.innerHTML = '<div class="empty-history">No history</div>'; }
+  else {
+    c.innerHTML = hist.map(h => '<div class="history-item"><b>'+esc(h.customer)+'</b><div> '+esc(h.fromDate)+'  '+esc(h.toDate)+' ('+h.days+' days)</div><div style="color:#94a3b8;font-size:11px">Ended: '+esc(h.endedOn)+'</div></div>').join("");
+  }
+  document.getElementById("historyModal").classList.add("show");
+}
+function openHistorySearch(){
+  document.getElementById("historyTitle").textContent = "All History (" + bookingHistory.length + ")";
+  const c = document.getElementById("historyContent");
+  if(bookingHistory.length === 0){ c.innerHTML = '<div class="empty-history">No history</div>'; }
+  else {
+    c.innerHTML = bookingHistory.map(h => '<div class="history-item"><b>'+esc(h.site)+'</b><div> '+esc(h.customer)+'</div><div> '+esc(h.fromDate)+'  '+esc(h.toDate)+' ('+h.days+' days)</div></div>').join("");
+  }
+  document.getElementById("historyModal").classList.add("show");
+}
+function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
+
+async function downloadBackup(){
+  if(currentUser.role !== "Admin"){ alert("Sirf Admin backup le sakta hai"); return; }
+  showProgress("Preparing backup...", "Collecting images");
+  const images = {};
+  for(const s of sites){
+    if(s.hasImage){
+      let d = imageCache[s.id];
+      if(!d) d = await getImage(s.id);
+      if(d) images[s.id] = d;
+    }
+  }
+  const backup = { sites, areas, bookingHistory, images, exportedOn: new Date().toLocaleString('en-GB') };
+  const blob = new Blob([JSON.stringify(backup)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "site_backup_"+new Date().toISOString().slice(0,10)+".json";
+  a.click();
+  hideProgress();
+  alert(" Backup downloaded");
+}
+function triggerImport(){
+  if(currentUser.role !== "Admin"){ alert("Sirf Admin import kar sakta hai"); return; }
+  document.getElementById("importFile").click();
+}
+async function handleImportFile(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if(!data.sites){ alert("Invalid backup"); return; }
+      if(!confirm("Import? Current data will be replaced.")) return;
+      showProgress("Importing...");
+      await clearAllImages();
+      imageCache = {};
+      sites = data.sites;
+      areas = data.areas || [...DEFAULT_AREAS];
+      bookingHistory = data.bookingHistory || [];
+      if(data.images){
+        for(const [id, d] of Object.entries(data.images)){
+          await saveImage(id, d);
+          imageCache[id] = d;
+        }
+      }
+      collapsedAreas = null;
+      areaFilters = {};
+      persist(); populateAreaDropdowns(); render(); hideProgress();
+      alert(" Imported "+sites.length+" sites");
+    } catch(err){ hideProgress(); alert("Error: "+err.message); }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+}
+
+function bulkDeleteSelected(){
+  if(currentUser.role !== "Admin"){ alert("Sirf Admin delete kar sakta hai"); return; }
+  if(selectedSites.size === 0){ alert("No sites selected"); return; }
+  const count = selectedSites.size;
+  if(!confirm("Delete "+count+" site(s)?\n\nYeh action undo nahi ho sakta.")) return;
+  const idsToDelete = [...selectedSites];
+  idsToDelete.forEach(id => {
+    try { deleteImage(id); } catch(e){}
+    delete imageCache[id];
+  });
+  sites = sites.filter(s => !selectedSites.has(s.id));
+  selectedSites.clear();
+  persist();
+  render();
+  alert(" " + count + " site(s) deleted successfully!");
+}
+
+function exportCSV(){
+  let lines = [["Area","Site","Location","Company","From","To","Status"].join(",")];
+  sites.forEach(x => {
+    lines.push([x.area || "Unassigned", x.site, x.location, x.customer, x.fromDate, x.toDate, x.status]
+      .map(v => '"'+String(v||"").replace(/"/g,'""')+'"').join(","));
+  });
+  const blob = new Blob(["\ufeff"+lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sites_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await openDB();
+  initDateDropdowns();
+  initBulkDateDropdowns();
+  populateAreaDropdowns();
+
+  await loadDataFromCloud();
+
+  autoReleaseExpiredSites();
+  checkSession();
+
+  setInterval(() => {
+    if(autoReleaseExpiredSites()){ render(); }
+  }, 60 * 60 * 1000);
+
+  setInterval(async () => {
+    if (currentUser) {
+      await loadDataFromCloud();
+      render();
+    }
+  }, 15000);
+
+  const pass = document.getElementById("loginPass");
+  if(pass) pass.addEventListener("keypress", e => { if(e.key === "Enter") doLogin(); });
+  const user = document.getElementById("loginUser");
+  if(user) user.addEventListener("keypress", e => { if(e.key === "Enter") document.getElementById("loginPass").focus(); });
+
+  document.querySelectorAll(".modal").forEach(m => {
+    m.addEventListener("click", e => { if(e.target === m) m.classList.remove("show"); });
+  });
+
+  initStickyHeader();
+});
+</script>
+</body>
+</html>
