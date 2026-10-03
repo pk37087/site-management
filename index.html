@@ -515,12 +515,24 @@ const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
 
 let currentUser = null;
-let sites = JSON.parse(localStorage.getItem("sms_sites") || "[]");
-sites.forEach((s, i) => {
-  if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
-});
-let areas = JSON.parse(localStorage.getItem("sms_areas") || "null") || [...DEFAULT_AREAS];
-let bookingHistory = JSON.parse(localStorage.getItem("sms_history") || "[]");
+let sites = [];
+let areas = [...DEFAULT_AREAS];
+let bookingHistory = [];
+
+async function loadDataFromCloud() {
+  try {
+    const res = await fetch(API_URL + "/data");
+    const data = await res.json();
+    sites = (data.sites || []).map((s, i) => {
+      if (!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
+      return s;
+    });
+    areas = (data.areas && data.areas.length) ? data.areas : [...DEFAULT_AREAS];
+    bookingHistory = data.history || [];
+  } catch (e) {
+    console.error("Cloud load failed:", e);
+  }
+}
 let imageCache = {};
 let selectedSites = new Set();
 let selectedAreas = new Set();
@@ -536,49 +548,39 @@ const DB_VERSION = 1;
 const STORE = "images";
 let idb = null;
 
-function openDB(){
-  return new Promise((resolve) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = (e) => {
-      const db = e.target.result;
-      if(!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
-    };
-    req.onsuccess = (e) => { idb = e.target.result; resolve(idb); };
-    req.onerror = () => resolve(null);
-  });
+function openDB(){ return Promise.resolve(); }
+
+async function saveImage(key, dataUrl){
+  imageCache[key] = dataUrl;
+  try {
+    await fetch(API_URL + "/image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: key, data: dataUrl })
+    });
+  } catch(e){ console.error("Image save failed:", e); }
 }
-function saveImage(key, dataUrl){
-  return new Promise((res) => {
-    if(!idb) return res();
-    const tx = idb.transaction(STORE, "readwrite");
-    tx.objectStore(STORE).put(dataUrl, key);
-    tx.oncomplete = () => res();
-  });
+
+async function getImage(key){
+  if (imageCache[key]) return imageCache[key];
+  try {
+    const res = await fetch(API_URL + "/image/" + key);
+    const j = await res.json();
+    if (j.data) imageCache[key] = j.data;
+    return j.data;
+  } catch(e){ return null; }
 }
-function getImage(key){
-  return new Promise((res) => {
-    if(!idb) return res(null);
-    const tx = idb.transaction(STORE, "readonly");
-    const req = tx.objectStore(STORE).get(key);
-    req.onsuccess = () => res(req.result || null);
-    req.onerror = () => res(null);
-  });
+
+async function deleteImage(key){
+  delete imageCache[key];
+  try {
+    await fetch(API_URL + "/image/" + key, { method: "DELETE" });
+  } catch(e){}
 }
-function deleteImage(key){
-  return new Promise((res) => {
-    if(!idb) return res();
-    const tx = idb.transaction(STORE, "readwrite");
-    tx.objectStore(STORE).delete(key);
-    tx.oncomplete = () => res();
-  });
-}
+
 function clearAllImages(){
-  return new Promise((res) => {
-    if(!idb) return res();
-    const tx = idb.transaction(STORE, "readwrite");
-    tx.objectStore(STORE).clear();
-    tx.oncomplete = () => res();
-  });
+  imageCache = {};
+  return Promise.resolve();
 }
 
 // ========== FIXED HEADER — SHADOW ON SCROLL ==========
@@ -597,17 +599,14 @@ function initStickyHeader(){
 }
 
 // ========== REFRESH ==========
-function refreshPage(e){
+async function refreshPage(e){
   const btn = e ? e.currentTarget : document.querySelector(".refresh-btn");
   if(btn){
     btn.classList.add("loading");
     setTimeout(() => btn.classList.remove("loading"), 600);
   }
 
-  sites = JSON.parse(localStorage.getItem("sms_sites") || "[]");
-  areas = JSON.parse(localStorage.getItem("sms_areas") || "null") || [...DEFAULT_AREAS];
-  bookingHistory = JSON.parse(localStorage.getItem("sms_history") || "[]");
-
+  await loadDataFromCloud();
   autoReleaseExpiredSites();
   selectedSites.clear();
 
@@ -617,7 +616,8 @@ function refreshPage(e){
 
   collapsedAreas = new Set(areas);
 
-  setTimeout(() => { location.reload(); }, 400);
+  render();
+  setTimeout(() => { if(btn) btn.classList.remove("loading"); }, 400);
 }
 
 // ========== LOGIN ==========
@@ -712,10 +712,16 @@ function normalizeStatus(s){
   if(s.includes("not") || s.includes("unavail")) return "Not Available";
   return "Available";
 }
-function persist(){
-  localStorage.setItem("sms_sites", JSON.stringify(sites));
-  localStorage.setItem("sms_history", JSON.stringify(bookingHistory));
-  localStorage.setItem("sms_areas", JSON.stringify(areas));
+async function persist(){
+  try {
+    await fetch(API_URL + "/data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sites, areas, history: bookingHistory })
+    });
+  } catch (e) {
+    console.error("Cloud save failed:", e);
+  }
 }
 function showProgress(t, s){
   document.getElementById("progressText").textContent = t || "Working...";
@@ -2040,9 +2046,37 @@ document.addEventListener("DOMContentLoaded", async () => {
   initDateDropdowns();
   initBulkDateDropdowns();
   populateAreaDropdowns();
+
+  // 🔥 Load data from Cloudflare KV
+  await loadDataFromCloud();
+
   autoReleaseExpiredSites();
   checkSession();
 
+  // Auto-release expired sites check (every 1 hour)
+  setInterval(() => {
+    if(autoReleaseExpiredSites()){ render(); }
+  }, 60 * 60 * 1000);
+
+  // 🔥 Auto-refresh from cloud (every 15 seconds)
+  setInterval(async () => {
+    if (currentUser) {
+      await loadDataFromCloud();
+      render();
+    }
+  }, 15000);
+
+  const pass = document.getElementById("loginPass");
+  if(pass) pass.addEventListener("keypress", e => { if(e.key === "Enter") doLogin(); });
+  const user = document.getElementById("loginUser");
+  if(user) user.addEventListener("keypress", e => { if(e.key === "Enter") document.getElementById("loginPass").focus(); });
+
+  document.querySelectorAll(".modal").forEach(m => {
+    m.addEventListener("click", e => { if(e.target === m) m.classList.remove("show"); });
+  });
+
+  initStickyHeader();
+});
   setInterval(() => {
     if(autoReleaseExpiredSites()){ render(); }
   }, 60 * 60 * 1000);
