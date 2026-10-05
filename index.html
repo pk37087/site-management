@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{max-width:100%}
@@ -16,8 +15,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-
 .hidden{display:none !important}
 button{touch-action:manipulation}
 input,select,textarea{font-size:16px !important}
-
-/* ============ LOGIN ============ */
 .login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
 .login-box{background:#fff;border-radius:20px;padding:32px 24px;width:min(420px,100%);box-shadow:0 20px 60px rgba(0,0,0,0.3)}
 .login-box h1{font-size:22px;font-weight:700;color:#0f172a;margin-bottom:8px;text-align:center}
@@ -29,30 +26,8 @@ input,select,textarea{font-size:16px !important}
 .login-box button:disabled{background:#94a3b8;cursor:not-allowed}
 .login-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:12px;border-radius:8px;font-size:13px;margin-top:16px;display:none}
 .login-error.show{display:block}
-
-/* ============ HEADER (FIXED) ============ */
-header{
-  background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);
-  color:#fff;
-  padding:14px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-  border-bottom:1px solid #1e40af;
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  width:100%;
-  z-index:1000;
-  transition:box-shadow 0.2s ease;
-  box-shadow:0 2px 8px rgba(0,0,0,0.15);
-}
-header.scrolled{
-  box-shadow:0 4px 14px rgba(0,0,0,0.22);
-}
+header{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #1e40af;position:fixed;top:0;left:0;right:0;width:100%;z-index:1000;transition:box-shadow 0.2s ease;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 .header-left h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
 .header-left h1::before{content:'';display:inline-block;width:8px;height:8px;background:#fff;border-radius:2px;box-shadow:0 0 0 3px rgba(255,255,255,0.25);flex-shrink:0}
 .header-user{background:rgba(255,255,255,0.15);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap}
@@ -64,12 +39,8 @@ header.scrolled{
 .btn-gray{background:#6b7280;color:#fff}
 .btn-red{background:#dc2626;color:#fff}
 .btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
-
-/* ============ CONTAINER ============ */
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
-
-/* ============ STAT CARDS ============ */
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;position:relative;overflow:hidden;cursor:pointer;transition:all 0.15s ease;user-select:none}
 .card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(15,23,42,0.08)}
@@ -80,8 +51,6 @@ header.scrolled{
 .card.available::before{background:#10b981}.card.available b{color:#047857}
 .card.notavailable::before{background:#ef4444}.card.notavailable b{color:#b91c1c}
 .card.maintenance::before{background:#f59e0b}.card.maintenance b{color:#b45309}
-
-/* ============ TOOLBAR ============ */
 .toolbar{background:#fff;padding:12px;border-radius:12px;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;border:1px solid #e2e8f0;align-items:center}
 .toolbar input,.toolbar select{padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;background:#fff;outline:none;color:#0f172a}
 .toolbar input:focus,.toolbar select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
@@ -89,10 +58,6 @@ header.scrolled{
 .toolbar button{padding:11px 16px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;transition:all 0.15s ease;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px}
 .toolbar button:hover{background:#f1f5f9}
 .toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
-.toolbar button.refresh-btn:active{transform:scale(0.96)}
-.toolbar button.refresh-btn.loading{background:#0369a1;pointer-events:none;opacity:0.9}
-
-/* ============ SELECT BAR ============ */
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:10px 14px;border-radius:10px;margin-bottom:14px;display:none;align-items:center;gap:8px;flex-wrap:wrap}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:6px 12px;border-radius:6px;font-weight:700;font-size:12px}
@@ -101,15 +66,7 @@ header.scrolled{
 .select-bar .pdf-sel{background:#dc2626}
 .select-bar .clear-sel{background:#fff;color:#334155;border-color:#e2e8f0}
 .select-bar .delete-sel{background:#dc2626}
-
-/* ============ AREA CONTAINER ============ */
-#areaContainer{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(600px,1fr));
-  gap:12px;
-  align-items:start;
-  grid-auto-rows:min-content;
-}
+#areaContainer{display:grid;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:12px;align-items:start;grid-auto-rows:min-content}
 .area-block{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,0.04);height:fit-content;align-self:start}
 .area-header{background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;flex-wrap:wrap;gap:8px;border-radius:14px 14px 0 0}
 .area-header .area-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;margin-left:2px}
@@ -121,13 +78,10 @@ header.scrolled{
 .area-block.collapsed .area-content{display:none}
 .area-header .select-all-cb{width:18px;height:18px;cursor:pointer;accent-color:#fff;margin-right:4px;flex-shrink:0}
 .area-content{padding:0}
-
 .area-filter-bar{padding:8px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .area-filter-bar select{padding:6px 10px;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;font-family:inherit;cursor:pointer;outline:none;color:#334155}
 .area-filter-count{font-size:11px;color:#64748b;margin-left:auto;font-weight:600}
 .empty-area{padding:18px;text-align:center;color:#94a3b8;font-style:italic;font-size:12px}
-
-/* ============ SITE CARDS ============ */
 .site-cards-grid{display:grid;grid-template-columns:1fr;gap:4px;padding:6px}
 .site-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px;display:flex;flex-direction:row;align-items:flex-start;gap:8px;transition:all 0.12s;min-width:0}
 .site-card:hover{border-color:#3b82f6}
@@ -151,15 +105,11 @@ header.scrolled{
 .site-card-actions button{padding:5px 10px;font-size:11px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;background:#f1f5f9;color:#334155;white-space:nowrap;min-height:30px}
 .site-card-actions button.history-btn{background:#ede9fe;color:#6d28d9}
 .site-card-actions button.map-btn{background:#cffafe;color:#0e7490}
-.site-card-actions button.ppt-btn{background:#fce7f3;color:#be185d}
-
 .status{font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;font-size:9px;text-transform:uppercase;letter-spacing:0.3px}
 .s-available{background:#d1fae5;color:#065f46}
 .s-not{background:#fee2e2;color:#991b1b}
 .s-maintenance{background:#fef3c7;color:#92400e}
 .days-badge{background:#eef2ff;color:#4338ca;font-weight:600;padding:1px 5px;border-radius:3px;font-size:9px;display:inline-block;border:1px solid #c7d2fe}
-
-/* ============ MODALS ============ */
 .modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;z-index:2000;overflow-y:auto}
 .modal.show{display:flex}
 .box{background:#fff;border-radius:16px;padding:24px;width:min(700px,100%);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,0.3);margin:auto}
@@ -173,12 +123,10 @@ header.scrolled{
 .modal-actions button{padding:11px 18px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;border:1px solid transparent;min-height:44px}
 .modal-actions button.secondary{background:#fff;color:#334155;border-color:#e2e8f0}
 .modal-actions button:not(.secondary){background:#3b82f6;color:#fff}
-
 .gps-box{background:#fef2f2;border:1.5px dashed #fca5a5;border-radius:10px;padding:10px;margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .gps-box .gps-status{font-size:12px;color:#991b1b;font-weight:600;flex:1;min-width:140px}
 .gps-box .gps-status.ok{color:#065f46}
 .gps-box .gps-btn{background:#dc2626;color:#fff;padding:9px 14px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid #dc2626;cursor:pointer;font-family:inherit;min-height:38px}
-
 .image-upload-box{background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px;padding:16px;margin-top:10px;text-align:center;cursor:pointer}
 .image-upload-box .iu-icon{font-size:28px;margin-bottom:6px}
 .image-upload-box .iu-title{font-size:13px;font-weight:600;color:#334155;margin-bottom:4px}
@@ -186,8 +134,6 @@ header.scrolled{
 .image-preview-wrap{position:relative;display:inline-block;margin-top:12px}
 .image-preview-wrap img{max-width:200px;max-height:200px;border-radius:10px;border:2px solid #e2e8f0;display:block}
 .image-preview-wrap .remove-img{position:absolute;top:-8px;right:-8px;background:#dc2626;color:#fff;width:30px;height:30px;border-radius:50%;border:2px solid #fff;cursor:pointer;font-size:14px;font-weight:700}
-
-/* ============ PPT UPLOAD BOX ============ */
 .ppt-upload-box{background:#fdf2f8;border:2px dashed #f9a8d4;border-radius:10px;padding:16px;margin-top:10px;text-align:center;cursor:pointer}
 .ppt-upload-box .pu-icon{font-size:28px;margin-bottom:6px}
 .ppt-upload-box .pu-title{font-size:13px;font-weight:600;color:#9d174d;margin-bottom:4px}
@@ -198,25 +144,17 @@ header.scrolled{
 .ppt-file-info button{padding:7px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;min-height:34px}
 .ppt-file-info .pf-dl{background:#059669;color:#fff}
 .ppt-file-info .pf-del{background:#dc2626;color:#fff}
-
 .date-row{display:flex;gap:6px}
 .date-row select{flex:1;padding:11px 6px;min-width:0}
-
 .calc-preview{background:#f0f9ff;border:1px solid #bae6fd;padding:12px 14px;border-radius:8px;margin-top:12px;font-size:12px;color:#0c4a6e}
 .date-warning{background:#fffbeb;border:1px solid #fcd34d;color:#92400e;padding:10px 14px;border-radius:8px;font-size:12px;margin-top:8px;display:none;font-weight:600}
 .date-warning.show{display:block}
-
-/* ============ HISTORY ============ */
 .history-item{background:#f8fafc;border-left:3px solid #7c3aed;padding:12px 14px;margin-bottom:10px;border-radius:8px;font-size:13px;border:1px solid #e2e8f0}
 .empty-history{text-align:center;color:#94a3b8;padding:40px 20px;font-style:italic;font-size:13px}
-
-/* ============ IMAGE VIEWER ============ */
 .image-viewer{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.95);z-index:3000;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
 .image-viewer.show{display:flex}
 .image-viewer img{max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain}
 .image-viewer .close-viewer{position:absolute;top:16px;right:16px;background:#fff;color:#0f172a;width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center}
-
-/* ============ BULK UPLOAD ============ */
 .drop-zone{border:2px dashed #cbd5e1;border-radius:12px;padding:32px 16px;text-align:center;background:#f8fafc;cursor:pointer;margin-bottom:16px}
 .drop-zone .dz-icon{font-size:40px;margin-bottom:10px}
 .bulk-preview{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-bottom:14px;max-height:280px;overflow:auto}
@@ -225,26 +163,19 @@ header.scrolled{
 .bulk-summary{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;font-weight:600}
 .bulk-info{background:#fffbeb;border:1px solid #fcd34d;padding:12px 14px;border-radius:8px;margin-bottom:14px;font-size:12px;color:#92400e;line-height:1.6}
 .bulk-info code{background:#fff;padding:2px 6px;border-radius:4px;font-family:monospace;color:#1e40af;font-size:11px;word-break:break-all}
-
-/* ============ MISC ============ */
 .storage-status{position:fixed;bottom:12px;right:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:600;color:#64748b;box-shadow:0 4px 12px rgba(0,0,0,0.08);z-index:500;display:flex;align-items:center;gap:8px}
 .storage-status .dot{width:8px;height:8px;border-radius:50%;background:#10b981}
 .progress-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:4000;align-items:center;justify-content:center;flex-direction:column;gap:20px;color:#fff;padding:20px;text-align:center}
 .progress-overlay.show{display:flex}
 .progress-overlay .spinner{width:56px;height:56px;border:4px solid rgba(255,255,255,0.2);border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 .area-list-item{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px;background:#f8fafc;flex-wrap:wrap}
 .area-list-item.sel{background:#fef3c7;border-color:#fcd34d}
 .area-list-item input[type="checkbox"]{width:20px;height:20px;cursor:pointer;accent-color:#3b82f6}
 .area-list-item .name{flex:1;font-weight:600;color:#0f172a;min-width:120px}
-
-/* ============ TABLET ============ */
 @media (max-width: 1024px) {
   #areaContainer{grid-template-columns:1fr}
 }
-
-/* ============ MOBILE ============ */
 @media (max-width: 768px) {
   body{font-size:14px}
   header{padding:10px 12px;gap:8px}
@@ -254,28 +185,23 @@ header.scrolled{
   .header-actions button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center}
   #app{padding-top:130px}
   .container{padding:0 12px;margin:14px auto}
-
   .cards{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
   .card{padding:14px}
   .card span{font-size:10px}
   .card b{font-size:24px;margin-top:6px}
-
   .toolbar{padding:10px;gap:8px}
   .toolbar input{min-width:100%;flex:1 1 100%}
   .toolbar select{flex:1 1 100%;width:100%}
   .toolbar button{flex:1;min-width:calc(50% - 4px);padding:11px 8px;font-size:12px;justify-content:center}
   .toolbar button.refresh-btn{flex:1 1 100%}
-
   .select-bar{padding:10px 12px}
   .select-bar .count-badge{width:100%;text-align:center}
   .select-bar button{flex:1;min-width:calc(50% - 4px);font-size:11px;padding:8px 8px}
-
   .area-block{border-radius:12px}
   .area-header{padding:10px 10px;border-radius:12px 12px 0 0}
   .area-header .area-name{font-size:13px}
   .area-header > div{flex-wrap:wrap;justify-content:flex-end}
   .area-count{font-size:9px !important;padding:2px 6px !important}
-
   .site-card{padding:10px;flex-wrap:wrap;gap:8px;position:relative}
   .site-card-top{flex-direction:row;align-items:center;width:auto}
   .site-card-img{width:44px;height:44px}
@@ -285,27 +211,19 @@ header.scrolled{
   .site-card-actions button{flex:1;min-width:calc(33% - 4px);padding:7px 6px;font-size:11px;min-height:34px;justify-content:center}
   .site-card-name{font-size:13px}
   .site-card-loc-inline{margin-left:0;margin-top:2px;display:inline-block}
-
   .box{padding:20px 16px;border-radius:14px;max-height:94vh}
   .box h2{font-size:17px;margin-bottom:14px}
   .formgrid{grid-template-columns:1fr;gap:12px}
   .date-row select{padding:11px 4px;font-size:14px !important}
-
   .modal-actions{flex-direction:column-reverse}
   .modal-actions button{width:100%}
-
   .image-preview-wrap img{max-width:100%}
-
   .area-list-item{padding:10px}
   .area-list-item .name{width:100%;flex:1 1 100%}
   .area-list-item button{flex:1;min-width:calc(50% - 4px);padding:8px !important;font-size:12px !important}
-
   .storage-status{display:none}
-
   .image-viewer .close-viewer{top:12px;right:12px;width:40px;height:40px}
 }
-
-/* ============ SMALL MOBILE ============ */
 @media (max-width: 380px) {
   .cards{grid-template-columns:1fr}
   .header-actions button{min-width:100%}
@@ -518,8 +436,6 @@ header.scrolled{
 <h2 id="historyTitle">Booking History</h2>
 <div id="historyContent"></div>
 <div class="modal-actions">
-  <button class="secondary" onclick="downloadHistoryPDF()" style="background:#dc2626;color:#fff;border-color:#b91c1c"> Download History PDF</button>
-  <button class="secondary" onclick="downloadHistoryExcel()" style="background:#16a34a;color:#fff;border-color:#15803d"> Download History Excel</button>
   <button class="secondary" onclick="downloadHistoryCSV()" style="background:#059669;color:#fff;border-color:#047857"> Download History CSV</button>
   <button class="secondary" onclick="closeHistoryModal()">Close</button>
 </div>
@@ -552,7 +468,6 @@ header.scrolled{
   <button class="secondary" onclick="closePptModal()">Close</button>
 </div>
 </div></div>
-<!-- ================= END PPT MODAL ================= -->
 
 <!-- ================= BULK PPT MODAL ================= -->
 <div class="modal" id="bulkPptModal"><div class="box" style="width:min(760px,100%)">
@@ -583,7 +498,6 @@ header.scrolled{
   <button id="bulkPptUploadBtn" onclick="confirmBulkPptUpload()" disabled style="background:#cbd5e1;color:#64748b;cursor:not-allowed">Upload All</button>
 </div>
 </div></div>
-<!-- ================= END BULK PPT MODAL ================= -->
 
 <div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
   <button class="close-viewer" onclick="closeImageViewer()"></button>
@@ -592,7 +506,7 @@ header.scrolled{
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
 
 <script>
-const API_URL = "https://raam-site.dsent.workers.dev";
+const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
 
 let currentUser = null;
@@ -611,23 +525,17 @@ let currentImageData = "";
 let bulkParsedSites = [];
 let collapsedAreas = null;
 let areaFilters = {};
-
-// ===== PPT STATE =====
 let currentPptArea = null;
 let currentPptData = null;
 let currentPptName = "";
 let currentPptSize = 0;
 let currentPptType = "";
-
-// ===== BULK PPT STATE =====
 let bulkPptParsed = [];
-
 const DB_NAME = "SiteManagerDB";
 const DB_VERSION = 2;
 const STORE = "images";
 const PPT_STORE = "ppts";
 let idb = null;
-
 function openDB(){
   return new Promise((resolve) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -673,8 +581,6 @@ function clearAllImages(){
     tx.oncomplete = () => res();
   });
 }
-
-// ===== PPT STORE HELPERS =====
 function savePpt(areaName, obj){
   return new Promise((res) => {
     if(!idb) return res();
@@ -708,8 +614,6 @@ function clearAllPpts(){
     tx.oncomplete = () => res();
   });
 }
-
-// ========== FIXED HEADER — SHADOW ON SCROLL ==========
 function initStickyHeader(){
   const header = document.getElementById("mainHeader");
   if(!header) return;
@@ -723,38 +627,28 @@ function initStickyHeader(){
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 }
-
-// ========== REFRESH ==========
 function refreshPage(e){
   const btn = e ? e.currentTarget : document.querySelector(".refresh-btn");
   if(btn){
     btn.classList.add("loading");
     setTimeout(() => btn.classList.remove("loading"), 600);
   }
-
   sites = JSON.parse(localStorage.getItem("sms_sites") || "[]");
   areas = JSON.parse(localStorage.getItem("sms_areas") || "null") || [...DEFAULT_AREAS];
   bookingHistory = JSON.parse(localStorage.getItem("sms_history") || "[]");
-
   autoReleaseExpiredSites();
   selectedSites.clear();
-
   document.getElementById("filter").value = "ALL";
   areaFilters = {};
   document.getElementById("search").value = "";
-
   collapsedAreas = new Set(areas);
-
   setTimeout(() => { location.reload(); }, 400);
 }
-
-// ========== LOGIN ==========
 async function doLogin(){
   const username = document.getElementById("loginUser").value.trim();
   const password = document.getElementById("loginPass").value;
   const btn = document.getElementById("loginBtn");
   const err = document.getElementById("loginError");
-
   if(!username || !password){
     err.textContent = "Username aur password required hai";
     err.classList.add("show");
@@ -763,7 +657,6 @@ async function doLogin(){
   btn.disabled = true;
   btn.textContent = "Signing in...";
   err.classList.remove("show");
-
   try {
     const res = await fetch(API_URL + "/login", {
       method: "POST",
@@ -771,7 +664,6 @@ async function doLogin(){
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
-
     if(!data.success){
       err.textContent = data.error || "Login failed";
       err.classList.add("show");
@@ -789,12 +681,10 @@ async function doLogin(){
     btn.textContent = "Sign In";
   }
 }
-
 function showApp(){
   document.getElementById("loginOverlay").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
   document.getElementById("userInfo").textContent = " " + currentUser.username + " (" + currentUser.role + ")";
-
   if(currentUser.role !== "Admin"){
     document.querySelectorAll(".admin-only").forEach(el => {
       el.style.display = "none";
@@ -805,14 +695,12 @@ function showApp(){
   render();
   initStickyHeader();
 }
-
 function doLogout(){
   if(!confirm("Logout karna hai?")) return;
   currentUser = null;
   localStorage.removeItem("sms_user");
   location.reload();
 }
-
 function checkSession(){
   const saved = localStorage.getItem("sms_user");
   if(saved){
@@ -822,7 +710,6 @@ function checkSession(){
     } catch(e){ localStorage.removeItem("sms_user"); }
   }
 }
-
 function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function todayISO(){
   const d = new Date();
@@ -851,15 +738,11 @@ function showProgress(t, s){
   document.getElementById("progressOverlay").classList.add("show");
 }
 function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
-
-// ========== MAIN FILTER ==========
 function onMainFilterChange(){
   areaFilters = {};
   document.getElementById("areaContainer").innerHTML = "";
   setTimeout(() => { render(); }, 10);
 }
-
-// ========== CARD CLICK FILTER ==========
 function filterByCard(status){
   const sel = document.getElementById("filter");
   sel.value = status;
@@ -880,8 +763,6 @@ function syncCardHighlight(){
   const el = document.getElementById(map[f]);
   if(el) el.classList.add("active-filter");
 }
-
-// ========== AREA MANAGEMENT ==========
 function populateAreaDropdowns(){
   const formSel = document.getElementById("farea");
   if(!formSel) return;
@@ -890,7 +771,6 @@ function populateAreaDropdowns(){
     formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>';
   });
 }
-
 function quickAddArea(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin area add kar sakta hai"); return; }
   const name = prompt("Naya area ka naam likhein:");
@@ -902,7 +782,6 @@ function quickAddArea(){
   render();
   alert(" Area add ho gaya: " + name.trim());
 }
-
 function openAreaManager(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin area manage kar sakta hai"); return; }
   selectedAreas.clear();
@@ -913,7 +792,6 @@ function closeAreaModal(){
   selectedAreas.clear();
   document.getElementById("areaModal").classList.remove("show");
 }
-
 function renderAreaList(){
   const list = document.getElementById("areaList");
   if(areas.length === 0){
@@ -935,13 +813,11 @@ function renderAreaList(){
   list.innerHTML = html;
   updateAreaSelCount();
 }
-
 function toggleAreaSelect(areaName){
   if(selectedAreas.has(areaName)) selectedAreas.delete(areaName);
   else selectedAreas.add(areaName);
   renderAreaList();
 }
-
 function toggleAllAreas(){
   if(selectedAreas.size === areas.length){
     selectedAreas.clear();
@@ -950,7 +826,6 @@ function toggleAllAreas(){
   }
   renderAreaList();
 }
-
 function updateAreaSelCount(){
   const el = document.getElementById("areaSelCount");
   const btn = document.getElementById("areaSelAllBtn");
@@ -963,7 +838,6 @@ function updateAreaSelCount(){
     }
   }
 }
-
 async function bulkDeleteAreas(){
   if(selectedAreas.size === 0){ alert("Koi area select nahi ki"); return; }
   const selectedArr = [...selectedAreas];
@@ -984,7 +858,6 @@ async function bulkDeleteAreas(){
   render();
   alert(" " + selectedArr.length + " area(s) deleted");
 }
-
 function addNewArea(){
   const name = document.getElementById("newAreaName").value.trim();
   if(!name){ alert("Area ka naam likhein"); return; }
@@ -996,7 +869,6 @@ function addNewArea(){
   populateAreaDropdowns();
   render();
 }
-
 function renameArea(index){
   const oldName = areas[index];
   const newName = prompt("Naya area name:", oldName);
@@ -1017,7 +889,6 @@ function renameArea(index){
   populateAreaDropdowns();
   render();
 }
-
 function deleteArea(index){
   const areaName = areas[index];
   const count = sites.filter(s => s.area === areaName).length;
@@ -1034,24 +905,19 @@ function deleteArea(index){
   populateAreaDropdowns();
   render();
 }
-
 function toggleAreaCollapse(areaName){
   if(collapsedAreas.has(areaName)) collapsedAreas.delete(areaName);
   else collapsedAreas.add(areaName);
   render();
 }
-
 function setAreaFilter(areaName, value){
   areaFilters[areaName] = value;
   render();
 }
-
-// ========== DATE HELPERS ==========
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const YEARS = [];
 const CUR_YEAR = new Date().getFullYear();
 for(let y = CUR_YEAR - 2; y <= CUR_YEAR + 5; y++) YEARS.push(y);
-
 function initDateDropdowns(){
   [["ffrom_d","ffrom_m","ffrom_y"],["fto_d","fto_m","fto_y"]].forEach(ids => {
     const d = document.getElementById(ids[0]);
@@ -1063,7 +929,6 @@ function initDateDropdowns(){
     YEARS.forEach(yy => y.innerHTML += '<option value="'+yy+'">'+yy+'</option>');
   });
 }
-
 function initBulkDateDropdowns(){
   [["bulkStatusFrom_d","bulkStatusFrom_m","bulkStatusFrom_y"],
    ["bulkStatusTo_d","bulkStatusTo_m","bulkStatusTo_y"]].forEach(ids => {
@@ -1077,7 +942,6 @@ function initBulkDateDropdowns(){
     YEARS.forEach(yy => y.innerHTML += '<option value="'+yy+'">'+yy+'</option>');
   });
 }
-
 function setDateDropdowns(prefix, ddmmYYYY){
   const d = document.getElementById(prefix+"_d");
   const m = document.getElementById(prefix+"_m");
@@ -1129,25 +993,19 @@ function updateCalcPreview(){
   const to = getDateFromDropdowns("fto");
   const days = calcDays(from, to);
   const warn = document.getElementById("dateWarning");
-
   warn.classList.remove("show");
-
   let extra = "";
   if(from && to && days === 0) extra = "  To date From se pehle hai!";
   document.getElementById("calcPreview").innerHTML = " From: " + (from||"") + "  To: " + (to||"") + "  Days: " + days + extra;
 }
-
-// ========== AUTO RELEASE EXPIRED ==========
 function autoReleaseExpiredSites(){
   const today = new Date();
   today.setHours(0,0,0,0);
   let changed = false;
-
   sites.forEach(x => {
     if(x.toDate){
       const toDate = new Date(ddmmyyyyToISO(x.toDate));
       toDate.setHours(0,0,0,0);
-
       if(toDate < today && (x.status === "Not Available" || x.status === "Under Maintenance")){
         bookingHistory.push({
           site: x.site,
@@ -1159,7 +1017,6 @@ function autoReleaseExpiredSites(){
           status: x.status,
           location: x.location || ""
         });
-
         x.status = "Available";
         x.customer = "";
         x.fromDate = "";
@@ -1168,47 +1025,34 @@ function autoReleaseExpiredSites(){
       }
     }
   });
-
   if(changed){ persist(); }
   return changed;
 }
-
-// ========== RENDER ==========
 function render(){
   autoReleaseExpiredSites();
   syncCardHighlight();
-
   const q = (document.getElementById("search").value || "").toLowerCase().trim();
   const f = document.getElementById("filter").value;
   const counts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
   sites.forEach(x => counts[x.status] = (counts[x.status] || 0) + 1);
-
   document.getElementById("total").textContent = sites.length;
   document.getElementById("avail").textContent = counts.Available;
   document.getElementById("notavail").textContent = counts["Not Available"];
   document.getElementById("maintenance").textContent = counts["Under Maintenance"];
-
   if(collapsedAreas === null){
     collapsedAreas = new Set(areas);
   }
-
   const isFiltering = (f !== "ALL") || (q && q.length > 0);
   if(isFiltering){ collapsedAreas.clear(); }
-
   const container = document.getElementById("areaContainer");
   container.innerHTML = "";
   visibleSites = [];
-
   let areasToShow = [...areas];
-
   const unassignedCount = sites.filter(s => !s.area || s.area === "Unassigned").length;
   if(unassignedCount > 0){ areasToShow.push("Unassigned"); }
-
   let totalShown = 0;
-
   areasToShow.forEach(areaName => {
     const areaFilter = areaFilters[areaName] || "ALL";
-
     const areaSites = sites.filter(s => {
       const sArea = s.area || "Unassigned";
       if(sArea !== areaName) return false;
@@ -1218,29 +1062,22 @@ function render(){
       if(q && !hay.includes(q)) return false;
       return true;
     });
-
     if(isFiltering && areaSites.length === 0) return;
-
     totalShown += areaSites.length;
     areaSites.forEach(s => visibleSites.push(s));
-
     const isCollapsed = collapsedAreas.has(areaName);
     const block = document.createElement("div");
     block.className = "area-block" + (isCollapsed ? " collapsed" : "");
-
     const header = document.createElement("div");
     header.className = "area-header";
     header.onclick = (e) => {
       if(e.target.tagName === "BUTTON" || e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
       toggleAreaCollapse(areaName);
     };
-
     const areaAvail = areaSites.filter(s => s.status === "Available").length;
     const areaNot = areaSites.filter(s => s.status === "Not Available").length;
     const areaMaint = areaSites.filter(s => s.status === "Under Maintenance").length;
-
     const allAreaSel = areaSites.length > 0 && areaSites.every(s => selectedSites.has(s.id));
-
     let headerHTML = '<input type="checkbox" class="select-all-cb" ' + (allAreaSel ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectAllInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.checked)">';
     headerHTML += '<div class="area-name">' + esc(areaName) + '</div>';
     headerHTML += '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">';
@@ -1250,7 +1087,7 @@ function render(){
     headerHTML += '<span class="area-count" style="background:#facc15;color:#111827"> ' + areaMaint + '</span>';
     if(currentUser.role === "Admin"){
       headerHTML += '<div class="area-actions">';
-      headerHTML += '<button onclick="event.stopPropagation(); openPptModal(\'' + esc(areaName).replace(/'/g, "\\'") + '\')" title="Add / Edit Area PPT"> PPT</button>';
+      headerHTML += '<button onclick="event.stopPropagation(); openPptModal(\'' + esc(areaName).replace(/'/g, "\\'") + '\')" title="PPT file"> PPT</button>';
       headerHTML += '<button onclick="event.stopPropagation(); quickAddSiteInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">+ Add</button>';
       headerHTML += '</div>';
     }
@@ -1258,10 +1095,8 @@ function render(){
     headerHTML += '</div>';
     header.innerHTML = headerHTML;
     block.appendChild(header);
-
     const content = document.createElement("div");
     content.className = "area-content";
-
     if(areaSites.length === 0 && areaFilter === "ALL"){
       content.innerHTML = '<div class="empty-area">No sites in this area yet.</div>';
     } else {
@@ -1275,39 +1110,30 @@ function render(){
       filterBarHTML += '</select>';
       filterBarHTML += '<span class="area-filter-count">Showing ' + areaSites.length + '</span>';
       filterBarHTML += '</div>';
-
       let cardsHTML = filterBarHTML + '<div class="site-cards-grid">';
-
       if(areaSites.length === 0){
         cardsHTML += '<div style="text-align:center;padding:20px;color:#94a3b8;font-style:italic;font-size:12px">No sites match this filter</div>';
       }
-
       areaSites.forEach((x, idx) => {
         const globalIdx = sites.indexOf(x);
         const isSel = selectedSites.has(x.id);
         const days = calcDays(x.fromDate, x.toDate);
-
         let sc = "s-available";
         if(x.status === "Not Available") sc = "s-not";
         else if(x.status === "Under Maintenance") sc = "s-maintenance";
-
         let cardCls = "site-card";
         if(x.status === "Not Available") cardCls += " not-card";
         else if(x.status === "Under Maintenance") cardCls += " maint-card";
         if(isSel) cardCls += " selected-card";
-
         const histCount = bookingHistory.filter(h => h.site === x.site).length;
         const histBtn = histCount > 0 ? '<button class="history-btn" onclick="showHistory(' + globalIdx + ')">' + histCount + '</button>' : '';
         const mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
-
         const imgHTML = x.hasImage
           ? '<img class="site-card-img" data-img-id="' + x.id + '" onclick="openImageViewer(\'' + x.id + '\')" alt="site">'
           : '<div class="site-card-img no-img" onclick="editSite(' + globalIdx + ')" title="Add image"></div>';
-
         const actionBtns = (currentUser.role === "Admin" || currentUser.role === "Viewer")
           ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' + mapBtn + histBtn
           : mapBtn + histBtn;
-
         cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
         cardsHTML += '<div class="site-card-top">';
         cardsHTML += '<input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' onchange="toggleSelect(\'' + x.id + '\')">';
@@ -1327,22 +1153,18 @@ function render(){
         cardsHTML += '<div class="site-card-actions">' + actionBtns + '</div>';
         cardsHTML += '</div>';
       });
-
       cardsHTML += '</div>';
       content.innerHTML = cardsHTML;
     }
     block.appendChild(content);
     container.appendChild(block);
   });
-
   if(totalShown === 0 && (q || f !== "ALL")){
     container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic;grid-column:1/-1">No sites match your filter.</div>';
   }
-
   loadVisibleImages();
   updateSelectBar();
 }
-
 async function loadVisibleImages(){
   const imgs = document.querySelectorAll("img.site-card-img[data-img-id]");
   for(const img of imgs){
@@ -1354,8 +1176,6 @@ async function loadVisibleImages(){
     }
   }
 }
-
-// ========== SELECTION ==========
 function toggleSelect(id){
   if(selectedSites.has(id)) selectedSites.delete(id);
   else selectedSites.add(id);
@@ -1385,7 +1205,6 @@ function updateSelectBar(){
   document.getElementById("selCount").textContent = selectedSites.size + " selected";
   if(selectedSites.size > 0) bar.classList.add("show");
   else bar.classList.remove("show");
-
   const delBtn = document.getElementById("deleteBtn");
   if(delBtn){
     if(currentUser && currentUser.role === "Admin"){
@@ -1395,8 +1214,6 @@ function updateSelectBar(){
     }
   }
 }
-
-// ========== BULK STATUS ==========
 function openBulkStatusModal(){
   if(currentUser && currentUser.role !== "Admin"){
     alert("Sirf Admin bulk status change kar sakta hai");
@@ -1460,12 +1277,10 @@ function applyBulkStatus(){
     alert("Selected sites nahi mil rahi hain. Please sites ko dobara select karein.");
     return;
   }
-
   const rawStatus = document.getElementById("bulkStatusValue").value;
   const status = normalizeStatus(rawStatus);
   let fromLabel = getDateFromDropdowns("bulkStatusFrom");
   let toLabel = getDateFromDropdowns("bulkStatusTo");
-
   if(status !== "Available"){
     if(!fromLabel || !toLabel){ alert("From aur To date select karein"); return; }
     const fd = new Date(ddmmyyyyToISO(fromLabel));
@@ -1476,9 +1291,7 @@ function applyBulkStatus(){
     fromLabel = "";
     toLabel = "";
   }
-
   if(!confirm(targets.length + " site(s) par '" + status + "' status aaj apply hoga.\n\nContinue?")) return;
-
   targets.forEach(s => {
     s.status = status;
     if(status === "Available"){
@@ -1490,7 +1303,6 @@ function applyBulkStatus(){
       s.toDate = toLabel;
     }
   });
-
   persist();
   render();
   closeBulkStatusModal();
@@ -1504,8 +1316,6 @@ document.addEventListener("change", function(e){
     updateBulkStatusPreview();
   }
 });
-
-// ========== ADD / EDIT ==========
 function openAdd(){
   editIndex = -1;
   document.getElementById("modalTitle").textContent = "Add New Site";
@@ -1528,12 +1338,10 @@ function openAdd(){
   updateCalcPreview();
   document.getElementById("modal").classList.add("show");
 }
-
 function quickAddSiteInArea(areaName){
   openAdd();
   document.getElementById("farea").value = areaName;
 }
-
 async function editSite(i){
   if(currentUser.role !== "Admin" && currentUser.role !== "Viewer"){
     alert("Aapko edit karne ki permission nahi hai");
@@ -1572,17 +1380,14 @@ async function editSite(i){
   document.getElementById("modal").classList.add("show");
 }
 function closeModal(){ document.getElementById("modal").classList.remove("show"); }
-
 async function saveSite(){
   const fromVal = getDateFromDropdowns("ffrom");
   const toVal = getDateFromDropdowns("fto");
   const areaVal = document.getElementById("farea").value;
-
   if(!areaVal){
     alert("Kripya area select karein");
     return;
   }
-
   if(fromVal && isPastDate(fromVal)){
     if(!confirm(" WARNING: Booking 'From' date previous hai!\n\nAapne chuni: " + fromVal + "\n\nKya aap phir bhi booking karna chahte hain?")){
       return;
@@ -1597,12 +1402,9 @@ async function saveSite(){
     alert(" 'To' date 'From' date se pehle nahi ho sakti!");
     return;
   }
-
   let statusVal = document.getElementById("fstatus").value;
-
   const id = editIndex < 0 ? "id_"+Math.random().toString(36).slice(2,10) : sites[editIndex].id;
   const hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
-
   const loc = document.getElementById("flocation");
   const newSite = {
     id, area: areaVal,
@@ -1615,7 +1417,6 @@ async function saveSite(){
     fromDate: fromVal, toDate: toVal,
     hasImage: !!currentImageData
   };
-
   if(currentImageData){
     await saveImage(id, currentImageData);
     imageCache[id] = currentImageData;
@@ -1623,16 +1424,12 @@ async function saveSite(){
     await deleteImage(id);
     delete imageCache[id];
   }
-
   if(editIndex < 0) sites.push(newSite);
   else sites[editIndex] = newSite;
-
   persist();
   closeModal();
   render();
 }
-
-// ========== IMAGE ==========
 function handleImageUpload(e){
   const file = e.target.files[0];
   if(!file) return;
@@ -1682,8 +1479,6 @@ async function openImageViewer(siteId){
 function closeImageViewer(){
   document.getElementById("imageViewer").classList.remove("show");
 }
-
-// ========== GPS ==========
 function captureGPS(){
   const btn = document.getElementById("gpsBtn");
   const status = document.getElementById("gpsStatus");
@@ -1726,8 +1521,6 @@ function openMap(i){
   if(!url){ alert("No location set"); return; }
   window.open(url, "_blank");
 }
-
-// ========== SHARE ==========
 function shareSelectedOnWhatsApp(){
   if(selectedSites.size === 0){ alert("No sites selected"); return; }
   const sel = sites.filter(s => selectedSites.has(s.id));
@@ -1768,8 +1561,6 @@ function shareAllOnWhatsApp(){
   });
   window.open("https://web.whatsapp.com/send?text="+encodeURIComponent(text), "_blank");
 }
-
-// ========== PDF ==========
 async function generatePDF(list, title){
   if(list.length === 0){ alert("No sites"); return; }
   showProgress("Generating PDF...", "0 / "+list.length);
@@ -1779,7 +1570,6 @@ async function generatePDF(list, title){
     const pw = doc.internal.pageSize.getWidth();
     const ph = doc.internal.pageSize.getHeight();
     const m = 12;
-
     doc.setFillColor(30, 58, 138);
     doc.rect(0, 0, pw, 40, "F");
     doc.setTextColor(255,255,255);
@@ -1793,15 +1583,12 @@ async function generatePDF(list, title){
     doc.setFontSize(10);
     doc.text("Generated: "+new Date().toLocaleString('en-GB'), m, 50);
     doc.text("Total: "+list.length, m, 56);
-
     let y = 68;
     let lastArea = "";
-
     for(let i=0; i<list.length; i++){
       const x = list[i];
       document.getElementById("progressSub").textContent = "Site "+(i+1)+" / "+list.length;
       const areaName = x.area || "Unassigned";
-
       if(areaName !== lastArea){
         if(y + 20 > ph - 15){ doc.addPage(); y = m + 5; }
         doc.setFillColor(37, 99, 235);
@@ -1813,15 +1600,12 @@ async function generatePDF(list, title){
         y += 14;
         lastArea = areaName;
       }
-
       const imgW = 38, imgH = 38, imgX = m+5, imgY = y+6;
       const textX = imgX+imgW+5;
       const textW = m + (pw-2*m) - textX - 5;
-
       doc.setFontSize(11);
       doc.setFont("helvetica","bold");
       const siteLines = doc.splitTextToSize(x.site, textW);
-
       let rightH = siteLines.length * 5;
       if(x.location) rightH += 4 + doc.splitTextToSize(x.location, textW-2).length * 4;
       if(x.customer) rightH += 4 + doc.splitTextToSize(x.customer, textW-2).length * 4;
@@ -1829,23 +1613,18 @@ async function generatePDF(list, title){
       if(x.fromDate || x.toDate) rightH += 4.5;
       const mapUrl = getGoogleMapsUrl(x);
       if(mapUrl) rightH += 4 + doc.splitTextToSize(mapUrl, textW-2).length * 4 + 2;
-
       let blockH = Math.max(rightH + 8, imgH + 12) + 4;
       if(blockH < 52) blockH = 52;
-
       if(y + blockH + 5 > ph - 15){ doc.addPage(); y = m + 5; }
-
       doc.setDrawColor(226,232,240);
       doc.setFillColor(248,250,252);
       doc.roundedRect(m, y, pw-2*m, blockH, 2, 2, "FD");
-
       doc.setFillColor(30,58,138);
       doc.circle(m+4, y+4, 3.5, "F");
       doc.setTextColor(255,255,255);
       doc.setFontSize(7);
       doc.setFont("helvetica","bold");
       doc.text(String(i+1), m+4, y+5.2, { align: "center" });
-
       if(x.hasImage){
         let data = imageCache[x.id];
         if(!data) data = await getImage(x.id);
@@ -1860,14 +1639,12 @@ async function generatePDF(list, title){
         doc.setFontSize(8);
         doc.text("No Image", imgX+imgW/2, imgY+imgH/2, { align: "center" });
       }
-
       let tY = y + 7;
       doc.setTextColor(15,23,42);
       doc.setFontSize(11);
       doc.setFont("helvetica","bold");
       doc.text(siteLines, textX, tY);
       tY += siteLines.length * 5;
-
       if(x.location){
         doc.setFontSize(9);
         doc.setFont("helvetica","bold");
@@ -1880,7 +1657,6 @@ async function generatePDF(list, title){
         doc.text(locLines, textX+2, tY);
         tY += locLines.length * 4;
       }
-
       if(x.customer){
         doc.setFontSize(9);
         doc.setFont("helvetica","bold");
@@ -1893,7 +1669,6 @@ async function generatePDF(list, title){
         doc.text(cLines, textX+2, tY);
         tY += cLines.length * 4;
       }
-
       const colors = { "Available": [16,185,129], "Not Available": [239,68,68], "Under Maintenance": [245,158,11] };
       const c = colors[x.status] || [100,116,139];
       doc.setFillColor(c[0], c[1], c[2]);
@@ -1905,7 +1680,6 @@ async function generatePDF(list, title){
       doc.roundedRect(textX, tY-3, stW, 5, 1, 1, "F");
       doc.text(stText, textX + stW/2, tY+0.3, { align: "center" });
       tY += 5.5;
-
       if(x.fromDate || x.toDate){
         doc.setFontSize(9);
         doc.setFont("helvetica","bold");
@@ -1914,7 +1688,6 @@ async function generatePDF(list, title){
         doc.text("Booking: "+(x.fromDate||"")+"  "+(x.toDate||"")+(days > 0 ? " ("+days+" days)" : ""), textX, tY);
         tY += 4.5;
       }
-
       if(mapUrl){
         doc.setFontSize(9);
         doc.setFont("helvetica","bold");
@@ -1928,10 +1701,8 @@ async function generatePDF(list, title){
         }
         tY += urlLines.length * 4 + 1.5;
       }
-
       y += blockH + 4;
     }
-
     const total = doc.internal.getNumberOfPages();
     for(let p=1; p<=total; p++){
       doc.setPage(p);
@@ -1939,7 +1710,6 @@ async function generatePDF(list, title){
       doc.setTextColor(148,163,184);
       doc.text("Site Management System  Page "+p+" of "+total, pw/2, ph-6, { align: "center" });
     }
-
     doc.save("site_report_"+new Date().toISOString().slice(0,10)+".pdf");
   } catch(e){ alert("PDF error: "+e.message); }
   finally { hideProgress(); }
@@ -1948,8 +1718,6 @@ function generatePDFSelected(){
   if(selectedSites.size === 0){ alert("No sites selected"); return; }
   generatePDF(sites.filter(s => selectedSites.has(s.id)), "Selected Sites Report");
 }
-
-// ========== BULK UPLOAD ==========
 function openBulkUpload(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin bulk upload kar sakta hai"); return; }
   bulkParsedSites = [];
@@ -1960,7 +1728,6 @@ function openBulkUpload(){
   document.getElementById("bulkModal").classList.add("show");
 }
 function closeBulkModal(){ document.getElementById("bulkModal").classList.remove("show"); }
-
 function downloadSampleCSV(){
   const sample = "area,site,location,company,status,from,to\nChandigarh,CG01,Sector 17 Bus Stand,ABC Media,Available,,\nGurgaon,GG01,Cyber Hub,X Ads,Not Available,,";
   const blob = new Blob(["\ufeff"+sample], { type: "text/csv;charset=utf-8" });
@@ -1969,7 +1736,6 @@ function downloadSampleCSV(){
   a.download = "sample_sites.csv";
   a.click();
 }
-
 const dropZone = document.getElementById("dropZone");
 if(dropZone){
   dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.style.background = "#dbeafe"; });
@@ -1981,7 +1747,6 @@ if(dropZone){
   });
 }
 function handleBulkFile(e){ const f = e.target.files[0]; if(f) processBulkFile(f); }
-
 function processBulkFile(file){
   if(!file.name.toLowerCase().endsWith(".csv")){ alert("Only .csv"); return; }
   const reader = new FileReader();
@@ -2006,7 +1771,6 @@ function parseCSV(text){
   if(!headers.includes("site")){ alert("'site' column missing"); return; }
   const idx = {};
   headers.forEach((h, i) => idx[h] = i);
-
   bulkParsedSites = [];
   for(let i=1; i<lines.length; i++){
     const cells = parseCSVLine(lines[i]);
@@ -2026,12 +1790,10 @@ function parseCSV(text){
       lat: "", lng: "", hasImage: false
     });
   }
-
   const wrap = document.getElementById("bulkPreviewWrap");
   const sum = document.getElementById("bulkSummary");
   const prev = document.getElementById("bulkPreview");
   const btn = document.getElementById("bulkUploadBtn");
-
   if(bulkParsedSites.length === 0){
     sum.textContent = " No valid sites";
     wrap.style.display = "block";
@@ -2061,8 +1823,6 @@ function confirmBulkUpload(){
   persist(); populateAreaDropdowns(); render(); closeBulkModal();
   alert(" Added: " + added + ", Total: " + bulkParsedSites.length);
 }
-
-// ========== HISTORY ==========
 function showHistory(siteIndex){
   const siteName = sites[siteIndex].site;
   const hist = bookingHistory.filter(h => h.site === siteName);
@@ -2084,23 +1844,6 @@ function openHistorySearch(){
   document.getElementById("historyModal").classList.add("show");
 }
 function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
-
-// ========== HISTORY DOWNLOAD ==========
-
-function getHistoryExportRows(){
-  return bookingHistory.map((h, i) => ({
-    "#": i + 1,
-    "Site": h.site || "",
-    "Company": h.customer || "",
-    "Location": h.location || "",
-    "From Date": h.fromDate || "",
-    "To Date": h.toDate || "",
-    "Days": h.days || "",
-    "Status": h.status || "",
-    "Ended On": h.endedOn || ""
-  }));
-}
-
 function downloadHistoryCSV(){
   if(bookingHistory.length === 0){
     alert("History khaali hai — download karne ke liye kuch nahi.");
@@ -2129,155 +1872,7 @@ function downloadHistoryCSV(){
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
-
-function downloadHistoryExcel(){
-  if(bookingHistory.length === 0){
-    alert("History khaali hai — download karne ke liye kuch nahi.");
-    return;
-  }
-  if(!window.XLSX){
-    alert("Excel export library load nahi hui. Internet connection check karke page refresh karein.");
-    return;
-  }
-
-  try {
-    const rows = getHistoryExportRows();
-    const ws = XLSX.utils.json_to_sheet(rows);
-    ws["!cols"] = [
-      {wch: 6}, {wch: 24}, {wch: 24}, {wch: 30},
-      {wch: 14}, {wch: 14}, {wch: 8}, {wch: 22}, {wch: 18}
-    ];
-
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Booking History");
-
-    XLSX.writeFile(
-      wb,
-      "history_" + new Date().toISOString().slice(0,10) + ".xlsx"
-    );
-  } catch(err) {
-    alert("Excel export failed: " + err.message);
-  }
-}
-
-function downloadHistoryPDF(){
-  if(bookingHistory.length === 0){
-    alert("History khaali hai — download karne ke liye kuch nahi.");
-    return;
-  }
-
-  try {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({
-      orientation: "landscape",
-      unit: "mm",
-      format: "a4"
-    });
-
-    const pw = doc.internal.pageSize.getWidth();
-    const ph = doc.internal.pageSize.getHeight();
-    const margin = 10;
-    const columns = [
-      {key:"#", title:"#", width:9},
-      {key:"Site", title:"Site", width:34},
-      {key:"Company", title:"Company", width:38},
-      {key:"Location", title:"Location", width:48},
-      {key:"From Date", title:"From", width:22},
-      {key:"To Date", title:"To", width:22},
-      {key:"Days", title:"Days", width:14},
-      {key:"Status", title:"Status", width:42},
-      {key:"Ended On", title:"Ended On", width:28}
-    ];
-
-    const rows = getHistoryExportRows();
-
-    function drawHeader(y){
-      doc.setFillColor(30, 58, 138);
-      doc.rect(margin, y, pw - margin * 2, 9, "F");
-      doc.setTextColor(255,255,255);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(8);
-
-      let x = margin;
-      columns.forEach(col => {
-        doc.text(col.title, x + 2, y + 6);
-        x += col.width;
-      });
-      doc.setTextColor(15,23,42);
-    }
-
-    doc.setFillColor(30, 58, 138);
-    doc.rect(0, 0, pw, 27, "F");
-    doc.setTextColor(255,255,255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(18);
-    doc.text("BOOKING HISTORY", pw / 2, 11, {align:"center"});
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.text(
-      "Generated: " + new Date().toLocaleString("en-GB") +
-      "   |   Total Records: " + rows.length,
-      pw / 2, 19, {align:"center"}
-    );
-
-    let y = 34;
-    drawHeader(y);
-    y += 12;
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-
-    rows.forEach((row, index) => {
-      const cellLines = columns.map(col => {
-        const value = String(row[col.key] ?? "");
-        return doc.splitTextToSize(value, col.width - 4);
-      });
-
-      const rowHeight = Math.max(
-        8,
-        ...cellLines.map(lines => lines.length * 3.5 + 3)
-      );
-
-      if(y + rowHeight > ph - 10){
-        doc.addPage();
-        y = 12;
-        drawHeader(y);
-        y += 12;
-      }
-
-      if(index % 2 === 0){
-        doc.setFillColor(248, 250, 252);
-        doc.rect(margin, y - 3, pw - margin * 2, rowHeight, "F");
-      }
-
-      let x = margin;
-      cellLines.forEach((lines, colIndex) => {
-        doc.setTextColor(15,23,42);
-        doc.text(lines, x + 2, y + 1);
-        x += columns[colIndex].width;
-      });
-
-      // Draw vertical separators.
-      let lineX = margin;
-      doc.setDrawColor(226,232,240);
-      columns.forEach(col => {
-        lineX += col.width;
-        doc.line(lineX, y - 3, lineX, y + rowHeight - 3);
-      });
-      doc.line(margin, y + rowHeight - 3, pw - margin, y + rowHeight - 3);
-
-      y += rowHeight;
-    });
-
-    doc.save("history_" + new Date().toISOString().slice(0,10) + ".pdf");
-  } catch(err) {
-    alert("PDF export failed: " + err.message);
-  }
-}
-
-// ========== PPT FEATURE ==========
 function openPptModal(areaName){
   if(!currentUser || currentUser.role !== "Admin"){
     alert("Sirf Admin PPT add kar sakta hai");
@@ -2369,8 +1964,6 @@ async function deletePpt(){
   alert(" PPT delete ho gayi");
   loadPptForArea(currentPptArea);
 }
-
-// ========== BULK PPT UPLOAD ==========
 function openBulkPptModal(){
   if(!currentUser || currentUser.role !== "Admin"){
     alert("Sirf Admin bulk PPT upload kar sakta hai");
@@ -2389,7 +1982,6 @@ function openBulkPptModal(){
 function closeBulkPptModal(){
   document.getElementById("bulkPptModal").classList.remove("show");
 }
-
 (function setupBulkPptDropZone(){
   const dz = document.getElementById("bulkPptDropZone");
   if(!dz) return;
@@ -2401,24 +1993,19 @@ function closeBulkPptModal(){
     if(files && files.length > 0) processBulkPptFiles(files);
   });
 })();
-
 function handleBulkPptFiles(e){
   const files = e.target.files;
   if(files && files.length > 0) processBulkPptFiles(files);
   e.target.value = "";
 }
-
 function findAreaForFilename(fileName){
   const base = fileName.replace(/\.(pptx?|PPTX?)$/, "").trim();
   const norm = (s) => String(s).toLowerCase().replace(/[\s_\-\.]+/g, "");
-
   let hit = areas.find(a => a.toLowerCase() === base.toLowerCase());
   if(hit) return hit;
-
   const baseNorm = norm(base);
   hit = areas.find(a => norm(a) === baseNorm);
   if(hit) return hit;
-
   const sorted = [...areas].sort((a,b) => b.length - a.length);
   for(const a of sorted){
     const aNorm = norm(a);
@@ -2429,11 +2016,9 @@ function findAreaForFilename(fileName){
   }
   return null;
 }
-
 function processBulkPptFiles(fileList){
   const files = Array.from(fileList);
   if(files.length === 0) return;
-
   const valid = [];
   const invalid = [];
   files.forEach(f => {
@@ -2445,15 +2030,12 @@ function processBulkPptFiles(fileList){
     if(f.size > 10 * 1024 * 1024){ invalid.push({ file: f, reason: "Over 10 MB" }); return; }
     valid.push(f);
   });
-
   if(valid.length === 0){
     alert("Koi valid PPT file nahi mili.\n\n" + invalid.map(x => x.file.name + " — " + x.reason).join("\n"));
     return;
   }
-
   let pending = valid.length;
   bulkPptParsed = [];
-
   valid.forEach(f => {
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -2480,23 +2062,19 @@ function processBulkPptFiles(fileList){
     reader.readAsDataURL(f);
   });
 }
-
 function renderBulkPptPreview(invalidList){
   const wrap = document.getElementById("bulkPptPreviewWrap");
   const sum = document.getElementById("bulkPptSummary");
   const prev = document.getElementById("bulkPptPreview");
   const btn = document.getElementById("bulkPptUploadBtn");
-
   const matched = bulkPptParsed.filter(p => p.matched);
   const unmatched = bulkPptParsed.filter(p => !p.matched);
-
   let sumHtml = "";
   sumHtml += " <b>" + bulkPptParsed.length + "</b> file(s) ready";
   if(matched.length) sumHtml += " &nbsp;|&nbsp; <span style='color:#047857'> " + matched.length + " matched</span>";
   if(unmatched.length) sumHtml += " &nbsp;|&nbsp; <span style='color:#b91c1c'> " + unmatched.length + " not matched</span>";
   if(invalidList && invalidList.length) sumHtml += " &nbsp;|&nbsp; <span style='color:#b91c1c'> " + invalidList.length + " invalid</span>";
   sum.innerHTML = sumHtml;
-
   let html = '<table><thead><tr><th>#</th><th>File</th><th>Size</th><th>Matched Area</th><th>Status</th></tr></thead><tbody>';
   bulkPptParsed.forEach((p, i) => {
     const status = p.matched
@@ -2524,7 +2102,6 @@ function renderBulkPptPreview(invalidList){
   html += '</tbody></table>';
   prev.innerHTML = html;
   wrap.style.display = "block";
-
   if(matched.length > 0){
     btn.disabled = false;
     btn.style.background = "#be185d";
@@ -2537,14 +2114,12 @@ function renderBulkPptPreview(invalidList){
     btn.style.cursor = "not-allowed";
   }
 }
-
 async function confirmBulkPptUpload(){
   const toUpload = bulkPptParsed.filter(p => p.matched);
   if(toUpload.length === 0){
     alert("Koi matched PPT nahi hai.");
     return;
   }
-
   const overwrites = [];
   for(const p of toUpload){
     const existing = await getPpt(p.area);
@@ -2554,7 +2129,6 @@ async function confirmBulkPptUpload(){
     const msg = "In areas ki purani PPT replace ho jayegi:\n\n" + [...new Set(overwrites)].join(", ") + "\n\nContinue?";
     if(!confirm(msg)) return;
   }
-
   showProgress("Uploading " + toUpload.length + " PPT(s)...", "");
   let done = 0;
   for(const p of toUpload){
@@ -2570,12 +2144,9 @@ async function confirmBulkPptUpload(){
     document.getElementById("progressSub").textContent = done + " / " + toUpload.length;
   }
   hideProgress();
-
   alert(" " + toUpload.length + " PPT(s) upload ho gayi!");
   closeBulkPptModal();
 }
-
-// ========== BACKUP / IMPORT ==========
 async function downloadBackup(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin backup le sakta hai"); return; }
   showProgress("Preparing backup...", "Collecting images & PPTs");
@@ -2641,8 +2212,6 @@ async function handleImportFile(e){
   reader.readAsText(file);
   e.target.value = "";
 }
-
-// ========== DELETE ==========
 function bulkDeleteSelected(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin delete kar sakta hai"); return; }
   if(selectedSites.size === 0){ alert("No sites selected"); return; }
@@ -2659,8 +2228,6 @@ function bulkDeleteSelected(){
   render();
   alert(" " + count + " site(s) deleted successfully!");
 }
-
-// ========== EXPORT ==========
 function exportCSV(){
   let lines = [["Area","Site","Location","Company","From","To","Status"].join(",")];
   sites.forEach(x => {
@@ -2673,8 +2240,6 @@ function exportCSV(){
   a.download = "sites_"+new Date().toISOString().slice(0,10)+".csv";
   a.click();
 }
-
-// ========== INIT ==========
 document.addEventListener("DOMContentLoaded", async () => {
   await openDB();
   initDateDropdowns();
@@ -2682,20 +2247,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   populateAreaDropdowns();
   autoReleaseExpiredSites();
   checkSession();
-
   setInterval(() => {
     if(autoReleaseExpiredSites()){ render(); }
   }, 60 * 60 * 1000);
-
   const pass = document.getElementById("loginPass");
   if(pass) pass.addEventListener("keypress", e => { if(e.key === "Enter") doLogin(); });
   const user = document.getElementById("loginUser");
   if(user) user.addEventListener("keypress", e => { if(e.key === "Enter") document.getElementById("loginPass").focus(); });
-
   document.querySelectorAll(".modal").forEach(m => {
     m.addEventListener("click", e => { if(e.target === m) m.classList.remove("show"); });
   });
-
   initStickyHeader();
 });
 </script>
