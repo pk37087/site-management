@@ -188,8 +188,6 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 .share-option .so-title{font-size:14px;font-weight:700;color:#0f172a;margin-bottom:2px}
 .share-option .so-desc{font-size:11px;color:#64748b;line-height:1.4}
 .share-option .so-badge{background:#059669;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px}
-.ppt-badge{font-size:10px;background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-weight:700;margin-left:6px;display:inline-block;vertical-align:middle;letter-spacing:0.5px}
-.ppt-badge::before{content:'✓ ';font-weight:900}
 @media (max-width: 1024px){#areaContainer{grid-template-columns:1fr}}
 @media (max-width: 768px){
   body{font-size:14px}
@@ -446,7 +444,7 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 <div class="ppt-upload-box" id="pptUploadBox" onclick="document.getElementById('pptFile').click()">
   <div class="pu-icon"></div>
   <div class="pu-title">Click to upload PPT</div>
-  <div class="pu-sub">.ppt, .pptx - Max 100 MB (chunked upload)</div>
+  <div class="pu-sub">.ppt, .pptx - Max 100 MB</div>
 </div>
 <input type="file" id="pptFile" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" style="display:none" onchange="handlePptUpload(event)">
 <div class="modal-actions"><button class="secondary" onclick="closePptModal()">Close</button></div>
@@ -456,9 +454,9 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 <h2>Bulk PPT Upload (Area-wise)</h2>
 <div class="bulk-info">
   <b>Kaise kaam karta hai:</b><br>
-  1. Multiple PPT files select karein (ya drag karein)<br>
-  2. Har file ka naam <b>area ke naam</b> se match hona chahiye<br>
-  3. Jaise: <code>Chandigarh.pptx</code>, <code>Gurgaon.ppt</code>
+  1. Multiple PPT files select karein<br>
+  2. File ka naam <b>area ke naam</b> se match hona chahiye<br>
+  3. Jaise: <code>Chandigarh.pptx</code>
 </div>
 <div class="drop-zone" id="bulkPptDropZone" onclick="document.getElementById('bulkPptFiles').click()" style="border-color:#f9a8d4;background:#fdf2f8">
   <div class="dz-icon"></div>
@@ -483,8 +481,8 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
   <button class="share-option" onclick="shareAsZip()">
     <div class="so-icon">📦</div>
     <div class="so-body">
-      <div class="so-title">Download Professional Report (ZIP)</div>
-      <div class="so-desc">Report + PPT + Images - WhatsApp / Email me attach karne ke liye best</div>
+      <div class="so-title">Download Report + PPT (ZIP)</div>
+      <div class="so-desc">Report.html + Presentation.pptx dono isme hain - WhatsApp/Email me bhejein</div>
     </div>
     <span class="so-badge">BEST</span>
   </button>
@@ -499,14 +497,14 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
     <div class="so-icon">💬</div>
     <div class="so-body">
       <div class="so-title">Send as Text Message</div>
-      <div class="so-desc">Sirf text summary WhatsApp par bhejein</div>
+      <div class="so-desc">Sirf text summary WhatsApp par</div>
     </div>
   </button>
   <button class="share-option" onclick="shareViaEmailText()">
     <div class="so-icon">✉️</div>
     <div class="so-body">
       <div class="so-title">Send as Email (Text)</div>
-      <div class="so-desc">Email me text report bhejein</div>
+      <div class="so-desc">Email me text report</div>
     </div>
   </button>
 </div>
@@ -541,41 +539,27 @@ let bulkParsedSites = [];
 let collapsedAreas = null;
 let areaFilters = {};
 let currentPptArea = null;
-let currentPptData = null;
-let currentPptName = "";
-let currentPptSize = 0;
-let currentPptType = "";
 let bulkPptParsed = [];
 let shareContext = { mode: "all", areaName: null };
 let pendingSaveTimer = null;
 let autoRefreshTimer = null;
 let lastDataHash = "";
 
-/* ============ API HELPERS ============ */
 async function apiGet(path){
-  try {
-    const res = await fetch(API_URL + path, { method: "GET" });
-    return await res.json();
-  } catch(e){ return { success: false, error: e.message }; }
+  try { const r = await fetch(API_URL + path, { method: "GET" }); return await r.json(); }
+  catch(e){ return { success: false, error: e.message }; }
 }
 async function apiPost(path, body){
   try {
-    const res = await fetch(API_URL + path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-    return await res.json();
+    const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    return await r.json();
   } catch(e){ return { success: false, error: e.message }; }
 }
 async function apiDelete(path){
-  try {
-    const res = await fetch(API_URL + path, { method: "DELETE" });
-    return await res.json();
-  } catch(e){ return { success: false, error: e.message }; }
+  try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); }
+  catch(e){ return { success: false, error: e.message }; }
 }
 
-/* ============ SYNC STATUS ============ */
 function setSyncStatus(status, text){
   const el = document.getElementById("syncStatus");
   const txt = document.getElementById("syncText");
@@ -584,7 +568,6 @@ function setSyncStatus(status, text){
   txt.textContent = text || status;
 }
 
-/* ============ DATA ============ */
 async function loadCloudData(){
   setSyncStatus("syncing", "Loading...");
   const result = await apiGet("/data");
@@ -624,7 +607,6 @@ function persist(){
   }, 600);
 }
 
-/* ============ IMAGES ============ */
 async function saveImage(key, dataUrl){
   const result = await apiPost("/image/" + encodeURIComponent(key), { data: dataUrl });
   if(result && result.success) imageCache[key] = dataUrl;
@@ -633,49 +615,33 @@ async function saveImage(key, dataUrl){
 async function getImage(key){
   if(imageCache[key]) return imageCache[key];
   const result = await apiGet("/image/" + encodeURIComponent(key));
-  if(result && result.success && result.data){
-    imageCache[key] = result.data;
-    return result.data;
-  }
+  if(result && result.success && result.data){ imageCache[key] = result.data; return result.data; }
   return null;
 }
 async function deleteImage(key){
   delete imageCache[key];
   return await apiDelete("/image/" + encodeURIComponent(key));
 }
-async function clearAllImages(){ imageCache = {}; }
 
-/* ============ PPT (CHUNKED - handles up to 100 MB) ============ */
 async function savePpt(areaName, obj){
-  // If data fits in one chunk, use simple POST
   const CHUNK_SIZE = 20000000;
   const data = obj.data || "";
   const totalChunks = Math.ceil(data.length / CHUNK_SIZE) || 1;
-
   if(totalChunks === 1){
-    const result = await apiPost("/ppt/" + encodeURIComponent(areaName), {
-      name: obj.name, size: obj.size, type: obj.type, data: data
-    });
+    const result = await apiPost("/ppt/" + encodeURIComponent(areaName), { name: obj.name, size: obj.size, type: obj.type, data: data });
     if(result && result.success) pptCache[areaName] = true;
     return result;
   }
-
-  // Chunked upload
-  const initResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/init", {
-    name: obj.name, size: obj.size, type: obj.type
-  });
+  const initResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/init", { name: obj.name, size: obj.size, type: obj.type });
   if(!initResult || !initResult.success) return initResult;
-
   for(let i = 0; i < totalChunks; i++){
     const start = i * CHUNK_SIZE;
     const chunk = data.substring(start, start + CHUNK_SIZE);
     const chunkResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/chunk/" + i, { data: chunk });
     if(!chunkResult || !chunkResult.success) return { success: false, error: "Chunk " + i + " failed" };
-    if(typeof document !== "undefined" && document.getElementById("progressSub")){
-      document.getElementById("progressSub").textContent = "Uploading chunk " + (i+1) + " / " + totalChunks;
-    }
+    const ps = document.getElementById("progressSub");
+    if(ps) ps.textContent = "Uploading chunk " + (i+1) + " / " + totalChunks;
   }
-
   const completeResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/complete", {});
   if(completeResult && completeResult.success) pptCache[areaName] = true;
   return completeResult;
@@ -683,10 +649,7 @@ async function savePpt(areaName, obj){
 async function getPpt(areaName){
   const result = await apiGet("/ppt/" + encodeURIComponent(areaName));
   if(result && result.success && result.data){
-    return {
-      name: result.name, size: result.size, type: result.type,
-      data: result.data, uploadedOn: result.uploadedOn
-    };
+    return { name: result.name, size: result.size, type: result.type, data: result.data, uploadedOn: result.uploadedOn };
   }
   return null;
 }
@@ -694,29 +657,20 @@ async function deletePptFromDB(areaName){
   delete pptCache[areaName];
   return await apiDelete("/ppt/" + encodeURIComponent(areaName));
 }
-async function clearAllPpts(){ pptCache = {}; }
-
 async function refreshPptCache(){
   pptCache = {};
   try {
     const result = await apiGet("/ppt-list");
     if(result && result.success && result.list){
-      for(const area in result.list){
-        pptCache[area] = true;
-      }
+      for(const area in result.list){ pptCache[area] = true; }
       return;
     }
-  } catch(e){ /* fallback */ }
-  // Fallback: check each area
+  } catch(e){}
   for(const a of areas){
-    try {
-      const p = await getPpt(a);
-      if(p && p.data) pptCache[a] = true;
-    } catch(e){ /* ignore */ }
+    try { const p = await getPpt(a); if(p && p.data) pptCache[a] = true; } catch(e){}
   }
 }
 
-/* ============ UTILITIES ============ */
 function initStickyHeader(){
   const header = document.getElementById("mainHeader");
   if(!header) return;
@@ -746,10 +700,7 @@ async function doLogin(){
   if(!username || !password){ err.textContent = "Username aur password required hai"; err.classList.add("show"); return; }
   btn.disabled = true; btn.textContent = "Signing in...";
   try {
-    const res = await fetch(API_URL + "/login", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    });
+    const res = await fetch(API_URL + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
     const data = await res.json();
     if(!data.success){
       err.textContent = data.error || "Login failed";
@@ -770,9 +721,7 @@ async function showApp(){
   document.getElementById("loginOverlay").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
   document.getElementById("userInfo").textContent = currentUser.username + " (" + currentUser.role + ")";
-  if(currentUser.role !== "Admin"){
-    document.querySelectorAll(".admin-only").forEach(el => { el.style.display = "none"; });
-  }
+  if(currentUser.role !== "Admin"){ document.querySelectorAll(".admin-only").forEach(el => { el.style.display = "none"; }); }
   showProgress("Loading from cloud...", "Please wait");
   await loadCloudData();
   await refreshPptCache();
@@ -792,10 +741,7 @@ function doLogout(){
 }
 function checkSession(){
   const saved = sessionStorage.getItem("sms_user");
-  if(saved){
-    try { currentUser = JSON.parse(saved); showApp(); }
-    catch(e){ sessionStorage.removeItem("sms_user"); }
-  }
+  if(saved){ try { currentUser = JSON.parse(saved); showApp(); } catch(e){ sessionStorage.removeItem("sms_user"); } }
 }
 function startAutoRefresh(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
@@ -804,9 +750,7 @@ function startAutoRefresh(){
     if(document.hidden) return;
     const result = await apiGet("/data");
     if(result && result.success){
-      const newHash = JSON.stringify({
-        sites: result.sites || [], areas: result.areas || [], bookingHistory: result.bookingHistory || []
-      });
+      const newHash = JSON.stringify({ sites: result.sites || [], areas: result.areas || [], bookingHistory: result.bookingHistory || [] });
       if(newHash !== lastDataHash){
         const modal = document.getElementById("modal");
         if(modal && modal.classList.contains("show")) return;
@@ -874,10 +818,9 @@ function renderAreaList(){
   areas.forEach((a, i) => {
     const count = sites.filter(s => s.area === a).length;
     const isSel = selectedAreas.has(a);
-    const hasPpt = pptCache[a] ? ' <span class="ppt-badge">PPT</span>' : '';
     html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '">';
     html += '<input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\')">';
-    html += '<span class="name">' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + count + ')</span>' + hasPpt + '</span>';
+    html += '<span class="name">' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + count + ')</span></span>';
     html += '<button onclick="renameArea(' + i + ')" style="padding:6px 12px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Rename</button>';
     html += '<button onclick="deleteArea(' + i + ')" style="padding:6px 12px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Delete</button>';
     html += '</div>';
@@ -1069,7 +1012,7 @@ async function render(){
     const allAreaSel = areaSites.length > 0 && areaSites.every(s => selectedSites.has(s.id));
     const hasPpt = !!pptCache[areaName];
     let headerHTML = '<input type="checkbox" class="select-all-cb" ' + (allAreaSel ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectAllInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.checked)">';
-    headerHTML += '<div class="area-name">' + esc(areaName) + (hasPpt ? '<span class="ppt-badge">PPT</span>' : '') + '</div>';
+    headerHTML += '<div class="area-name">' + esc(areaName) + '</div>';
     headerHTML += '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">';
     headerHTML += '<span class="area-count" style="background:#ffffff;color:#1f2937;border:1px solid #e5e7eb">' + areaSites.length + '</span>';
     headerHTML += '<span class="area-count" style="background:#16a34a;color:#ffffff">' + areaAvail + '</span>';
@@ -1370,7 +1313,6 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location set"); return; } window.open(url, "_blank"); }
 
-/* ============ SHARE ============ */
 function openShareDialog(isSelected){
   if(isSelected){
     document.getElementById("shareModalTitle").textContent = "Share Selected Sites";
@@ -1406,7 +1348,6 @@ function getShareFileName(){
   if(shareContext.mode === "area") return "Area_" + shareContext.areaName.replace(/[^a-z0-9]/gi, "_") + "_" + d;
   return "Site_Report_" + d;
 }
-
 function buildProfessionalReport(siteList, reportTitle, areaName){
   const total = siteList.length;
   const avail = siteList.filter(s => s.status === "Available").length;
@@ -1419,7 +1360,6 @@ function buildProfessionalReport(siteList, reportTitle, areaName){
 body{font-family:'Inter',-apple-system,sans-serif;background:#eef2f7;color:#0f172a;line-height:1.6}
 .page{max-width:1080px;margin:0 auto;background:#fff;box-shadow:0 12px 60px rgba(15,23,42,0.08)}
 .cover{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#1d4ed8 100%);color:#fff;padding:70px 60px 60px;position:relative;overflow:hidden}
-.cover::before{content:'';position:absolute;top:-50%;right:-20%;width:600px;height:600px;background:radial-gradient(circle,rgba(59,130,246,0.35) 0%,transparent 70%);border-radius:50%}
 .cover-inner{position:relative;z-index:1}
 .cover-brand{display:flex;align-items:center;gap:14px;margin-bottom:50px}
 .cover-logo{width:48px;height:48px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#1e40af}
@@ -1457,9 +1397,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#eef2f7;color:#0f17
 .detail-row .val.loc{color:#1e40af}
 .detail-row .val.map a{color:#0891b2;text-decoration:none;word-break:break-all;font-size:12px}
 .days-chip{display:inline-block;background:#eef2ff;color:#4338ca;font-weight:700;font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid #c7d2fe;margin-left:8px}
-.ppt-box{background:linear-gradient(135deg,#ecfdf5 0%,#f0fdf4 100%);border:1px solid #86efac;border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:20px}
-.ppt-icon{width:42px;height:42px;background:#059669;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px}
-.ppt-dl{background:#059669;color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none}
+.ppt-note{background:linear-gradient(135deg,#ecfdf5 0%,#f0fdf4 100%);border:1px solid #86efac;border-radius:12px;padding:16px 18px;margin-bottom:20px;color:#065f46;font-size:14px;font-weight:600}
 .report-footer{background:#0f172a;color:#94a3b8;padding:36px 60px;text-align:center}
 .report-footer .fbrand{font-size:14px;font-weight:800;color:#fff;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
 .report-footer .fline{font-size:10px;opacity:0.5;margin-top:20px}
@@ -1527,10 +1465,10 @@ async function buildShareZip(){
       pptIncluded = true;
     }
   }
-  const readme = `Professional Site Report\nGenerated: ${new Date().toLocaleString('en-GB')}\nReport: ${reportTitle}\nTotal Sites: ${list.length}\nPPT included: ${pptIncluded ? "YES" : "NO"}\n\nOpen "Report.html" in browser to view.\n${pptIncluded ? "Open the Presentation file with PowerPoint." : ""}\n`;
+  const readme = `Professional Site Report\nGenerated: ${new Date().toLocaleString('en-GB')}\nReport: ${reportTitle}\nTotal Sites: ${list.length}\nPPT included: ${pptIncluded ? "YES - Presentation file bhi hai isme" : "NO"}\n\nOpen "Report.html" in browser to view the full report.\n${pptIncluded ? "Open Presentation file with PowerPoint." : ""}\n\n${COMPANY_NAME}\n`;
   zip.file("README.txt", readme);
   const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
-  return { blob, fileName: getShareFileName() + ".zip" };
+  return { blob, fileName: getShareFileName() + ".zip", pptIncluded };
 }
 async function shareAsZip(){
   closeShareModal();
@@ -1544,7 +1482,7 @@ async function shareAsZip(){
     a.href = url; a.download = result.fileName;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 5000);
-    alert("Report download ho gayi: " + result.fileName + "\n\nIsme Report.html aur PPT (agar hai) dono hain.");
+    alert("Report download ho gayi: " + result.fileName + (result.pptIncluded ? "\n\nIsme Report.html aur PPT dono hain." : ""));
   } catch(e){ hideProgress(); alert("Error: " + e.message); }
 }
 async function shareNative(){
@@ -1619,19 +1557,15 @@ function shareViaEmailText(){
   window.location.href = "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
 }
 
-/* ============ PDF (FIXED - preloads images) ============ */
 async function generatePDF(list, title){
   if(list.length === 0){ alert("No sites"); return; }
   showProgress("Preparing images...", "0 / " + list.length);
-  // Preload all images first
+  // PRELOAD images
   for(let i = 0; i < list.length; i++){
     const x = list[i];
     if(x.hasImage && !imageCache[x.id]){
       document.getElementById("progressSub").textContent = "Image " + (i+1) + " / " + list.length;
-      try {
-        const d = await getImage(x.id);
-        if(d) imageCache[x.id] = d;
-      } catch(e){ console.warn("Image load fail:", x.id); }
+      try { const d = await getImage(x.id); if(d) imageCache[x.id] = d; } catch(e){}
     }
   }
   showProgress("Generating PDF...", "0 / " + list.length);
@@ -1686,13 +1620,10 @@ async function generatePDF(list, title){
       doc.setFontSize(7);
       doc.setFont("helvetica","bold");
       doc.text(String(i+1), m+4, y+5.2, { align: "center" });
-      if(x.hasImage){
-        const data = imageCache[x.id];
-        if(data){
-          try { doc.addImage(data, "JPEG", imgX, imgY, imgW, imgH); } catch(e){ console.warn("PDF image fail:", e); }
-        }
-      }
-      if(!x.hasImage || !imageCache[x.id]){
+      const imgData = x.hasImage ? imageCache[x.id] : null;
+      if(imgData){
+        try { doc.addImage(imgData, "JPEG", imgX, imgY, imgW, imgH); } catch(e){}
+      } else {
         doc.setDrawColor(203,213,225);
         doc.setFillColor(241,245,249);
         doc.roundedRect(imgX, imgY, imgW, imgH, 2, 2, "FD");
@@ -1754,7 +1685,6 @@ function generatePDFSelected(){
   generatePDF(sites.filter(s => selectedSites.has(s.id)), "Selected Sites Report");
 }
 
-/* ============ BULK UPLOAD ============ */
 function openBulkUpload(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin bulk upload kar sakta hai"); return; }
   bulkParsedSites = [];
@@ -1829,7 +1759,7 @@ function parseCSV(text){
   sum.textContent = bulkParsedSites.length + " valid sites ready";
   let html = '<table><thead><tr><th>#</th><th>Area</th><th>Site</th><th>Location</th><th>Company</th><th>Status</th></tr></thead><tbody>';
   bulkParsedSites.slice(0, 30).forEach((p, i) => {
-    html += '<tr><td>'+(i+1)+'</td><td>'+esc(p.area)+'</td><td>'+esc(p.site)+'</td><td>'+esc(p.location)+'</td><td>'+esc(p.company || p.customer)+'</td><td>'+esc(p.status)+'</td></tr>';
+    html += '<tr><td>'+(i+1)+'</td><td>'+esc(p.area)+'</td><td>'+esc(p.site)+'</td><td>'+esc(p.location)+'</td><td>'+esc(p.customer)+'</td><td>'+esc(p.status)+'</td></tr>';
   });
   html += '</tbody></table>';
   prev.innerHTML = html;
@@ -1848,8 +1778,6 @@ async function confirmBulkUpload(){
   populateAreaDropdowns(); render(); closeBulkModal();
   alert("Added: " + added + ", Total: " + bulkParsedSites.length);
 }
-
-/* ============ HISTORY ============ */
 function showHistory(siteIndex){
   const siteName = sites[siteIndex].site;
   const hist = bookingHistory.filter(h => h.site === siteName);
@@ -1879,8 +1807,6 @@ function downloadHistoryCSV(){
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "history_"+new Date().toISOString().slice(0,10)+".csv";
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
-
-/* ============ PPT ============ */
 function openPptModal(areaName){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin PPT add kar sakta hai"); return; }
   currentPptArea = areaName;
@@ -1899,11 +1825,8 @@ async function loadPptForArea(areaName){
     document.getElementById("pptFileName").textContent = meta.name || "presentation";
     document.getElementById("pptFileSize").textContent = formatBytes(meta.size || 0);
     wrap.style.display = "block"; box.style.display = "none";
-    currentPptName = meta.name || "presentation";
-    currentPptSize = meta.size || 0;
   } else {
     wrap.style.display = "none"; box.style.display = "block";
-    currentPptData = null; currentPptName = ""; currentPptSize = 0; currentPptType = "";
   }
 }
 function formatBytes(b){
@@ -1955,8 +1878,6 @@ async function deletePpt(){
   await refreshPptCache();
   render();
 }
-
-/* ============ BULK PPT ============ */
 function openBulkPptModal(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin bulk PPT upload kar sakta hai"); return; }
   bulkPptParsed = [];
@@ -2051,15 +1972,11 @@ async function confirmBulkPptUpload(){
   await refreshPptCache();
   render();
 }
-
-/* ============ BACKUP / IMPORT ============ */
 async function downloadBackup(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin backup le sakta hai"); return; }
   showProgress("Preparing backup...", "Collecting data");
   const images = {};
-  for(const s of sites){
-    if(s.hasImage){ const d = await getImage(s.id); if(d) images[s.id] = d; }
-  }
+  for(const s of sites){ if(s.hasImage){ const d = await getImage(s.id); if(d) images[s.id] = d; } }
   const ppts = {};
   for(const a of areas){ const p = await getPpt(a); if(p) ppts[a] = p; }
   const backup = { sites, areas, bookingHistory, images, ppts, exportedOn: new Date().toLocaleString('en-GB') };
@@ -2139,8 +2056,6 @@ function exportCSV(){
   const blob = new Blob(["\ufeff"+lines.join("\n")], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sites_"+new Date().toISOString().slice(0,10)+".csv"; a.click();
 }
-
-/* ============ INIT ============ */
 document.addEventListener("DOMContentLoaded", async () => {
   initDateDropdowns();
   initBulkDateDropdowns();
