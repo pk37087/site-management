@@ -489,7 +489,6 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 </div>
 </div></div>
 
-<!-- Share dialog: choose WhatsApp or Email -->
 <div class="modal" id="shareModal"><div class="box" style="width:min(480px,100%)">
 <h2 id="shareModalTitle">Share</h2>
 <p style="color:#64748b;font-size:13px;margin-bottom:16px;" id="shareModalDesc">Choose how you want to share.</p>
@@ -1637,10 +1636,8 @@ function shareViaWhatsApp(){
   }
   const encoded = encodeURIComponent(text);
   const waUrl = "https://api.whatsapp.com/send?text=" + encoded;
-  // Use a named window to reuse an existing tab if possible
   const win = window.open(waUrl, "whatsapp_share_tab");
   if(!win){
-    // popup blocked, try location change in current tab? No – use anchor
     const a = document.createElement("a");
     a.href = waUrl;
     a.target = "_blank";
@@ -1720,13 +1717,15 @@ async function generateAreaFile(areaName){
     html += "<br><a href='" + ppt.data + "' download='" + (ppt.name || "presentation.pptx") + "'> Download PPT</a>";
     html += "</div>";
   }
-  areaSites.forEach((x, i) => {
+  // Embed images for each site
+  for(let idx = 0; idx < areaSites.length; idx++){
+    const x = areaSites[idx];
     const days = calcDays(x.fromDate, x.toDate);
     let badgeCls = "b-avail";
     if(x.status === "Not Available") badgeCls = "b-not";
     else if(x.status === "Under Maintenance") badgeCls = "b-maint";
     html += "<div class='site'>";
-    html += "<h3>#" + (i+1) + " " + esc(x.site) + "</h3>";
+    html += "<h3>#" + (idx+1) + " " + esc(x.site) + "</h3>";
     html += "<span class='badge " + badgeCls + "'>" + esc(x.status) + "</span>";
     if(x.location) html += "<div class='meta'> " + esc(x.location) + "</div>";
     if(x.customer) html += "<div class='meta'> " + esc(x.customer) + "</div>";
@@ -1734,18 +1733,17 @@ async function generateAreaFile(areaName){
     const map = getGoogleMapsUrl(x);
     if(map) html += "<div class='meta'><a href='" + map + "' target='_blank'> View on Map</a></div>";
     if(x.hasImage){
-      const imgData = imageCache[x.id] || "";
+      let imgData = imageCache[x.id];
+      if(!imgData) imgData = await getImage(x.id);
       if(imgData) html += "<img class='site-img' src='" + imgData + "' alt='site image'>";
-      else html += "<div style='color:#94a3b8;font-style:italic'>Image attached (not embedded)</div>";
     }
     html += "</div>";
-  });
+  }
   html += "<div class='footer'>Site Management System — Auto-generated Area Report</div>";
   html += "</body></html>";
   return html;
 }
 async function shareArea(areaName){
-  // Store area name and show share dialog
   window.__shareAreaName = areaName;
   window.__shareMode = "area";
   const modal = document.getElementById("shareModal");
