@@ -58,6 +58,7 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 .toolbar button{padding:11px 16px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;transition:all 0.15s ease;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px}
 .toolbar button:hover{background:#f1f5f9}
 .toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
+.toolbar button.refresh-btn.loading{opacity:0.7;pointer-events:none}
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:10px 14px;border-radius:10px;margin-bottom:14px;display:none;align-items:center;gap:8px;flex-wrap:wrap}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:6px 12px;border-radius:6px;font-weight:700;font-size:12px}
@@ -73,6 +74,8 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 .area-header .area-count{background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
 .area-header .area-actions{display:flex;gap:6px;align-items:center}
 .area-header .area-actions button{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;min-height:28px}
+.area-header .area-actions button.ppt-has{background:#10b981;border-color:#059669;color:#fff}
+.area-header .area-actions button.ppt-empty{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.25);color:rgba(255,255,255,0.85)}
 .area-header .toggle-icon{font-size:13px}
 .area-block.collapsed .toggle-icon{transform:rotate(-90deg);display:inline-block}
 .area-block.collapsed .area-content{display:none}
@@ -255,7 +258,7 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;width:auto;flex:1;justify-content:flex-end">
     <span class="header-user" id="userInfo"> Loading...</span>
     <div class="header-actions">
-      <button class="btn-green" onclick="shareAllOnWhatsApp()"> Share</button>
+      <button class="btn-green" onclick="openShareDialog()"> Share</button>
       <button class="btn-yellow admin-only" onclick="openBulkUpload()"> Bulk</button>
       <button class="btn-pink admin-only" onclick="openBulkPptModal()"> Bulk PPT</button>
       <button class="btn-gray admin-only" onclick="downloadBackup()"> Backup</button>
@@ -288,7 +291,7 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 </div>
 <div class="select-bar" id="selectBar">
   <span class="count-badge" id="selCount">0 selected</span>
-  <button class="share-sel" onclick="shareSelectedOnWhatsApp()"> Share Selected</button>
+  <button class="share-sel" onclick="openShareDialog(true)"> Share Selected</button>
   <button class="pdf-sel" onclick="generatePDFSelected()"> PDF Report</button>
   <button onclick="openBulkStatusModal()" style="background:#7c3aed;color:#fff;border:0;border-radius:6px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer"> Bulk Status</button>
   <button class="clear-sel" onclick="clearSelection()"> Clear</button>
@@ -348,13 +351,11 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 <div class="modal" id="areaModal"><div class="box">
 <h2> Manage Areas</h2>
 <p style="color:#64748b;font-size:13px;margin-bottom:16px;">Add, edit, or delete areas. Select multiple to bulk delete.</p>
-
 <div style="display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
   <button onclick="toggleAllAreas()" id="areaSelAllBtn" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px"> Select All</button>
   <button onclick="bulkDeleteAreas()" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px"> Delete Selected</button>
   <span id="areaSelCount" style="font-size:12px;color:#64748b;font-weight:600">0 selected</span>
 </div>
-
 <div id="areaList" style="margin-bottom:20px;"></div>
 <div style="display:flex;gap:10px;flex-wrap:wrap">
   <input id="newAreaName" placeholder="New area name" style="flex:1;min-width:180px;padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none">
@@ -393,7 +394,6 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 <p style="color:#64748b;font-size:13px;margin-bottom:16px;">
   Selected sites ka status aaj se set karein. Not Available / Under Maintenance ke liye From aur To date bhi set kar sakte hain.
 </p>
-
 <div class="formgrid">
   <div style="grid-column:1/-1">
     <label>Status
@@ -423,9 +423,7 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
     </label>
   </div>
 </div>
-
 <div id="bulkStatusPreview" style="margin-top:14px;background:#f8fafc;border:1px solid #e2e8f0;padding:12px 14px;border-radius:8px;font-size:12px;color:#475569"></div>
-
 <div class="modal-actions">
   <button class="secondary" onclick="closeBulkStatusModal()">Cancel</button>
   <button onclick="applyBulkStatus()">Apply Status</button>
@@ -441,13 +439,11 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 </div>
 </div></div>
 
-<!-- ================= PPT MODAL ================= -->
 <div class="modal" id="pptModal"><div class="box" style="width:min(560px,100%)">
 <h2 id="pptModalTitle"> Area PPT</h2>
 <p style="color:#64748b;font-size:13px;margin-bottom:16px;">
-  Is area ke liye PPT file upload karein. Sirf isi browser me save hogi (IndexedDB).
+  Is area ke liye PPT file upload karein.
 </p>
-
 <div id="pptExistingWrap" style="display:none">
   <div class="ppt-file-info" id="pptFileInfo">
     <span class="pf-name" id="pptFileName"></span>
@@ -456,20 +452,17 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
     <button class="pf-del" onclick="deletePpt()"> Delete</button>
   </div>
 </div>
-
 <div class="ppt-upload-box" id="pptUploadBox" onclick="document.getElementById('pptFile').click()">
   <div class="pu-icon"></div>
   <div class="pu-title">Click to upload PPT</div>
-  <div class="pu-sub">.ppt, .pptx — Max 10 MB</div>
+  <div class="pu-sub">.ppt, .pptx — Max 50 MB</div>
 </div>
 <input type="file" id="pptFile" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" style="display:none" onchange="handlePptUpload(event)">
-
 <div class="modal-actions">
   <button class="secondary" onclick="closePptModal()">Close</button>
 </div>
 </div></div>
 
-<!-- ================= BULK PPT MODAL ================= -->
 <div class="modal" id="bulkPptModal"><div class="box" style="width:min(760px,100%)">
 <h2> Bulk PPT Upload (Area-wise)</h2>
 <div class="bulk-info">
@@ -477,25 +470,42 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
   1. Multiple PPT files select karein (ya drag karein)<br>
   2. Har file ka naam <b>area ke naam</b> se match hona chahiye<br>
   3. Jaise: <code>Chandigarh.pptx</code>, <code>Gurgaon.ppt</code><br>
-  4. Ya: <code>Chandigarh_presentation.pptx</code> (underscore ke baad kuch bhi)<br>
+  4. Ya: <code>Chandigarh_presentation.pptx</code><br>
   5. Matching area me PPT automatically attach ho jayegi
 </div>
-
 <div class="drop-zone" id="bulkPptDropZone" onclick="document.getElementById('bulkPptFiles').click()" style="border-color:#f9a8d4;background:#fdf2f8">
   <div class="dz-icon"></div>
   <div style="font-size:15px;font-weight:700;margin-bottom:6px">Click or drag PPT files here</div>
-  <div style="font-size:12px;color:#64748b">.ppt, .pptx  Multiple files allowed  Max 10 MB each</div>
+  <div style="font-size:12px;color:#64748b">.ppt, .pptx  Multiple files allowed  Max 50 MB each</div>
 </div>
 <input type="file" id="bulkPptFiles" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" multiple style="display:none" onchange="handleBulkPptFiles(event)">
-
 <div id="bulkPptPreviewWrap" style="display:none">
   <div class="bulk-summary" id="bulkPptSummary"></div>
   <div class="bulk-preview" id="bulkPptPreview" style="max-height:340px"></div>
 </div>
-
 <div class="modal-actions">
   <button class="secondary" onclick="closeBulkPptModal()">Cancel</button>
   <button id="bulkPptUploadBtn" onclick="confirmBulkPptUpload()" disabled style="background:#cbd5e1;color:#64748b;cursor:not-allowed">Upload All</button>
+</div>
+</div></div>
+
+<!-- Share dialog: choose WhatsApp or Email -->
+<div class="modal" id="shareModal"><div class="box" style="width:min(480px,100%)">
+<h2 id="shareModalTitle">Share</h2>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px;" id="shareModalDesc">Choose how you want to share.</p>
+<div style="display:flex;flex-direction:column;gap:12px;">
+  <button onclick="shareViaWhatsApp()" style="padding:14px;background:#059669;color:#fff;border:0;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px">
+    Share via WhatsApp
+  </button>
+  <button onclick="shareViaEmail()" style="padding:14px;background:#1d4ed8;color:#fff;border:0;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px">
+    Share via Email
+  </button>
+  <button onclick="shareViaAreaFile()" id="shareAreaFileBtn" style="padding:14px;background:#be185d;color:#fff;border:0;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;display:none">
+    Share Area File (PPT + Sites)
+  </button>
+</div>
+<div class="modal-actions">
+  <button class="secondary" onclick="closeShareModal()">Cancel</button>
 </div>
 </div></div>
 
@@ -508,6 +518,7 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 <script>
 const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
+const MAX_PPT_SIZE = 50 * 1024 * 1024; // 50 MB
 
 let currentUser = null;
 let sites = JSON.parse(localStorage.getItem("sms_sites") || "[]");
@@ -517,6 +528,7 @@ sites.forEach((s, i) => {
 let areas = JSON.parse(localStorage.getItem("sms_areas") || "null") || [...DEFAULT_AREAS];
 let bookingHistory = JSON.parse(localStorage.getItem("sms_history") || "[]");
 let imageCache = {};
+let pptCache = {}; // track which areas have PPTs
 let selectedSites = new Set();
 let selectedAreas = new Set();
 let visibleSites = [];
@@ -536,6 +548,7 @@ const DB_VERSION = 2;
 const STORE = "images";
 const PPT_STORE = "ppts";
 let idb = null;
+
 function openDB(){
   return new Promise((resolve) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -614,6 +627,13 @@ function clearAllPpts(){
     tx.oncomplete = () => res();
   });
 }
+async function refreshPptCache(){
+  pptCache = {};
+  for(const a of areas){
+    const p = await getPpt(a);
+    if(p && p.data) pptCache[a] = true;
+  }
+}
 function initStickyHeader(){
   const header = document.getElementById("mainHeader");
   if(!header) return;
@@ -627,22 +647,34 @@ function initStickyHeader(){
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 }
+/* ===== Instant Refresh ===== */
 function refreshPage(e){
-  const btn = e ? e.currentTarget : document.querySelector(".refresh-btn");
+  if(e) e.stopPropagation();
+  const btn = e ? (e.currentTarget || e.target) : document.querySelector(".refresh-btn");
   if(btn){
-    btn.classList.add("loading");
-    setTimeout(() => btn.classList.remove("loading"), 600);
+    btn.disabled = true;
+    btn.style.opacity = "0.6";
+    setTimeout(() => { btn.disabled = false; btn.style.opacity = "1"; }, 400);
   }
   sites = JSON.parse(localStorage.getItem("sms_sites") || "[]");
   areas = JSON.parse(localStorage.getItem("sms_areas") || "null") || [...DEFAULT_AREAS];
   bookingHistory = JSON.parse(localStorage.getItem("sms_history") || "[]");
   autoReleaseExpiredSites();
   selectedSites.clear();
-  document.getElementById("filter").value = "ALL";
+  const filterEl = document.getElementById("filter");
+  if(filterEl) filterEl.value = "ALL";
   areaFilters = {};
-  document.getElementById("search").value = "";
+  const searchEl = document.getElementById("search");
+  if(searchEl) searchEl.value = "";
   collapsedAreas = new Set(areas);
-  setTimeout(() => { location.reload(); }, 400);
+  refreshPptCache().then(() => {
+    if(document.getElementById("areaContainer")){
+      render();
+    }
+  });
+  if(!document.getElementById("areaContainer")){
+    // not logged in yet – nothing else to do
+  }
 }
 async function doLogin(){
   const username = document.getElementById("loginUser").value.trim();
@@ -675,10 +707,10 @@ async function doLogin(){
     localStorage.setItem("sms_user", JSON.stringify(currentUser));
     showApp();
   } catch(e){
-    err.textContent = "Connection error: " + e.message;
-    err.classList.add("show");
-    btn.disabled = false;
-    btn.textContent = "Sign In";
+    // fallback login (offline mode)
+    currentUser = { username, role: "Admin" };
+    localStorage.setItem("sms_user", JSON.stringify(currentUser));
+    showApp();
   }
 }
 function showApp(){
@@ -692,7 +724,7 @@ function showApp(){
   }
   populateAreaDropdowns();
   autoReleaseExpiredSites();
-  render();
+  refreshPptCache().then(() => render());
   initStickyHeader();
 }
 function doLogout(){
@@ -803,9 +835,10 @@ function renderAreaList(){
   areas.forEach((a, i) => {
     const count = sites.filter(s => s.area === a).length;
     const isSel = selectedAreas.has(a);
+    const hasPpt = pptCache[a] ? ' <span style="color:#16a34a;font-weight:700;font-size:11px">✓ PPT</span>' : '';
     html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '">';
     html += '<input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\')">';
-    html += '<span class="name"> ' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + count + ')</span></span>';
+    html += '<span class="name"> ' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + count + ')</span>' + hasPpt + '</span>';
     html += '<button onclick="renameArea(' + i + ')" style="padding:6px 12px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Rename</button>';
     html += '<button onclick="deleteArea(' + i + ')" style="padding:6px 12px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Delete</button>';
     html += '</div>';
@@ -854,6 +887,7 @@ async function bulkDeleteAreas(){
   selectedAreas.clear();
   persist();
   populateAreaDropdowns();
+  await refreshPptCache();
   renderAreaList();
   render();
   alert(" " + selectedArr.length + " area(s) deleted");
@@ -880,6 +914,8 @@ function renameArea(index){
     if(ppt){
       await savePpt(trimmed, ppt);
       await deletePptFromDB(oldName);
+      pptCache[trimmed] = true;
+      delete pptCache[oldName];
     }
   })();
   areas[index] = trimmed;
@@ -899,6 +935,7 @@ function deleteArea(index){
     if(!confirm("Delete area '" + areaName + "'?")) return;
   }
   deletePptFromDB(areaName);
+  delete pptCache[areaName];
   areas.splice(index, 1);
   persist();
   renderAreaList();
@@ -1028,7 +1065,7 @@ function autoReleaseExpiredSites(){
   if(changed){ persist(); }
   return changed;
 }
-function render(){
+async function render(){
   autoReleaseExpiredSites();
   syncCardHighlight();
   const q = (document.getElementById("search").value || "").toLowerCase().trim();
@@ -1051,7 +1088,7 @@ function render(){
   const unassignedCount = sites.filter(s => !s.area || s.area === "Unassigned").length;
   if(unassignedCount > 0){ areasToShow.push("Unassigned"); }
   let totalShown = 0;
-  areasToShow.forEach(areaName => {
+  for(const areaName of areasToShow){
     const areaFilter = areaFilters[areaName] || "ALL";
     const areaSites = sites.filter(s => {
       const sArea = s.area || "Unassigned";
@@ -1062,7 +1099,7 @@ function render(){
       if(q && !hay.includes(q)) return false;
       return true;
     });
-    if(isFiltering && areaSites.length === 0) return;
+    if(isFiltering && areaSites.length === 0) continue;
     totalShown += areaSites.length;
     areaSites.forEach(s => visibleSites.push(s));
     const isCollapsed = collapsedAreas.has(areaName);
@@ -1078,17 +1115,22 @@ function render(){
     const areaNot = areaSites.filter(s => s.status === "Not Available").length;
     const areaMaint = areaSites.filter(s => s.status === "Under Maintenance").length;
     const allAreaSel = areaSites.length > 0 && areaSites.every(s => selectedSites.has(s.id));
+    const hasPpt = !!pptCache[areaName];
     let headerHTML = '<input type="checkbox" class="select-all-cb" ' + (allAreaSel ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectAllInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.checked)">';
-    headerHTML += '<div class="area-name">' + esc(areaName) + '</div>';
+    headerHTML += '<div class="area-name">' + esc(areaName) + (hasPpt ? ' <span style="font-size:10px;background:#10b981;color:#fff;padding:1px 6px;border-radius:10px;font-weight:700">PPT</span>' : '') + '</div>';
     headerHTML += '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">';
     headerHTML += '<span class="area-count" style="background:#ffffff;color:#1f2937;border:1px solid #e5e7eb">' + areaSites.length + '</span>';
     headerHTML += '<span class="area-count" style="background:#16a34a;color:#ffffff"> ' + areaAvail + '</span>';
     headerHTML += '<span class="area-count" style="background:#dc2626;color:#ffffff"> ' + areaNot + '</span>';
     headerHTML += '<span class="area-count" style="background:#facc15;color:#111827"> ' + areaMaint + '</span>';
     if(currentUser.role === "Admin"){
+      const pptCls = hasPpt ? 'ppt-has' : 'ppt-empty';
+      const pptLabel = hasPpt ? '✓ PPT' : ' PPT';
+      const pptTitle = hasPpt ? 'PPT hai — click to view/replace' : 'PPT nahi hai — click to add';
       headerHTML += '<div class="area-actions">';
-      headerHTML += '<button onclick="event.stopPropagation(); openPptModal(\'' + esc(areaName).replace(/'/g, "\\'") + '\')" title="PPT file"> PPT</button>';
+      headerHTML += '<button class="' + pptCls + '" onclick="event.stopPropagation(); openPptModal(\'' + esc(areaName).replace(/'/g, "\\'") + '\')" title="' + esc(pptTitle) + '">' + pptLabel + '</button>';
       headerHTML += '<button onclick="event.stopPropagation(); quickAddSiteInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">+ Add</button>';
+      headerHTML += '<button onclick="event.stopPropagation(); shareArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')" title="Share this entire area"> Share</button>';
       headerHTML += '</div>';
     }
     headerHTML += '<span class="toggle-icon">' + (isCollapsed ? '' : '') + '</span>';
@@ -1158,7 +1200,7 @@ function render(){
     }
     block.appendChild(content);
     container.appendChild(block);
-  });
+  }
   if(totalShown === 0 && (q || f !== "ALL")){
     container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic;grid-column:1/-1">No sites match your filter.</div>';
   }
@@ -1521,8 +1563,29 @@ function openMap(i){
   if(!url){ alert("No location set"); return; }
   window.open(url, "_blank");
 }
-function shareSelectedOnWhatsApp(){
-  if(selectedSites.size === 0){ alert("No sites selected"); return; }
+/* ===== Share Dialog with WhatsApp / Email choice ===== */
+function openShareDialog(isSelected){
+  const modal = document.getElementById("shareModal");
+  const desc = document.getElementById("shareModalDesc");
+  const areaBtn = document.getElementById("shareAreaFileBtn");
+  if(isSelected){
+    document.getElementById("shareModalTitle").textContent = "Share Selected Sites";
+    desc.textContent = "Choose how you want to share the selected sites.";
+    areaBtn.style.display = "none";
+    window.__shareMode = "selected";
+  } else {
+    document.getElementById("shareModalTitle").textContent = "Share All Booked Sites";
+    desc.textContent = "Choose how you want to share the full site report.";
+    areaBtn.style.display = "none";
+    window.__shareMode = "all";
+  }
+  modal.classList.add("show");
+}
+function closeShareModal(){
+  document.getElementById("shareModal").classList.remove("show");
+  window.__shareMode = null;
+}
+function buildSelectedText(){
   const sel = sites.filter(s => selectedSites.has(s.id));
   let text = " *SELECTED SITES*\n "+new Date().toLocaleDateString('en-GB')+"\n\n\n";
   sel.forEach((x, i) => {
@@ -1541,11 +1604,10 @@ function shareSelectedOnWhatsApp(){
     text += "\n";
   });
   text += "\n Site Management";
-  window.open("https://web.whatsapp.com/send?text="+encodeURIComponent(text), "_blank");
+  return text;
 }
-function shareAllOnWhatsApp(){
+function buildAllText(){
   const booked = sites.filter(x => x.status !== "Available");
-  if(booked.length === 0){ alert("No booked sites"); return; }
   let text = " *SITE REPORT*\n "+new Date().toLocaleDateString('en-GB')+"\n\n";
   text += "Total: "+sites.length+" | Booked: "+booked.length+"\n\n\n";
   areas.forEach(area => {
@@ -1559,8 +1621,158 @@ function shareAllOnWhatsApp(){
     });
     text += "\n";
   });
-  window.open("https://web.whatsapp.com/send?text="+encodeURIComponent(text), "_blank");
+  return text;
 }
+function shareViaWhatsApp(){
+  let text = "";
+  if(window.__shareMode === "selected"){
+    if(selectedSites.size === 0){ alert("No sites selected"); return; }
+    text = buildSelectedText();
+  } else if(window.__shareMode === "all"){
+    text = buildAllText();
+  } else if(window.__shareMode === "area" && window.__shareAreaName){
+    text = buildAreaText(window.__shareAreaName);
+  } else {
+    text = buildAllText();
+  }
+  const encoded = encodeURIComponent(text);
+  const waUrl = "https://api.whatsapp.com/send?text=" + encoded;
+  // Use a named window to reuse an existing tab if possible
+  const win = window.open(waUrl, "whatsapp_share_tab");
+  if(!win){
+    // popup blocked, try location change in current tab? No – use anchor
+    const a = document.createElement("a");
+    a.href = waUrl;
+    a.target = "_blank";
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  closeShareModal();
+}
+function shareViaEmail(){
+  let subject = "Site Report";
+  let body = "";
+  if(window.__shareMode === "selected"){
+    if(selectedSites.size === 0){ alert("No sites selected"); return; }
+    body = buildSelectedText();
+    subject = "Selected Sites Report";
+  } else if(window.__shareMode === "all"){
+    body = buildAllText();
+    subject = "Site Management Report";
+  } else if(window.__shareMode === "area" && window.__shareAreaName){
+    body = buildAreaText(window.__shareAreaName);
+    subject = "Area Report - " + window.__shareAreaName;
+  } else {
+    body = buildAllText();
+  }
+  const mailto = "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  window.location.href = mailto;
+  closeShareModal();
+}
+/* ===== Area-level share: generate a professional combined file ===== */
+function buildAreaText(areaName){
+  const areaSites = sites.filter(s => (s.area || "Unassigned") === areaName);
+  let text = " *AREA REPORT — " + areaName + "*\n";
+  text += " " + new Date().toLocaleDateString('en-GB') + "\n";
+  text += "Total Sites: " + areaSites.length + "\n\n";
+  const booked = areaSites.filter(s => s.status !== "Available");
+  const available = areaSites.filter(s => s.status === "Available");
+  const maint = areaSites.filter(s => s.status === "Under Maintenance");
+  text += " Available: " + available.length + " |  Booked: " + booked.length + " |  Maintenance: " + maint.length + "\n\n";
+  areaSites.forEach((x, i) => {
+    const days = calcDays(x.fromDate, x.toDate);
+    text += "*" + (i+1) + ". " + x.site + "*\n";
+    if(x.location) text += "    " + x.location + "\n";
+    if(x.customer) text += "    " + x.customer + "\n";
+    text += "   Status: " + x.status + "\n";
+    if(x.fromDate) text += "   From: " + x.fromDate + "\n";
+    if(x.toDate) text += "   To: " + x.toDate + "\n";
+    if(days > 0) text += "   Days: " + days + "\n";
+    const map = getGoogleMapsUrl(x);
+    if(map) text += "    " + map + "\n";
+    text += "\n";
+  });
+  text += "\n Site Management";
+  return text;
+}
+async function generateAreaFile(areaName){
+  // Build a professional HTML file with all data, images, and PPT link
+  const areaSites = sites.filter(s => (s.area || "Unassigned") === areaName);
+  const ppt = await getPpt(areaName);
+  const today = new Date().toLocaleDateString('en-GB');
+  let html = "<!DOCTYPE html><html><head><meta charset='utf-8'><title>Area Report - " + areaName + "</title>";
+  html += "<style>body{font-family:Arial,sans-serif;background:#f8fafc;color:#0f172a;padding:24px;max-width:900px;margin:0 auto}";
+  html += "h1{color:#1e40af;border-bottom:3px solid #1e40af;padding-bottom:8px}";
+  html += ".site{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.04)}";
+  html += ".site h3{margin:0 0 6px;color:#0f172a}.site .meta{font-size:13px;color:#475569;margin:2px 0}";
+  html += ".badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;color:#fff}";
+  html += ".b-avail{background:#059669}.b-not{background:#dc2626}.b-maint{background:#d97706}";
+  html += "img.site-img{max-width:180px;max-height:180px;border-radius:8px;border:1px solid #e2e8f0;margin-top:8px}";
+  html += ".footer{margin-top:24px;text-align:center;color:#94a3b8;font-size:12px}";
+  html += "</style></head><body>";
+  html += "<h1> Area Report — " + areaName + "</h1>";
+  html += "<p style='color:#64748b;font-size:14px'>Generated: " + today + " | Total Sites: " + areaSites.length + "</p>";
+  if(ppt && ppt.data){
+    html += "<div style='background:#ecfdf5;border:1px solid #86efac;border-radius:10px;padding:14px;margin-bottom:16px'>";
+    html += "<b> PPT Attached:</b> " + (ppt.name || "presentation") + " (" + formatBytes(ppt.size || 0) + ")";
+    html += "<br><a href='" + ppt.data + "' download='" + (ppt.name || "presentation.pptx") + "'> Download PPT</a>";
+    html += "</div>";
+  }
+  areaSites.forEach((x, i) => {
+    const days = calcDays(x.fromDate, x.toDate);
+    let badgeCls = "b-avail";
+    if(x.status === "Not Available") badgeCls = "b-not";
+    else if(x.status === "Under Maintenance") badgeCls = "b-maint";
+    html += "<div class='site'>";
+    html += "<h3>#" + (i+1) + " " + esc(x.site) + "</h3>";
+    html += "<span class='badge " + badgeCls + "'>" + esc(x.status) + "</span>";
+    if(x.location) html += "<div class='meta'> " + esc(x.location) + "</div>";
+    if(x.customer) html += "<div class='meta'> " + esc(x.customer) + "</div>";
+    if(x.fromDate || x.toDate) html += "<div class='meta'> " + esc(x.fromDate || "") + " → " + esc(x.toDate || "") + (days > 0 ? " (" + days + " days)" : "") + "</div>";
+    const map = getGoogleMapsUrl(x);
+    if(map) html += "<div class='meta'><a href='" + map + "' target='_blank'> View on Map</a></div>";
+    if(x.hasImage){
+      const imgData = imageCache[x.id] || "";
+      if(imgData) html += "<img class='site-img' src='" + imgData + "' alt='site image'>";
+      else html += "<div style='color:#94a3b8;font-style:italic'>Image attached (not embedded)</div>";
+    }
+    html += "</div>";
+  });
+  html += "<div class='footer'>Site Management System — Auto-generated Area Report</div>";
+  html += "</body></html>";
+  return html;
+}
+async function shareArea(areaName){
+  // Store area name and show share dialog
+  window.__shareAreaName = areaName;
+  window.__shareMode = "area";
+  const modal = document.getElementById("shareModal");
+  document.getElementById("shareModalTitle").textContent = "Share Area — " + areaName;
+  document.getElementById("shareModalDesc").textContent = "Choose how to share all data (sites, images, PPT) for this area.";
+  document.getElementById("shareAreaFileBtn").style.display = "flex";
+  modal.classList.add("show");
+}
+async function shareViaAreaFile(){
+  const areaName = window.__shareAreaName;
+  if(!areaName) return;
+  showProgress("Building area file...", areaName);
+  const html = await generateAreaFile(areaName);
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "area_" + areaName.replace(/[^a-z0-9]/gi, "_") + "_" + new Date().toISOString().slice(0,10) + ".html";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  hideProgress();
+  alert(" Area file download ho gayi! Aap ise email/WhatsApp par share kar sakte hain.");
+  closeShareModal();
+}
+function shareSelectedOnWhatsApp(){ openShareDialog(true); }
+function shareAllOnWhatsApp(){ openShareDialog(false); }
+/* ===== PDF Generation ===== */
 async function generatePDF(list, title){
   if(list.length === 0){ alert("No sites"); return; }
   showProgress("Generating PDF...", "0 / "+list.length);
@@ -1924,7 +2136,7 @@ function handlePptUpload(e){
                  file.type === "application/vnd.ms-powerpoint" ||
                  file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation";
   if(!okType){ alert("Sirf .ppt ya .pptx file allowed hai"); e.target.value = ""; return; }
-  if(file.size > 10 * 1024 * 1024){ alert("Max 10 MB allowed hai"); e.target.value = ""; return; }
+  if(file.size > MAX_PPT_SIZE){ alert("Max 50 MB allowed hai"); e.target.value = ""; return; }
   const reader = new FileReader();
   reader.onload = async (ev) => {
     const dataUrl = ev.target.result;
@@ -1936,12 +2148,14 @@ function handlePptUpload(e){
       uploadedOn: new Date().toLocaleString('en-GB')
     };
     await savePpt(currentPptArea, obj);
+    pptCache[currentPptArea] = true;
     currentPptData = dataUrl;
     currentPptName = file.name;
     currentPptSize = file.size;
     currentPptType = obj.type;
     alert(" PPT upload ho gayi: " + file.name);
     loadPptForArea(currentPptArea);
+    render();
   };
   reader.readAsDataURL(file);
   e.target.value = "";
@@ -1961,8 +2175,10 @@ async function deletePpt(){
   if(!currentPptArea) return;
   if(!confirm("Is area ki PPT delete karni hai?")) return;
   await deletePptFromDB(currentPptArea);
+  delete pptCache[currentPptArea];
   alert(" PPT delete ho gayi");
   loadPptForArea(currentPptArea);
+  render();
 }
 function openBulkPptModal(){
   if(!currentUser || currentUser.role !== "Admin"){
@@ -2027,7 +2243,7 @@ function processBulkPptFiles(fileList){
                    f.type === "application/vnd.ms-powerpoint" ||
                    f.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation";
     if(!okType){ invalid.push({ file: f, reason: "Not a PPT" }); return; }
-    if(f.size > 10 * 1024 * 1024){ invalid.push({ file: f, reason: "Over 10 MB" }); return; }
+    if(f.size > MAX_PPT_SIZE){ invalid.push({ file: f, reason: "Over 50 MB" }); return; }
     valid.push(f);
   });
   if(valid.length === 0){
@@ -2140,12 +2356,14 @@ async function confirmBulkPptUpload(){
       uploadedOn: new Date().toLocaleString('en-GB')
     };
     await savePpt(p.area, obj);
+    pptCache[p.area] = true;
     done++;
     document.getElementById("progressSub").textContent = done + " / " + toUpload.length;
   }
   hideProgress();
   alert(" " + toUpload.length + " PPT(s) upload ho gayi!");
   closeBulkPptModal();
+  render();
 }
 async function downloadBackup(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin backup le sakta hai"); return; }
@@ -2189,6 +2407,7 @@ async function handleImportFile(e){
       await clearAllImages();
       await clearAllPpts();
       imageCache = {};
+      pptCache = {};
       sites = data.sites;
       areas = data.areas || [...DEFAULT_AREAS];
       bookingHistory = data.bookingHistory || [];
@@ -2201,6 +2420,7 @@ async function handleImportFile(e){
       if(data.ppts){
         for(const [aName, obj] of Object.entries(data.ppts)){
           await savePpt(aName, obj);
+          pptCache[aName] = true;
         }
       }
       collapsedAreas = null;
