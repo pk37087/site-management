@@ -222,7 +222,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .ppt-option .ppt-title{font-size:13px;font-weight:700;color:#0f172a;margin-bottom:3px}
 .ppt-option .ppt-desc{font-size:10px;color:#64748b;line-height:1.3}
 
-/* History search box inside modal */
 .history-search-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:14px;display:flex;gap:8px;align-items:center}
 .history-search-box input{flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;outline:none;font-size:14px !important;height:40px}
 .history-search-box button{padding:0 16px;height:40px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px}
@@ -554,13 +553,10 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <label class="full-width">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
     <span>Status</span>
-    <label style="display:flex;align-items:center;gap:6px;font-weight:500;color:#64748b;font-size:11px;cursor:pointer;margin:0">
-      <input type="checkbox" id="fautostatus" checked style="width:16px;height:16px;accent-color:#3b82f6;margin:0" onchange="toggleAutoStatus()">
-      Auto-set (based on dates)
-    </label>
+    <span id="statusAutoHint" style="font-weight:600;color:#0ea5e9;font-size:11px">⚡ Auto from dates</span>
   </div>
   <select id="fstatus" style="margin-top:6px"><option>Available</option><option>Not Available</option><option>Under Maintenance</option></select>
-  <div id="statusHint" style="font-size:11px;color:#64748b;margin-top:4px;display:none">💡 Date range future me hai → status automatically "Not Available" hoga</div>
+  <div id="statusHint" style="font-size:11px;color:#64748b;margin-top:6px;background:#eff6ff;padding:6px 10px;border-radius:6px;border:1px solid #bfdbfe">💡 Booking dates dene par status automatically "Not Available" ho jayega</div>
 </label>
 <label>Booking From<div class="date-row"><select id="ffrom_d"></select><select id="ffrom_m"></select><select id="ffrom_y"></select></div></label>
 <label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
@@ -696,51 +692,66 @@ function updateMultiStatusLabel(){
 }
 function statusMatchesFilter(status){ if(activeStatuses.size === 0) return true; return activeStatuses.has(status); }
 
-/* ============ STATUS AUTO-LOGIC ============ */
-function toggleAutoStatus(){
-  const auto = document.getElementById("fautostatus").checked;
+/* ============ STATUS AUTO-LOGIC (from dates) ============ */
+/* Rule:
+   - Agar From aur To dates dono di hain aur To date aaj ya future me hai → Not Available
+   - Agar To date past me hai → Available
+   - Agar dates khaali hain → Available
+   - Agar user ne manually "Under Maintenance" select kiya → wahi rahega (exception)
+*/
+function autoStatusFromDates(){
+  const from = getDateFromDropdowns("ffrom");
+  const to = getDateFromDropdowns("fto");
   const sel = document.getElementById("fstatus");
   const hint = document.getElementById("statusHint");
-  if(auto){
-    sel.disabled = true;
-    sel.style.background = "#f1f5f9";
-    hint.style.display = "block";
-    recalcAutoStatus();
-  } else {
-    sel.disabled = false;
-    sel.style.background = "#fff";
-    hint.style.display = "none";
-  }
-}
-function recalcAutoStatus(){
-  if(!document.getElementById("fautostatus").checked) return;
-  const fromVal = getDateFromDropdowns("ffrom");
-  const toVal = getDateFromDropdowns("fto");
-  const sel = document.getElementById("fstatus");
-  // If no dates → Available
-  if(!fromVal || !toVal){
-    sel.value = "Available";
+  if(!sel || !hint) return;
+  
+  // Respect manual "Under Maintenance"
+  if(sel.value === "Under Maintenance"){
+    hint.innerHTML = "⚠️ <b>Manual:</b> Under Maintenance selected. Ye status manually manage hoga.";
+    hint.style.background = "#fef3c7";
+    hint.style.borderColor = "#fcd34d";
     return;
   }
-  const today = new Date(); today.setHours(0,0,0,0);
-  const toDate = new Date(ddmmyyyyToISO(toVal));
-  const fromDate = new Date(ddmmyyyyToISO(fromVal));
-  // If To date is today or in future AND (From date is today or future OR From is past but To is future)
-  // → means booking is active → Not Available
-  if(toDate >= today){
-    // Booking is currently active or upcoming
-    sel.value = "Not Available";
-  } else {
-    // Booking already ended
+  
+  if(!from || !to){
     sel.value = "Available";
+    hint.innerHTML = "💡 Koi booking date nahi → status <b>Available</b> rahega";
+    hint.style.background = "#ecfdf5";
+    hint.style.borderColor = "#a7f3d0";
+    return;
+  }
+  
+  const today = new Date(); today.setHours(0,0,0,0);
+  const toDate = new Date(ddmmyyyyToISO(to));
+  
+  if(toDate >= today){
+    sel.value = "Not Available";
+    hint.innerHTML = "⚡ Booking dates future me hain → status <b>Not Available</b> set ho gaya";
+    hint.style.background = "#fef2f2";
+    hint.style.borderColor = "#fecaca";
+  } else {
+    sel.value = "Available";
+    hint.innerHTML = "💡 Booking date past me hai → status <b>Available</b> set ho gaya";
+    hint.style.background = "#ecfdf5";
+    hint.style.borderColor = "#a7f3d0";
   }
 }
-function autoDetectStatusForSave(fromVal, toVal){
+
+/* Status dropdown change hone par hint update */
+document.addEventListener("change", function(e){
+  if(e.target && e.target.id === "fstatus"){
+    autoStatusFromDates();
+  }
+});
+
+/* Get forced status for saving */
+function getForcedStatus(userSelected, fromVal, toVal){
+  if(userSelected === "Under Maintenance") return "Under Maintenance";
   if(!fromVal || !toVal) return "Available";
   const today = new Date(); today.setHours(0,0,0,0);
   const toDate = new Date(ddmmyyyyToISO(toVal));
-  if(toDate >= today) return "Not Available";
-  return "Available";
+  return toDate >= today ? "Not Available" : "Available";
 }
 
 /* ============ PPT FORMAT ============ */
@@ -1317,15 +1328,19 @@ function parseCSV(text){
     const siteName = cells[idx.site];
     const codeMatch = siteName.match(/^([A-Z]{2,5}\d{1,4})/i);
     const siteCode = codeMatch ? codeMatch[1].toUpperCase() : "";
+    const fromD = idx.from !== undefined ? (cells[idx.from]||"") : "";
+    const toD = idx.to !== undefined ? (cells[idx.to]||"") : "";
+    let userStatus = normalizeStatus(idx.status !== undefined ? cells[idx.status] : "Available");
+    // Force auto status based on dates unless Under Maintenance
+    if(userStatus !== "Under Maintenance") userStatus = getForcedStatus("Available", fromD, toD);
     bulkParsedSites.push({
       id: "id_"+Math.random().toString(36).slice(2,10),
       area: areaVal, site: siteName, siteCode: siteCode,
       location: idx.location !== undefined ? (cells[idx.location]||"") : "",
       customer: idx.company !== undefined ? (cells[idx.company]||"") : "",
       rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "",
-      status: normalizeStatus(idx.status !== undefined ? cells[idx.status] : "Available"),
-      fromDate: idx.from !== undefined ? (cells[idx.from]||"") : "",
-      toDate: idx.to !== undefined ? (cells[idx.to]||"") : "",
+      status: userStatus,
+      fromDate: fromD, toDate: toD,
       lat: "", lng: "", hasImage: false
     });
   }
@@ -1335,9 +1350,9 @@ function parseCSV(text){
   const prev = document.getElementById("bulkPreview");
   if(bulkParsedSites.length === 0){ sum.textContent = "No valid sites"; wrap.style.display = "block"; return; }
   sum.textContent = bulkParsedSites.length + " valid sites ready";
-  let html = '<table><thead><tr><th>#</th><th>Area</th><th>Site</th><th>Code</th><th>Location</th><th>Rate</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>#</th><th>Area</th><th>Site</th><th>Code</th><th>Location</th><th>Rate</th><th>Status</th></tr></thead><tbody>';
   bulkParsedSites.slice(0, 30).forEach((p, i) => {
-    html += '<tr><td>'+(i+1)+'</td><td>'+esc(p.area)+'</td><td>'+esc(p.site)+'</td><td>'+esc(p.siteCode||"—")+'</td><td>'+esc(p.location)+'</td><td>'+esc(p.rate)+'</td></tr>';
+    html += '<tr><td>'+(i+1)+'</td><td>'+esc(p.area)+'</td><td>'+esc(p.site)+'</td><td>'+esc(p.siteCode||"—")+'</td><td>'+esc(p.location)+'</td><td>'+esc(p.rate)+'</td><td>'+esc(p.status)+'</td></tr>';
   });
   html += '</tbody></table>';
   prev.innerHTML = html;
@@ -1429,11 +1444,8 @@ async function confirmBulkUpload(){
     if(bulkParsedSites.length === 0){ alert("Koi site nahi"); return; }
     let added = 0, updated = 0;
     bulkParsedSites.forEach(n => {
-      // ✅ Auto-detect status from dates for CSV imports too
-      if(n.fromDate && n.toDate){
-        const autoStatus = autoDetectStatusForSave(n.fromDate, n.toDate);
-        if(n.status === "Available" || !n.status){ n.status = autoStatus; }
-      }
+      // ✅ Force auto status on import too
+      if(n.status !== "Under Maintenance"){ n.status = getForcedStatus("Available", n.fromDate, n.toDate); }
       const existing = sites.findIndex(s => s.site === n.site);
       if(existing >= 0){ sites[existing] = { ...sites[existing], ...n, id: sites[existing].id }; updated++; }
       else { sites.push(n); added++; }
@@ -1586,8 +1598,8 @@ function updateCalcPreview(){
   let extra = "";
   if(from && to && days === 0) extra = " - To date From se pehle!";
   document.getElementById("calcPreview").innerHTML = "From: " + (from||"") + " - To: " + (to||"") + " - Days: " + days + extra;
-  // ✅ Auto-update status hint
-  recalcAutoStatus();
+  // ✅ Auto-update status based on dates
+  autoStatusFromDates();
 }
 
 async function autoReleaseExpiredSites(){
@@ -1806,9 +1818,6 @@ function openAdd(){
   document.getElementById("fcustomer").value = "";
   document.getElementById("frate").value = "";
   document.getElementById("fstatus").value = "Available";
-  // ✅ Reset auto-status checkbox to checked
-  document.getElementById("fautostatus").checked = true;
-  toggleAutoStatus();
   currentImageData = ""; removeImage();
   document.getElementById("farea").value = areas[0] || "";
   const t = new Date();
@@ -1834,9 +1843,6 @@ async function editSite(i){
   document.getElementById("fcustomer").value = x.customer || "";
   document.getElementById("frate").value = x.rate || "";
   document.getElementById("fstatus").value = x.status;
-  // When editing, disable auto-status by default (so user can manually adjust if needed)
-  document.getElementById("fautostatus").checked = false;
-  toggleAutoStatus();
   setDateDropdowns("ffrom", x.fromDate || ""); setDateDropdowns("fto", x.toDate || "");
   if(x.lat && x.lng){ document.getElementById("gpsStatus").textContent = "GPS: " + x.lat + ", " + x.lng; document.getElementById("gpsStatus").className = "gps-status ok"; }
   else { document.getElementById("gpsStatus").textContent = "GPS not captured"; document.getElementById("gpsStatus").className = "gps-status"; }
@@ -1853,11 +1859,9 @@ async function saveSite(){
   if(fromVal && isPastDate(fromVal)){ if(!confirm("Past date. Continue?")) return; }
   if(toVal && isPastDate(toVal)){ if(!confirm("Past date. Continue?")) return; }
   if(fromVal && toVal && calcDays(fromVal, toVal) === 0){ alert("To date From se pehle"); return; }
-  let statusVal = document.getElementById("fstatus").value;
-  // ✅ If auto-status is checked, override with calculated status
-  if(document.getElementById("fautostatus").checked){
-    statusVal = autoDetectStatusForSave(fromVal, toVal);
-  }
+  const userSelected = document.getElementById("fstatus").value;
+  // ✅ FORCE auto-status based on dates (except Under Maintenance)
+  const statusVal = getForcedStatus(userSelected, fromVal, toVal);
   const id = editIndex < 0 ? "id_"+Math.random().toString(36).slice(2,10) : sites[editIndex].id;
   const hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
   const oldStatus = editIndex < 0 ? null : sites[editIndex].status;
@@ -2245,7 +2249,7 @@ async function generateSelectedSitesPPT(){
   }
 }
 
-/* ============ HISTORY (FIXED) ============ */
+/* ============ HISTORY ============ */
 function openHistoryModal(){
   historySearchQuery = "";
   document.getElementById("historySearchInput").value = "";
