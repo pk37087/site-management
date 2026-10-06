@@ -500,6 +500,7 @@ const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing
 const MAX_PPT_SIZE = 100 * 1024 * 1024;
 const COMPANY_NAME = "Site Management System";
 const COMPANY_TAGLINE = "Professional Site Booking & Management";
+const LOGO_URL = "logo.png";
 
 let currentUser = null;
 let sites = [];
@@ -539,7 +540,6 @@ async function apiDelete(path){
   try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); }
   catch(e){ return { success: false, error: e.message }; }
 }
-
 async function loadCloudData(){
   const result = await apiGet("/data");
   if(result && result.success){
@@ -1069,7 +1069,6 @@ function renderBulkPptPreview(invalidList){
 
 async function confirmBulkUpload(){
   const activeTab = document.querySelector(".bulk-tab.active").id;
-  
   if(activeTab === "tabSites"){
     if(bulkParsedSites.length === 0){ alert("Koi site nahi"); return; }
     let added = 0, updated = 0;
@@ -1083,7 +1082,6 @@ async function confirmBulkUpload(){
     alert("✅ Sites added: " + added + (updated > 0 ? "\nUpdated: " + updated : ""));
     return;
   }
-  
   if(activeTab === "tabImages"){
     const matched = bulkParsedImages.filter(p => p.matched && p.siteId && p.dataUrl);
     if(matched.length === 0){ alert("Koi matched image nahi"); return; }
@@ -1106,7 +1104,6 @@ async function confirmBulkUpload(){
     alert("✅ Images: " + success + " / " + matched.length + (failed > 0 ? "\n❌ Failed: " + failed : ""));
     return;
   }
-  
   if(activeTab === "tabPpts"){
     const matched = bulkPptParsed.filter(p => p.matched);
     if(matched.length === 0){ alert("Koi matched PPT nahi"); return; }
@@ -1655,7 +1652,7 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-/* ============ PPT GENERATOR ============ */
+/* ============ PPT GENERATOR (UPDATED: Logo + No Title + Side Code) ============ */
 async function generateSelectedSitesPPT(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   const list = sites.filter(s => selectedSites.has(s.id));
@@ -1668,15 +1665,25 @@ async function generateSelectedSitesPPT(){
     pptx.layout = "LAYOUT_WIDE";
     pptx.author = COMPANY_NAME;
 
+    // COVER SLIDE
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
-    slide.addShape(pptx.ShapeType.roundRect, { x: 0.7, y: 0.7, w: 0.7, h: 0.7, fill: { color: "FFFFFF" }, rectRadius: 0.1 });
-    slide.addText("S", { x: 0.7, y: 0.7, w: 0.7, h: 0.7, fontSize: 26, bold: true, color: "1E40AF", align: "center", valign: "middle" });
+    
+    // Logo on cover
+    const coverLogoUrl = "https://pk37087.github.io/site-management/logo.png";
+    try {
+      slide.addImage({ path: coverLogoUrl, x: 0.7, y: 0.7, w: 0.7, h: 0.7 });
+    } catch(e) {
+      slide.addShape(pptx.ShapeType.roundRect, { x: 0.7, y: 0.7, w: 0.7, h: 0.7, fill: { color: "FFFFFF" }, rectRadius: 0.1 });
+      slide.addText("S", { x: 0.7, y: 0.7, w: 0.7, h: 0.7, fontSize: 26, bold: true, color: "1E40AF", align: "center", valign: "middle" });
+    }
     slide.addText(COMPANY_NAME.toUpperCase(), { x: 1.6, y: 0.75, w: 8, h: 0.4, fontSize: 13, bold: true, color: "FFFFFF", charSpacing: 3 });
     slide.addText(COMPANY_TAGLINE, { x: 1.6, y: 1.15, w: 8, h: 0.35, fontSize: 10, color: "CBD5E1" });
-    slide.addText(singleArea ? "Site Report" : "Selected Sites Report", { x: 0.7, y: 2.8, w: 12, h: 1.2, fontSize: 54, bold: true, color: "FFFFFF" });
-    slide.addText(singleArea || "Multiple Areas", { x: 0.7, y: 4.0, w: 12, h: 0.6, fontSize: 22, color: "BAE6FD" });
+    
+    // NO "Selected Sites Report" text — only area name big
+    slide.addText(singleArea || "Multiple Areas", { x: 0.7, y: 3.0, w: 12, h: 1.5, fontSize: 54, bold: true, color: "FFFFFF" });
+    
     slide.addShape(pptx.ShapeType.line, { x: 0.7, y: 5.2, w: 11.9, h: 0, line: { color: "60A5FA", width: 1 } });
     slide.addText("Report Date", { x: 0.7, y: 5.4, w: 2, h: 0.3, fontSize: 9, bold: true, color: "93C5FD" });
     slide.addText(new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' }), { x: 0.7, y: 5.7, w: 3, h: 0.4, fontSize: 15, bold: true, color: "FFFFFF" });
@@ -1685,6 +1692,7 @@ async function generateSelectedSitesPPT(){
     slide.addText("Generated", { x: 8.7, y: 5.4, w: 4, h: 0.3, fontSize: 9, bold: true, color: "93C5FD" });
     slide.addText(new Date().toLocaleString('en-GB'), { x: 8.7, y: 5.7, w: 4, h: 0.4, fontSize: 12, bold: true, color: "FFFFFF" });
 
+    // SITE SLIDES
     for(let i = 0; i < list.length; i++){
       const x = list[i];
       showProgress("Generating PPT...", "Slide " + (i+1) + " / " + list.length);
@@ -1695,12 +1703,29 @@ async function generateSelectedSitesPPT(){
       let imgData = null;
       if(x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
       const mapLink = getGoogleMapsUrl(x);
+      
+      // Extract site code (first part before underscore)
+      const siteCode = (x.site || "").split("_")[0].trim() || "";
+      
       slide = pptx.addSlide();
       slide.background = { color: "FFFFFF" };
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.65, fill: { color: "1E3A8A" } });
       slide.addShape(pptx.ShapeType.roundRect, { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fill: { color: "3B82F6" }, rectRadius: 0.08 });
       slide.addText(String(i+1), { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fontSize: 16, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-      slide.addText(x.site, { x: 0.78, y: 0.05, w: 8.5, h: 0.55, fontSize: 14, bold: true, color: "FFFFFF", valign: "middle" });
+      slide.addText(x.site, { x: 0.78, y: 0.05, w: 8.0, h: 0.55, fontSize: 14, bold: true, color: "FFFFFF", valign: "middle" });
+      
+      // SIDE CODE (top-right area, before status)
+      if(siteCode){
+        slide.addShape(pptx.ShapeType.roundRect, { 
+          x: 8.9, y: 0.12, w: 1.4, h: 0.42, 
+          fill: { color: "1D4ED8" }, line: { color: "FFFFFF", width: 1 }, rectRadius: 0.08 
+        });
+        slide.addText(siteCode, { 
+          x: 8.9, y: 0.12, w: 1.4, h: 0.42, 
+          fontSize: 11, bold: true, color: "FFFFFF", align: "center", valign: "middle" 
+        });
+      }
+      
       slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
@@ -1743,6 +1768,7 @@ async function generateSelectedSitesPPT(){
       slide.addText(COMPANY_NAME + "  •  Page " + (i + 2), { x: 0.5, y: 7.18, w: 12.33, h: 0.28, fontSize: 8, color: "94A3B8", align: "center", valign: "middle" });
     }
 
+    // THANK YOU SLIDE
     slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
