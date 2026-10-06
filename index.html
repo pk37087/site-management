@@ -1364,7 +1364,7 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location set"); return; } window.open(url, "_blank"); }
 
-/* ============ PPT GENERATOR (FIXED - USES writeFile) ============ */
+/* ============ PPT GENERATOR ============ */
 async function generateSelectedSitesPPT(){
   if(selectedSites.size === 0){ alert("Pehle kam se kam ek site select karein"); return; }
   const list = sites.filter(s => selectedSites.has(s.id));
@@ -1396,16 +1396,6 @@ async function generateSelectedSitesPPT(){
     slide.addText("Generated", { x: 8.7, y: 5.4, w: 4, h: 0.3, fontSize: 9, bold: true, color: "93C5FD", charSpacing: 2 });
     slide.addText(new Date().toLocaleString('en-GB'), { x: 8.7, y: 5.7, w: 4, h: 0.4, fontSize: 12, bold: true, color: "FFFFFF" });
 
-    // SUMMARY
-    const avail = list.filter(s => s.status === "Available").length;
-    const notAvail = list.filter(s => s.status === "Not Available").length;
-    const maint = list.filter(s => s.status === "Under Maintenance").length;
-    slide = pptx.addSlide();
-    slide.background = { color: "F8FAFC" };
-    slide.addText("EXECUTIVE SUMMARY", { x: 0.7, y: 0.5, w: 12, h: 0.3, fontSize: 11, bold: true, color: "1E40AF", charSpacing: 3 });
-    slide.addText("Site Availability Overview", { x: 0.7, y: 0.85, w: 12, h: 0.7, fontSize: 32, bold: true, color: "0F172A" });
-    slide.addText(String(list.length) + " sites | Available: " + avail + " | Not Available: " + notAvail + " | Maintenance: " + maint, { x: 0.7, y: 2.0, w: 12, h: 0.4, fontSize: 14, color: "334155" });
-
     // SITE SLIDES
     for(let i = 0; i < list.length; i++){
       const x = list[i];
@@ -1428,7 +1418,7 @@ async function generateSelectedSitesPPT(){
       slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
-      // IMAGE - safe add with proper aspect ratio
+      // IMAGE
       const imgBoxY = 0.65, imgBoxH = 5.4;
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "0F172A" } });
       let imageAdded = false;
@@ -1471,10 +1461,11 @@ async function generateSelectedSitesPPT(){
         slide.addText(x.location || "—", { x: colW + 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 12, bold: true, color: "0F172A", valign: "middle" });
       }
 
+      // COMPANY + RATE (Green color, not purple)
       slide.addText("COMPANY", { x: colW*2 + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
       slide.addText(x.customer || "—", { x: colW*2 + 0.15, y: 6.38, w: colW - 0.3, h: 0.3, fontSize: 12, bold: true, color: "059669", valign: "middle" });
       if(x.rate){
-        slide.addText(formatINR(x.rate) + " / month", { x: colW*2 + 0.15, y: 6.72, w: colW - 0.3, h: 0.28, fontSize: 10, bold: true, color: "7C3AED", valign: "middle" });
+        slide.addText(formatINR(x.rate) + " / month", { x: colW*2 + 0.15, y: 6.72, w: colW - 0.3, h: 0.28, fontSize: 10, bold: true, color: "059669", valign: "middle" });
       }
 
       slide.addText("BOOKING", { x: colW*3 + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
@@ -1485,7 +1476,7 @@ async function generateSelectedSitesPPT(){
       }
 
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: 7.15, w: 13.33, h: 0.35, fill: { color: "0F172A" } });
-      slide.addText(COMPANY_NAME + "  •  Page " + (i + 3), { x: 0.5, y: 7.18, w: 12.33, h: 0.28, fontSize: 8, color: "94A3B8", align: "center", valign: "middle" });
+      slide.addText(COMPANY_NAME + "  •  Page " + (i + 2), { x: 0.5, y: 7.18, w: 12.33, h: 0.28, fontSize: 8, color: "94A3B8", align: "center", valign: "middle" });
     }
 
     // END
@@ -1498,7 +1489,6 @@ async function generateSelectedSitesPPT(){
 
     const fileName = (singleArea ? "PPT_" + singleArea.replace(/[^a-z0-9]/gi, "_") : "PPT_Selected_Sites") + "_" + new Date().toISOString().slice(0,10) + ".pptx";
     
-    // Save PPT using official writeFile method (most reliable)
     showProgress("Finalizing PPT...", "Writing file");
     await pptx.writeFile({ fileName: fileName });
     
