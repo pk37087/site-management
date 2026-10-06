@@ -41,23 +41,15 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 .btn-gray{background:#6b7280;color:#fff}
 .btn-red{background:#dc2626;color:#fff}
 .btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
-.sync-status{font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,0.15);display:inline-flex;align-items:center;gap:6px;font-weight:600}
-.sync-status.synced{background:rgba(16,185,129,0.25)}
-.sync-status.syncing{background:rgba(245,158,11,0.25)}
-.sync-status.error{background:rgba(239,68,68,0.3)}
-.sync-dot{width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block}
-.sync-status.syncing .sync-dot{background:#f59e0b;animation:pulse 1s infinite}
-.sync-status.error .sync-dot{background:#ef4444}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;position:relative;overflow:hidden;cursor:pointer;transition:all 0.15s ease;user-select:none}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:all 0.15s ease;user-select:none;min-height:110px;display:flex;flex-direction:column;justify-content:center}
 .card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(15,23,42,0.08)}
 .card.active-filter{box-shadow:0 0 0 3px rgba(59,130,246,0.25);border-color:#3b82f6}
 .card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
-.card span{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.3px}
-.card b{display:block;font-size:28px;font-weight:700;color:#0f172a;margin-top:8px;line-height:1}
+.card span{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:8px}
+.card b{display:block;font-size:32px;font-weight:700;color:#0f172a;line-height:1;margin:0}
 .card.available::before{background:#10b981}.card.available b{color:#047857}
 .card.notavailable::before{background:#ef4444}.card.notavailable b{color:#b91c1c}
 .card.maintenance::before{background:#f59e0b}.card.maintenance b{color:#b45309}
@@ -68,15 +60,17 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 .toolbar button{padding:11px 16px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;transition:all 0.15s ease;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px}
 .toolbar button:hover{background:#f1f5f9}
 .toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
-.select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:10px 14px;border-radius:10px;margin-bottom:14px;display:none;align-items:center;gap:8px;flex-wrap:wrap}
+.select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:10px 14px;border-radius:10px;margin-bottom:14px;display:none;align-items:stretch;gap:8px;flex-wrap:wrap}
 .select-bar.show{display:flex}
-.select-bar .count-badge{background:#f59e0b;color:#fff;padding:6px 12px;border-radius:6px;font-weight:700;font-size:12px}
-.select-bar button{padding:8px 14px;font-size:12px;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;color:#fff;min-height:36px}
+.select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 16px;border-radius:6px;font-weight:700;font-size:13px;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:110px}
+.select-bar button{padding:0 16px;font-size:13px;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;color:#fff;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:130px;transition:all 0.15s ease}
+.select-bar button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
 .select-bar .share-sel{background:#059669}
 .select-bar .pdf-sel{background:#dc2626}
-.select-bar .clear-sel{background:#fff;color:#334155;border-color:#e2e8f0}
+.select-bar .clear-sel{background:#fff;color:#334155;border-color:#cbd5e1}
 .select-bar .delete-sel{background:#dc2626}
 .select-bar .ppt-sel{background:#7c3aed}
+.select-bar .bulk-status-sel{background:#0ea5e9}
 #areaContainer{display:grid;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:12px;align-items:start;grid-auto-rows:min-content}
 .area-block{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,0.04);height:fit-content;align-self:start}
 .area-header{background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;flex-wrap:wrap;gap:8px;border-radius:14px 14px 0 0}
@@ -202,17 +196,17 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
   #app{padding-top:130px}
   .container{padding:0 12px;margin:14px auto}
   .cards{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-  .card{padding:14px}
-  .card span{font-size:10px}
-  .card b{font-size:24px;margin-top:6px}
+  .card{padding:16px;min-height:95px}
+  .card span{font-size:10px;margin-bottom:6px}
+  .card b{font-size:26px}
   .toolbar{padding:10px;gap:8px}
   .toolbar input{min-width:100%;flex:1 1 100%}
   .toolbar select{flex:1 1 100%;width:100%}
   .toolbar button{flex:1;min-width:calc(50% - 4px);padding:11px 8px;font-size:12px;justify-content:center}
   .toolbar button.refresh-btn{flex:1 1 100%}
   .select-bar{padding:10px 12px}
-  .select-bar .count-badge{width:100%;text-align:center}
-  .select-bar button{flex:1;min-width:calc(50% - 4px);font-size:11px;padding:8px 8px}
+  .select-bar .count-badge{width:100%;text-align:center;min-height:40px}
+  .select-bar button{flex:1;min-width:calc(50% - 4px);font-size:12px;padding:0 8px;min-height:44px}
   .area-block{border-radius:12px}
   .area-header{padding:10px 10px;border-radius:12px 12px 0 0}
   .area-header .area-name{font-size:13px}
@@ -268,7 +262,6 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 <header id="mainHeader">
   <div class="header-left"><h1>Site Management</h1></div>
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;width:auto;flex:1;justify-content:flex-end">
-    <span class="sync-status synced" id="syncStatus"><span class="sync-dot"></span><span id="syncText">Synced</span></span>
     <span class="header-user" id="userInfo">Loading...</span>
     <div class="header-actions">
       <button class="btn-green" onclick="openShareDialog()">Share</button>
@@ -306,8 +299,7 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
   <span class="count-badge" id="selCount">0 selected</span>
   <button class="ppt-sel" onclick="generateSelectedSitesPPT()">📊 Generate PPT</button>
   <button class="share-sel" onclick="openShareDialog(true)">Share Selected</button>
-  <button class="pdf-sel" onclick="generatePDFSelected()">PDF Report</button>
-  <button onclick="openBulkStatusModal()" style="background:#0ea5e9;color:#fff;border:0;border-radius:6px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer">Bulk Status</button>
+  <button class="bulk-status-sel" onclick="openBulkStatusModal()">Bulk Status</button>
   <button class="clear-sel" onclick="clearSelection()">Clear</button>
   <button class="delete-sel" id="deleteBtn" onclick="bulkDeleteSelected()" style="display:none">Delete</button>
 </div>
@@ -573,11 +565,8 @@ async function apiDelete(path){
 }
 
 function setSyncStatus(status, text){
-  const el = document.getElementById("syncStatus");
-  const txt = document.getElementById("syncText");
-  if(!el || !txt) return;
-  el.className = "sync-status " + status;
-  txt.textContent = text || status;
+  // Sync status badge removed - silent operation
+  return;
 }
 
 async function loadCloudData(){
@@ -1379,7 +1368,6 @@ async function generateSelectedSitesPPT(){
   const list = sites.filter(s => selectedSites.has(s.id));
   if(list.length === 0){ alert("Koi site nahi mili"); return; }
 
-  // Detect area if all selected are from same area
   const uniqueAreas = [...new Set(list.map(s => s.area || "Unassigned"))];
   const singleArea = uniqueAreas.length === 1 ? uniqueAreas[0] : null;
 
@@ -1387,14 +1375,13 @@ async function generateSelectedSitesPPT(){
 
   try {
     const pptx = new PptxGenJS();
-    pptx.layout = "LAYOUT_WIDE"; // 13.33 x 7.5 inches
+    pptx.layout = "LAYOUT_WIDE";
     pptx.title = singleArea ? "Site Report - " + singleArea : "Selected Sites Report";
     pptx.author = COMPANY_NAME;
 
     // ---------- COVER SLIDE ----------
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
-    // Gradient-like effect using shapes
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
     slide.addShape(pptx.ShapeType.ellipse, { x: 8, y: -2, w: 8, h: 8, fill: { color: "1D4ED8" }, line: { color: "1D4ED8" } });
     slide.addShape(pptx.ShapeType.ellipse, { x: -3, y: 5, w: 8, h: 8, fill: { color: "1E40AF" }, line: { color: "1E40AF" } });
@@ -1436,34 +1423,29 @@ async function generateSelectedSitesPPT(){
     const totalW = cardW * 4 + gap * 3;
     const startX = (13.33 - totalW) / 2;
 
-    // Total
     slide.addShape(pptx.ShapeType.roundRect, { x: startX, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
     slide.addShape(pptx.ShapeType.rect, { x: startX, y: cardY, w: 0.08, h: cardH, fill: { color: "64748B" } });
     slide.addText("TOTAL SITES", { x: startX + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "64748B", charSpacing: 2 });
     slide.addText(String(list.length), { x: startX + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "0F172A" });
 
-    // Available
     const x2 = startX + cardW + gap;
     slide.addShape(pptx.ShapeType.roundRect, { x: x2, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
     slide.addShape(pptx.ShapeType.rect, { x: x2, y: cardY, w: 0.08, h: cardH, fill: { color: "10B981" } });
     slide.addText("AVAILABLE", { x: x2 + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "047857", charSpacing: 2 });
     slide.addText(String(avail), { x: x2 + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "047857" });
 
-    // Not Available
     const x3 = startX + (cardW + gap) * 2;
     slide.addShape(pptx.ShapeType.roundRect, { x: x3, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
     slide.addShape(pptx.ShapeType.rect, { x: x3, y: cardY, w: 0.08, h: cardH, fill: { color: "EF4444" } });
     slide.addText("NOT AVAILABLE", { x: x3 + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "B91C1C", charSpacing: 2 });
     slide.addText(String(notAvail), { x: x3 + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "B91C1C" });
 
-    // Maintenance
     const x4 = startX + (cardW + gap) * 3;
     slide.addShape(pptx.ShapeType.roundRect, { x: x4, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
     slide.addShape(pptx.ShapeType.rect, { x: x4, y: cardY, w: 0.08, h: cardH, fill: { color: "F59E0B" } });
     slide.addText("MAINTENANCE", { x: x4 + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "B45309", charSpacing: 2 });
     slide.addText(String(maint), { x: x4 + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "B45309" });
 
-    // Progress bar
     slide.addShape(pptx.ShapeType.rect, { x: 0.7, y: 4.6, w: 11.93, h: 0.15, fill: { color: "E2E8F0" } });
     if(list.length > 0){
       let barX = 0.7;
@@ -1485,7 +1467,6 @@ async function generateSelectedSitesPPT(){
       if(x.status === "Not Available"){ stColor = "DC2626"; stText = "Not Available"; }
       else if(x.status === "Under Maintenance"){ stColor = "D97706"; stText = "Under Maintenance"; }
 
-      // Get image
       let imgData = null;
       if(x.hasImage){
         imgData = imageCache[x.id] || await getImage(x.id);
@@ -1494,27 +1475,21 @@ async function generateSelectedSitesPPT(){
       slide = pptx.addSlide();
       slide.background = { color: "FFFFFF" };
 
-      // Top bar - area name
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.5, fill: { color: "1E3A8A" } });
       slide.addText((x.area || "Unassigned").toUpperCase(), { x: 0.5, y: 0.1, w: 8, h: 0.3, fontSize: 10, bold: true, color: "FFFFFF", charSpacing: 3 });
       slide.addText("SITE " + (i+1) + " / " + list.length, { x: 8, y: 0.1, w: 4.8, h: 0.3, fontSize: 10, bold: true, color: "BAE6FD", align: "right", charSpacing: 2 });
 
-      // Status badge top right
       slide.addShape(pptx.ShapeType.roundRect, { x: 10.5, y: 0.65, w: 2.4, h: 0.35, fill: { color: stColor }, line: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 10.5, y: 0.65, w: 2.4, h: 0.35, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
-      // Site number badge
       slide.addShape(pptx.ShapeType.roundRect, { x: 0.5, y: 0.65, w: 0.55, h: 0.55, fill: { color: "1E40AF" }, line: { color: "1E40AF" }, rectRadius: 0.1 });
       slide.addText(String(i+1), { x: 0.5, y: 0.65, w: 0.55, h: 0.55, fontSize: 18, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
-      // Site title
       slide.addText(x.site, { x: 1.2, y: 0.7, w: 9.2, h: 0.9, fontSize: 20, bold: true, color: "0F172A" });
 
-      // Image (left side)
       if(imgData){
         try {
           slide.addImage({ data: imgData, x: 0.5, y: 1.85, w: 5.2, h: 4.8, sizing: { type: "contain", w: 5.2, h: 4.8 } });
-          // Border
           slide.addShape(pptx.ShapeType.rect, { x: 0.5, y: 1.85, w: 5.2, h: 4.8, fill: { type: "none" }, line: { color: "E2E8F0", width: 1 } });
         } catch(e){ console.warn("Image add fail:", e); }
       } else {
@@ -1522,7 +1497,6 @@ async function generateSelectedSitesPPT(){
         slide.addText("No Image", { x: 0.5, y: 1.85, w: 5.2, h: 4.8, fontSize: 14, color: "94A3B8", align: "center", valign: "middle" });
       }
 
-      // Details (right side)
       const detailX = 6.0;
       const detailW = 6.9;
       let detailY = 1.85;
@@ -1550,7 +1524,6 @@ async function generateSelectedSitesPPT(){
         if(mapUrl) addDetailRow("MAP", mapUrl);
       }
 
-      // Footer
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: 7.1, w: 13.33, h: 0.4, fill: { color: "0F172A" } });
       slide.addText(COMPANY_NAME + "  •  Page " + (i + 3), { x: 0.5, y: 7.15, w: 12.33, h: 0.3, fontSize: 8, color: "94A3B8", align: "center" });
     }
@@ -1563,7 +1536,6 @@ async function generateSelectedSitesPPT(){
     slide.addText(COMPANY_NAME, { x: 0, y: 4.2, w: 13.33, h: 0.5, fontSize: 16, color: "BAE6FD", align: "center", charSpacing: 3 });
     slide.addText(COMPANY_TAGLINE, { x: 0, y: 4.7, w: 13.33, h: 0.4, fontSize: 11, color: "93C5FD", align: "center" });
 
-    // ---------- SAVE ----------
     const fileName = (singleArea ? "PPT_" + singleArea.replace(/[^a-z0-9]/gi, "_") : "PPT_Selected_Sites") + "_" + new Date().toISOString().slice(0,10) + ".pptx";
     await pptx.writeFile({ fileName });
     hideProgress();
