@@ -1,1 +1,2025 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>Site Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{max-width:100%}
+html{overflow-x:hidden}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#f8fafc;color:#0f172a;-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5;-webkit-tap-highlight-color:transparent;overflow-x:clip}
+.hidden{display:none !important}
+button{touch-action:manipulation}
+input,select,textarea{font-size:16px !important}
+.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+.login-box{background:#fff;border-radius:20px;padding:32px 24px;width:min(420px,100%);box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-box h1{font-size:22px;font-weight:700;color:#0f172a;margin-bottom:8px;text-align:center}
+.login-box .subtitle{text-align:center;color:#64748b;font-size:13px;margin-bottom:24px}
+.login-box label{display:block;font-size:12px;font-weight:600;color:#475569;margin-bottom:6px;margin-top:16px}
+.login-box input{width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;outline:none}
+.login-box input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+.login-box button{width:100%;padding:15px;background:#1d4ed8;color:#fff;border:0;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:24px;min-height:48px}
+.login-box button:disabled{background:#94a3b8;cursor:not-allowed}
+.login-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:12px;border-radius:8px;font-size:13px;margin-top:16px;display:none}
+.login-error.show{display:block}
+header{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #1e40af;position:fixed;top:0;left:0;right:0;width:100%;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
+.header-left h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
+.header-left h1::before{content:'';display:inline-block;width:8px;height:8px;background:#fff;border-radius:2px;box-shadow:0 0 0 3px rgba(255,255,255,0.25);flex-shrink:0}
+.header-user{background:rgba(255,255,255,0.15);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap}
+.header-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.header-actions button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;white-space:nowrap;transition:all 0.15s ease;min-height:36px}
+.btn-green{background:#059669;color:#fff}
+.btn-yellow{background:#f59e0b;color:#fff}
+.btn-pink{background:#be185d;color:#fff}
+.btn-gray{background:#6b7280;color:#fff}
+.btn-red{background:#dc2626;color:#fff}
+.btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
+#app{padding-top:70px}
+.container{max-width:1600px;margin:20px auto;padding:0 20px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:all 0.15s ease;user-select:none;min-height:110px;display:flex;flex-direction:column;justify-content:center}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(15,23,42,0.08)}
+.card.active-filter{box-shadow:0 0 0 3px rgba(59,130,246,0.25);border-color:#3b82f6}
+.card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
+.card span{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:8px}
+.card b{display:block;font-size:32px;font-weight:700;color:#0f172a;line-height:1;margin:0}
+.card.available::before{background:#10b981}.card.available b{color:#047857}
+.card.notavailable::before{background:#ef4444}.card.notavailable b{color:#b91c1c}
+.card.maintenance::before{background:#f59e0b}.card.maintenance b{color:#b45309}
+.toolbar{background:#fff;padding:12px;border-radius:12px;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;border:1px solid #e2e8f0;align-items:center}
+.toolbar input,.toolbar select{padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;background:#fff;outline:none;color:#0f172a}
+.toolbar input:focus,.toolbar select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+.toolbar input{min-width:200px;flex:1}
+.toolbar button{padding:11px 16px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;transition:all 0.15s ease;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px}
+.toolbar button:hover{background:#f1f5f9}
+.toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
+.select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:10px 14px;border-radius:10px;margin-bottom:14px;display:none;align-items:stretch;gap:8px;flex-wrap:wrap}
+.select-bar.show{display:flex}
+.select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 16px;border-radius:6px;font-weight:700;font-size:13px;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:110px}
+.select-bar button{padding:0 16px;font-size:13px;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;color:#fff;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:130px;transition:all 0.15s ease}
+.select-bar button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.select-bar .share-sel{background:#059669}
+.select-bar .pdf-sel{background:#dc2626}
+.select-bar .clear-sel{background:#fff;color:#334155;border-color:#cbd5e1}
+.select-bar .delete-sel{background:#dc2626}
+.select-bar .ppt-sel{background:#7c3aed}
+.select-bar .bulk-status-sel{background:#0ea5e9}
+#areaContainer{display:grid;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:12px;align-items:start;grid-auto-rows:min-content}
+.area-block{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,0.04);height:fit-content;align-self:start}
+.area-header{background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;flex-wrap:wrap;gap:8px;border-radius:14px 14px 0 0}
+.area-header .area-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;margin-left:2px}
+.area-header .area-count{background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.area-header .area-actions{display:flex;gap:6px;align-items:center}
+.area-header .area-actions button{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;min-height:28px}
+.area-header .area-actions button.ppt-has{background:#10b981;border-color:#059669;color:#fff}
+.area-header .area-actions button.ppt-empty{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.25);color:rgba(255,255,255,0.85)}
+.area-header .toggle-icon{font-size:13px}
+.area-block.collapsed .toggle-icon{transform:rotate(-90deg);display:inline-block}
+.area-block.collapsed .area-content{display:none}
+.area-header .select-all-cb{width:18px;height:18px;cursor:pointer;accent-color:#fff;margin-right:4px;flex-shrink:0}
+.area-content{padding:0}
+.area-filter-bar{padding:8px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.area-filter-bar select{padding:6px 10px;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;font-family:inherit;cursor:pointer;outline:none;color:#334155}
+.area-filter-count{font-size:11px;color:#64748b;margin-left:auto;font-weight:600}
+.empty-area{padding:18px;text-align:center;color:#94a3b8;font-style:italic;font-size:12px}
+.site-cards-grid{display:grid;grid-template-columns:1fr;gap:4px;padding:6px}
+.site-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px;display:flex;flex-direction:row;align-items:flex-start;gap:12px;min-width:0}
+.site-card.not-card{background:#fef2f2;border-color:#fecaca}
+.site-card.maint-card{background:#fffbeb;border-color:#fcd34d}
+.site-card.selected-card{background:#fef3c7;border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.2)}
+.site-card-top{display:flex;align-items:center;gap:6px;flex-shrink:0;padding-top:2px}
+.site-card-cb{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6;flex-shrink:0}
+.site-card-num{font-size:10px;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:2px 6px;border-radius:3px;min-width:28px;text-align:center}
+.site-card-img{width:80px;height:80px;border-radius:8px;object-fit:cover;border:1px solid #e2e8f0;cursor:pointer;flex-shrink:0}
+.site-card-img.no-img{display:flex;align-items:center;justify-content:center;font-size:26px;color:#94a3b8;background:#f8fafc;border:2px dashed #cbd5e1;cursor:pointer;transition:all 0.15s}
+.site-card-img.no-img:hover{background:#eff6ff;border-color:#3b82f6;color:#3b82f6}
+.site-card-body{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.site-card-name{font-size:14px;font-weight:700;color:#0f172a;line-height:1.4;word-break:break-word;overflow-wrap:anywhere}
+.site-card-loc-inline{font-size:11px;color:#0891b2;font-weight:500;background:#f0f9ff;padding:3px 8px;border-radius:4px;border:1px solid #bae6fd;margin-left:6px;display:inline-block;vertical-align:middle;line-height:1.3;word-break:break-word;max-width:100%}
+.site-card-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:11px;color:#64748b}
+.site-card-meta .site-card-comp{font-size:11px;color:#334155;font-weight:500;word-break:break-word}
+.site-card-meta .site-card-dates{font-size:11px;color:#64748b;display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.site-card-rate{font-size:11px;color:#059669;font-weight:700;background:#ecfdf5;padding:2px 8px;border-radius:4px;border:1px solid #a7f3d0;display:inline-block}
+.site-card-status{flex-shrink:0;display:flex;align-items:center;padding-top:4px}
+.site-card-status .status{font-size:10px;padding:4px 10px;white-space:nowrap}
+.site-card-actions{display:flex;gap:4px;flex-shrink:0;padding-top:2px;flex-direction:column}
+.site-card-actions button{padding:6px 12px;font-size:11px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;background:#f1f5f9;color:#334155;white-space:nowrap;min-height:32px}
+.site-card-actions button.history-btn{background:#ede9fe;color:#6d28d9}
+.site-card-actions button.map-btn{background:#cffafe;color:#0e7490}
+.status{font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;font-size:9px;text-transform:uppercase;letter-spacing:0.3px}
+.s-available{background:#d1fae5;color:#065f46}
+.s-not{background:#fee2e2;color:#991b1b}
+.s-maintenance{background:#fef3c7;color:#92400e}
+.days-badge{background:#eef2ff;color:#4338ca;font-weight:600;padding:1px 5px;border-radius:3px;font-size:9px;display:inline-block;border:1px solid #c7d2fe}
+.modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;z-index:2000;overflow-y:auto}
+.modal.show{display:flex}
+.box{background:#fff;border-radius:16px;padding:24px;width:min(700px,100%);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,0.3);margin:auto}
+.box h2{margin:0 0 18px 0;font-size:19px;font-weight:700}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.formgrid label{font-size:12px;color:#475569;font-weight:600;display:block}
+.formgrid input,.formgrid select{width:100%;margin-top:6px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none}
+.formgrid input:focus,.formgrid select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+.full-width{grid-column:1/-1}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px;padding-top:18px;border-top:1px solid #f1f5f9;flex-wrap:wrap}
+.modal-actions button{padding:11px 18px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;border:1px solid transparent;min-height:44px}
+.modal-actions button.secondary{background:#fff;color:#334155;border-color:#e2e8f0}
+.modal-actions button:not(.secondary){background:#3b82f6;color:#fff}
+.gps-box{background:#fef2f2;border:1.5px dashed #fca5a5;border-radius:10px;padding:10px;margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.gps-box .gps-status{font-size:12px;color:#991b1b;font-weight:600;flex:1;min-width:140px}
+.gps-box .gps-status.ok{color:#065f46}
+.gps-box .gps-btn{background:#dc2626;color:#fff;padding:9px 14px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid #dc2626;cursor:pointer;font-family:inherit;min-height:38px}
+.image-upload-box{background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px;padding:16px;margin-top:10px;text-align:center;cursor:pointer}
+.image-upload-box .iu-icon{font-size:28px;margin-bottom:6px}
+.image-upload-box .iu-title{font-size:13px;font-weight:600;color:#334155;margin-bottom:4px}
+.image-upload-box .iu-sub{font-size:11px;color:#94a3b8}
+.image-preview-wrap{position:relative;display:inline-block;margin-top:12px}
+.image-preview-wrap img{max-width:400px;max-height:400px;border-radius:10px;border:2px solid #e2e8f0;display:block}
+.image-preview-wrap .remove-img{position:absolute;top:-8px;right:-8px;background:#dc2626;color:#fff;width:32px;height:32px;border-radius:50%;border:2px solid #fff;cursor:pointer;font-size:16px;font-weight:700}
+.ppt-upload-box{background:#fdf2f8;border:2px dashed #f9a8d4;border-radius:10px;padding:16px;margin-top:10px;text-align:center;cursor:pointer}
+.ppt-upload-box .pu-icon{font-size:28px;margin-bottom:6px}
+.ppt-upload-box .pu-title{font-size:13px;font-weight:600;color:#9d174d;margin-bottom:4px}
+.ppt-upload-box .pu-sub{font-size:11px;color:#be185d}
+.ppt-file-info{background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px 14px;margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ppt-file-info .pf-name{font-size:12px;font-weight:600;color:#065f46;flex:1;min-width:140px;word-break:break-all}
+.ppt-file-info .pf-size{font-size:11px;color:#16a34a;font-weight:600}
+.ppt-file-info button{padding:7px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;min-height:34px}
+.ppt-file-info .pf-dl{background:#059669;color:#fff}
+.ppt-file-info .pf-del{background:#dc2626;color:#fff}
+.date-row{display:flex;gap:6px}
+.date-row select{flex:1;padding:11px 6px;min-width:0}
+.calc-preview{background:#f0f9ff;border:1px solid #bae6fd;padding:12px 14px;border-radius:8px;margin-top:12px;font-size:12px;color:#0c4a6e}
+.date-warning{background:#fffbeb;border:1px solid #fcd34d;color:#92400e;padding:10px 14px;border-radius:8px;font-size:12px;margin-top:8px;display:none;font-weight:600}
+.date-warning.show{display:block}
+.history-item{background:#f8fafc;border-left:3px solid #7c3aed;padding:12px 14px;margin-bottom:10px;border-radius:8px;font-size:13px;border:1px solid #e2e8f0}
+.empty-history{text-align:center;color:#94a3b8;padding:40px 20px;font-style:italic;font-size:13px}
+.image-viewer{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.95);z-index:3000;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+.image-viewer.show{display:flex}
+.image-viewer img{max-width:100%;max-height:95vh;border-radius:12px;object-fit:contain}
+.image-viewer .close-viewer{position:absolute;top:16px;right:16px;background:#fff;color:#0f172a;width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:20px;font-weight:700}
+.drop-zone{border:2px dashed #cbd5e1;border-radius:12px;padding:32px 16px;text-align:center;background:#f8fafc;cursor:pointer;margin-bottom:16px}
+.drop-zone .dz-icon{font-size:40px;margin-bottom:10px}
+.bulk-preview{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-bottom:14px;max-height:280px;overflow:auto}
+.bulk-preview table{font-size:11px;width:100%;min-width:500px}
+.bulk-preview th,.bulk-preview td{padding:6px 8px;font-size:11px;border-bottom:1px solid #f1f5f9;white-space:nowrap}
+.bulk-summary{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;font-weight:600}
+.bulk-info{background:#fffbeb;border:1px solid #fcd34d;padding:12px 14px;border-radius:8px;margin-bottom:14px;font-size:12px;color:#92400e;line-height:1.6}
+.bulk-info code{background:#fff;padding:2px 6px;border-radius:4px;font-family:monospace;color:#1e40af;font-size:11px;word-break:break-all}
+.progress-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:4000;align-items:center;justify-content:center;flex-direction:column;gap:20px;color:#fff;padding:20px;text-align:center}
+.progress-overlay.show{display:flex}
+.progress-overlay .spinner{width:56px;height:56px;border:4px solid rgba(255,255,255,0.2);border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.area-list-item{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px;background:#f8fafc;flex-wrap:wrap}
+.area-list-item.sel{background:#fef3c7;border-color:#fcd34d}
+.area-list-item input[type="checkbox"]{width:20px;height:20px;cursor:pointer;accent-color:#3b82f6}
+.area-list-item .name{flex:1;font-weight:600;color:#0f172a;min-width:120px}
+.share-option{display:flex;align-items:center;gap:12px;padding:14px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all 0.15s;background:#fff;text-align:left;font-family:inherit;width:100%}
+.share-option:hover{border-color:#3b82f6;background:#f0f9ff}
+.share-option .so-icon{font-size:24px;flex-shrink:0}
+.share-option .so-body{flex:1}
+.share-option .so-title{font-size:14px;font-weight:700;color:#0f172a;margin-bottom:2px}
+.share-option .so-desc{font-size:11px;color:#64748b;line-height:1.4}
+.share-option .so-badge{background:#059669;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px}
+.share-option .so-badge-purple{background:#7c3aed;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px}
+@media (max-width: 1024px){#areaContainer{grid-template-columns:1fr}}
+@media (max-width: 768px){
+  body{font-size:14px}
+  header{padding:10px 12px;gap:8px}
+  .header-left h1{font-size:15px}
+  .header-user{font-size:11px;padding:5px 10px;order:2}
+  .header-actions{width:100%;justify-content:flex-start;order:3;gap:5px}
+  .header-actions button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center}
+  #app{padding-top:130px}
+  .container{padding:0 12px;margin:14px auto}
+  .cards{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .card{padding:16px;min-height:95px}
+  .card span{font-size:10px;margin-bottom:6px}
+  .card b{font-size:26px}
+  .toolbar{padding:10px;gap:8px}
+  .toolbar input{min-width:100%;flex:1 1 100%}
+  .toolbar select{flex:1 1 100%;width:100%}
+  .toolbar button{flex:1;min-width:calc(50% - 4px);padding:11px 8px;font-size:12px;justify-content:center}
+  .toolbar button.refresh-btn{flex:1 1 100%}
+  .select-bar{padding:10px 12px}
+  .select-bar .count-badge{width:100%;text-align:center;min-height:40px}
+  .select-bar button{flex:1;min-width:calc(50% - 4px);font-size:12px;padding:0 8px;min-height:44px}
+  .area-block{border-radius:12px}
+  .area-header{padding:10px 10px;border-radius:12px 12px 0 0}
+  .area-header .area-name{font-size:13px}
+  .area-header > div{flex-wrap:wrap;justify-content:flex-end}
+  .area-count{font-size:9px !important;padding:2px 6px !important}
+  .site-card{padding:10px;flex-wrap:wrap;gap:10px;position:relative}
+  .site-card-top{flex-direction:row;align-items:center;width:auto}
+  .site-card-img{width:88px;height:88px}
+  .site-card-body{flex:1 1 100%;order:3;margin-top:2px}
+  .site-card-status{position:absolute;top:10px;right:10px;padding-top:0}
+  .site-card-actions{flex-direction:row;flex-wrap:wrap;width:100%;order:4;padding-top:0;gap:6px}
+  .site-card-actions button{flex:1;min-width:calc(33% - 4px);padding:8px 6px;font-size:11px;min-height:36px;justify-content:center}
+  .site-card-name{font-size:13px}
+  .site-card-loc-inline{margin-left:0;margin-top:2px;display:inline-block}
+  .box{padding:20px 16px;border-radius:14px;max-height:94vh}
+  .box h2{font-size:17px;margin-bottom:14px}
+  .formgrid{grid-template-columns:1fr;gap:12px}
+  .date-row select{padding:11px 4px;font-size:14px !important}
+  .modal-actions{flex-direction:column-reverse}
+  .modal-actions button{width:100%}
+  .image-preview-wrap img{max-width:100%}
+  .area-list-item{padding:10px}
+  .area-list-item .name{width:100%;flex:1 1 100%}
+  .area-list-item button{flex:1;min-width:calc(50% - 4px);padding:8px !important;font-size:12px !important}
+  .image-viewer .close-viewer{top:12px;right:12px;width:40px;height:40px}
+}
+@media (max-width: 380px){
+  .cards{grid-template-columns:1fr}
+  .header-actions button{min-width:100%}
+  .toolbar button{min-width:100%}
+  .select-bar button{min-width:100%}
+  .site-card-actions button{min-width:calc(50% - 3px)}
+  #app{padding-top:160px}
+}
+</style>
+</head>
+<body>
 
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h1>Site Management</h1>
+    <p class="subtitle">Sign in to continue</p>
+    <label for="loginUser">Username</label>
+    <input id="loginUser" type="text" placeholder="Enter username" autocomplete="off">
+    <label for="loginPass">Password</label>
+    <input id="loginPass" type="password" placeholder="Enter password" autocomplete="off">
+    <button id="loginBtn" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<header id="mainHeader">
+  <div class="header-left"><h1>Site Management</h1></div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;width:auto;flex:1;justify-content:flex-end">
+    <span class="header-user" id="userInfo">Loading...</span>
+    <div class="header-actions">
+      <button class="btn-green" onclick="openShareDialog()">Share</button>
+      <button class="btn-yellow admin-only" onclick="openBulkUpload()">Bulk</button>
+      <button class="btn-pink admin-only" onclick="openBulkPptModal()">Bulk PPT</button>
+      <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
+      <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
+      <button class="btn-red" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+</header>
+<div class="container">
+<div class="cards">
+<div class="card" id="cardTotal" onclick="filterByCard('ALL')"><span>Total Sites</span><b id="total">0</b></div>
+<div class="card available" id="cardAvailable" onclick="filterByCard('Available')"><span>Available</span><b id="avail">0</b></div>
+<div class="card notavailable" id="cardNotAvailable" onclick="filterByCard('Not Available')"><span>Not Available</span><b id="notavail">0</b></div>
+<div class="card maintenance" id="cardMaintenance" onclick="filterByCard('Under Maintenance')"><span>Under Maintenance</span><b id="maintenance">0</b></div>
+</div>
+<div class="toolbar">
+<input id="search" placeholder="Search sites..." oninput="render()">
+<select id="filter" onchange="onMainFilterChange()">
+<option value="ALL">All Status</option>
+<option>Available</option>
+<option>Not Available</option>
+<option>Under Maintenance</option>
+</select>
+<button class="admin-only" onclick="openAreaManager()">Manage Areas</button>
+<button class="admin-only" onclick="quickAddArea()">+ Add Area</button>
+<button onclick="openAdd()">+ Add Site</button>
+<button onclick="openHistorySearch()">History</button>
+<button onclick="exportCSV()">Export</button>
+<button class="refresh-btn" onclick="refreshPage(event)">Refresh</button>
+</div>
+<div class="select-bar" id="selectBar">
+  <span class="count-badge" id="selCount">0 selected</span>
+  <button class="ppt-sel" onclick="generateSelectedSitesPPT()">📊 Generate PPT</button>
+  <button class="share-sel" onclick="openShareDialog(true)">Share Selected</button>
+  <button class="bulk-status-sel" onclick="openBulkStatusModal()">Bulk Status</button>
+  <button class="clear-sel" onclick="clearSelection()">Clear</button>
+  <button class="delete-sel" id="deleteBtn" onclick="bulkDeleteSelected()" style="display:none">Delete</button>
+</div>
+
+<div id="areaContainer"></div>
+
+</div>
+<div class="progress-overlay" id="progressOverlay">
+  <div class="spinner"></div>
+  <div id="progressText" style="font-size:16px;font-weight:600">Working...</div>
+  <div id="progressSub" style="font-size:13px;opacity:0.7">Please wait</div>
+</div>
+<div class="modal" id="modal"><div class="box">
+<h2 id="modalTitle">Add Site</h2>
+<div class="formgrid">
+<label class="full-width">Area<select id="farea"></select></label>
+<label class="full-width">Site Name / ID<div><input id="fsite"></div></label>
+<label class="full-width">Location / Address
+  <div><input id="flocation" placeholder="Address ya GPS location" oninput="onLocationManualChange()"></div>
+  <div class="gps-box">
+    <span class="gps-status" id="gpsStatus">GPS not captured</span>
+    <button type="button" class="gps-btn" onclick="captureGPS()" id="gpsBtn">Use GPS</button>
+  </div>
+</label>
+<label class="full-width">Site Image (optional)
+  <div class="image-upload-box" id="imageUploadBox" onclick="document.getElementById('fimage').click()">
+    <div class="iu-icon">📷</div>
+    <div class="iu-title">Click to upload image</div>
+    <div class="iu-sub">JPG, PNG - Max 8 MB (Auto optimized)</div>
+  </div>
+  <input type="file" id="fimage" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+  <div id="imagePreviewWrap" style="display:none;text-align:center">
+    <div class="image-preview-wrap">
+      <img id="imagePreview" src="" alt="preview">
+      <button type="button" class="remove-img" onclick="removeImage()">×</button>
+    </div>
+  </div>
+</label>
+<label>Company<div><input id="fcustomer" placeholder="Enter company name"></div></label>
+<label>Monthly Rate (₹)<div><input id="frate" type="number" placeholder="e.g. 50000" min="0"></div></label>
+<label>Status<div><select id="fstatus"><option>Available</option><option>Not Available</option><option>Under Maintenance</option></select></div></label>
+<label>Booking From<div class="date-row"><select id="ffrom_d"></select><select id="ffrom_m"></select><select id="ffrom_y"></select></div></label>
+<label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
+</div>
+<div class="calc-preview" id="calcPreview">Enter dates to see auto-calculation</div>
+<div class="date-warning" id="dateWarning">Past date select ki hai. Booking ho jayegi lekin please confirm karein.</div>
+<div class="modal-actions"><button class="secondary" onclick="closeModal()">Cancel</button><button onclick="saveSite()">Save Site</button></div>
+</div></div>
+
+<div class="modal" id="areaModal"><div class="box">
+<h2>Manage Areas</h2>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Add, edit, or delete areas. Select multiple to bulk delete.</p>
+<div style="display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+  <button onclick="toggleAllAreas()" id="areaSelAllBtn" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Select All</button>
+  <button onclick="bulkDeleteAreas()" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Delete Selected</button>
+  <span id="areaSelCount" style="font-size:12px;color:#64748b;font-weight:600">0 selected</span>
+</div>
+<div id="areaList" style="margin-bottom:20px;"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+  <input id="newAreaName" placeholder="New area name" style="flex:1;min-width:180px;padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none">
+  <button onclick="addNewArea()" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;min-height:44px">+ Add Area</button>
+</div>
+<div class="modal-actions"><button class="secondary" onclick="closeAreaModal()">Close</button></div>
+</div></div>
+
+<div class="modal" id="bulkModal"><div class="box">
+<h2>Bulk Site Upload</h2>
+<div class="bulk-info">
+  <b>CSV Format:</b><br>
+  Column order: <code>area, site, location, company, rate, status, from, to</code><br>
+  <b>Example:</b> <code>Chandigarh,CG01,Sector 17 Bus Stand,ABC Media,50000,Available,,</code>
+</div>
+<button class="secondary" onclick="downloadSampleCSV()" style="margin-bottom:16px;padding:11px 16px;border-radius:8px;font-weight:600;border:1px solid #e2e8f0;background:#fff;color:#334155;cursor:pointer;width:100%;min-height:44px">Download Sample CSV</button>
+<div class="drop-zone" id="dropZone" onclick="document.getElementById('bulkFile').click()">
+  <div class="dz-icon">📁</div>
+  <div style="font-size:15px;font-weight:700;margin-bottom:6px">Click or drag CSV here</div>
+  <div style="font-size:12px;color:#64748b">Only .csv files</div>
+</div>
+<input type="file" id="bulkFile" accept=".csv" style="display:none" onchange="handleBulkFile(event)">
+<div id="bulkPreviewWrap" style="display:none">
+  <div class="bulk-summary" id="bulkSummary"></div>
+  <div class="bulk-preview" id="bulkPreview"></div>
+</div>
+<div class="modal-actions">
+  <button class="secondary" onclick="closeBulkModal()">Cancel</button>
+  <button id="bulkUploadBtn" onclick="confirmBulkUpload()" disabled style="background:#cbd5e1;color:#64748b;cursor:not-allowed">Upload Sites</button>
+</div>
+</div></div>
+
+<div class="modal" id="bulkStatusModal"><div class="box">
+<h2>Bulk Status Update</h2>
+<div class="formgrid">
+  <div style="grid-column:1/-1">
+    <label>Status
+      <select id="bulkStatusValue">
+        <option value="Available">Available</option>
+        <option value="Not Available">Not Available</option>
+        <option value="Under Maintenance">Under Maintenance</option>
+      </select>
+    </label>
+  </div>
+  <div class="bulk-date-field">
+    <label>From Date
+      <div class="date-row"><select id="bulkStatusFrom_d"></select><select id="bulkStatusFrom_m"></select><select id="bulkStatusFrom_y"></select></div>
+    </label>
+  </div>
+  <div class="bulk-date-field">
+    <label>To Date
+      <div class="date-row"><select id="bulkStatusTo_d"></select><select id="bulkStatusTo_m"></select><select id="bulkStatusTo_y"></select></div>
+    </label>
+  </div>
+</div>
+<div id="bulkStatusPreview" style="margin-top:14px;background:#f8fafc;border:1px solid #e2e8f0;padding:12px 14px;border-radius:8px;font-size:12px"></div>
+<div class="modal-actions">
+  <button class="secondary" onclick="closeBulkStatusModal()">Cancel</button>
+  <button onclick="applyBulkStatus()">Apply Status</button>
+</div>
+</div></div>
+
+<div class="modal" id="historyModal"><div class="box">
+<h2 id="historyTitle">Booking History</h2>
+<div id="historyContent"></div>
+<div class="modal-actions">
+  <button class="secondary" onclick="downloadHistoryCSV()" style="background:#059669;color:#fff;border-color:#047857">Download History CSV</button>
+  <button class="secondary" onclick="closeHistoryModal()">Close</button>
+</div>
+</div></div>
+
+<div class="modal" id="pptModal"><div class="box" style="width:min(560px,100%)">
+<h2 id="pptModalTitle">Area PPT</h2>
+<div id="pptExistingWrap" style="display:none">
+  <div class="ppt-file-info" id="pptFileInfo">
+    <span class="pf-name" id="pptFileName"></span>
+    <span class="pf-size" id="pptFileSize"></span>
+    <button class="pf-dl" onclick="downloadPpt()">Download</button>
+    <button class="pf-del" onclick="deletePpt()">Delete</button>
+  </div>
+</div>
+<div class="ppt-upload-box" id="pptUploadBox" onclick="document.getElementById('pptFile').click()">
+  <div class="pu-icon">📊</div>
+  <div class="pu-title">Click to upload PPT</div>
+  <div class="pu-sub">.ppt, .pptx - Max 100 MB</div>
+</div>
+<input type="file" id="pptFile" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" style="display:none" onchange="handlePptUpload(event)">
+<div class="modal-actions"><button class="secondary" onclick="closePptModal()">Close</button></div>
+</div></div>
+
+<div class="modal" id="bulkPptModal"><div class="box" style="width:min(760px,100%)">
+<h2>Bulk PPT Upload (Area-wise)</h2>
+<div class="bulk-info">
+  <b>Kaise kaam karta hai:</b><br>
+  1. Multiple PPT files select karein<br>
+  2. File ka naam <b>area ke naam</b> se match hona chahiye<br>
+  3. Jaise: <code>Chandigarh.pptx</code>
+</div>
+<div class="drop-zone" id="bulkPptDropZone" onclick="document.getElementById('bulkPptFiles').click()" style="border-color:#f9a8d4;background:#fdf2f8">
+  <div class="dz-icon">📊</div>
+  <div style="font-size:15px;font-weight:700;margin-bottom:6px">Click or drag PPT files here</div>
+  <div style="font-size:12px;color:#64748b">Multiple files - Max 100 MB each</div>
+</div>
+<input type="file" id="bulkPptFiles" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" multiple style="display:none" onchange="handleBulkPptFiles(event)">
+<div id="bulkPptPreviewWrap" style="display:none">
+  <div class="bulk-summary" id="bulkPptSummary"></div>
+  <div class="bulk-preview" id="bulkPptPreview" style="max-height:340px"></div>
+</div>
+<div class="modal-actions">
+  <button class="secondary" onclick="closeBulkPptModal()">Cancel</button>
+  <button id="bulkPptUploadBtn" onclick="confirmBulkPptUpload()" disabled style="background:#cbd5e1;color:#64748b;cursor:not-allowed">Upload All</button>
+</div>
+</div></div>
+
+<div class="modal" id="shareModal"><div class="box" style="width:min(560px,100%)">
+<h2 id="shareModalTitle">Share</h2>
+<p style="color:#64748b;font-size:13px;margin-bottom:18px;" id="shareModalDesc">Choose how you want to share.</p>
+<div id="shareOptions" style="display:flex;flex-direction:column;gap:10px;">
+  <button class="share-option" onclick="generateSelectedSitesPPT()">
+    <div class="so-icon">📊</div>
+    <div class="so-body">
+      <div class="so-title">Generate PPT Presentation</div>
+      <div class="so-desc">Har selected site ki slide + original area PPT merge karke ek file</div>
+    </div>
+    <span class="so-badge-purple">NEW</span>
+  </button>
+  <button class="share-option" onclick="shareAsZip()">
+    <div class="so-icon">📦</div>
+    <div class="so-body">
+      <div class="so-title">Download Report + PPT (ZIP)</div>
+      <div class="so-desc">Report.html + Presentation.pptx dono isme hain - WhatsApp/Email me bhejein</div>
+    </div>
+    <span class="so-badge">BEST</span>
+  </button>
+  <button class="share-option" onclick="shareNative()">
+    <div class="so-icon">📤</div>
+    <div class="so-body">
+      <div class="so-title">Share via Device (WhatsApp, Gmail...)</div>
+      <div class="so-desc">Mobile pe direct file bhejein</div>
+    </div>
+  </button>
+  <button class="share-option" onclick="shareViaWhatsAppText()">
+    <div class="so-icon">💬</div>
+    <div class="so-body">
+      <div class="so-title">Send as Text Message</div>
+      <div class="so-desc">Sirf text summary WhatsApp par</div>
+    </div>
+  </button>
+  <button class="share-option" onclick="shareViaEmailText()">
+    <div class="so-icon">✉️</div>
+    <div class="so-body">
+      <div class="so-title">Send as Email (Text)</div>
+      <div class="so-desc">Email me text report</div>
+    </div>
+  </button>
+</div>
+<div class="modal-actions"><button class="secondary" onclick="closeShareModal()">Cancel</button></div>
+</div></div>
+
+<div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
+  <button class="close-viewer" onclick="closeImageViewer()">×</button>
+  <img id="viewerImage" src="" alt="" onclick="event.stopPropagation()">
+</div>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
+
+<script>
+const API_URL = "https://api.dsent.workers.dev";
+const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
+const MAX_PPT_SIZE = 100 * 1024 * 1024;
+const COMPANY_NAME = "Site Management System";
+const COMPANY_TAGLINE = "Professional Site Booking & Management";
+
+let currentUser = null;
+let sites = [];
+let areas = [...DEFAULT_AREAS];
+let bookingHistory = [];
+let imageCache = {};
+let imageFailed = new Set();
+let pptCache = {};
+let selectedSites = new Set();
+let selectedAreas = new Set();
+let visibleSites = [];
+let editIndex = -1;
+let currentImageData = "";
+let bulkParsedSites = [];
+let collapsedAreas = null;
+let areaFilters = {};
+let currentPptArea = null;
+let bulkPptParsed = [];
+let shareContext = { mode: "all", areaName: null };
+let pendingSaveTimer = null;
+let autoRefreshTimer = null;
+let lastDataHash = "";
+
+async function apiGet(path){
+  try { const r = await fetch(API_URL + path, { method: "GET" }); return await r.json(); }
+  catch(e){ return { success: false, error: e.message }; }
+}
+async function apiPost(path, body){
+  try {
+    const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    return await r.json();
+  } catch(e){ return { success: false, error: e.message }; }
+}
+async function apiDelete(path){
+  try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); }
+  catch(e){ return { success: false, error: e.message }; }
+}
+
+function setSyncStatus(status, text){ return; }
+
+async function loadCloudData(){
+  setSyncStatus("syncing", "Loading...");
+  const result = await apiGet("/data");
+  if(result && result.success){
+    sites = Array.isArray(result.sites) ? result.sites : [];
+    areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
+    bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
+    sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
+    lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
+    setSyncStatus("synced", "Synced");
+    return true;
+  }
+  setSyncStatus("error", "Load failed");
+  return false;
+}
+async function persistNow(){
+  if(pendingSaveTimer){ clearTimeout(pendingSaveTimer); pendingSaveTimer = null; }
+  setSyncStatus("syncing", "Saving...");
+  const result = await apiPost("/data", { sites, areas, bookingHistory });
+  if(result && result.success){
+    lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
+    setSyncStatus("synced", "Synced");
+    return true;
+  }
+  setSyncStatus("error", "Save failed");
+  return false;
+}
+
+async function saveImage(key, dataUrl){
+  const result = await apiPost("/image/" + encodeURIComponent(key), { data: dataUrl });
+  if(result && result.success){ imageCache[key] = dataUrl; imageFailed.delete(key); }
+  return result;
+}
+async function getImage(key){
+  if(imageCache[key]) return imageCache[key];
+  if(imageFailed.has(key)) return null;
+  const result = await apiGet("/image/" + encodeURIComponent(key));
+  if(result && result.success && result.data){ imageCache[key] = result.data; return result.data; }
+  imageFailed.add(key);
+  return null;
+}
+async function deleteImage(key){
+  delete imageCache[key];
+  imageFailed.delete(key);
+  return await apiDelete("/image/" + encodeURIComponent(key));
+}
+
+async function savePpt(areaName, obj){
+  const CHUNK_SIZE = 20000000;
+  const data = obj.data || "";
+  const totalChunks = Math.ceil(data.length / CHUNK_SIZE) || 1;
+  if(totalChunks === 1){
+    const result = await apiPost("/ppt/" + encodeURIComponent(areaName), { name: obj.name, size: obj.size, type: obj.type, data: data });
+    if(result && result.success) pptCache[areaName] = true;
+    return result;
+  }
+  const initResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/init", { name: obj.name, size: obj.size, type: obj.type });
+  if(!initResult || !initResult.success) return initResult;
+  for(let i = 0; i < totalChunks; i++){
+    const start = i * CHUNK_SIZE;
+    const chunk = data.substring(start, start + CHUNK_SIZE);
+    const chunkResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/chunk/" + i, { data: chunk });
+    if(!chunkResult || !chunkResult.success) return { success: false, error: "Chunk " + i + " failed" };
+    const ps = document.getElementById("progressSub");
+    if(ps) ps.textContent = "Uploading chunk " + (i+1) + " / " + totalChunks;
+  }
+  const completeResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/complete", {});
+  if(completeResult && completeResult.success) pptCache[areaName] = true;
+  return completeResult;
+}
+async function getPpt(areaName){
+  const result = await apiGet("/ppt/" + encodeURIComponent(areaName));
+  if(result && result.success && result.data){
+    return { name: result.name, size: result.size, type: result.type, data: result.data, uploadedOn: result.uploadedOn };
+  }
+  return null;
+}
+async function deletePptFromDB(areaName){
+  delete pptCache[areaName];
+  return await apiDelete("/ppt/" + encodeURIComponent(areaName));
+}
+async function refreshPptCache(){
+  pptCache = {};
+  try {
+    const result = await apiGet("/ppt-list");
+    if(result && result.success && result.list){
+      for(const area in result.list){ pptCache[area] = true; }
+      return;
+    }
+  } catch(e){}
+  for(const a of areas){
+    try { const p = await getPpt(a); if(p && p.data) pptCache[a] = true; } catch(e){}
+  }
+}
+
+function initStickyHeader(){
+  const header = document.getElementById("mainHeader");
+  if(!header) return;
+  const onScroll = () => { if(window.scrollY > 8) header.classList.add("scrolled"); else header.classList.remove("scrolled"); };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+}
+async function refreshPage(e){
+  if(e) e.stopPropagation();
+  const btn = e ? (e.currentTarget || e.target) : document.querySelector(".refresh-btn");
+  if(btn){ btn.disabled = true; btn.style.opacity = "0.6"; setTimeout(() => { btn.disabled = false; btn.style.opacity = "1"; }, 400); }
+  imageFailed.clear();
+  await loadCloudData();
+  selectedSites.clear();
+  document.getElementById("filter").value = "ALL";
+  areaFilters = {};
+  document.getElementById("search").value = "";
+  collapsedAreas = new Set(areas);
+  await refreshPptCache();
+  render();
+}
+async function doLogin(){
+  const username = document.getElementById("loginUser").value.trim();
+  const password = document.getElementById("loginPass").value;
+  const btn = document.getElementById("loginBtn");
+  const err = document.getElementById("loginError");
+  err.classList.remove("show");
+  if(!username || !password){ err.textContent = "Username aur password required hai"; err.classList.add("show"); return; }
+  btn.disabled = true; btn.textContent = "Signing in...";
+  try {
+    const res = await fetch(API_URL + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
+    const data = await res.json();
+    if(!data.success){
+      err.textContent = data.error || "Login failed";
+      err.classList.add("show");
+      btn.disabled = false; btn.textContent = "Sign In";
+      return;
+    }
+    currentUser = data.user;
+    sessionStorage.setItem("sms_user", JSON.stringify(currentUser));
+    showApp();
+  } catch(e){
+    err.textContent = "Server se connect nahi ho paya";
+    err.classList.add("show");
+    btn.disabled = false; btn.textContent = "Sign In";
+  }
+}
+async function showApp(){
+  document.getElementById("loginOverlay").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("userInfo").textContent = currentUser.username + " (" + currentUser.role + ")";
+  if(currentUser.role !== "Admin"){ document.querySelectorAll(".admin-only").forEach(el => { el.style.display = "none"; }); }
+  showProgress("Loading from cloud...", "Please wait");
+  await loadCloudData();
+  await refreshPptCache();
+  hideProgress();
+  populateAreaDropdowns();
+  await autoReleaseExpiredSites();
+  render();
+  initStickyHeader();
+  startAutoRefresh();
+}
+function doLogout(){
+  if(!confirm("Logout karna hai?")) return;
+  currentUser = null;
+  sessionStorage.removeItem("sms_user");
+  if(autoRefreshTimer) clearInterval(autoRefreshTimer);
+  location.reload();
+}
+function checkSession(){
+  const saved = sessionStorage.getItem("sms_user");
+  if(saved){ try { currentUser = JSON.parse(saved); showApp(); } catch(e){ sessionStorage.removeItem("sms_user"); } }
+}
+function startAutoRefresh(){
+  if(autoRefreshTimer) clearInterval(autoRefreshTimer);
+  autoRefreshTimer = setInterval(async () => {
+    if(!currentUser) return;
+    if(document.hidden) return;
+    const result = await apiGet("/data");
+    if(result && result.success){
+      const newHash = JSON.stringify({ sites: result.sites || [], areas: result.areas || [], bookingHistory: result.bookingHistory || [] });
+      if(newHash !== lastDataHash){
+        const modal = document.getElementById("modal");
+        if(modal && modal.classList.contains("show")) return;
+        sites = result.sites || [];
+        areas = (result.areas && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
+        bookingHistory = result.bookingHistory || [];
+        sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
+        lastDataHash = newHash;
+        await refreshPptCache();
+        render();
+      }
+    }
+  }, 20000);
+}
+function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function normalizeStatus(s){
+  s = String(s||"Available").trim().toLowerCase();
+  if(s.includes("maint") || s.includes("under")) return "Under Maintenance";
+  if(s.includes("not") || s.includes("unavail")) return "Not Available";
+  return "Available";
+}
+function formatINR(v){
+  const n = parseFloat(v);
+  if(isNaN(n)) return "";
+  return "₹" + n.toLocaleString('en-IN');
+}
+function showProgress(t, s){
+  document.getElementById("progressText").textContent = t || "Working...";
+  document.getElementById("progressSub").textContent = s || "";
+  document.getElementById("progressOverlay").classList.add("show");
+}
+function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
+function onMainFilterChange(){ areaFilters = {}; document.getElementById("areaContainer").innerHTML = ""; setTimeout(() => { render(); }, 10); }
+function filterByCard(status){
+  const sel = document.getElementById("filter"); sel.value = status;
+  document.getElementById("search").value = ""; areaFilters = {};
+  onMainFilterChange(); syncCardHighlight();
+}
+function syncCardHighlight(){
+  const f = document.getElementById("filter").value;
+  const map = { "ALL":"cardTotal","Available":"cardAvailable","Not Available":"cardNotAvailable","Under Maintenance":"cardMaintenance" };
+  document.querySelectorAll(".card").forEach(c => c.classList.remove("active-filter"));
+  const el = document.getElementById(map[f]); if(el) el.classList.add("active-filter");
+}
+function populateAreaDropdowns(){
+  const formSel = document.getElementById("farea"); if(!formSel) return;
+  formSel.innerHTML = '';
+  areas.forEach(a => { formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
+}
+async function quickAddArea(){
+  if(currentUser.role !== "Admin"){ alert("Sirf Admin area add kar sakta hai"); return; }
+  const name = prompt("Naya area ka naam likhein:");
+  if(!name || name.trim() === "") return;
+  if(areas.includes(name.trim())){ alert("Yeh area pehle se hai"); return; }
+  areas.push(name.trim());
+  await persistNow();
+  populateAreaDropdowns(); render();
+  alert("Area add ho gaya: " + name.trim());
+}
+function openAreaManager(){
+  if(currentUser.role !== "Admin"){ alert("Sirf Admin area manage kar sakta hai"); return; }
+  selectedAreas.clear(); renderAreaList(); document.getElementById("areaModal").classList.add("show");
+}
+function closeAreaModal(){ selectedAreas.clear(); document.getElementById("areaModal").classList.remove("show"); }
+function renderAreaList(){
+  const list = document.getElementById("areaList");
+  if(areas.length === 0){ list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;font-style:italic">No areas.</div>'; updateAreaSelCount(); return; }
+  let html = '';
+  areas.forEach((a, i) => {
+    const count = sites.filter(s => s.area === a).length;
+    const isSel = selectedAreas.has(a);
+    html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '">';
+    html += '<input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\')">';
+    html += '<span class="name">' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + count + ')</span></span>';
+    html += '<button onclick="renameArea(' + i + ')" style="padding:6px 12px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Rename</button>';
+    html += '<button onclick="deleteArea(' + i + ')" style="padding:6px 12px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Delete</button>';
+    html += '</div>';
+  });
+  list.innerHTML = html; updateAreaSelCount();
+}
+function toggleAreaSelect(areaName){ if(selectedAreas.has(areaName)) selectedAreas.delete(areaName); else selectedAreas.add(areaName); renderAreaList(); }
+function toggleAllAreas(){ if(selectedAreas.size === areas.length) selectedAreas.clear(); else areas.forEach(a => selectedAreas.add(a)); renderAreaList(); }
+function updateAreaSelCount(){
+  const el = document.getElementById("areaSelCount"); const btn = document.getElementById("areaSelAllBtn");
+  if(el) el.textContent = selectedAreas.size + " selected";
+  if(btn){ if(selectedAreas.size === areas.length && areas.length > 0) btn.textContent = "Deselect All"; else btn.textContent = "Select All"; }
+}
+async function bulkDeleteAreas(){
+  if(selectedAreas.size === 0){ alert("Koi area select nahi ki"); return; }
+  const selectedArr = [...selectedAreas];
+  const totalSitesAffected = sites.filter(s => selectedAreas.has(s.area)).length;
+  let msg = "Delete " + selectedArr.length + " area(s)?\n\nAreas: " + selectedArr.join(", ") + "\n";
+  if(totalSitesAffected > 0) msg += "\nIn areas mein " + totalSitesAffected + " sites hain.";
+  if(!confirm(msg)) return;
+  for(const a of selectedArr){ await deletePptFromDB(a); }
+  sites.forEach(s => { if(selectedAreas.has(s.area)) s.area = "Unassigned"; });
+  areas = areas.filter(a => !selectedAreas.has(a));
+  selectedAreas.clear();
+  await persistNow();
+  populateAreaDropdowns(); await refreshPptCache(); renderAreaList(); render();
+  alert(selectedArr.length + " area(s) deleted");
+}
+async function addNewArea(){
+  const name = document.getElementById("newAreaName").value.trim();
+  if(!name){ alert("Area ka naam likhein"); return; }
+  if(areas.includes(name)){ alert("Yeh area pehle se hai"); return; }
+  areas.push(name);
+  await persistNow();
+  document.getElementById("newAreaName").value = "";
+  renderAreaList(); populateAreaDropdowns(); render();
+}
+async function renameArea(index){
+  const oldName = areas[index];
+  const newName = prompt("Naya area name:", oldName);
+  if(!newName || newName.trim() === "") return;
+  if(newName !== oldName && areas.includes(newName)){ alert("Yeh area pehle se hai"); return; }
+  const trimmed = newName.trim();
+  const ppt = await getPpt(oldName);
+  if(ppt){ await savePpt(trimmed, ppt); await deletePptFromDB(oldName); }
+  areas[index] = trimmed;
+  sites.forEach(s => { if(s.area === oldName) s.area = trimmed; });
+  await persistNow(); await refreshPptCache();
+  renderAreaList(); populateAreaDropdowns(); render();
+}
+async function deleteArea(index){
+  const areaName = areas[index];
+  const count = sites.filter(s => s.area === areaName).length;
+  if(count > 0){
+    if(!confirm("Is area mein " + count + " sites hain. Continue?")) return;
+    sites.forEach(s => { if(s.area === areaName) s.area = "Unassigned"; });
+  } else { if(!confirm("Delete area '" + areaName + "'?")) return; }
+  await deletePptFromDB(areaName);
+  areas.splice(index, 1);
+  await persistNow();
+  renderAreaList(); populateAreaDropdowns(); render();
+}
+function toggleAreaCollapse(areaName){ if(collapsedAreas.has(areaName)) collapsedAreas.delete(areaName); else collapsedAreas.add(areaName); render(); }
+function setAreaFilter(areaName, value){ areaFilters[areaName] = value; render(); }
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const YEARS = [];
+const CUR_YEAR = new Date().getFullYear();
+for(let y = CUR_YEAR - 2; y <= CUR_YEAR + 5; y++) YEARS.push(y);
+function initDateDropdowns(){
+  [["ffrom_d","ffrom_m","ffrom_y"],["fto_d","fto_m","fto_y"]].forEach(ids => {
+    const d = document.getElementById(ids[0]); const m = document.getElementById(ids[1]); const y = document.getElementById(ids[2]);
+    d.innerHTML = ""; m.innerHTML = ""; y.innerHTML = "";
+    for(let i=1;i<=31;i++) d.innerHTML += '<option value="'+String(i).padStart(2,"0")+'">'+String(i).padStart(2,"0")+'</option>';
+    for(let i=0;i<12;i++) m.innerHTML += '<option value="'+String(i+1).padStart(2,"0")+'">'+String(i+1).padStart(2,"0")+' ('+MONTHS[i]+')</option>';
+    YEARS.forEach(yy => y.innerHTML += '<option value="'+yy+'">'+yy+'</option>');
+  });
+}
+function initBulkDateDropdowns(){
+  [["bulkStatusFrom_d","bulkStatusFrom_m","bulkStatusFrom_y"],["bulkStatusTo_d","bulkStatusTo_m","bulkStatusTo_y"]].forEach(ids => {
+    const d = document.getElementById(ids[0]); const m = document.getElementById(ids[1]); const y = document.getElementById(ids[2]);
+    if(!d) return;
+    d.innerHTML = ""; m.innerHTML = ""; y.innerHTML = "";
+    for(let i=1;i<=31;i++) d.innerHTML += '<option value="'+String(i).padStart(2,"0")+'">'+String(i).padStart(2,"0")+'</option>';
+    for(let i=0;i<12;i++) m.innerHTML += '<option value="'+String(i+1).padStart(2,"0")+'">'+String(i+1).padStart(2,"0")+' ('+MONTHS[i]+')</option>';
+    YEARS.forEach(yy => y.innerHTML += '<option value="'+yy+'">'+yy+'</option>');
+  });
+}
+function setDateDropdowns(prefix, ddmmYYYY){
+  const d = document.getElementById(prefix+"_d"); const m = document.getElementById(prefix+"_m"); const y = document.getElementById(prefix+"_y");
+  if(!d || !m || !y) return;
+  if(!ddmmYYYY || !/^\d{2}\/\d{2}\/\d{4}$/.test(ddmmYYYY)){
+    const t = new Date(); d.value = String(t.getDate()).padStart(2,"0"); m.value = String(t.getMonth()+1).padStart(2,"0"); y.value = t.getFullYear(); return;
+  }
+  const p = ddmmYYYY.split("/"); d.value = p[0]; m.value = p[1]; y.value = p[2];
+}
+function getDateFromDropdowns(prefix){
+  const d = document.getElementById(prefix+"_d"); const m = document.getElementById(prefix+"_m"); const y = document.getElementById(prefix+"_y");
+  if(!d || !m || !y) return "";
+  return d.value && m.value && y.value ? d.value+"/"+m.value+"/"+y.value : "";
+}
+function ddmmyyyyToISO(s){
+  if(!s) return "";
+  const p = String(s).trim().split("/");
+  if(p.length !== 3) return "";
+  return p[2]+"-"+p[1].padStart(2,"0")+"-"+p[0].padStart(2,"0");
+}
+function calcDays(f, t){
+  if(!f || !t) return 0;
+  const fd = new Date(ddmmyyyyToISO(f)); const td = new Date(ddmmyyyyToISO(t));
+  if(isNaN(fd) || isNaN(td) || td < fd) return 0;
+  return Math.floor((td - fd) / 86400000) + 1;
+}
+function isPastDate(ddmmYYYY){
+  if(!ddmmYYYY) return false;
+  const p = ddmmYYYY.split("/");
+  if(p.length !== 3) return false;
+  const d = new Date(p[2], p[1]-1, p[0]);
+  const today = new Date(); today.setHours(0,0,0,0); d.setHours(0,0,0,0);
+  return d < today;
+}
+function updateCalcPreview(){
+  const from = getDateFromDropdowns("ffrom"); const to = getDateFromDropdowns("fto");
+  const days = calcDays(from, to);
+  document.getElementById("dateWarning").classList.remove("show");
+  let extra = "";
+  if(from && to && days === 0) extra = " - To date From se pehle hai!";
+  document.getElementById("calcPreview").innerHTML = "From: " + (from||"") + " - To: " + (to||"") + " - Days: " + days + extra;
+}
+async function autoReleaseExpiredSites(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  let changed = false;
+  sites.forEach(x => {
+    if(x.toDate){
+      const toDate = new Date(ddmmyyyyToISO(x.toDate)); toDate.setHours(0,0,0,0);
+      if(toDate < today && (x.status === "Not Available" || x.status === "Under Maintenance")){
+        bookingHistory.push({ site: x.site, customer: x.customer||"", fromDate: x.fromDate||"", toDate: x.toDate||"", days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'), status: x.status, location: x.location||"", rate: x.rate||"" });
+        x.status = "Available"; x.customer = ""; x.fromDate = ""; x.toDate = "";
+        changed = true;
+      }
+    }
+  });
+  if(changed) await persistNow();
+  return changed;
+}
+async function render(){
+  await autoReleaseExpiredSites();
+  syncCardHighlight();
+  const q = (document.getElementById("search").value || "").toLowerCase().trim();
+  const f = document.getElementById("filter").value;
+  const counts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
+  sites.forEach(x => counts[x.status] = (counts[x.status] || 0) + 1);
+  document.getElementById("total").textContent = sites.length;
+  document.getElementById("avail").textContent = counts.Available;
+  document.getElementById("notavail").textContent = counts["Not Available"];
+  document.getElementById("maintenance").textContent = counts["Under Maintenance"];
+  if(collapsedAreas === null) collapsedAreas = new Set(areas);
+  const isFiltering = (f !== "ALL") || (q && q.length > 0);
+  if(isFiltering) collapsedAreas.clear();
+  const container = document.getElementById("areaContainer");
+  container.innerHTML = "";
+  visibleSites = [];
+  let areasToShow = [...areas];
+  const unassignedCount = sites.filter(s => !s.area || s.area === "Unassigned").length;
+  if(unassignedCount > 0 && !areasToShow.includes("Unassigned")) areasToShow.push("Unassigned");
+  let totalShown = 0;
+  for(const areaName of areasToShow){
+    const areaFilter = areaFilters[areaName] || "ALL";
+    const areaSites = sites.filter(s => {
+      const sArea = s.area || "Unassigned";
+      if(sArea !== areaName) return false;
+      if(f !== "ALL" && s.status !== f) return false;
+      if(areaFilter !== "ALL" && s.status !== areaFilter) return false;
+      const hay = (s.site + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
+      if(q && !hay.includes(q)) return false;
+      return true;
+    });
+    if(isFiltering && areaSites.length === 0) continue;
+    totalShown += areaSites.length;
+    areaSites.forEach(s => visibleSites.push(s));
+    const isCollapsed = collapsedAreas.has(areaName);
+    const block = document.createElement("div");
+    block.className = "area-block" + (isCollapsed ? " collapsed" : "");
+    const header = document.createElement("div");
+    header.className = "area-header";
+    header.onclick = (e) => { if(e.target.tagName === "BUTTON" || e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return; toggleAreaCollapse(areaName); };
+    const areaAvail = areaSites.filter(s => s.status === "Available").length;
+    const areaNot = areaSites.filter(s => s.status === "Not Available").length;
+    const areaMaint = areaSites.filter(s => s.status === "Under Maintenance").length;
+    const allAreaSel = areaSites.length > 0 && areaSites.every(s => selectedSites.has(s.id));
+    const hasPpt = !!pptCache[areaName];
+    let headerHTML = '<input type="checkbox" class="select-all-cb" ' + (allAreaSel ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectAllInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.checked)">';
+    headerHTML += '<div class="area-name">' + esc(areaName) + '</div>';
+    headerHTML += '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">';
+    headerHTML += '<span class="area-count" style="background:#ffffff;color:#1f2937;border:1px solid #e5e7eb">' + areaSites.length + '</span>';
+    headerHTML += '<span class="area-count" style="background:#16a34a;color:#ffffff">' + areaAvail + '</span>';
+    headerHTML += '<span class="area-count" style="background:#dc2626;color:#ffffff">' + areaNot + '</span>';
+    headerHTML += '<span class="area-count" style="background:#facc15;color:#111827">' + areaMaint + '</span>';
+    if(currentUser.role === "Admin"){
+      const pptCls = hasPpt ? 'ppt-has' : 'ppt-empty';
+      const pptLabel = hasPpt ? '✓ PPT' : 'PPT';
+      headerHTML += '<div class="area-actions">';
+      headerHTML += '<button class="' + pptCls + '" onclick="event.stopPropagation(); openPptModal(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">' + pptLabel + '</button>';
+      headerHTML += '<button onclick="event.stopPropagation(); quickAddSiteInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">+ Add</button>';
+      headerHTML += '<button onclick="event.stopPropagation(); shareArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">Share</button>';
+      headerHTML += '</div>';
+    }
+    headerHTML += '<span class="toggle-icon">' + (isCollapsed ? '' : '') + '</span>';
+    headerHTML += '</div>';
+    header.innerHTML = headerHTML;
+    block.appendChild(header);
+    const content = document.createElement("div");
+    content.className = "area-content";
+    if(areaSites.length === 0 && areaFilter === "ALL"){ content.innerHTML = '<div class="empty-area">No sites in this area yet.</div>'; }
+    else {
+      let filterBarHTML = '<div class="area-filter-bar" onclick="event.stopPropagation()">';
+      filterBarHTML += '<span style="font-size:11px;font-weight:600;color:#64748b">Filter:</span>';
+      filterBarHTML += '<select onchange="setAreaFilter(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.value)">';
+      filterBarHTML += '<option value="ALL"' + (areaFilter === "ALL" ? ' selected' : '') + '>All</option>';
+      filterBarHTML += '<option value="Available"' + (areaFilter === "Available" ? ' selected' : '') + '>Available</option>';
+      filterBarHTML += '<option value="Not Available"' + (areaFilter === "Not Available" ? ' selected' : '') + '>Not Available</option>';
+      filterBarHTML += '<option value="Under Maintenance"' + (areaFilter === "Under Maintenance" ? ' selected' : '') + '>Under Maintenance</option>';
+      filterBarHTML += '</select>';
+      filterBarHTML += '<span class="area-filter-count">Showing ' + areaSites.length + '</span>';
+      filterBarHTML += '</div>';
+      let cardsHTML = filterBarHTML + '<div class="site-cards-grid">';
+      if(areaSites.length === 0) cardsHTML += '<div style="text-align:center;padding:20px;color:#94a3b8;font-style:italic;font-size:12px">No sites match this filter</div>';
+      areaSites.forEach((x, idx) => {
+        const globalIdx = sites.indexOf(x);
+        const isSel = selectedSites.has(x.id);
+        const days = calcDays(x.fromDate, x.toDate);
+        let sc = "s-available";
+        if(x.status === "Not Available") sc = "s-not"; else if(x.status === "Under Maintenance") sc = "s-maintenance";
+        let cardCls = "site-card";
+        if(x.status === "Not Available") cardCls += " not-card"; else if(x.status === "Under Maintenance") cardCls += " maint-card";
+        if(isSel) cardCls += " selected-card";
+        const histCount = bookingHistory.filter(h => h.site === x.site).length;
+        const histBtn = histCount > 0 ? '<button class="history-btn" onclick="showHistory(' + globalIdx + ')">' + histCount + '</button>' : '';
+        const mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
+        let imgHTML;
+        if(x.hasImage && !imageFailed.has(x.id)){
+          imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site" onerror="handleImgError(this, ' + globalIdx + ')">';
+        } else {
+          imgHTML = '<div class="site-card-img no-img" onclick="editSite(' + globalIdx + ')" title="Click to add image">📷</div>';
+        }
+        const actionBtns = (currentUser.role === "Admin" || currentUser.role === "Viewer") ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' + mapBtn + histBtn : mapBtn + histBtn;
+        cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
+        cardsHTML += '<div class="site-card-top">';
+        cardsHTML += '<input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' onchange="toggleSelect(\'' + x.id + '\')">';
+        cardsHTML += '<span class="site-card-num">#' + (idx + 1) + '</span>';
+        cardsHTML += imgHTML;
+        cardsHTML += '</div>';
+        cardsHTML += '<div class="site-card-body">';
+        cardsHTML += '<div class="site-card-name">' + esc(x.site) + (x.location ? ' <span class="site-card-loc-inline">' + esc(x.location) + '</span>' : '') + '</div>';
+        cardsHTML += '<div class="site-card-meta">';
+        if(x.customer) cardsHTML += '<span class="site-card-comp">' + esc(x.customer) + '</span>';
+        if(x.rate) cardsHTML += '<span class="site-card-rate">' + formatINR(x.rate) + '/month</span>';
+        if(x.status !== "Available" && (x.fromDate || x.toDate)) cardsHTML += '<span class="site-card-dates">' + esc(x.fromDate || "") + ' - ' + esc(x.toDate || "") + (days > 0 ? ' <span class="days-badge">' + days + 'd</span>' : '') + '</span>';
+        cardsHTML += '</div>';
+        cardsHTML += '</div>';
+        cardsHTML += '<div class="site-card-status"><span class="status ' + sc + '">' + esc(x.status) + '</span></div>';
+        cardsHTML += '<div class="site-card-actions">' + actionBtns + '</div>';
+        cardsHTML += '</div>';
+      });
+      cardsHTML += '</div>';
+      content.innerHTML = cardsHTML;
+    }
+    block.appendChild(content);
+    container.appendChild(block);
+  }
+  if(totalShown === 0 && (q || f !== "ALL")){
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic;grid-column:1/-1">No sites match your filter.</div>';
+  }
+  loadVisibleImages();
+  updateSelectBar();
+}
+function handleImgError(img, globalIdx){
+  img.outerHTML = '<div class="site-card-img no-img" onclick="editSite(' + globalIdx + ')" title="Image not found - Click to add">📷</div>';
+  const id = img.dataset.imgId;
+  if(id) imageFailed.add(id);
+}
+async function loadVisibleImages(){
+  const imgs = document.querySelectorAll("img.site-card-img[data-img-id]");
+  for(const img of imgs){
+    const id = img.dataset.imgId;
+    if(imageCache[id]){ img.src = imageCache[id]; }
+    else { const data = await getImage(id); if(data){ img.src = data; } }
+  }
+}
+function toggleSelect(id){
+  if(selectedSites.has(id)) selectedSites.delete(id); else selectedSites.add(id);
+  document.querySelectorAll("div.site-card[data-site-id]").forEach(card => {
+    if(card.dataset.siteId === id){
+      if(selectedSites.has(id)) card.classList.add("selected-card"); else card.classList.remove("selected-card");
+      const cb = card.querySelector('input.site-card-cb'); if(cb) cb.checked = selectedSites.has(id);
+    }
+  });
+  updateSelectBar();
+}
+function toggleSelectAllInArea(areaName, checked){
+  sites.forEach(s => { const sArea = s.area || "Unassigned"; if(sArea === areaName){ if(checked) selectedSites.add(s.id); else selectedSites.delete(s.id); } });
+  render();
+}
+function clearSelection(){ selectedSites.clear(); render(); }
+function updateSelectBar(){
+  const bar = document.getElementById("selectBar");
+  document.getElementById("selCount").textContent = selectedSites.size + " selected";
+  if(selectedSites.size > 0) bar.classList.add("show"); else bar.classList.remove("show");
+  const delBtn = document.getElementById("deleteBtn");
+  if(delBtn){ if(currentUser && currentUser.role === "Admin") delBtn.style.display = "inline-flex"; else delBtn.style.display = "none"; }
+}
+function openBulkStatusModal(){
+  if(currentUser && currentUser.role !== "Admin"){ alert("Sirf Admin bulk status change kar sakta hai"); return; }
+  if(selectedSites.size === 0){ alert("Pehle kam se kam ek site select karein"); return; }
+  document.getElementById("bulkStatusValue").value = "Not Available";
+  const t = new Date();
+  const today = String(t.getDate()).padStart(2,"0")+"/"+String(t.getMonth()+1).padStart(2,"0")+"/"+t.getFullYear();
+  setDateDropdowns("bulkStatusFrom", today); setDateDropdowns("bulkStatusTo", today);
+  updateBulkStatusDateFields(); updateBulkStatusPreview();
+  document.getElementById("bulkStatusModal").classList.add("show");
+}
+function closeBulkStatusModal(){ document.getElementById("bulkStatusModal").classList.remove("show"); }
+function updateBulkStatusDateFields(){
+  const status = document.getElementById("bulkStatusValue").value;
+  const showDates = status !== "Available";
+  document.querySelectorAll(".bulk-date-field").forEach(el => { el.style.display = showDates ? "block" : "none"; });
+}
+function updateBulkStatusPreview(){
+  const status = document.getElementById("bulkStatusValue").value;
+  const from = getDateFromDropdowns("bulkStatusFrom"); const to = getDateFromDropdowns("bulkStatusTo");
+  const count = selectedSites.size;
+  const preview = document.getElementById("bulkStatusPreview"); if(!preview) return;
+  let text = "<b>" + count + " site(s)</b> ko <b>" + esc(status) + "</b> status aaj set kiya jayega.";
+  if(status !== "Available") text += "<br>From: <b>" + esc(from) + "</b> - To: <b>" + esc(to) + "</b>";
+  preview.innerHTML = text;
+}
+async function applyBulkStatus(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin bulk status change kar sakta hai"); return; }
+  const selectedIds = new Set([...selectedSites].map(String));
+  const targets = sites.filter(s => selectedIds.has(String(s.id)));
+  if(targets.length === 0){ alert("Selected sites nahi mil rahi hain."); return; }
+  const status = normalizeStatus(document.getElementById("bulkStatusValue").value);
+  let fromLabel = getDateFromDropdowns("bulkStatusFrom"); let toLabel = getDateFromDropdowns("bulkStatusTo");
+  if(status !== "Available"){
+    if(!fromLabel || !toLabel){ alert("From aur To date select karein"); return; }
+    if(new Date(ddmmyyyyToISO(toLabel)) < new Date(ddmmyyyyToISO(fromLabel))){ alert("To Date, From se pehle nahi ho sakti"); return; }
+  } else { fromLabel = ""; toLabel = ""; }
+  if(!confirm(targets.length + " site(s) par '" + status + "' status apply hoga?")) return;
+  targets.forEach(s => {
+    s.status = status;
+    if(status === "Available"){ s.fromDate = ""; s.toDate = ""; s.customer = ""; }
+    else { s.fromDate = fromLabel; s.toDate = toLabel; }
+  });
+  await persistNow();
+  render(); closeBulkStatusModal(); clearSelection();
+  alert("Status updated successfully.");
+}
+document.addEventListener("change", function(e){
+  if(e.target && ["bulkStatusValue","bulkStatusFrom_d","bulkStatusFrom_m","bulkStatusFrom_y","bulkStatusTo_d","bulkStatusTo_m","bulkStatusTo_y"].includes(e.target.id)){
+    if(e.target.id === "bulkStatusValue") updateBulkStatusDateFields();
+    updateBulkStatusPreview();
+  }
+});
+function openAdd(){
+  editIndex = -1;
+  document.getElementById("modalTitle").textContent = "Add New Site";
+  document.getElementById("fsite").value = "";
+  document.getElementById("flocation").value = "";
+  document.getElementById("flocation").dataset.lat = ""; document.getElementById("flocation").dataset.lng = "";
+  document.getElementById("fcustomer").value = "";
+  document.getElementById("frate").value = "";
+  document.getElementById("fstatus").value = "Available";
+  currentImageData = ""; removeImage();
+  document.getElementById("farea").value = areas[0] || "";
+  const t = new Date();
+  const today = String(t.getDate()).padStart(2,"0")+"/"+String(t.getMonth()+1).padStart(2,"0")+"/"+t.getFullYear();
+  setDateDropdowns("ffrom", today); setDateDropdowns("fto", today);
+  document.getElementById("gpsStatus").textContent = "GPS not captured";
+  document.getElementById("gpsStatus").className = "gps-status";
+  document.getElementById("dateWarning").classList.remove("show");
+  updateCalcPreview();
+  document.getElementById("modal").classList.add("show");
+}
+function quickAddSiteInArea(areaName){ openAdd(); document.getElementById("farea").value = areaName; }
+async function editSite(i){
+  if(currentUser.role !== "Admin" && currentUser.role !== "Viewer"){ alert("Permission nahi hai"); return; }
+  editIndex = i;
+  const x = sites[i];
+  document.getElementById("modalTitle").textContent = "Edit Site";
+  if(x.area && !areas.includes(x.area)){ areas.push(x.area); populateAreaDropdowns(); }
+  document.getElementById("farea").value = x.area || areas[0] || "";
+  document.getElementById("fsite").value = x.site || "";
+  document.getElementById("flocation").value = x.location || "";
+  document.getElementById("flocation").dataset.lat = x.lat || ""; document.getElementById("flocation").dataset.lng = x.lng || "";
+  document.getElementById("fcustomer").value = x.customer || "";
+  document.getElementById("frate").value = x.rate || "";
+  document.getElementById("fstatus").value = x.status;
+  setDateDropdowns("ffrom", x.fromDate || ""); setDateDropdowns("fto", x.toDate || "");
+  if(x.lat && x.lng){ document.getElementById("gpsStatus").textContent = "GPS: " + x.lat + ", " + x.lng; document.getElementById("gpsStatus").className = "gps-status ok"; }
+  else { document.getElementById("gpsStatus").textContent = "GPS not captured"; document.getElementById("gpsStatus").className = "gps-status"; }
+  if(x.hasImage){
+    let data = await getImage(x.id);
+    if(data){ currentImageData = data; showImagePreview(data); }
+    else { currentImageData = ""; removeImage(); }
+  } else { currentImageData = ""; removeImage(); }
+  updateCalcPreview();
+  document.getElementById("modal").classList.add("show");
+}
+function closeModal(){ document.getElementById("modal").classList.remove("show"); }
+async function saveSite(){
+  const fromVal = getDateFromDropdowns("ffrom"); const toVal = getDateFromDropdowns("fto");
+  const areaVal = document.getElementById("farea").value;
+  if(!areaVal){ alert("Kripya area select karein"); return; }
+  if(fromVal && isPastDate(fromVal)){ if(!confirm("WARNING: 'From' date previous hai!\n\nContinue?")) return; }
+  if(toVal && isPastDate(toVal)){ if(!confirm("WARNING: 'To' date previous hai!\n\nContinue?")) return; }
+  if(fromVal && toVal && calcDays(fromVal, toVal) === 0){ alert("'To' date 'From' se pehle nahi ho sakti!"); return; }
+  let statusVal = document.getElementById("fstatus").value;
+  const id = editIndex < 0 ? "id_"+Math.random().toString(36).slice(2,10) : sites[editIndex].id;
+  const hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
+  const loc = document.getElementById("flocation");
+  const newSite = {
+    id, area: areaVal,
+    site: document.getElementById("fsite").value.trim() || "Unnamed Site",
+    location: loc.value.trim(),
+    lat: loc.dataset.lat || "", lng: loc.dataset.lng || "",
+    customer: document.getElementById("fcustomer").value.trim(),
+    rate: document.getElementById("frate").value.trim(),
+    status: statusVal,
+    fromDate: fromVal, toDate: toVal,
+    hasImage: !!currentImageData
+  };
+  showProgress("Saving site...", "");
+  if(currentImageData){ await saveImage(id, currentImageData); }
+  else if(hadImage){ await deleteImage(id); }
+  if(editIndex < 0) sites.push(newSite); else sites[editIndex] = newSite;
+  await persistNow();
+  hideProgress();
+  closeModal(); render();
+}
+
+function handleImageUpload(e){
+  const file = e.target.files[0]; if(!file) return;
+  if(!file.type.startsWith("image/")){ alert("Only images allowed"); return; }
+  if(file.size > 8*1024*1024){ alert("Max 8 MB image allowed hai"); return; }
+  showProgress("Processing image...", "Optimizing for high quality");
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    compressImageSmart(ev.target.result, (compressed) => {
+      hideProgress();
+      currentImageData = compressed;
+      showImagePreview(compressed);
+    });
+  };
+  reader.readAsDataURL(file);
+  e.target.value = "";
+}
+function compressImageSmart(dataUrl, cb){
+  const img = new Image();
+  img.onload = () => {
+    const MAX_WIDTH = 1024;
+    const MAX_HEIGHT = 1024;
+    const TARGET_MAX_BYTES = 800 * 1024;
+    let w = img.width, h = img.height;
+    if(w > MAX_WIDTH || h > MAX_HEIGHT){
+      const ratio = Math.min(MAX_WIDTH / w, MAX_HEIGHT / h);
+      w = Math.round(w * ratio);
+      h = Math.round(h * ratio);
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d", { alpha: false });
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0, w, h);
+    let quality = 0.75;
+    let result = canvas.toDataURL("image/jpeg", quality);
+    let attempts = 0;
+    while(result.length > TARGET_MAX_BYTES && quality > 0.5 && attempts < 10){
+      quality -= 0.05;
+      result = canvas.toDataURL("image/jpeg", quality);
+      attempts++;
+    }
+    if(result.length > TARGET_MAX_BYTES && w > 720){
+      const ratio = 720 / Math.max(w, h);
+      w = Math.round(w * ratio);
+      h = Math.round(h * ratio);
+      canvas.width = w; canvas.height = h;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      result = canvas.toDataURL("image/jpeg", 0.7);
+    }
+    cb(result);
+  };
+  img.onerror = () => { alert("Image load nahi ho payi"); cb(dataUrl); };
+  img.src = dataUrl;
+}
+
+function showImagePreview(data){
+  document.getElementById("imagePreview").src = data;
+  document.getElementById("imagePreviewWrap").style.display = "block";
+  document.getElementById("imageUploadBox").style.display = "none";
+}
+function removeImage(){
+  currentImageData = "";
+  document.getElementById("imagePreview").src = "";
+  document.getElementById("imagePreviewWrap").style.display = "none";
+  document.getElementById("imageUploadBox").style.display = "block";
+}
+async function openImageViewer(siteId){
+  let data = await getImage(siteId);
+  if(!data){ alert("Image not found"); return; }
+  document.getElementById("viewerImage").src = data;
+  document.getElementById("imageViewer").classList.add("show");
+}
+function closeImageViewer(){ document.getElementById("imageViewer").classList.remove("show"); }
+function captureGPS(){
+  const btn = document.getElementById("gpsBtn"); const status = document.getElementById("gpsStatus");
+  if(!navigator.geolocation){ alert("GPS not supported"); return; }
+  btn.disabled = true; btn.textContent = "Getting...";
+  status.className = "gps-status"; status.textContent = "Getting GPS...";
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude.toFixed(7); const lng = pos.coords.longitude.toFixed(7);
+      document.getElementById("flocation").dataset.lat = lat; document.getElementById("flocation").dataset.lng = lng;
+      const cur = document.getElementById("flocation").value.trim();
+      const coordText = lat+", "+lng;
+      document.getElementById("flocation").value = cur ? cur + " | " + coordText : coordText;
+      status.className = "gps-status ok"; status.textContent = "Accurate: " + Math.round(pos.coords.accuracy)+"m";
+      btn.disabled = false; btn.textContent = "Re-capture";
+    },
+    (err) => { btn.disabled = false; btn.textContent = "Use GPS"; status.textContent = (err.code === 1 ? "Permission denied" : "GPS error"); },
+    { enableHighAccuracy: true, timeout: 15000 }
+  );
+}
+function onLocationManualChange(){ document.getElementById("flocation").dataset.lat = ""; document.getElementById("flocation").dataset.lng = ""; }
+function getGoogleMapsUrl(site){
+  if(site.lat && site.lng) return "https://www.google.com/maps?q="+site.lat+","+site.lng;
+  if(site.location) return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(site.location);
+  return "";
+}
+function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location set"); return; } window.open(url, "_blank"); }
+
+/* ============ PPT GENERATOR (FIXED - USES writeFile) ============ */
+async function generateSelectedSitesPPT(){
+  if(selectedSites.size === 0){ alert("Pehle kam se kam ek site select karein"); return; }
+  const list = sites.filter(s => selectedSites.has(s.id));
+  if(list.length === 0){ alert("Koi site nahi mili"); return; }
+  const uniqueAreas = [...new Set(list.map(s => s.area || "Unassigned"))];
+  const singleArea = uniqueAreas.length === 1 ? uniqueAreas[0] : null;
+  showProgress("Generating PPT...", "Preparing slides (0 / " + list.length + ")");
+  try {
+    const pptx = new PptxGenJS();
+    pptx.layout = "LAYOUT_WIDE";
+    pptx.title = singleArea ? "Site Report - " + singleArea : "Selected Sites Report";
+    pptx.author = COMPANY_NAME;
+
+    // COVER
+    let slide = pptx.addSlide();
+    slide.background = { color: "0F172A" };
+    slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
+    slide.addShape(pptx.ShapeType.roundRect, { x: 0.7, y: 0.7, w: 0.7, h: 0.7, fill: { color: "FFFFFF" }, rectRadius: 0.1 });
+    slide.addText("S", { x: 0.7, y: 0.7, w: 0.7, h: 0.7, fontSize: 26, bold: true, color: "1E40AF", align: "center", valign: "middle" });
+    slide.addText(COMPANY_NAME.toUpperCase(), { x: 1.6, y: 0.75, w: 8, h: 0.4, fontSize: 13, bold: true, color: "FFFFFF", charSpacing: 3 });
+    slide.addText(COMPANY_TAGLINE, { x: 1.6, y: 1.15, w: 8, h: 0.35, fontSize: 10, color: "CBD5E1" });
+    slide.addText(singleArea ? "Site Report" : "Selected Sites Report", { x: 0.7, y: 2.8, w: 12, h: 1.2, fontSize: 54, bold: true, color: "FFFFFF" });
+    slide.addText(singleArea || "Multiple Areas", { x: 0.7, y: 4.0, w: 12, h: 0.6, fontSize: 22, color: "BAE6FD" });
+    slide.addShape(pptx.ShapeType.line, { x: 0.7, y: 5.2, w: 11.9, h: 0, line: { color: "60A5FA", width: 1 } });
+    slide.addText("Report Date", { x: 0.7, y: 5.4, w: 2, h: 0.3, fontSize: 9, bold: true, color: "93C5FD", charSpacing: 2 });
+    slide.addText(new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' }), { x: 0.7, y: 5.7, w: 3, h: 0.4, fontSize: 15, bold: true, color: "FFFFFF" });
+    slide.addText("Total Sites", { x: 4.7, y: 5.4, w: 2, h: 0.3, fontSize: 9, bold: true, color: "93C5FD", charSpacing: 2 });
+    slide.addText(String(list.length), { x: 4.7, y: 5.7, w: 3, h: 0.4, fontSize: 15, bold: true, color: "FFFFFF" });
+    slide.addText("Generated", { x: 8.7, y: 5.4, w: 4, h: 0.3, fontSize: 9, bold: true, color: "93C5FD", charSpacing: 2 });
+    slide.addText(new Date().toLocaleString('en-GB'), { x: 8.7, y: 5.7, w: 4, h: 0.4, fontSize: 12, bold: true, color: "FFFFFF" });
+
+    // SUMMARY
+    const avail = list.filter(s => s.status === "Available").length;
+    const notAvail = list.filter(s => s.status === "Not Available").length;
+    const maint = list.filter(s => s.status === "Under Maintenance").length;
+    slide = pptx.addSlide();
+    slide.background = { color: "F8FAFC" };
+    slide.addText("EXECUTIVE SUMMARY", { x: 0.7, y: 0.5, w: 12, h: 0.3, fontSize: 11, bold: true, color: "1E40AF", charSpacing: 3 });
+    slide.addText("Site Availability Overview", { x: 0.7, y: 0.85, w: 12, h: 0.7, fontSize: 32, bold: true, color: "0F172A" });
+    slide.addText(String(list.length) + " sites | Available: " + avail + " | Not Available: " + notAvail + " | Maintenance: " + maint, { x: 0.7, y: 2.0, w: 12, h: 0.4, fontSize: 14, color: "334155" });
+
+    // SITE SLIDES
+    for(let i = 0; i < list.length; i++){
+      const x = list[i];
+      showProgress("Generating PPT...", "Slide " + (i+1) + " / " + list.length);
+      const days = calcDays(x.fromDate, x.toDate);
+      let stColor = "059669", stText = "Available";
+      if(x.status === "Not Available"){ stColor = "DC2626"; stText = "Not Available"; }
+      else if(x.status === "Under Maintenance"){ stColor = "D97706"; stText = "Under Maintenance"; }
+      let imgData = null;
+      if(x.hasImage){
+        try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){ imgData = null; }
+      }
+      const mapLink = getGoogleMapsUrl(x);
+      slide = pptx.addSlide();
+      slide.background = { color: "FFFFFF" };
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.65, fill: { color: "1E3A8A" } });
+      slide.addShape(pptx.ShapeType.roundRect, { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fill: { color: "3B82F6" }, rectRadius: 0.08 });
+      slide.addText(String(i+1), { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fontSize: 16, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+      slide.addText(x.site, { x: 0.78, y: 0.05, w: 8.5, h: 0.55, fontSize: 14, bold: true, color: "FFFFFF", valign: "middle" });
+      slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
+      slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+
+      // IMAGE - safe add with proper aspect ratio
+      const imgBoxY = 0.65, imgBoxH = 5.4;
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "0F172A" } });
+      let imageAdded = false;
+      if(imgData && typeof imgData === "string" && imgData.length > 100){
+        try {
+          const cleanData = imgData.trim();
+          slide.addImage({
+            data: cleanData,
+            x: 0.5, y: imgBoxY + 0.15, w: 12.33, h: imgBoxH - 0.3,
+            sizing: { type: "contain", w: 12.33, h: imgBoxH - 0.3 }
+          });
+          imageAdded = true;
+        } catch(e){ 
+          console.warn("Image add fail for site:", x.site, e);
+          imageAdded = false;
+        }
+      }
+      if(!imageAdded){
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "F1F5F9" } });
+        slide.addText("No Image Available", { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fontSize: 24, color: "94A3B8", align: "center", valign: "middle" });
+      }
+
+      // DETAILS
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 6.05, w: 13.33, h: 1.1, fill: { color: "F8FAFC" } });
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 6.05, w: 13.33, h: 0.05, fill: { color: "1E40AF" } });
+      const colW = 13.33 / 4;
+
+      slide.addText("AREA", { x: 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
+      slide.addText(x.area || "Unassigned", { x: 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 14, bold: true, color: "0F172A", valign: "middle" });
+
+      slide.addText("LOCATION (Click for Map)", { x: colW + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
+      if(mapLink && x.location){
+        slide.addText(x.location, {
+          x: colW + 0.15, y: 6.38, w: colW - 0.3, h: 0.35,
+          fontSize: 11, bold: true, color: "1E40AF", valign: "middle",
+          underline: true,
+          hyperlink: { url: mapLink, tooltip: "Click to open in Google Maps" }
+        });
+      } else {
+        slide.addText(x.location || "—", { x: colW + 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 12, bold: true, color: "0F172A", valign: "middle" });
+      }
+
+      slide.addText("COMPANY", { x: colW*2 + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
+      slide.addText(x.customer || "—", { x: colW*2 + 0.15, y: 6.38, w: colW - 0.3, h: 0.3, fontSize: 12, bold: true, color: "059669", valign: "middle" });
+      if(x.rate){
+        slide.addText(formatINR(x.rate) + " / month", { x: colW*2 + 0.15, y: 6.72, w: colW - 0.3, h: 0.28, fontSize: 10, bold: true, color: "7C3AED", valign: "middle" });
+      }
+
+      slide.addText("BOOKING", { x: colW*3 + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
+      if(x.status === "Available"){
+        slide.addText("—", { x: colW*3 + 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 14, bold: true, color: "94A3B8", valign: "middle" });
+      } else {
+        slide.addText((x.fromDate || "") + " → " + (x.toDate || "") + (days > 0 ? " (" + days + "d)" : ""), { x: colW*3 + 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 11, bold: true, color: "0F172A", valign: "middle" });
+      }
+
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 7.15, w: 13.33, h: 0.35, fill: { color: "0F172A" } });
+      slide.addText(COMPANY_NAME + "  •  Page " + (i + 3), { x: 0.5, y: 7.18, w: 12.33, h: 0.28, fontSize: 8, color: "94A3B8", align: "center", valign: "middle" });
+    }
+
+    // END
+    slide = pptx.addSlide();
+    slide.background = { color: "0F172A" };
+    slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
+    slide.addText("THANK YOU", { x: 0, y: 3, w: 13.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center", charSpacing: 8 });
+    slide.addText(COMPANY_NAME, { x: 0, y: 4.2, w: 13.33, h: 0.5, fontSize: 16, color: "BAE6FD", align: "center", charSpacing: 3 });
+    slide.addText(COMPANY_TAGLINE, { x: 0, y: 4.7, w: 13.33, h: 0.4, fontSize: 11, color: "93C5FD", align: "center" });
+
+    const fileName = (singleArea ? "PPT_" + singleArea.replace(/[^a-z0-9]/gi, "_") : "PPT_Selected_Sites") + "_" + new Date().toISOString().slice(0,10) + ".pptx";
+    
+    // Save PPT using official writeFile method (most reliable)
+    showProgress("Finalizing PPT...", "Writing file");
+    await pptx.writeFile({ fileName: fileName });
+    
+    hideProgress();
+    alert("✅ PPT ban gayi!\n\nFile: " + fileName + "\n\n💡 Tip:\n1. File ko Downloads folder se kholiye\n2. F5 dabakar Slide Show mode mein le jayein\n3. Location par click karein - Google Maps khulega");
+  } catch(e){
+    hideProgress();
+    console.error("PPT Error:", e);
+    alert("PPT generate nahi ho payi: " + e.message);
+  }
+}
+
+/* ============ SHARE ============ */
+function openShareDialog(isSelected){
+  if(isSelected){
+    document.getElementById("shareModalTitle").textContent = "Share Selected Sites";
+    document.getElementById("shareModalDesc").textContent = "Choose how you want to share the selected sites.";
+    shareContext = { mode: "selected", areaName: null };
+  } else {
+    document.getElementById("shareModalTitle").textContent = "Share All Booked Sites";
+    document.getElementById("shareModalDesc").textContent = "Choose how you want to share the full site report.";
+    shareContext = { mode: "all", areaName: null };
+  }
+  document.getElementById("shareModal").classList.add("show");
+}
+function closeShareModal(){ document.getElementById("shareModal").classList.remove("show"); }
+function shareArea(areaName){
+  shareContext = { mode: "area", areaName: areaName };
+  document.getElementById("shareModalTitle").textContent = "Share Area - " + areaName;
+  document.getElementById("shareModalDesc").textContent = "Choose how you want to share this entire area.";
+  document.getElementById("shareModal").classList.add("show");
+}
+function getShareSites(){
+  if(shareContext.mode === "selected") return sites.filter(s => selectedSites.has(s.id));
+  if(shareContext.mode === "area") return sites.filter(s => (s.area || "Unassigned") === shareContext.areaName);
+  return sites.filter(x => x.status !== "Available");
+}
+function getShareTitle(){
+  if(shareContext.mode === "selected") return "Selected Sites Report";
+  if(shareContext.mode === "area") return "Area Report - " + shareContext.areaName;
+  return "Site Management Report";
+}
+function getShareFileName(){
+  const d = new Date().toISOString().slice(0,10);
+  if(shareContext.mode === "selected") return "Selected_Sites_" + d;
+  if(shareContext.mode === "area") return "Area_" + shareContext.areaName.replace(/[^a-z0-9]/gi, "_") + "_" + d;
+  return "Site_Report_" + d;
+}
+function buildProfessionalReport(siteList, reportTitle, areaName){
+  const total = siteList.length;
+  const avail = siteList.filter(s => s.status === "Available").length;
+  const notAvail = siteList.filter(s => s.status === "Not Available").length;
+  const maint = siteList.filter(s => s.status === "Under Maintenance").length;
+  const today = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
+  const areaDisplay = areaName || "All Areas";
+  let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc(reportTitle)}</title><style>body{font-family:Arial;padding:20px}.cover{background:#1e40af;color:#fff;padding:30px;border-radius:12px}.site{border:1px solid #e2e8f0;padding:14px;border-radius:10px;margin:10px 0}.site img{max-width:300px;border-radius:8px}</style></head><body><div class="cover"><h1>${esc(reportTitle)}</h1><h2>${esc(areaDisplay)}</h2><p>Date: ${today} | Total: ${total} | Available: ${avail} | Not Available: ${notAvail} | Maintenance: ${maint}</p></div>`;
+  siteList.forEach((x, i) => {
+    const days = calcDays(x.fromDate, x.toDate);
+    const imgData = x.hasImage ? (imageCache[x.id] || "") : "";
+    html += `<div class="site"><h3>${i+1}. ${esc(x.site)}</h3>${imgData ? `<img src="${imgData}">` : "<i>No image</i>"}`;
+    html += `<p>Status: <b>${esc(x.status)}</b></p>`;
+    if(x.area) html += `<p>Area: ${esc(x.area)}</p>`;
+    if(x.location) html += `<p>Location: ${esc(x.location)}</p>`;
+    if(x.customer) html += `<p>Company: ${esc(x.customer)}</p>`;
+    if(x.rate) html += `<p>Rate: ${formatINR(x.rate)} / month</p>`;
+    if(x.status !== "Available" && (x.fromDate || x.toDate)) html += `<p>Booking: ${esc(x.fromDate||"")} → ${esc(x.toDate||"")} (${days} days)</p>`;
+    html += `</div>`;
+  });
+  html += `</body></html>`;
+  return html;
+}
+async function buildShareZip(){
+  const list = getShareSites();
+  if(list.length === 0){ alert("Koi site nahi mili"); return null; }
+  const zip = new JSZip();
+  const reportTitle = getShareTitle();
+  let areaName = shareContext.mode === "area" ? shareContext.areaName : null;
+  if(!areaName && list.length > 0){
+    const uniqueAreas = [...new Set(list.map(s => s.area || "Unassigned"))];
+    if(uniqueAreas.length === 1) areaName = uniqueAreas[0];
+  }
+  showProgress("Loading images...", "");
+  for(const x of list){
+    if(x.hasImage && !imageCache[x.id]){ const d = await getImage(x.id); if(d) imageCache[x.id] = d; }
+  }
+  const reportHtml = buildProfessionalReport(list, reportTitle, areaName);
+  zip.file("Report.html", reportHtml);
+  let pptIncluded = false;
+  let pptFileName = "";
+  if(areaName){
+    try {
+      const ppt = await getPpt(areaName);
+      if(ppt && ppt.data && ppt.data.indexOf(",") > -1){
+        const base64 = ppt.data.split(",")[1];
+        const ext = (ppt.name && ppt.name.split(".").pop()) || "pptx";
+        pptFileName = "Presentation." + ext;
+        zip.file(pptFileName, base64, { base64: true });
+        pptIncluded = true;
+      }
+    } catch(e){}
+  }
+  zip.file("README.txt", "Report: " + reportTitle + "\nGenerated: " + new Date().toLocaleString('en-GB') + "\nPPT: " + (pptIncluded ? pptFileName : "N/A"));
+  const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+  return { blob, fileName: getShareFileName() + ".zip", pptIncluded, pptArea: areaName };
+}
+async function shareAsZip(){
+  closeShareModal();
+  try {
+    showProgress("Building ZIP...", "");
+    const result = await buildShareZip();
+    hideProgress();
+    if(!result) return;
+    const url = URL.createObjectURL(result.blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = result.fileName;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  } catch(e){ hideProgress(); alert("Error: " + e.message); }
+}
+async function shareNative(){
+  closeShareModal();
+  try {
+    showProgress("Preparing...", "");
+    const result = await buildShareZip();
+    hideProgress();
+    if(!result) return;
+    const file = new File([result.blob], result.fileName, { type: "application/zip" });
+    const shareData = { files: [file], title: getShareTitle(), text: getShareTitle() };
+    if(navigator.canShare && navigator.canShare(shareData)){
+      try { await navigator.share(shareData); return; } catch(err){ if(err.name === "AbortError") return; }
+    }
+    const url = URL.createObjectURL(result.blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = result.fileName;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  } catch(e){ hideProgress(); alert("Error: " + e.message); }
+}
+function buildShareText(){
+  const list = getShareSites();
+  let text = "*" + getShareTitle() + "*\n" + new Date().toLocaleDateString('en-GB') + "\nTotal: " + list.length + "\n\n";
+  list.forEach((x, i) => {
+    text += "*" + (i+1) + ". " + x.site + "*\n";
+    if(x.area) text += "   Area: " + x.area + "\n";
+    if(x.location) text += "   Location: " + x.location + "\n";
+    if(x.customer) text += "   Company: " + x.customer + "\n";
+    if(x.rate) text += "   Rate: " + formatINR(x.rate) + "/month\n";
+    text += "   Status: " + x.status + "\n";
+    if(x.status !== "Available" && x.fromDate) text += "   From: " + x.fromDate + "\n";
+    if(x.status !== "Available" && x.toDate) text += "   To: " + x.toDate + "\n";
+    text += "\n";
+  });
+  return text;
+}
+let whatsappWindow = null;
+function shareViaWhatsAppText(){
+  closeShareModal();
+  const text = buildShareText();
+  const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
+  window.open(waUrl, "_blank");
+}
+function shareViaEmailText(){
+  closeShareModal();
+  window.location.href = "mailto:?subject=" + encodeURIComponent(getShareTitle()) + "&body=" + encodeURIComponent(buildShareText());
+}
+
+/* ============ BULK UPLOAD ============ */
+function openBulkUpload(){
+  if(currentUser.role !== "Admin"){ alert("Sirf Admin bulk upload kar sakta hai"); return; }
+  bulkParsedSites = [];
+  document.getElementById("bulkPreviewWrap").style.display = "none";
+  document.getElementById("bulkFile").value = "";
+  const btn = document.getElementById("bulkUploadBtn");
+  btn.disabled = true; btn.style.background = "#cbd5e1";
+  document.getElementById("bulkModal").classList.add("show");
+}
+function closeBulkModal(){ document.getElementById("bulkModal").classList.remove("show"); }
+function downloadSampleCSV(){
+  const sample = "area,site,location,company,rate,status,from,to\nChandigarh,CG01,Sector 17 Bus Stand,ABC Media,50000,Available,,\n";
+  const blob = new Blob(["\ufeff"+sample], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sample_sites.csv"; a.click();
+}
+const dropZone = document.getElementById("dropZone");
+if(dropZone){
+  dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.style.background = "#dbeafe"; });
+  dropZone.addEventListener("dragleave", () => dropZone.style.background = "");
+  dropZone.addEventListener("drop", e => { e.preventDefault(); dropZone.style.background = ""; const f = e.dataTransfer.files[0]; if(f) processBulkFile(f); });
+}
+function handleBulkFile(e){ const f = e.target.files[0]; if(f) processBulkFile(f); }
+function processBulkFile(file){
+  if(!file.name.toLowerCase().endsWith(".csv")){ alert("Only .csv"); return; }
+  const reader = new FileReader();
+  reader.onload = (e) => parseCSV(e.target.result);
+  reader.readAsText(file);
+}
+function parseCSVLine(line){
+  const res = []; let cur = ""; let inQ = false;
+  for(let i=0; i<line.length; i++){
+    const c = line[i];
+    if(c === '"'){ if(inQ && line[i+1] === '"'){ cur += '"'; i++; } else inQ = !inQ; }
+    else if(c === ',' && !inQ){ res.push(cur.trim()); cur = ""; }
+    else cur += c;
+  }
+  res.push(cur.trim());
+  return res;
+}
+function parseCSV(text){
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if(lines.length < 2){ alert("CSV needs header + data"); return; }
+  const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().trim());
+  if(!headers.includes("site")){ alert("'site' column missing"); return; }
+  const idx = {};
+  headers.forEach((h, i) => idx[h] = i);
+  bulkParsedSites = [];
+  const newAreas = [];
+  for(let i=1; i<lines.length; i++){
+    const cells = parseCSVLine(lines[i]);
+    if(!cells[idx.site]) continue;
+    let areaVal = idx.area !== undefined ? (cells[idx.area]||"").trim() : "";
+    if(!areaVal) areaVal = "Unassigned";
+    if(areaVal !== "Unassigned" && !areas.includes(areaVal) && !newAreas.includes(areaVal)) newAreas.push(areaVal);
+    bulkParsedSites.push({
+      id: "id_"+Math.random().toString(36).slice(2,10),
+      area: areaVal, site: cells[idx.site],
+      location: idx.location !== undefined ? (cells[idx.location]||"") : "",
+      customer: idx.company !== undefined ? (cells[idx.company]||"") : "",
+      rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "",
+      status: normalizeStatus(idx.status !== undefined ? cells[idx.status] : "Available"),
+      fromDate: idx.from !== undefined ? (cells[idx.from]||"") : "",
+      toDate: idx.to !== undefined ? (cells[idx.to]||"") : "",
+      lat: "", lng: "", hasImage: false
+    });
+  }
+  newAreas.forEach(a => { if(!areas.includes(a)) areas.push(a); });
+  const wrap = document.getElementById("bulkPreviewWrap");
+  const sum = document.getElementById("bulkSummary");
+  const prev = document.getElementById("bulkPreview");
+  const btn = document.getElementById("bulkUploadBtn");
+  if(bulkParsedSites.length === 0){ sum.textContent = "No valid sites"; wrap.style.display = "block"; return; }
+  sum.textContent = bulkParsedSites.length + " valid sites ready";
+  let html = '<table><thead><tr><th>#</th><th>Area</th><th>Site</th><th>Location</th><th>Company</th><th>Rate</th><th>Status</th></tr></thead><tbody>';
+  bulkParsedSites.slice(0, 30).forEach((p, i) => {
+    html += '<tr><td>'+(i+1)+'</td><td>'+esc(p.area)+'</td><td>'+esc(p.site)+'</td><td>'+esc(p.location)+'</td><td>'+esc(p.customer)+'</td><td>'+esc(p.rate)+'</td><td>'+esc(p.status)+'</td></tr>';
+  });
+  html += '</tbody></table>';
+  prev.innerHTML = html;
+  wrap.style.display = "block";
+  btn.disabled = false; btn.style.background = "#3b82f6"; btn.style.color = "#fff"; btn.style.cursor = "pointer";
+}
+async function confirmBulkUpload(){
+  if(bulkParsedSites.length === 0) return;
+  let added = 0;
+  bulkParsedSites.forEach(n => {
+    const existing = sites.findIndex(s => s.site === n.site);
+    if(existing >= 0){ sites[existing] = { ...sites[existing], ...n, id: sites[existing].id }; }
+    else { sites.push(n); added++; }
+  });
+  await persistNow();
+  populateAreaDropdowns(); render(); closeBulkModal();
+  alert("Added: " + added + ", Total: " + bulkParsedSites.length);
+}
+function showHistory(siteIndex){
+  const siteName = sites[siteIndex].site;
+  const hist = bookingHistory.filter(h => h.site === siteName);
+  document.getElementById("historyTitle").textContent = "History - " + siteName;
+  const c = document.getElementById("historyContent");
+  if(hist.length === 0){ c.innerHTML = '<div class="empty-history">No history</div>'; }
+  else { c.innerHTML = hist.map(h => '<div class="history-item"><b>'+esc(h.customer)+'</b><div>'+esc(h.fromDate)+' - '+esc(h.toDate)+' ('+h.days+' days)</div><div style="color:#94a3b8;font-size:11px">Ended: '+esc(h.endedOn)+'</div></div>').join(""); }
+  document.getElementById("historyModal").classList.add("show");
+}
+function openHistorySearch(){
+  document.getElementById("historyTitle").textContent = "All History (" + bookingHistory.length + ")";
+  const c = document.getElementById("historyContent");
+  if(bookingHistory.length === 0){ c.innerHTML = '<div class="empty-history">No history</div>'; }
+  else { c.innerHTML = bookingHistory.map(h => '<div class="history-item"><b>'+esc(h.site)+'</b><div>'+esc(h.customer)+'</div><div>'+esc(h.fromDate)+' - '+esc(h.toDate)+' ('+h.days+' days)</div></div>').join(""); }
+  document.getElementById("historyModal").classList.add("show");
+}
+function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
+function downloadHistoryCSV(){
+  if(bookingHistory.length === 0){ alert("History khaali hai"); return; }
+  const headers = ["#","Site","Company","Location","From Date","To Date","Days","Status","Ended On"];
+  const rows = [headers.join(",")];
+  bookingHistory.forEach((h, i) => {
+    rows.push([i+1, h.site||"", h.customer||"", h.location||"", h.fromDate||"", h.toDate||"", h.days||"", h.status||"", h.endedOn||""].map(v => '"'+String(v).replace(/"/g,'""')+'"').join(","));
+  });
+  const csv = "\ufeff" + rows.join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "history_"+new Date().toISOString().slice(0,10)+".csv";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function openPptModal(areaName){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin PPT add kar sakta hai"); return; }
+  currentPptArea = areaName;
+  document.getElementById("pptModalTitle").textContent = "PPT - " + areaName;
+  document.getElementById("pptModal").classList.add("show");
+  loadPptForArea(areaName);
+}
+function closePptModal(){ document.getElementById("pptModal").classList.remove("show"); currentPptArea = null; }
+async function loadPptForArea(areaName){
+  showProgress("Loading PPT info...", "");
+  const meta = await apiGet("/ppt/" + encodeURIComponent(areaName) + "/meta");
+  hideProgress();
+  const wrap = document.getElementById("pptExistingWrap");
+  const box = document.getElementById("pptUploadBox");
+  if(meta && meta.success && meta.name){
+    document.getElementById("pptFileName").textContent = meta.name || "presentation";
+    document.getElementById("pptFileSize").textContent = formatBytes(meta.size || 0);
+    wrap.style.display = "block"; box.style.display = "none";
+  } else {
+    wrap.style.display = "none"; box.style.display = "block";
+  }
+}
+function formatBytes(b){
+  if(!b) return "0 B";
+  const k = 1024; const sizes = ["B","KB","MB","GB"];
+  const i = Math.floor(Math.log(b) / Math.log(k));
+  return (b / Math.pow(k, i)).toFixed(i === 0 ? 0 : 1) + " " + sizes[i];
+}
+function handlePptUpload(e){
+  const file = e.target.files[0]; if(!file) return;
+  const name = file.name.toLowerCase();
+  const okType = name.endsWith(".ppt") || name.endsWith(".pptx");
+  if(!okType){ alert("Sirf .ppt ya .pptx file allowed hai"); e.target.value = ""; return; }
+  if(file.size > MAX_PPT_SIZE){ alert("Max 100 MB allowed hai"); e.target.value = ""; return; }
+  const reader = new FileReader();
+  reader.onload = async (ev) => {
+    showProgress("Uploading PPT...", "Preparing");
+    const dataUrl = ev.target.result;
+    const obj = { name: file.name, size: file.size, type: file.type || "application/octet-stream", data: dataUrl };
+    const result = await savePpt(currentPptArea, obj);
+    hideProgress();
+    if(result && result.success){
+      alert("PPT upload ho gayi: " + file.name);
+      loadPptForArea(currentPptArea);
+      await refreshPptCache();
+      render();
+    } else {
+      alert("PPT upload fail: " + (result && result.error || "Unknown error"));
+    }
+  };
+  reader.readAsDataURL(file); e.target.value = "";
+}
+async function downloadPpt(){
+  if(!currentPptArea) return;
+  showProgress("Downloading PPT...", "");
+  const obj = await getPpt(currentPptArea);
+  hideProgress();
+  if(!obj || !obj.data){ alert("PPT not found"); return; }
+  const a = document.createElement("a");
+  a.href = obj.data; a.download = obj.name || (currentPptArea + ".pptx");
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+async function deletePpt(){
+  if(!currentPptArea) return;
+  if(!confirm("Is area ki PPT delete karni hai?")) return;
+  await deletePptFromDB(currentPptArea);
+  alert("PPT delete ho gayi");
+  loadPptForArea(currentPptArea);
+  await refreshPptCache();
+  render();
+}
+function openBulkPptModal(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin bulk PPT upload kar sakta hai"); return; }
+  bulkPptParsed = [];
+  document.getElementById("bulkPptPreviewWrap").style.display = "none";
+  document.getElementById("bulkPptFiles").value = "";
+  const btn = document.getElementById("bulkPptUploadBtn");
+  btn.disabled = true; btn.style.background = "#cbd5e1"; btn.style.color = "#64748b";
+  document.getElementById("bulkPptModal").classList.add("show");
+}
+function closeBulkPptModal(){ document.getElementById("bulkPptModal").classList.remove("show"); }
+(function setupBulkPptDropZone(){
+  const dz = document.getElementById("bulkPptDropZone"); if(!dz) return;
+  dz.addEventListener("dragover", e => { e.preventDefault(); dz.style.background = "#fbcfe8"; });
+  dz.addEventListener("dragleave", () => dz.style.background = "#fdf2f8");
+  dz.addEventListener("drop", e => { e.preventDefault(); dz.style.background = "#fdf2f8"; const files = e.dataTransfer.files; if(files && files.length > 0) processBulkPptFiles(files); });
+})();
+function handleBulkPptFiles(e){ const files = e.target.files; if(files && files.length > 0) processBulkPptFiles(files); e.target.value = ""; }
+function findAreaForFilename(fileName){
+  const base = fileName.replace(/\.(pptx?|PPTX?)$/, "").trim();
+  const norm = (s) => String(s).toLowerCase().replace(/[\s_\-\.]+/g, "");
+  let hit = areas.find(a => a.toLowerCase() === base.toLowerCase());
+  if(hit) return hit;
+  const baseNorm = norm(base);
+  hit = areas.find(a => norm(a) === baseNorm);
+  if(hit) return hit;
+  const sorted = [...areas].sort((a,b) => b.length - a.length);
+  for(const a of sorted){
+    const aNorm = norm(a); if(!aNorm) continue;
+    if(baseNorm === aNorm) return a;
+    if(baseNorm.startsWith(aNorm)) return a;
+    if(baseNorm.includes(aNorm)) return a;
+  }
+  return null;
+}
+function processBulkPptFiles(fileList){
+  const files = Array.from(fileList); if(files.length === 0) return;
+  const valid = []; const invalid = [];
+  files.forEach(f => {
+    const name = f.name.toLowerCase();
+    const okType = name.endsWith(".ppt") || name.endsWith(".pptx");
+    if(!okType){ invalid.push({ file: f, reason: "Not a PPT" }); return; }
+    if(f.size > MAX_PPT_SIZE){ invalid.push({ file: f, reason: "Over 100 MB" }); return; }
+    valid.push(f);
+  });
+  if(valid.length === 0){ alert("Koi valid PPT file nahi mili"); return; }
+  let pending = valid.length;
+  bulkPptParsed = [];
+  valid.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const matchedArea = findAreaForFilename(f.name);
+      bulkPptParsed.push({ file: f, name: f.name, size: f.size, type: f.type, area: matchedArea, matched: !!matchedArea, dataUrl: ev.target.result });
+      pending--;
+      if(pending === 0){ renderBulkPptPreview(invalid); }
+    };
+    reader.readAsDataURL(f);
+  });
+}
+function renderBulkPptPreview(invalidList){
+  const wrap = document.getElementById("bulkPptPreviewWrap");
+  const sum = document.getElementById("bulkPptSummary");
+  const prev = document.getElementById("bulkPptPreview");
+  const btn = document.getElementById("bulkPptUploadBtn");
+  const matched = bulkPptParsed.filter(p => p.matched);
+  let sumHtml = "<b>" + bulkPptParsed.length + "</b> file(s)";
+  if(matched.length) sumHtml += " - <span style='color:#047857'>" + matched.length + " matched</span>";
+  if(invalidList && invalidList.length) sumHtml += " - <span style='color:#b91c1c'>" + invalidList.length + " invalid</span>";
+  sum.innerHTML = sumHtml;
+  let html = '<table><thead><tr><th>#</th><th>File</th><th>Size</th><th>Matched Area</th><th>Status</th></tr></thead><tbody>';
+  bulkPptParsed.forEach((p, i) => {
+    html += '<tr><td>' + (i+1) + '</td><td>' + esc(p.name) + '</td><td>' + formatBytes(p.size) + '</td><td>' + esc(p.area || "—") + '</td><td>' + (p.matched ? '<span style="color:#047857;font-weight:700">✓ Ready</span>' : '<span style="color:#b91c1c;font-weight:700">✗ No Match</span>') + '</td></tr>';
+  });
+  if(invalidList && invalidList.length){
+    invalidList.forEach((iv, i) => {
+      html += '<tr><td>' + (bulkPptParsed.length + i + 1) + '</td><td>' + esc(iv.file.name) + '</td><td>' + formatBytes(iv.file.size) + '</td><td>—</td><td><span style="color:#b91c1c">' + esc(iv.reason) + '</span></td></tr>';
+    });
+  }
+  html += '</tbody></table>';
+  prev.innerHTML = html;
+  wrap.style.display = "block";
+  if(matched.length > 0){
+    btn.disabled = false; btn.style.background = "#3b82f6"; btn.style.color = "#fff"; btn.style.cursor = "pointer";
+  } else {
+    btn.disabled = true; btn.style.background = "#cbd5e1"; btn.style.color = "#64748b";
+  }
+}
+async function confirmBulkPptUpload(){
+  const matched = bulkPptParsed.filter(p => p.matched);
+  if(matched.length === 0){ alert("Koi matched file nahi hai"); return; }
+  if(!confirm(matched.length + " PPT file(s) upload hongi. Continue?")) return;
+  showProgress("Uploading PPTs...", "0 / " + matched.length);
+  let success = 0;
+  for(let i = 0; i < matched.length; i++){
+    const p = matched[i];
+    document.getElementById("progressSub").textContent = (i+1) + " / " + matched.length + " - " + p.area;
+    const obj = { name: p.name, size: p.size, type: p.type, data: p.dataUrl };
+    const result = await savePpt(p.area, obj);
+    if(result && result.success) success++;
+  }
+  hideProgress();
+  await refreshPptCache();
+  render();
+  closeBulkPptModal();
+  alert(success + " / " + matched.length + " PPT upload ho gayi");
+}
+
+/* ============ EXPORT / BACKUP / IMPORT ============ */
+function exportCSV(){
+  if(sites.length === 0){ alert("Koi site nahi"); return; }
+  const headers = ["Area","Site","Location","Company","Rate","Status","From","To"];
+  const rows = [headers.join(",")];
+  sites.forEach(x => {
+    rows.push([x.area||"", x.site||"", x.location||"", x.customer||"", x.rate||"", x.status||"", x.fromDate||"", x.toDate||""].map(v => '"'+String(v).replace(/"/g,'""')+'"').join(","));
+  });
+  const csv = "\ufeff" + rows.join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sites_"+new Date().toISOString().slice(0,10)+".csv";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function downloadBackup(){
+  const data = { sites, areas, bookingHistory, exportedOn: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "backup_"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function triggerImport(){ document.getElementById("importFile").click(); }
+function handleImportFile(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if(!data.sites) throw new Error("Invalid backup");
+      if(!confirm("Import karein? Current data replace ho jayega.")) return;
+      sites = data.sites || [];
+      areas = data.areas || [...DEFAULT_AREAS];
+      bookingHistory = data.bookingHistory || [];
+      await persistNow();
+      populateAreaDropdowns(); render();
+      alert("Import successful");
+    } catch(err){ alert("Import failed: " + err.message); }
+  };
+  reader.readAsText(file); e.target.value = "";
+}
+async function bulkDeleteSelected(){
+  if(selectedSites.size === 0){ alert("Koi site select nahi"); return; }
+  if(!confirm(selectedSites.size + " site(s) delete karni hain?")) return;
+  const ids = new Set([...selectedSites].map(String));
+  for(const id of ids){ if(imageCache[id]) await deleteImage(id); }
+  sites = sites.filter(s => !ids.has(String(s.id)));
+  selectedSites.clear();
+  await persistNow();
+  render();
+  alert("Sites deleted");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initDateDropdowns();
+  initBulkDateDropdowns();
+  checkSession();
+});
+</script>
+</body>
+</html>
