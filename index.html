@@ -6,7 +6,6 @@
 <title>Site Management System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{max-width:100%}
@@ -66,6 +65,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
 .toolbar button.multi-area-btn{background:#7c3aed;color:#fff;border-color:#6d28d9}
 .filter-box{display:flex;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;flex-wrap:nowrap;height:36px}
+.filter-box select{padding:0 10px;border:0;border-right:1px solid #cbd5e1;font-family:inherit;font-size:12px !important;background:#fff;outline:none;color:#0f172a;cursor:pointer;min-width:120px;height:100%;font-weight:600}
+.filter-box select:focus{background:#eff6ff}
 .filter-box .date-group{display:flex;align-items:center;background:#fff;border-right:1px solid #cbd5e1;height:100%}
 .filter-box .date-input{padding:0 8px;border:0;font-family:inherit;font-size:12px !important;width:95px;background:#fff;color:#0f172a;outline:none;height:100%}
 .filter-box .date-input:focus{background:#eff6ff}
@@ -171,6 +172,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .image-viewer.show{display:flex}
 .image-viewer img{max-width:100%;max-height:95vh;border-radius:12px}
 .image-viewer .close-viewer{position:absolute;top:16px;right:16px;background:#fff;color:#0f172a;width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:20px;font-weight:700}
+.drop-zone{border:2px dashed #cbd5e1;border-radius:12px;padding:24px 16px;text-align:center;background:#f8fafc;cursor:pointer;margin-bottom:12px}
+.drop-zone .dz-icon{font-size:36px;margin-bottom:8px}
+.bulk-preview{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-bottom:14px;max-height:280px;overflow:auto}
+.bulk-preview table{font-size:11px;width:100%;min-width:500px}
+.bulk-preview th,.bulk-preview td{padding:6px 8px;font-size:11px;border-bottom:1px solid #f1f5f9;white-space:nowrap}
+.bulk-summary{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:10px;border-radius:8px;font-size:12px;margin-bottom:10px;font-weight:600}
 .bulk-info{background:#fffbeb;border:1px solid #fcd34d;padding:12px;border-radius:8px;margin-bottom:12px;font-size:12px;color:#92400e;line-height:1.6}
 .bulk-info code{background:#fff;padding:2px 6px;border-radius:4px;font-family:monospace;color:#1e40af;font-size:11px}
 .progress-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:4000;align-items:center;justify-content:center;flex-direction:column;gap:20px;color:#fff;padding:20px;text-align:center}
@@ -181,6 +188,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .area-list-item.sel{background:#fef3c7;border-color:#fcd34d}
 .area-list-item input[type="checkbox"]{width:20px;height:20px;cursor:pointer;accent-color:#3b82f6}
 .area-list-item .name{flex:1;font-weight:600;color:#0f172a;min-width:120px}
+.bulk-tab-bar{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #e2e8f0;overflow-x:auto}
+.bulk-tab{flex:1;padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-family:inherit;min-width:140px;white-space:nowrap;margin-bottom:-2px}
+.bulk-tab.active{color:#3b82f6;border-bottom-color:#3b82f6}
+.bulk-tab:hover{background:#f8fafc}
+.bulk-tab-content{display:none}
+.bulk-tab-content.active{display:block}
 .toast{position:fixed;top:80px;right:20px;background:#0f172a;color:#fff;padding:14px 18px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:5000;display:flex;gap:10px;align-items:flex-start;max-width:380px;transform:translateX(450px);transition:transform 0.3s ease;font-size:13px}
 .toast.show{transform:translateX(0)}
 .toast.success{border-left:4px solid #10b981}
@@ -213,6 +226,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .toolbar #search{min-width:100%;flex:1 1 100%}
   .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center;height:36px;min-height:36px}
   .filter-box{width:100%;flex:1 1 100%;flex-wrap:wrap;height:auto}
+  .filter-box select{flex:1;min-width:100%;border-right:0;border-bottom:1px solid #cbd5e1;height:36px}
   .filter-box .date-group{flex:1 1 100%;border-right:0;border-bottom:1px solid #cbd5e1;height:36px}
   .filter-box .date-input{flex:1;min-width:90px}
   .filter-box .apply-btn{flex:1;min-width:100%;height:36px;justify-content:center}
@@ -231,6 +245,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .formgrid{grid-template-columns:1fr}
   .modal-actions{flex-direction:column-reverse}
   .modal-actions button{width:100%}
+  .bulk-tab{font-size:11px;padding:10px 12px;min-width:110px}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
 }
 @media (max-width:380px){
@@ -310,6 +325,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
   <span class="filter-active-badge" id="filterBadge"></span>
   <button class="admin-only" onclick="openAreaManager()">Manage Areas</button>
+  <button class="admin-only multi-area-btn" onclick="openMultiAreaSelect()">☑ Select Areas</button>
   <button onclick="openAdd()">+ Add Site</button>
   <button onclick="openHistoryModal()">History</button>
   <button onclick="exportCSV()">Export</button>
@@ -422,24 +438,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 </div></div>
 
-<!-- AREA MANAGER MODAL (MISSING THA) -->
-<div class="modal" id="areaModal"><div class="box" style="width:min(600px,100%)">
-<h2>Manage Areas</h2>
-<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-  <input id="newAreaName" type="text" placeholder="New area name..." style="flex:1;min-width:180px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none">
-  <button onclick="addNewArea()" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit">+ Add Area</button>
-</div>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-  <button id="areaSelAllBtn" onclick="toggleAllAreas()" style="padding:8px 14px;background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:12px">Select All</button>
-  <span id="areaSelCount" style="font-size:12px;color:#64748b;font-weight:600">0 selected</span>
-</div>
-<div id="areaList" style="max-height:50vh;overflow-y:auto"></div>
-<div class="modal-actions">
-  <button class="secondary" onclick="closeAreaModal()">Close</button>
-  <button onclick="bulkDeleteAreas()" style="background:#dc2626;color:#fff">Delete Selected</button>
-</div>
-</div></div>
-
 <div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
   <button class="close-viewer" onclick="closeImageViewer()">×</button>
   <img id="viewerImage" src="" alt="" onclick="event.stopPropagation()">
@@ -448,14 +446,13 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div id="toastContainer"></div>
 
 <script>
-// ==================== CONFIG ====================
 const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
 const COMPANY_NAME = "DS Outdoor Media";
+const MAX_FILTER_YEAR = 2050;
 const THEME_COLOR = "1E40AF";
 let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 
-// ==================== STATE ====================
 let currentUser = null;
 let sites = [];
 let areas = [...DEFAULT_AREAS];
@@ -464,25 +461,29 @@ let imageCache = {};
 let imageFailed = new Set();
 let selectedSites = new Set();
 let selectedAreas = new Set();
+let multiAreaSelected = new Set();
 let visibleSites = [];
 let editIndex = -1;
 let currentImageData = "";
+let bulkParsedSites = [];
+let bulkParsedImages = [];
 let collapsedAreas = null;
 let areaFilters = {};
 let pendingSaveTimer = null;
 let autoRefreshTimer = null;
 let lastDataHash = "";
+let dateFilterFrom = "";
+let dateFilterTo = "";
 let renderDebounceTimer = null;
+let lastKnownStatuses = {};
 let activeStatuses = new Set();
 let pptFormat = "split";
 let telegramConfig = { botToken: "", chatId: "", enabled: false, onlyNotAvailMaint: true };
 let historySearchQuery = "";
-let isRendering = false; // ✅ Race condition fix
 
-// ==================== TOAST ====================
+/* ============ TOAST ============ */
 function showToast(title, message, type){
   const container = document.getElementById("toastContainer");
-  if(!container) return;
   const toast = document.createElement("div");
   toast.className = "toast " + (type || "info");
   const icons = { success: "✅", info: "ℹ️", warning: "⚠️", danger: "🚨" };
@@ -492,8 +493,19 @@ function showToast(title, message, type){
   setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 300); }, 6000);
 }
 
-// ==================== STATUS LOGIC ====================
-function todayMidnight(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
+/* ============ CORE STATUS LOGIC ============ */
+/* 
+   RULE:
+   - Booking From / To dates DONO di hain, aur To date aaj ya future me hai → Not Available
+   - To date past me hai → Available
+   - Dates khaali hain → Available
+*/
+
+function todayMidnight(){
+  const t = new Date();
+  t.setHours(0,0,0,0);
+  return t;
+}
 
 function parseDDMMYYYY(s){
   if(!s) return null;
@@ -507,6 +519,8 @@ function parseDDMMYYYY(s){
 }
 
 function calcStatusFromDates(fromStr, toStr){
+  // Returns "Not Available" if booking is active/future
+  // Returns "Available" otherwise
   const fromD = parseDDMMYYYY(fromStr);
   const toD = parseDDMMYYYY(toStr);
   if(!fromD || !toD) return "Available";
@@ -516,7 +530,7 @@ function calcStatusFromDates(fromStr, toStr){
   return "Available";
 }
 
-// ==================== DATE HELPERS ====================
+/* ============ DATE INPUT HELPERS ============ */
 function handleDateInput(input, which){
   const oldVal = input.value;
   const oldLen = parseInt(input.dataset.lastLength || "0");
@@ -532,14 +546,22 @@ function handleDateKeyDown(event){ if(event.key === "Enter"){ event.preventDefau
 function ddmmyyyyToISO(s){
   if(!s) return "";
   const p = String(s).trim().split("/");
-  if(p.length !== 3 || p[2].length !== 4) return "";
+  if(p.length !== 3) return "";
   return p[2]+"-"+p[1].padStart(2,"0")+"-"+p[0].padStart(2,"0");
 }
 function calcDays(f, t){
   if(!f || !t) return 0;
-  const fd = parseDDMMYYYY(f), td = parseDDMMYYYY(t);
-  if(!fd || !td || td < fd) return 0;
+  const fd = new Date(ddmmyyyyToISO(f)), td = new Date(ddmmyyyyToISO(t));
+  if(isNaN(fd) || isNaN(td) || td < fd) return 0;
   return Math.floor((td - fd) / 86400000) + 1;
+}
+function isPastDate(d){
+  if(!d) return false;
+  const p = d.split("/");
+  if(p.length !== 3) return false;
+  const dd = new Date(p[2], p[1]-1, p[0]);
+  const today = todayMidnight(); dd.setHours(0,0,0,0);
+  return dd < today;
 }
 function getDateFromDropdowns(prefix){
   const d = document.getElementById(prefix+"_d"), m = document.getElementById(prefix+"_m"), y = document.getElementById(prefix+"_y");
@@ -552,48 +574,44 @@ function setDateDropdowns(prefix, val){
   if(!val || !/^\d{2}\/\d{2}\/\d{4}$/.test(val)){
     const t = new Date(); d.value = String(t.getDate()).padStart(2,"0"); m.value = String(t.getMonth()+1).padStart(2,"0"); y.value = t.getFullYear(); return;
   }
-  const p = val.split("/");
-  d.value = p[0]; m.value = p[1];
-  // ✅ Agar year option list me nahi hai to add karo
-  if(!Array.from(y.options).some(o => o.value === p[2])){
-    const opt = document.createElement("option");
-    opt.value = p[2]; opt.textContent = p[2];
-    y.appendChild(opt);
-  }
-  y.value = p[2];
+  const p = val.split("/"); d.value = p[0]; m.value = p[1]; y.value = p[2];
 }
 
-// ==================== LIVE STATUS UPDATE ====================
+/* ============ LIVE STATUS UPDATE ============ */
 function updateCalcPreview(){
   const from = getDateFromDropdowns("ffrom");
   const to = getDateFromDropdowns("fto");
   const days = calcDays(from, to);
-  const warnEl = document.getElementById("dateWarning");
-  if(warnEl) warnEl.classList.remove("show");
+  document.getElementById("dateWarning").classList.remove("show");
   let extra = "";
   if(from && to && days === 0) extra = " ⚠️ To date From se pehle!";
-  const previewEl = document.getElementById("calcPreview");
-  if(previewEl) previewEl.innerHTML = "<b>From:</b> " + (from||"—") + " &nbsp;|&nbsp; <b>To:</b> " + (to||"—") + " &nbsp;|&nbsp; <b>Days:</b> " + days + extra;
-
+  document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " &nbsp;|&nbsp; <b>To:</b> " + (to||"—") + " &nbsp;|&nbsp; <b>Days:</b> " + days + extra;
+  
+  // ✅ LIVE STATUS UPDATE
   const status = calcStatusFromDates(from, to);
   const sel = document.getElementById("fstatus");
   const hint = document.getElementById("statusHint");
-  if(sel) sel.value = status;
-  if(!hint) return;
-
+  sel.value = status;
+  
   if(status === "Not Available"){
     hint.innerHTML = "🚨 <b>Not Available</b> — Booking active/future hai (To date: " + to + ")";
-    hint.style.background = "#fef2f2"; hint.style.borderColor = "#fecaca"; hint.style.color = "#991b1b";
+    hint.style.background = "#fef2f2";
+    hint.style.borderColor = "#fecaca";
+    hint.style.color = "#991b1b";
   } else if(from && to){
     hint.innerHTML = "✅ <b>Available</b> — Booking date past me hai";
-    hint.style.background = "#ecfdf5"; hint.style.borderColor = "#a7f3d0"; hint.style.color = "#065f46";
+    hint.style.background = "#ecfdf5";
+    hint.style.borderColor = "#a7f3d0";
+    hint.style.color = "#065f46";
   } else {
     hint.innerHTML = "💡 Booking dates dene par status automatically <b>Not Available</b> ho jayega";
-    hint.style.background = "#f0f9ff"; hint.style.borderColor = "#bae6fd"; hint.style.color = "#0c4a6e";
+    hint.style.background = "#f0f9ff";
+    hint.style.borderColor = "#bae6fd";
+    hint.style.color = "#0c4a6e";
   }
 }
 
-// ==================== LOGIN ====================
+/* ============ LOGIN ============ */
 async function doLogin(){
   const username = document.getElementById("loginUser").value.trim();
   const password = document.getElementById("loginPass").value;
@@ -613,7 +631,6 @@ async function doLogin(){
 }
 
 async function showApp(){
-  if(!currentUser){ return; }
   document.getElementById("loginOverlay").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
   document.getElementById("userInfo").textContent = currentUser.username + " (" + currentUser.role + ")";
@@ -636,10 +653,7 @@ function doLogout(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
   location.reload();
 }
-function checkSession(){
-  const saved = sessionStorage.getItem("sms_user");
-  if(saved){ try { currentUser = JSON.parse(saved); showApp(); } catch(e){ sessionStorage.removeItem("sms_user"); } }
-}
+function checkSession(){ const saved = sessionStorage.getItem("sms_user"); if(saved){ try { currentUser = JSON.parse(saved); showApp(); } catch(e){ sessionStorage.removeItem("sms_user"); } } }
 
 function startAutoRefresh(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
@@ -649,8 +663,7 @@ function startAutoRefresh(){
     if(result && result.success){
       const newHash = JSON.stringify({ sites: result.sites || [], areas: result.areas || [], bookingHistory: result.bookingHistory || [] });
       if(newHash !== lastDataHash){
-        const modal = document.getElementById("modal");
-        if(modal && modal.classList.contains("show")) return;
+        const modal = document.getElementById("modal"); if(modal && modal.classList.contains("show")) return;
         sites = result.sites || [];
         areas = (result.areas && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
         bookingHistory = result.bookingHistory || [];
@@ -662,13 +675,14 @@ function startAutoRefresh(){
   }, 20000);
 }
 
-// ==================== UTILS ====================
+/* ============ UTILS ============ */
 function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
+function formatBytes(b){ if(!b) return "0 B"; const k = 1024; const sizes = ["B","KB","MB","GB"]; const i = Math.floor(Math.log(b) / Math.log(k)); return (b / Math.pow(k, i)).toFixed(i === 0 ? 0 : 1) + " " + sizes[i]; }
 function showProgress(t, s){ document.getElementById("progressText").textContent = t || "Working..."; document.getElementById("progressSub").textContent = s || ""; document.getElementById("progressOverlay").classList.add("show"); }
 function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
 
-// ==================== API ====================
+/* ============ API ============ */
 async function apiGet(path){ try { const r = await fetch(API_URL + path, { method: "GET" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 async function apiPost(path, body){ try { const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 async function apiDelete(path){ try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
@@ -704,35 +718,32 @@ async function getImage(key){
 }
 async function deleteImage(key){ delete imageCache[key]; imageFailed.delete(key); return await apiDelete("/image/" + encodeURIComponent(key)); }
 
-// ==================== LOGO ====================
+/* ============ LOGO ============ */
 async function loadLogoFromCloud(){
   try {
     const result = await apiGet("/logo");
     if(result && result.success && result.data){
       LOGO_URL = result.data;
-      const loginLogo = document.getElementById("loginLogoImg");
-      if(loginLogo){ loginLogo.src = result.data; loginLogo.style.display = "inline-block"; }
+      const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo){ loginLogo.src = result.data; loginLogo.style.display = "inline-block"; }
       return true;
     }
   } catch(e){}
-  const loginLogo = document.getElementById("loginLogoImg");
-  if(loginLogo) loginLogo.src = LOGO_URL;
+  const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo) loginLogo.src = LOGO_URL;
   return false;
 }
 
-// ==================== POPULATE ====================
+/* ============ POPULATE ============ */
 function populateAreaDropdowns(){
-  const formSel = document.getElementById("farea");
-  if(!formSel) return;
+  const formSel = document.getElementById("farea"); if(!formSel) return;
   formSel.innerHTML = '';
   areas.forEach(a => { formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
 }
 
-// ==================== FILTER ====================
-function toggleMultiStatusPanel(e){ if(e) e.stopPropagation(); const p = document.getElementById("multiStatusPanel"); if(p) p.classList.toggle("show"); }
+/* ============ FILTER ============ */
+function toggleMultiStatusPanel(e){ if(e) e.stopPropagation(); document.getElementById("multiStatusPanel").classList.toggle("show"); }
 document.addEventListener("click", (e) => {
   const wrap = document.getElementById("multiStatusWrap");
-  if(wrap && !wrap.contains(e.target)){ const p = document.getElementById("multiStatusPanel"); if(p) p.classList.remove("show"); }
+  if(wrap && !wrap.contains(e.target)){ document.getElementById("multiStatusPanel").classList.remove("show"); }
 });
 function toggleAllStatuses(checked){ document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = checked; }); onStatusCheckChange(); }
 function onStatusCheckChange(){
@@ -740,16 +751,7 @@ function onStatusCheckChange(){
   document.querySelectorAll(".ms-cb:checked").forEach(cb => activeStatuses.add(cb.value));
   const allCb = document.getElementById("msAll");
   if(allCb) allCb.checked = activeStatuses.size === 3;
-  updateMultiStatusLabel();
   render();
-}
-function updateMultiStatusLabel(){
-  const label = document.getElementById("multiStatusLabel");
-  const count = document.getElementById("multiStatusCount");
-  if(!label) return;
-  if(activeStatuses.size === 0){ label.textContent = "Status: All"; if(count) count.style.display = "none"; }
-  else if(activeStatuses.size === 1){ label.textContent = "Status: " + [...activeStatuses][0]; if(count) count.style.display = "none"; }
-  else { label.textContent = "Status"; if(count){ count.textContent = activeStatuses.size; count.style.display = "inline-block"; } }
 }
 function statusMatchesFilter(status){ if(activeStatuses.size === 0) return true; return activeStatuses.has(status); }
 
@@ -757,14 +759,13 @@ function filterByCard(status){
   if(status === "ALL"){
     activeStatuses.clear();
     document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
-    const allCb = document.getElementById("msAll"); if(allCb) allCb.checked = false;
+    document.getElementById("msAll").checked = false;
   } else {
     if(activeStatuses.has(status)) activeStatuses.delete(status);
     else activeStatuses.add(status);
     document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = activeStatuses.has(cb.value); });
-    const allCb = document.getElementById("msAll"); if(allCb) allCb.checked = activeStatuses.size === 3;
+    document.getElementById("msAll").checked = activeStatuses.size === 3;
   }
-  updateMultiStatusLabel();
   document.getElementById("search").value = "";
   areaFilters = {};
   render();
@@ -778,19 +779,25 @@ function clearAllFilters(){
   document.getElementById("search").value = "";
   document.getElementById("dateFilterFrom").value = "";
   document.getElementById("dateFilterTo").value = "";
-  document.getElementById("dateFilterFrom").dataset.lastLength = "0";
-  document.getElementById("dateFilterTo").dataset.lastLength = "0";
+  dateFilterFrom = ""; dateFilterTo = "";
   areaFilters = {};
-  updateMultiStatusLabel();
   render();
+}
+
+function ddmmyyyyToISOForFilter(s){
+  if(!s) return "";
+  const p = String(s).trim().split("/");
+  if(p.length !== 3) return "";
+  if(p[2].length !== 4) return "";
+  return p[2] + "-" + p[1].padStart(2,"0") + "-" + p[0].padStart(2,"0");
 }
 
 function siteMatchesDateFilter(site){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
   if(!fromInput && !toInput) return true;
-  const filterFrom = fromInput ? ddmmyyyyToISO(fromInput) : "";
-  const filterTo = toInput ? ddmmyyyyToISO(toInput) : "";
+  const filterFrom = fromInput ? ddmmyyyyToISOForFilter(fromInput) : "";
+  const filterTo = toInput ? ddmmyyyyToISOForFilter(toInput) : "";
   if(fromInput && !filterFrom) return true;
   if(toInput && !filterTo) return true;
   const siteFrom = site.fromDate ? ddmmyyyyToISO(site.fromDate) : "";
@@ -844,7 +851,7 @@ async function refreshPage(e){
   } catch(err){ console.error(err); if(btn){ btn.textContent = "🔄 Refresh"; btn.disabled = false; } }
 }
 
-// ==================== OPEN ADD/EDIT ====================
+/* ============ OPEN ADD/EDIT ============ */
 function openAdd(){
   editIndex = -1;
   document.getElementById("modalTitle").textContent = "Add New Site";
@@ -867,11 +874,9 @@ function openAdd(){
 function quickAddSiteInArea(areaName){ openAdd(); document.getElementById("farea").value = areaName; }
 
 async function editSite(i){
-  // ✅ FIX: Sirf Admin edit kar sakta hai
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin edit kar sakta hai"); return; }
+  if(currentUser.role !== "Admin" && currentUser.role !== "Viewer"){ alert("No permission"); return; }
   editIndex = i;
   const x = sites[i];
-  if(!x) return;
   document.getElementById("modalTitle").textContent = "Edit Site";
   if(x.area && !areas.includes(x.area)){ areas.push(x.area); populateAreaDropdowns(); }
   document.getElementById("farea").value = x.area || areas[0] || "";
@@ -891,14 +896,15 @@ async function editSite(i){
 }
 function closeModal(){ document.getElementById("modal").classList.remove("show"); }
 
-// ==================== SAVE SITE ====================
+/* ============ SAVE SITE (with guaranteed auto-status) ============ */
 async function saveSite(){
-  // ✅ FIX: Permission check
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin save kar sakta hai"); return; }
   const fromVal = getDateFromDropdowns("ffrom"), toVal = getDateFromDropdowns("fto");
   const areaVal = document.getElementById("farea").value;
   if(!areaVal){ alert("Area select karein"); return; }
+  
+  // ✅ GUARANTEED AUTO STATUS - no exceptions
   const statusVal = calcStatusFromDates(fromVal, toVal);
+  
   const id = editIndex < 0 ? "id_"+Math.random().toString(36).slice(2,10) : sites[editIndex].id;
   const hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
   const oldStatus = editIndex < 0 ? null : sites[editIndex].status;
@@ -906,8 +912,7 @@ async function saveSite(){
   const siteCodeInput = document.getElementById("fsitecode").value.trim().toUpperCase();
   const siteNameInput = document.getElementById("fsite").value.trim();
   const finalSiteName = siteNameInput || siteCodeInput || "Unnamed Site";
-  const codeMatch = finalSiteName.match(/^([A-Z]{2,5}\d{1,4})/i);
-  const finalSiteCode = siteCodeInput || (codeMatch ? codeMatch[1].toUpperCase() : "");
+  const finalSiteCode = siteCodeInput || (finalSiteName.match(/^([A-Z]{2,5}\d{1,4})/i) || [])[1]?.toUpperCase() || "";
   const newSite = {
     id, area: areaVal, site: finalSiteName, siteCode: finalSiteCode,
     location: loc.value.trim(), lat: loc.dataset.lat || "", lng: loc.dataset.lng || "",
@@ -917,13 +922,10 @@ async function saveSite(){
     hasImage: !!currentImageData
   };
   showProgress("Saving...", "");
-  try {
-    if(currentImageData){ await saveImage(id, currentImageData); }
-    else if(hadImage){ await deleteImage(id); }
-    if(editIndex < 0) sites.push(newSite); else sites[editIndex] = newSite;
-    await persistNow();
-  } catch(e){ console.error(e); }
-  hideProgress();
+  if(currentImageData){ await saveImage(id, currentImageData); }
+  else if(hadImage){ await deleteImage(id); }
+  if(editIndex < 0) sites.push(newSite); else sites[editIndex] = newSite;
+  await persistNow(); hideProgress();
   closeModal(); render();
   if(oldStatus && oldStatus !== statusVal){ notifyStatusChange(newSite, oldStatus, statusVal); }
   else if(editIndex < 0 && statusVal !== "Available"){ notifyStatusChange(newSite, "Available", statusVal); }
@@ -984,627 +986,67 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-// ==================== AUTO RELEASE ====================
-let isReleasing = false; // ✅ Race condition fix
+/* ============ AUTO RELEASE EXPIRED ============ */
 async function autoReleaseExpiredSites(){
-  if(isReleasing) return false;
-  isReleasing = true;
-  try {
-    const today = todayMidnight();
-    let changed = false;
-    sites.forEach(x => {
-      if(x.toDate){
-        const toD = parseDDMMYYYY(x.toDate);
-        if(!toD) return;
-        toD.setHours(0,0,0,0);
-        if(toD < today && (x.status === "Not Available" || x.status === "Under Maintenance")){
-          bookingHistory.push({
-            site: x.site, siteCode: x.siteCode || "", area: x.area || "Unassigned",
-            customer: x.customer || "", fromDate: x.fromDate || "", toDate: x.toDate || "",
-            days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'),
-            status: x.status, location: x.location || "", rate: x.rate || ""
-          });
-          x.status = "Available"; x.customer = ""; x.fromDate = ""; x.toDate = "";
-          changed = true;
-        }
-      }
-    });
-    if(changed) await persistNow();
-    return changed;
-  } finally { isReleasing = false; }
-}
-
-// ==================== RENDER ====================
-async function render(){
-  if(isRendering) return; // ✅ Race condition fix
-  isRendering = true;
-  try {
-    await autoReleaseExpiredSites();
-    updateCardsWithFilteredCounts();
-    updateMultiStatusLabel();
-    if(collapsedAreas === null) collapsedAreas = new Set(areas);
-    const f = activeStatuses;
-    const q = (document.getElementById("search").value || "").toLowerCase().trim();
-    const hasDateFilter = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
-    const isFiltering = f.size > 0 || q || hasDateFilter;
-    if(isFiltering) collapsedAreas.clear();
-    const container = document.getElementById("areaContainer");
-    container.innerHTML = "";
-    visibleSites = [];
-    let areasToShow = [...areas];
-    const unassignedCount = sites.filter(s => !s.area || s.area === "Unassigned").length;
-    if(unassignedCount > 0 && !areasToShow.includes("Unassigned")) areasToShow.push("Unassigned");
-    let totalShown = 0;
-    for(const areaName of areasToShow){
-      const areaFilter = areaFilters[areaName] || "ALL";
-      const areaSites = sites.filter(s => {
-        const sArea = s.area || "Unassigned";
-        if(sArea !== areaName) return false;
-        if(!statusMatchesFilter(s.status)) return false;
-        if(areaFilter !== "ALL" && s.status !== areaFilter) return false;
-        if(!siteMatchesDateFilter(s)) return false;
-        const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
-        if(q && !hay.includes(q)) return false;
-        return true;
-      });
-      if(isFiltering && areaSites.length === 0) continue;
-      totalShown += areaSites.length;
-      areaSites.forEach(s => visibleSites.push(s));
-      const isCollapsed = collapsedAreas.has(areaName);
-      const block = document.createElement("div");
-      block.className = "area-block" + (isCollapsed ? " collapsed" : "");
-      const header = document.createElement("div");
-      header.className = "area-header";
-      header.onclick = (e) => { if(e.target.tagName === "BUTTON" || e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return; toggleAreaCollapse(areaName); };
-      const areaAvail = areaSites.filter(s => s.status === "Available").length;
-      const areaNot = areaSites.filter(s => s.status === "Not Available").length;
-      const areaMaint = areaSites.filter(s => s.status === "Under Maintenance").length;
-      const allAreaSel = areaSites.length > 0 && areaSites.every(s => selectedSites.has(s.id));
-      let headerHTML = '<input type="checkbox" class="select-all-cb" ' + (allAreaSel ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectAllInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.checked)">';
-      headerHTML += '<div class="area-name">' + esc(areaName) + '</div>';
-      headerHTML += '<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">';
-      headerHTML += '<span class="area-count" style="background:#fff;color:#1f2937">' + areaSites.length + '</span>';
-      headerHTML += '<span class="area-count" style="background:#16a34a;color:#fff">' + areaAvail + '</span>';
-      headerHTML += '<span class="area-count" style="background:#dc2626;color:#fff">' + areaNot + '</span>';
-      headerHTML += '<span class="area-count" style="background:#facc15;color:#111827">' + areaMaint + '</span>';
-      if(currentUser && currentUser.role === "Admin"){ headerHTML += '<div class="area-actions"><button onclick="event.stopPropagation(); quickAddSiteInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">+ Add</button></div>'; }
-      headerHTML += '<span>' + (isCollapsed ? '▶' : '▼') + '</span></div>';
-      header.innerHTML = headerHTML;
-      block.appendChild(header);
-      const content = document.createElement("div");
-      content.className = "area-content";
-      if(areaSites.length === 0 && areaFilter === "ALL"){ content.innerHTML = '<div class="empty-area">No sites.</div>'; }
-      else {
-        let filterBarHTML = '<div class="area-filter-bar" onclick="event.stopPropagation()"><select onchange="setAreaFilter(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.value)">';
-        filterBarHTML += '<option value="ALL"' + (areaFilter === "ALL" ? ' selected' : '') + '>All</option>';
-        filterBarHTML += '<option value="Available"' + (areaFilter === "Available" ? ' selected' : '') + '>Available</option>';
-        filterBarHTML += '<option value="Not Available"' + (areaFilter === "Not Available" ? ' selected' : '') + '>Not Available</option>';
-        filterBarHTML += '<option value="Under Maintenance"' + (areaFilter === "Under Maintenance" ? ' selected' : '') + '>Under Maintenance</option>';
-        filterBarHTML += '</select><span style="font-size:11px;color:#64748b;margin-left:auto">Showing ' + areaSites.length + '</span></div>';
-        let cardsHTML = filterBarHTML + '<div class="site-cards-grid">';
-        areaSites.forEach((x, idx) => {
-          const globalIdx = sites.indexOf(x);
-          const isSel = selectedSites.has(x.id);
-          const days = calcDays(x.fromDate, x.toDate);
-          let sc = "s-available";
-          if(x.status === "Not Available") sc = "s-not"; else if(x.status === "Under Maintenance") sc = "s-maintenance";
-          let cardCls = "site-card";
-          if(x.status === "Not Available") cardCls += " not-card"; else if(x.status === "Under Maintenance") cardCls += " maint-card";
-          if(isSel) cardCls += " selected-card";
-          const histCount = bookingHistory.filter(h => h.site === x.site).length;
-          const histBtn = histCount > 0 ? '<button class="history-btn" onclick="showHistory(' + globalIdx + ')">' + histCount + '</button>' : '';
-          const mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
-          let imgHTML;
-          if(x.hasImage && !imageFailed.has(x.id)){ imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site" onerror="handleImgError(this, ' + globalIdx + ')">'; }
-          else { imgHTML = '<div class="site-card-img no-img" onclick="editSite(' + globalIdx + ')">📷</div>'; }
-          const canEdit = currentUser && currentUser.role === "Admin";
-          const actionBtns = canEdit ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' + mapBtn + histBtn : mapBtn + histBtn;
-          cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
-          cardsHTML += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' onchange="toggleSelect(\'' + x.id + '\')"><span class="site-card-num">#' + (idx + 1) + '</span>' + imgHTML + '</div>';
-          cardsHTML += '<div class="site-card-body"><div class="site-card-name">' + esc(x.site) + (x.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;margin-left:6px">' + esc(x.siteCode) + '</span>' : '') + (x.location ? ' <span class="site-card-loc-inline">' + esc(x.location) + '</span>' : '') + '</div>';
-          cardsHTML += '<div class="site-card-meta">';
-          if(x.customer) cardsHTML += '<span class="site-card-comp">' + esc(x.customer) + '</span>';
-          if(x.rate) cardsHTML += '<span class="site-card-rate">' + formatINR(x.rate) + '/month</span>';
-          if(x.status !== "Available" && (x.fromDate || x.toDate)) cardsHTML += '<span class="site-card-dates">' + esc(x.fromDate || "") + ' - ' + esc(x.toDate || "") + (days > 0 ? ' <span class="days-badge">' + days + 'd</span>' : '') + '</span>';
-          cardsHTML += '</div></div>';
-          cardsHTML += '<div class="site-card-status"><span class="status ' + sc + '">' + esc(x.status) + '</span></div>';
-          cardsHTML += '<div class="site-card-actions">' + actionBtns + '</div>';
-          cardsHTML += '</div>';
+  const today = todayMidnight();
+  let changed = false;
+  sites.forEach(x => {
+    if(x.toDate){
+      const toD = parseDDMMYYYY(x.toDate);
+      if(!toD) return;
+      toD.setHours(0,0,0,0);
+      if(toD < today && (x.status === "Not Available" || x.status === "Under Maintenance")){
+        bookingHistory.push({
+          site: x.site, siteCode: x.siteCode || "", area: x.area || "Unassigned",
+          customer: x.customer || "", fromDate: x.fromDate || "", toDate: x.toDate || "",
+          days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'),
+          status: x.status, location: x.location || "", rate: x.rate || ""
         });
-        cardsHTML += '</div>';
-        content.innerHTML = cardsHTML;
+        x.status = "Available"; x.customer = ""; x.fromDate = ""; x.toDate = "";
+        changed = true;
       }
-      block.appendChild(content);
-      container.appendChild(block);
-    }
-    if(totalShown === 0 && isFiltering){ container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match your filters.</div>'; }
-    loadVisibleImages();
-    updateSelectBar();
-  } finally { isRendering = false; }
-}
-
-function handleImgError(img, globalIdx){ const id = img.dataset.imgId; if(id) imageFailed.add(id); img.outerHTML = '<div class="site-card-img no-img" onclick="editSite(' + globalIdx + ')">📷</div>'; }
-async function loadVisibleImages(){
-  const imgs = document.querySelectorAll("img.site-card-img[data-img-id]");
-  for(const img of imgs){ const id = img.dataset.imgId; if(imageCache[id]){ img.src = imageCache[id]; } else { const data = await getImage(id); if(data){ img.src = data; } } }
-}
-function toggleSelect(id){
-  if(selectedSites.has(id)) selectedSites.delete(id); else selectedSites.add(id);
-  document.querySelectorAll("div.site-card[data-site-id]").forEach(card => {
-    if(card.dataset.siteId === id){
-      if(selectedSites.has(id)) card.classList.add("selected-card"); else card.classList.remove("selected-card");
-      const cb = card.querySelector('input.site-card-cb'); if(cb) cb.checked = selectedSites.has(id);
     }
   });
-  updateSelectBar();
-}
-function toggleSelectAllInArea(areaName, checked){
-  sites.forEach(s => { const sArea = s.area || "Unassigned"; if(sArea === areaName){ if(checked) selectedSites.add(s.id); else selectedSites.delete(s.id); } });
-  render();
-}
-function clearSelection(){ selectedSites.clear(); render(); }
-function updateSelectBar(){
-  const bar = document.getElementById("selectBar");
-  document.getElementById("selCount").textContent = selectedSites.size + " selected";
-  if(selectedSites.size > 0) bar.classList.add("show"); else bar.classList.remove("show");
-  const delBtn = document.getElementById("deleteBtn");
-  if(delBtn){ if(currentUser && currentUser.role === "Admin") delBtn.style.display = "inline-flex"; else delBtn.style.display = "none"; }
-}
-function toggleAreaCollapse(areaName){ if(collapsedAreas.has(areaName)) collapsedAreas.delete(areaName); else collapsedAreas.add(areaName); render(); }
-function setAreaFilter(areaName, value){ areaFilters[areaName] = value; render(); }
-
-// ==================== AREA MGMT ====================
-function openAreaManager(){ if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; } renderAreaList(); document.getElementById("areaModal").classList.add("show"); }
-function closeAreaModal(){ selectedAreas.clear(); document.getElementById("areaModal").classList.remove("show"); }
-function renderAreaList(){
-  const list = document.getElementById("areaList"); if(!list) return;
-  if(areas.length === 0){ list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px">No areas.</div>'; updateAreaSelCount(); return; }
-  let html = '';
-  areas.forEach((a, i) => {
-    const count = sites.filter(s => s.area === a).length;
-    const isSel = selectedAreas.has(a);
-    html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '"><input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\')"><span class="name">' + esc(a) + ' (' + count + ')</span><button onclick="renameArea(' + i + ')" style="padding:6px 12px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Rename</button><button onclick="deleteArea(' + i + ')" style="padding:6px 12px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Delete</button></div>';
-  });
-  list.innerHTML = html; updateAreaSelCount();
-}
-function toggleAreaSelect(areaName){ if(selectedAreas.has(areaName)) selectedAreas.delete(areaName); else selectedAreas.add(areaName); renderAreaList(); }
-function toggleAllAreas(){ if(selectedAreas.size === areas.length) selectedAreas.clear(); else areas.forEach(a => selectedAreas.add(a)); renderAreaList(); }
-function updateAreaSelCount(){
-  const el = document.getElementById("areaSelCount"); if(el) el.textContent = selectedAreas.size + " selected";
-  const btn = document.getElementById("areaSelAllBtn");
-  if(btn){ if(selectedAreas.size === areas.length && areas.length > 0) btn.textContent = "Deselect All"; else btn.textContent = "Select All"; }
-}
-async function bulkDeleteAreas(){
-  if(selectedAreas.size === 0){ alert("Koi select nahi"); return; }
-  const arr = [...selectedAreas];
-  if(!confirm("Delete " + arr.length + " areas?")) return;
-  sites.forEach(s => { if(selectedAreas.has(s.area)) s.area = "Unassigned"; });
-  areas = areas.filter(a => !selectedAreas.has(a));
-  selectedAreas.clear();
-  await persistNow(); populateAreaDropdowns(); renderAreaList(); render();
-}
-async function addNewArea(){
-  const name = document.getElementById("newAreaName").value.trim();
-  if(!name){ alert("Naam likhein"); return; }
-  if(areas.includes(name)){ alert("Already exists"); return; }
-  areas.push(name);
-  await persistNow();
-  document.getElementById("newAreaName").value = "";
-  renderAreaList(); populateAreaDropdowns(); render();
-}
-async function renameArea(index){
-  const oldName = areas[index];
-  const newName = prompt("Naya name:", oldName);
-  if(!newName || newName.trim() === "") return;
-  if(newName !== oldName && areas.includes(newName)){ alert("Already exists"); return; }
-  const trimmed = newName.trim();
-  areas[index] = trimmed;
-  sites.forEach(s => { if(s.area === oldName) s.area = trimmed; });
-  await persistNow();
-  renderAreaList(); populateAreaDropdowns(); render();
-}
-async function deleteArea(index){
-  const areaName = areas[index];
-  const count = sites.filter(s => s.area === areaName).length;
-  if(count > 0){ if(!confirm(areaName + " mein " + count + " sites. Continue?")) return; sites.forEach(s => { if(s.area === areaName) s.area = "Unassigned"; }); }
-  else { if(!confirm("Delete '" + areaName + "'?")) return; }
-  areas.splice(index, 1);
-  await persistNow();
-  renderAreaList(); populateAreaDropdowns(); render();
+  if(changed) await persistNow();
+  return changed;
 }
 
-// ==================== DATE DROPDOWNS INIT ====================
-const YEARS = [];
-const CUR_YEAR = new Date().getFullYear();
-for(let y = CUR_YEAR - 2; y <= 2050; y++) YEARS.push(y);
-function initDateDropdowns(){
-  [["ffrom_d","ffrom_m","ffrom_y"],["fto_d","fto_m","fto_y"]].forEach(ids => {
-    const d = document.getElementById(ids[0]), m = document.getElementById(ids[1]), y = document.getElementById(ids[2]);
-    if(!d || !m || !y) return;
-    d.innerHTML = ""; m.innerHTML = ""; y.innerHTML = "";
-    for(let i=1;i<=31;i++) d.innerHTML += '<option value="'+String(i).padStart(2,"0")+'">'+String(i).padStart(2,"0")+'</option>';
-    for(let i=0;i<12;i++) m.innerHTML += '<option value="'+String(i+1).padStart(2,"0")+'">'+String(i+1).padStart(2,"0")+'</option>';
-    YEARS.forEach(yy => y.innerHTML += '<option value="'+yy+'">'+yy+'</option>');
-  });
-}
-
-// ==================== HISTORY ====================
-function openHistoryModal(){
-  historySearchQuery = "";
-  document.getElementById("historySearchInput").value = "";
-  renderHistoryList();
-  document.getElementById("historyModal").classList.add("show");
-}
-function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); historySearchQuery = ""; }
-function clearHistorySearch(){ document.getElementById("historySearchInput").value = ""; historySearchQuery = ""; renderHistoryList(); }
-function filterHistoryList(){ historySearchQuery = (document.getElementById("historySearchInput").value || "").toLowerCase().trim(); renderHistoryList(); }
-function renderHistoryList(){
-  const content = document.getElementById("historyContent");
-  document.getElementById("historyTitle").textContent = "All Booking History";
-  let list = bookingHistory.slice().reverse();
-  if(historySearchQuery){
-    list = list.filter(h => (h.site || "").toLowerCase().includes(historySearchQuery) || (h.siteCode || "").toLowerCase().includes(historySearchQuery) || (h.area || "").toLowerCase().includes(historySearchQuery));
-  }
-  if(list.length === 0){
-    content.innerHTML = '<div class="empty-history">' + (historySearchQuery ? "No matches found for '" + esc(historySearchQuery) + "'" : "No booking history found.") + '</div>';
-    return;
-  }
-  let html = "";
-  list.forEach(h => {
-    html += '<div class="history-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px"><b style="color:#6d28d9;font-size:14px">' + esc(h.site) + (h.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px;font-family:monospace">' + esc(h.siteCode) + '</span>' : '') + '</b><span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
-    html += '<div><span style="color:#64748b">Area:</span> <b>' + esc(h.area || "—") + '</b></div>';
-    html += '<div><span style="color:#64748b">Company:</span> <b>' + esc(h.customer || "—") + '</b></div>';
-    html += '<div><span style="color:#64748b">Rate:</span> <b>' + (h.rate ? "₹" + Number(h.rate).toLocaleString('en-IN') : "—") + '</b></div>';
-    html += '<div><span style="color:#64748b">Days:</span> <b>' + (h.days || 0) + '</b></div>';
-    html += '<div><span style="color:#64748b">From:</span> <b>' + esc(h.fromDate || "—") + '</b></div>';
-    html += '<div><span style="color:#64748b">To:</span> <b>' + esc(h.toDate || "—") + '</b></div>';
-    html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div>';
-    html += '</div>';
-    if(h.location) html += '<div style="margin-top:6px;font-size:11px;color:#0891b2">📍 ' + esc(h.location) + '</div>';
-    html += '</div>';
-  });
-  content.innerHTML = html;
-}
-function showHistory(index){
-  const site = sites[index];
-  if(!site) return;
-  const history = bookingHistory.filter(h => h.site === site.site);
-  historySearchQuery = "";
-  document.getElementById("historySearchInput").value = "";
-  document.getElementById("historyTitle").textContent = "Booking History - " + site.site;
-  const content = document.getElementById("historyContent");
-  if(history.length === 0){ content.innerHTML = '<div class="empty-history">No booking history found for this site.</div>'; }
-  else {
-    let html = "";
-    history.slice().reverse().forEach(h => {
-      html += '<div class="history-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px"><b style="color:#6d28d9;font-size:14px">' + esc(h.site) + '</b><span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
-      html += '<div><span style="color:#64748b">Area:</span> <b>' + esc(h.area || "—") + '</b></div>';
-      html += '<div><span style="color:#64748b">Company:</span> <b>' + esc(h.customer || "—") + '</b></div>';
-      html += '<div><span style="color:#64748b">Rate:</span> <b>' + (h.rate ? "₹" + Number(h.rate).toLocaleString('en-IN') : "—") + '</b></div>';
-      html += '<div><span style="color:#64748b">Days:</span> <b>' + (h.days || 0) + '</b></div>';
-      html += '<div><span style="color:#64748b">From:</span> <b>' + esc(h.fromDate || "—") + '</b></div>';
-      html += '<div><span style="color:#64748b">To:</span> <b>' + esc(h.toDate || "—") + '</b></div>';
-      html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div>';
-      html += '</div></div>';
+/* ============ RENDER ============ */
+async function render(){
+  await autoReleaseExpiredSites();
+  updateCardsWithFilteredCounts();
+  if(collapsedAreas === null) collapsedAreas = new Set(areas);
+  const f = activeStatuses;
+  const q = (document.getElementById("search").value || "").toLowerCase().trim();
+  const hasDateFilter = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
+  const isFiltering = f.size > 0 || q || hasDateFilter;
+  if(isFiltering) collapsedAreas.clear();
+  const container = document.getElementById("areaContainer");
+  container.innerHTML = "";
+  visibleSites = [];
+  let areasToShow = [...areas];
+  const unassignedCount = sites.filter(s => !s.area || s.area === "Unassigned").length;
+  if(unassignedCount > 0 && !areasToShow.includes("Unassigned")) areasToShow.push("Unassigned");
+  let totalShown = 0;
+  for(const areaName of areasToShow){
+    const areaFilter = areaFilters[areaName] || "ALL";
+    const areaSites = sites.filter(s => {
+      const sArea = s.area || "Unassigned";
+      if(sArea !== areaName) return false;
+      if(!statusMatchesFilter(s.status)) return false;
+      if(areaFilter !== "ALL" && s.status !== areaFilter) return false;
+      if(!siteMatchesDateFilter(s)) return false;
+      const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
+      if(q && !hay.includes(q)) return false;
+      return true;
     });
-    content.innerHTML = html;
-  }
-  document.getElementById("historyModal").classList.add("show");
-}
-function downloadHistoryCSV(){
-  if(bookingHistory.length === 0){ alert("No history to download"); return; }
-  const headers = ["Site", "Site Code", "Area", "Company", "From", "To", "Days", "Ended On", "Status", "Location", "Rate"];
-  let csv = headers.join(",") + "\n";
-  bookingHistory.forEach(h => {
-    csv += [h.site, h.siteCode || "", h.area || "", h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status, h.location, h.rate].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n";
-  });
-  const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "booking_history_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
-}
-
-// ==================== EXPORT / DELETE ====================
-function exportCSV(){
-  if(sites.length === 0){ alert("No sites"); return; }
-  const headers = ["Area", "Site", "Site Code", "Location", "Company", "Rate", "Status", "From", "To", "Lat", "Lng", "HasImage"];
-  let csv = headers.join(",") + "\n";
-  sites.forEach(s => { csv += [s.area, s.site, s.siteCode||"", s.location, s.customer, s.rate, s.status, s.fromDate, s.toDate, s.lat, s.lng, s.hasImage ? "Yes" : "No"].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n"; });
-  const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sites_export_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
-}
-async function bulkDeleteSelected(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  if(selectedSites.size === 0){ alert("Koi site select nahi"); return; }
-  if(!confirm(selectedSites.size + " sites delete karein?\n\nUndo nahi ho sakta!")) return;
-  const ids = new Set([...selectedSites].map(String));
-  const toDelete = sites.filter(s => ids.has(String(s.id)));
-  for(const s of toDelete){ if(s.hasImage) await deleteImage(s.id); }
-  sites = sites.filter(s => !ids.has(String(s.id)));
-  selectedSites.clear();
-  await persistNow();
-  render();
-  alert("✅ " + toDelete.length + " sites deleted");
-}
-
-// ==================== TELEGRAM ====================
-function loadTelegramConfig(){
-  try {
-    const saved = localStorage.getItem("sms_telegram_config");
-    if(saved){ const parsed = JSON.parse(saved); telegramConfig.botToken = parsed.botToken || ""; telegramConfig.chatId = parsed.chatId || ""; telegramConfig.enabled = !!parsed.enabled; telegramConfig.onlyNotAvailMaint = parsed.onlyNotAvailMaint !== false; }
-  } catch(e){}
-  updateTelegramBtn();
-}
-function saveTelegramConfig(){ localStorage.setItem("sms_telegram_config", JSON.stringify(telegramConfig)); updateTelegramBtn(); }
-function updateTelegramBtn(){
-  const btn = document.getElementById("telegramBtn"); if(!btn) return;
-  if(telegramConfig.enabled && telegramConfig.botToken && telegramConfig.chatId){ btn.textContent = "📱 Telegram ON"; btn.style.background = "#0088cc"; }
-  else { btn.textContent = "📱 Telegram"; btn.style.background = "#6b7280"; }
-}
-function openTelegramSettings(){
-  document.getElementById("tgBotToken").value = telegramConfig.botToken || "";
-  document.getElementById("tgChatId").value = telegramConfig.chatId || "";
-  document.getElementById("tgEnabled").checked = !!telegramConfig.enabled;
-  document.getElementById("tgOnlyNotAvail").checked = telegramConfig.onlyNotAvailMaint !== false;
-  document.getElementById("telegramStatus").style.display = "none";
-  document.getElementById("telegramModal").classList.add("show");
-}
-function closeTelegramSettings(){ document.getElementById("telegramModal").classList.remove("show"); }
-function saveTelegramSettings(){
-  const token = document.getElementById("tgBotToken").value.trim();
-  const chatId = document.getElementById("tgChatId").value.trim();
-  const enabled = document.getElementById("tgEnabled").checked;
-  const onlyNot = document.getElementById("tgOnlyNotAvail").checked;
-  if(enabled && (!token || !chatId)){ showTelegramStatus("❌ Bot Token aur Chat ID required", "error"); return; }
-  telegramConfig.botToken = token; telegramConfig.chatId = chatId; telegramConfig.enabled = enabled; telegramConfig.onlyNotAvailMaint = onlyNot;
-  saveTelegramConfig();
-  if(enabled){ showTelegramStatus("✅ Settings save!", "success"); showToast("Telegram Saved", "Notifications enabled", "success"); }
-  else { showTelegramStatus("ℹ️ Disabled", "info"); showToast("Telegram Saved", "Notifications disabled", "info"); }
-}
-function showTelegramStatus(msg, type){
-  const el = document.getElementById("telegramStatus"); el.textContent = msg; el.style.display = "block";
-  if(type === "success"){ el.style.background = "#ecfdf5"; el.style.color = "#065f46"; el.style.border = "1px solid #a7f3d0"; }
-  else if(type === "error"){ el.style.background = "#fef2f2"; el.style.color = "#991b1b"; el.style.border = "1px solid #fecaca"; }
-  else { el.style.background = "#eff6ff"; el.style.color = "#1e40af"; el.style.border = "1px solid #bfdbfe"; }
-}
-async function sendTelegramMessage(text){
-  if(!telegramConfig.enabled || !telegramConfig.botToken || !telegramConfig.chatId) return false;
-  try {
-    const url = "https://api.telegram.org/bot" + telegramConfig.botToken + "/sendMessage";
-    const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: telegramConfig.chatId, text: text, parse_mode: "HTML", disable_web_page_preview: true }) });
-    const data = await res.json(); return data.ok === true;
-  } catch(e){ return false; }
-}
-async function testTelegram(){
-  const token = document.getElementById("tgBotToken").value.trim();
-  const chatId = document.getElementById("tgChatId").value.trim();
-  if(!token || !chatId){ showTelegramStatus("❌ Bot Token aur Chat ID daalo", "error"); return; }
-  showTelegramStatus("⏳ Test bhej rahe hain...", "info");
-  const savedEnabled = telegramConfig.enabled;
-  telegramConfig.enabled = true; telegramConfig.botToken = token; telegramConfig.chatId = chatId;
-  const testMsg = "🧪 <b>Test Message</b>\n\nDS Outdoor Media - Site Management\nNotifications kaam kar rahe hain! ✅\n\n🕐 " + new Date().toLocaleString('en-GB');
-  const ok = await sendTelegramMessage(testMsg);
-  if(!ok){ telegramConfig.enabled = savedEnabled; showTelegramStatus("❌ Fail! Token, Chat ID aur /start check karo", "error"); }
-  else { showTelegramStatus("✅ Test bhej diya!", "success"); }
-}
-async function notifyTelegram(site, oldStatus, newStatus){
-  if(!telegramConfig.enabled || !telegramConfig.botToken || !telegramConfig.chatId) return;
-  if(telegramConfig.onlyNotAvailMaint){ if(newStatus !== "Not Available" && newStatus !== "Under Maintenance") return; }
-  let emoji = "🔔", extraInfo = "";
-  if(newStatus === "Not Available"){ emoji = "🚨"; extraInfo = "\n👤 <b>Customer:</b> " + (site.customer || "—") + "\n💰 <b>Rate:</b> " + (site.rate ? "₹" + Number(site.rate).toLocaleString('en-IN') + "/mo" : "—") + "\n📅 <b>From:</b> " + (site.fromDate || "—") + "\n📅 <b>To:</b> " + (site.toDate || "—"); }
-  else if(newStatus === "Under Maintenance"){ emoji = "⚠️"; extraInfo = "\n📅 <b>From:</b> " + (site.fromDate || "—") + "\n📅 <b>To:</b> " + (site.toDate || "—"); }
-  const msg = emoji + " <b>SITE " + newStatus.toUpperCase() + "</b>\n\n🏷️ <b>Site:</b> " + (site.site || "—") + "\n" + (site.siteCode ? "🔢 <b>Code:</b> " + site.siteCode + "\n" : "") + "📍 <b>Area:</b> " + (site.area || "Unassigned") + "\n🗺️ <b>Location:</b> " + (site.location || "—") + extraInfo + "\n\n🕐 " + new Date().toLocaleString('en-GB');
-  await sendTelegramMessage(msg);
-}
-function notifyStatusChange(site, oldStatus, newStatus){
-  const isBooked = (newStatus === "Not Available") && (oldStatus === "Available" || !oldStatus);
-  const isMaint = (newStatus === "Under Maintenance") && (oldStatus !== "Under Maintenance");
-  const isReleased = (newStatus === "Available") && (oldStatus === "Not Available" || oldStatus === "Under Maintenance");
-  let title, body, toastType;
-  if(isBooked){ title = "🚨 Site Booked!"; body = site.site + " — " + (site.customer||"Customer") + " ne book kiya"; toastType = "danger"; }
-  else if(isMaint){ title = "⚠️ Maintenance Alert"; body = site.site + " ab maintenance me hai"; toastType = "warning"; }
-  else if(isReleased){ title = "✅ Site Available"; body = site.site + " ab available hai"; toastType = "success"; }
-  else return;
-  showToast(title, body, toastType);
-  notifyTelegram(site, oldStatus, newStatus).catch(e => console.warn("TG fail:", e));
-}
-
-// ==================== PPT ====================
-function loadPPTFormat(){
-  try { const saved = localStorage.getItem("sms_ppt_format"); if(saved) pptFormat = saved; } catch(e){}
-}
-function savePPTFormat(){ localStorage.setItem("sms_ppt_format", pptFormat); }
-
-function openPPTFormatModal(){
-  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
-  const fmt = prompt("PPT Style choose karein:\n\n1. split (Image left, details right)\n2. cover (Full image fills box)\n3. blur (Full image + blurred bg)\n4. contain (Full image + black bg)\n\nType: split / cover / blur / contain", pptFormat);
-  if(!fmt) return;
-  if(["split","cover","blur","contain"].includes(fmt.toLowerCase())){ pptFormat = fmt.toLowerCase(); savePPTFormat(); }
-  generateSelectedSitesPPT();
-}
-
-async function generateSelectedSitesPPT(){
-  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
-  if(typeof PptxGenJS === "undefined"){ alert("PPT library load nahi hui. Internet check karo."); return; }
-  const list = sites.filter(s => selectedSites.has(s.id));
-  if(list.length === 0){ alert("Koi site nahi"); return; }
-  showProgress("Generating PPT...", "Preparing");
-  try {
-    const pptx = new PptxGenJS();
-    pptx.layout = "LAYOUT_WIDE";
-    pptx.author = COMPANY_NAME;
-
-    let slide = pptx.addSlide();
-    slide.background = { color: "1E3A8A" };
-    slide.addText("Site Report", { x: 0.5, y: 2.5, w: 12.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center" });
-    slide.addText("Total: " + list.length, { x: 0.5, y: 4, w: 12.33, h: 0.6, fontSize: 20, color: "93C5FD", align: "center" });
-
-    for(let i = 0; i < list.length; i++){
-      const x = list[i];
-      showProgress("Generating PPT...", "Slide " + (i+1) + " / " + list.length);
-      const days = calcDays(x.fromDate, x.toDate);
-      let stColor = "059669";
-      if(x.status === "Not Available") stColor = "DC2626";
-      else if(x.status === "Under Maintenance") stColor = "D97706";
-
-      slide = pptx.addSlide();
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.65, fill: { color: "1E3A8A" } });
-      slide.addText(x.site, { x: 0.3, y: 0.1, w: 9, h: 0.45, fontSize: 14, bold: true, color: "FFFFFF" });
-      slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
-      slide.addText(x.status.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
-      let imgData = null;
-      if(x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
-      if(imgData){
-        try { slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "contain", w: 13.33, h: 5.5 } }); } catch(e){}
-      } else {
-        slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
-      }
-
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 6.15, w: 13.33, h: 1.25, fill: { color: "F8FAFC" } });
-      const colW = 13.33 / 4;
-      const fields = [
-        { label: "AREA", value: x.area || "—" },
-        { label: "COMPANY", value: x.customer || "—" },
-        { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') : "—" },
-        { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—" }
-      ];
-      fields.forEach((f, idx) => {
-        const cx = idx * colW;
-        slide.addText(f.label, { x: cx+0.1, y: 6.23, w: colW-0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
-        slide.addText(String(f.value), { x: cx+0.1, y: 6.48, w: colW-0.2, h: 0.4, fontSize: 11, bold: true, color: THEME_COLOR });
-      });
-    }
-
-    slide = pptx.addSlide();
-    slide.background = { color: "1E3A8A" };
-    slide.addText("Thank You", { x: 0, y: 3, w: 13.33, h: 1.2, fontSize: 54, bold: true, color: "FFFFFF", align: "center" });
-    slide.addText(COMPANY_NAME, { x: 0, y: 5.7, w: 13.33, h: 0.4, fontSize: 14, bold: true, color: "FFFFFF", align: "center" });
-
-    const fileName = "Site_Report_" + new Date().toISOString().slice(0,10) + ".pptx";
-    await pptx.writeFile({ fileName: fileName });
-    hideProgress();
-    alert("✅ PPT generated!\n\nFile: " + fileName + "\nSlides: " + (list.length + 2));
-  } catch(e){ hideProgress(); alert("PPT generation failed: " + e.message); }
-}
-
-// ==================== BULK UPLOAD ====================
-function openBulkUpload(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  const csv = prompt("CSV paste karein (columns: area,site,location,company,rate,status,from,to):\n\nExample:\nChandigarh,CG01,Sector 17,ABC Media,50000,Available,,");
-  if(!csv) return;
-  parseCSV(csv);
-}
-function parseCSVLine(line){
-  const res = []; let cur = ""; let inQ = false;
-  for(let i=0; i<line.length; i++){
-    const c = line[i];
-    if(c === '"'){ if(inQ && line[i+1] === '"'){ cur += '"'; i++; } else inQ = !inQ; }
-    else if(c === ',' && !inQ){ res.push(cur.trim()); cur = ""; }
-    else cur += c;
-  }
-  res.push(cur.trim());
-  return res;
-}
-async function parseCSV(text){
-  const lines = text.split(/\r?\n/).filter(l => l.trim());
-  if(lines.length < 2){ alert("CSV needs header + data"); return; }
-  const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().trim());
-  if(!headers.includes("site")){ alert("'site' column missing"); return; }
-  const idx = {};
-  headers.forEach((h, i) => idx[h] = i);
-  let added = 0, updated = 0;
-  for(let i=1; i<lines.length; i++){
-    const cells = parseCSVLine(lines[i]);
-    if(!cells[idx.site]) continue;
-    let areaVal = idx.area !== undefined ? (cells[idx.area]||"").trim() : "";
-    if(!areaVal) areaVal = "Unassigned";
-    if(areaVal !== "Unassigned" && !areas.includes(areaVal)) areas.push(areaVal);
-    const siteName = cells[idx.site];
-    const codeMatch = siteName.match(/^([A-Z]{2,5}\d{1,4})/i);
-    const siteCode = codeMatch ? codeMatch[1].toUpperCase() : "";
-    const fromD = idx.from !== undefined ? (cells[idx.from]||"") : "";
-    const toD = idx.to !== undefined ? (cells[idx.to]||"") : "";
-    const autoStatus = calcStatusFromDates(fromD, toD);
-    const newSite = {
-      id: "id_"+Math.random().toString(36).slice(2,10),
-      area: areaVal, site: siteName, siteCode: siteCode,
-      location: idx.location !== undefined ? (cells[idx.location]||"") : "",
-      customer: idx.company !== undefined ? (cells[idx.company]||"") : "",
-      rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "",
-      status: autoStatus,
-      fromDate: fromD, toDate: toD,
-      lat: "", lng: "", hasImage: false
-    };
-    const existing = sites.findIndex(s => s.site === siteName);
-    if(existing >= 0){ sites[existing] = { ...sites[existing], ...newSite, id: sites[existing].id }; updated++; }
-    else { sites.push(newSite); added++; }
-  }
-  await persistNow();
-  populateAreaDropdowns(); render();
-  alert("✅ Sites added: " + added + (updated > 0 ? "\nUpdated: " + updated : ""));
-}
-
-// ==================== BACKUP & IMPORT ====================
-async function downloadBackup(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  const backup = { version: "1.0", exportedAt: new Date().toISOString(), sites, areas, bookingHistory, logo: LOGO_URL, telegram: telegramConfig };
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sms_backup_" + new Date().toISOString().slice(0,19).replace(/[:T]/g, "-") + ".json"; a.click();
-}
-function triggerImport(){ if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; } document.getElementById("importFile").click(); }
-function handleImportFile(e){
-  const file = e.target.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async (ev) => {
-    try {
-      const backup = JSON.parse(ev.target.result);
-      if(!backup.sites || !Array.isArray(backup.sites)){ alert("Invalid backup"); return; }
-      if(!confirm("Import " + backup.sites.length + " sites?\n\nCurrent data replace ho jayega!")) return;
-      sites = backup.sites || [];
-      areas = backup.areas || [...DEFAULT_AREAS];
-      bookingHistory = backup.bookingHistory || [];
-      sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
-      await persistNow();
-      populateAreaDropdowns(); render();
-      alert("✅ Import successful!");
-    } catch(err){ alert("Import failed: " + err.message); }
-  };
-  reader.readAsText(file);
-  e.target.value = "";
-}
-
-// ==================== BULK STATUS ====================
-function openBulkStatusModal(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
-  const status = prompt("Status choose karein: Available / Not Available / Under Maintenance");
-  if(!status) return;
-  const newStatus = status.trim();
-  if(!["Available","Not Available","Under Maintenance"].includes(newStatus)){ alert("Invalid status"); return; }
-  const ids = new Set([...selectedSites].map(String));
-  const targets = sites.filter(s => ids.has(String(s.id)));
-  targets.forEach(s => { s.status = newStatus; });
-  await persistNow();
-  render();
-  clearSelection();
-  alert("✅ " + targets.length + " sites status updated");
-}
-
-// ==================== INIT ====================
-window.addEventListener("DOMContentLoaded", () => {
-  initDateDropdowns();
-  ["ffrom_d","ffrom_m","ffrom_y","fto_d","fto_m","fto_y"].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.addEventListener("change", updateCalcPreview);
-  });
-  document.getElementById("loginPass").addEventListener("keypress", e => { if(e.key === "Enter") doLogin(); });
-  document.getElementById("dateFilterFrom").dataset.lastLength = "0";
-  document.getElementById("dateFilterTo").dataset.lastLength = "0";
-  document.getElementById("historySearchInput").addEventListener("keypress", e => { if(e.key === "Enter"){ e.preventDefault(); filterHistoryList(); } });
-  loadTelegramConfig();
-  loadPPTFormat();
-  checkSession();
-});
-</script>
-</body>
-</html>
+    if(isFiltering && areaSites.length === 0) continue;
+    totalShown += areaSites.length;
+    areaSites.forEach(s => visibleSites.push(s));
+    const isCollapsed = collapsedAreas.has(areaName);
+    const block = document.createElement("div");
+    block.className = "area-block" + (isCollapsed ? " collapsed" : "");
+    const header = document.createElement("div");
+    header.className = "area-header";
+    header.onclick = (e) => { if(e.target.tagName === "BUTTON" || e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return; toggleAreaCollapse(areaName); };
+    const areaAvail = areaSites.filter(s => s.status === "Av
