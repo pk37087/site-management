@@ -1246,7 +1246,6 @@ async function saveSite(){
   closeModal(); render();
 }
 
-/* ============ HIGH QUALITY IMAGE COMPRESSION ============ */
 function handleImageUpload(e){
   const file = e.target.files[0]; if(!file) return;
   if(!file.type.startsWith("image/")){ alert("Only images allowed"); return; }
@@ -1264,9 +1263,6 @@ function handleImageUpload(e){
   };
   reader.readAsDataURL(file);
   e.target.value = "";
-}
-function compressImage(dataUrl, maxW, quality, cb){
-  compressImageSmart(dataUrl, cb);
 }
 function compressImageSmart(dataUrl, cb){
   const img = new Image();
@@ -1307,7 +1303,6 @@ function compressImageSmart(dataUrl, cb){
       ctx.drawImage(img, 0, 0, w, h);
       result = canvas.toDataURL("image/jpeg", 0.88);
     }
-    console.log("Final image: " + w + "x" + h + ", " + Math.round(result.length/1024) + " KB");
     cb(result);
   };
   img.onerror = () => { alert("Image load nahi ho payi"); cb(dataUrl); };
@@ -1359,218 +1354,95 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location set"); return; } window.open(url, "_blank"); }
 
-/* ============ PPT GENERATOR - Image 80% + WORKING MAP BUTTONS ============ */
 async function generateSelectedSitesPPT(){
   if(selectedSites.size === 0){ alert("Pehle kam se kam ek site select karein"); return; }
   const list = sites.filter(s => selectedSites.has(s.id));
   if(list.length === 0){ alert("Koi site nahi mili"); return; }
-
   const uniqueAreas = [...new Set(list.map(s => s.area || "Unassigned"))];
   const singleArea = uniqueAreas.length === 1 ? uniqueAreas[0] : null;
-
   showProgress("Generating PPT...", "Preparing slides (0 / " + list.length + ")");
-
   try {
     const pptx = new PptxGenJS();
     pptx.layout = "LAYOUT_WIDE";
     pptx.title = singleArea ? "Site Report - " + singleArea : "Selected Sites Report";
     pptx.author = COMPANY_NAME;
-
-    // ---------- COVER SLIDE ----------
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
-    slide.addShape(pptx.ShapeType.ellipse, { x: 8, y: -2, w: 8, h: 8, fill: { color: "1D4ED8" }, line: { color: "1D4ED8" } });
-    slide.addShape(pptx.ShapeType.ellipse, { x: -3, y: 5, w: 8, h: 8, fill: { color: "1E40AF" }, line: { color: "1E40AF" } });
-
     slide.addShape(pptx.ShapeType.roundRect, { x: 0.7, y: 0.7, w: 0.7, h: 0.7, fill: { color: "FFFFFF" }, line: { color: "FFFFFF" }, rectRadius: 0.1 });
     slide.addText("S", { x: 0.7, y: 0.7, w: 0.7, h: 0.7, fontSize: 26, bold: true, color: "1E40AF", align: "center", valign: "middle" });
-
     slide.addText(COMPANY_NAME.toUpperCase(), { x: 1.6, y: 0.75, w: 8, h: 0.4, fontSize: 13, bold: true, color: "FFFFFF", charSpacing: 3 });
     slide.addText(COMPANY_TAGLINE, { x: 1.6, y: 1.15, w: 8, h: 0.35, fontSize: 10, color: "CBD5E1" });
-
     slide.addText(singleArea ? "Site Report" : "Selected Sites Report", { x: 0.7, y: 2.8, w: 12, h: 1.2, fontSize: 54, bold: true, color: "FFFFFF" });
     slide.addText(singleArea || "Multiple Areas", { x: 0.7, y: 4.0, w: 12, h: 0.6, fontSize: 22, color: "BAE6FD" });
-
     slide.addShape(pptx.ShapeType.line, { x: 0.7, y: 5.2, w: 11.9, h: 0, line: { color: "60A5FA", width: 1 } });
-
     slide.addText("Report Date", { x: 0.7, y: 5.4, w: 2, h: 0.3, fontSize: 9, bold: true, color: "93C5FD", charSpacing: 2 });
     slide.addText(new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' }), { x: 0.7, y: 5.7, w: 3, h: 0.4, fontSize: 15, bold: true, color: "FFFFFF" });
-
     slide.addText("Total Sites", { x: 4.7, y: 5.4, w: 2, h: 0.3, fontSize: 9, bold: true, color: "93C5FD", charSpacing: 2 });
     slide.addText(String(list.length), { x: 4.7, y: 5.7, w: 3, h: 0.4, fontSize: 15, bold: true, color: "FFFFFF" });
-
     slide.addText("Generated", { x: 8.7, y: 5.4, w: 4, h: 0.3, fontSize: 9, bold: true, color: "93C5FD", charSpacing: 2 });
     slide.addText(new Date().toLocaleString('en-GB'), { x: 8.7, y: 5.7, w: 4, h: 0.4, fontSize: 12, bold: true, color: "FFFFFF" });
-
-    // ---------- EXECUTIVE SUMMARY SLIDE ----------
     const avail = list.filter(s => s.status === "Available").length;
     const notAvail = list.filter(s => s.status === "Not Available").length;
     const maint = list.filter(s => s.status === "Under Maintenance").length;
-
     slide = pptx.addSlide();
     slide.background = { color: "F8FAFC" };
     slide.addText("EXECUTIVE SUMMARY", { x: 0.7, y: 0.5, w: 12, h: 0.3, fontSize: 11, bold: true, color: "1E40AF", charSpacing: 3 });
     slide.addText("Site Availability Overview", { x: 0.7, y: 0.85, w: 12, h: 0.7, fontSize: 32, bold: true, color: "0F172A" });
-
-    const cardY = 2.2;
-    const cardH = 1.8;
-    const cardW = 2.9;
-    const gap = 0.15;
-    const totalW = cardW * 4 + gap * 3;
-    const startX = (13.33 - totalW) / 2;
-
-    slide.addShape(pptx.ShapeType.roundRect, { x: startX, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
-    slide.addShape(pptx.ShapeType.rect, { x: startX, y: cardY, w: 0.08, h: cardH, fill: { color: "64748B" } });
-    slide.addText("TOTAL SITES", { x: startX + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "64748B", charSpacing: 2 });
-    slide.addText(String(list.length), { x: startX + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "0F172A" });
-
-    const x2 = startX + cardW + gap;
-    slide.addShape(pptx.ShapeType.roundRect, { x: x2, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
-    slide.addShape(pptx.ShapeType.rect, { x: x2, y: cardY, w: 0.08, h: cardH, fill: { color: "10B981" } });
-    slide.addText("AVAILABLE", { x: x2 + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "047857", charSpacing: 2 });
-    slide.addText(String(avail), { x: x2 + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "047857" });
-
-    const x3 = startX + (cardW + gap) * 2;
-    slide.addShape(pptx.ShapeType.roundRect, { x: x3, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
-    slide.addShape(pptx.ShapeType.rect, { x: x3, y: cardY, w: 0.08, h: cardH, fill: { color: "EF4444" } });
-    slide.addText("NOT AVAILABLE", { x: x3 + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "B91C1C", charSpacing: 2 });
-    slide.addText(String(notAvail), { x: x3 + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "B91C1C" });
-
-    const x4 = startX + (cardW + gap) * 3;
-    slide.addShape(pptx.ShapeType.roundRect, { x: x4, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
-    slide.addShape(pptx.ShapeType.rect, { x: x4, y: cardY, w: 0.08, h: cardH, fill: { color: "F59E0B" } });
-    slide.addText("MAINTENANCE", { x: x4 + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "B45309", charSpacing: 2 });
-    slide.addText(String(maint), { x: x4 + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "B45309" });
-
-    slide.addShape(pptx.ShapeType.rect, { x: 0.7, y: 4.6, w: 11.93, h: 0.15, fill: { color: "E2E8F0" } });
-    if(list.length > 0){
-      let barX = 0.7;
-      const barW = 11.93;
-      if(avail > 0){ const w = (avail / list.length) * barW; slide.addShape(pptx.ShapeType.rect, { x: barX, y: 4.6, w: w, h: 0.15, fill: { color: "10B981" } }); barX += w; }
-      if(notAvail > 0){ const w = (notAvail / list.length) * barW; slide.addShape(pptx.ShapeType.rect, { x: barX, y: 4.6, w: w, h: 0.15, fill: { color: "EF4444" } }); barX += w; }
-      if(maint > 0){ const w = (maint / list.length) * barW; slide.addShape(pptx.ShapeType.rect, { x: barX, y: 4.6, w: w, h: 0.15, fill: { color: "F59E0B" } }); barX += w; }
-    }
-
-    slide.addText("Generated by " + COMPANY_NAME, { x: 0.7, y: 6.7, w: 12, h: 0.3, fontSize: 9, color: "94A3B8", align: "center" });
-
-    // ---------- SITE SLIDES ----------
     for(let i = 0; i < list.length; i++){
       const x = list[i];
       showProgress("Generating PPT...", "Slide " + (i+1) + " / " + list.length);
-
       const days = calcDays(x.fromDate, x.toDate);
       let stColor = "059669", stText = "Available";
       if(x.status === "Not Available"){ stColor = "DC2626"; stText = "Not Available"; }
       else if(x.status === "Under Maintenance"){ stColor = "D97706"; stText = "Under Maintenance"; }
-
       let imgData = null;
-      if(x.hasImage){
-        imgData = imageCache[x.id] || await getImage(x.id);
-      }
-
+      if(x.hasImage){ imgData = imageCache[x.id] || await getImage(x.id); }
       const mapLink = getGoogleMapsUrl(x);
-
       slide = pptx.addSlide();
       slide.background = { color: "FFFFFF" };
-
-      // TOP BAR
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.65, fill: { color: "1E3A8A" } });
       slide.addShape(pptx.ShapeType.roundRect, { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fill: { color: "3B82F6" }, line: { color: "FFFFFF", width: 1 }, rectRadius: 0.08 });
       slide.addText(String(i+1), { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fontSize: 16, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
       slide.addText(x.site, { x: 0.78, y: 0.05, w: 8.5, h: 0.55, fontSize: 14, bold: true, color: "FFFFFF", valign: "middle" });
       slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, line: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-
-      // IMAGE (80%)
-      const imgY = 0.65;
-      const imgH = 5.4;
       if(imgData){
-        try {
-          const imgOpts = { data: imgData, x: 0, y: imgY, w: 13.33, h: imgH, sizing: { type: "contain", w: 13.33, h: imgH } };
-          if(mapLink) imgOpts.hyperlink = { url: mapLink };
-          slide.addImage(imgOpts);
-        } catch(e){ console.warn("Image add fail:", e); }
+        try { slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.4, sizing: { type: "contain", w: 13.33, h: 5.4 } }); } catch(e){}
       } else {
-        slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgY, w: 13.33, h: imgH, fill: { color: "F1F5F9" } });
-        slide.addText("No Image", { x: 0, y: imgY, w: 13.33, h: imgH, fontSize: 22, color: "94A3B8", align: "center", valign: "middle" });
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.4, fill: { color: "F1F5F9" } });
+        slide.addText("No Image", { x: 0, y: 0.65, w: 13.33, h: 5.4, fontSize: 22, color: "94A3B8", align: "center", valign: "middle" });
       }
-
-      // DETAILS BAR (taller for map button)
-      const detY = 6.05;
-      const detH = 1.1;
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: detY, w: 13.33, h: detH, fill: { color: "F8FAFC" } });
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: detY, w: 13.33, h: 0.05, fill: { color: "1E40AF" } });
-
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 6.05, w: 13.33, h: 1.1, fill: { color: "F8FAFC" } });
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 6.05, w: 13.33, h: 0.05, fill: { color: "1E40AF" } });
       const colW = 13.33 / 4;
-
-      // AREA
-      slide.addText("AREA", { x: 0.15, y: detY + 0.1, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF", charSpacing: 1.5 });
-      slide.addText(x.area || "Unassigned", { x: 0.15, y: detY + 0.36, w: colW - 0.3, h: 0.35, fontSize: 14, bold: true, color: "0F172A", valign: "middle" });
-
-      // LOCATION with map button
-      slide.addText("LOCATION", { x: colW + 0.15, y: detY + 0.1, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF", charSpacing: 1.5 });
-      const locText = x.location || "—";
-      slide.addText(locText, { x: colW + 0.15, y: detY + 0.36, w: colW - 0.3, h: 0.35, fontSize: 12, bold: true, color: "0F172A", valign: "middle" });
-      if(mapLink && x.location){
-        // CLICKABLE MAP BUTTON
-        slide.addShape(pptx.ShapeType.roundRect, {
-          x: colW + 0.15, y: detY + 0.74, w: 1.5, h: 0.28,
-          fill: { color: "1E40AF" }, line: { color: "1E40AF" }, rectRadius: 0.08,
-          hyperlink: { url: mapLink, tooltip: "Click to open in Google Maps" }
-        });
-        slide.addText("📍 Open Map", {
-          x: colW + 0.15, y: detY + 0.74, w: 1.5, h: 0.28,
-          fontSize: 10, bold: true, color: "FFFFFF",
-          align: "center", valign: "middle",
-          hyperlink: { url: mapLink, tooltip: "Click to open in Google Maps" }
-        });
-      }
-
-      // COMPANY
-      slide.addText("COMPANY", { x: colW*2 + 0.15, y: detY + 0.1, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF", charSpacing: 1.5 });
-      slide.addText(x.customer || "—", { x: colW*2 + 0.15, y: detY + 0.36, w: colW - 0.3, h: 0.35, fontSize: 14, bold: true, color: "059669", valign: "middle" });
-
-      // BOOKING
-      slide.addText("BOOKING", { x: colW*3 + 0.15, y: detY + 0.1, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF", charSpacing: 1.5 });
-      const bookingText = (x.fromDate || "") + " → " + (x.toDate || "") + (days > 0 ? " (" + days + "d)" : "");
-      slide.addText(bookingText, { x: colW*3 + 0.15, y: detY + 0.36, w: colW - 0.3, h: 0.35, fontSize: 12, bold: true, color: "0F172A", valign: "middle" });
-
-      // FOOTER
+      slide.addText("AREA", { x: 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
+      slide.addText(x.area || "Unassigned", { x: 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 14, bold: true, color: "0F172A", valign: "middle" });
+      slide.addText("LOCATION", { x: colW + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
+      slide.addText(x.location || "—", { x: colW + 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 12, bold: true, color: "0F172A", valign: "middle" });
+      slide.addText("COMPANY", { x: colW*2 + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
+      slide.addText(x.customer || "—", { x: colW*2 + 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 14, bold: true, color: "059669", valign: "middle" });
+      slide.addText("BOOKING", { x: colW*3 + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
+      slide.addText((x.fromDate || "") + " → " + (x.toDate || "") + (days > 0 ? " (" + days + "d)" : ""), { x: colW*3 + 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 12, bold: true, color: "0F172A", valign: "middle" });
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: 7.15, w: 13.33, h: 0.35, fill: { color: "0F172A" } });
       slide.addText(COMPANY_NAME + "  •  Page " + (i + 3), { x: 0.5, y: 7.18, w: 12.33, h: 0.28, fontSize: 8, color: "94A3B8", align: "center", valign: "middle" });
     }
-
-    // END SLIDE
     slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
-    slide.addText("THANK YOU", { x: 0, y: 3, w: 13.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center", charSpacing: 8 });
-    slide.addText(COMPANY_NAME, { x: 0, y: 4.2, w: 13.33, h: 0.5, fontSize: 16, color: "BAE6FD", align: "center", charSpacing: 3 });
+    slide.addText("THANK YOU", { x: 0, y: 3, w: 13.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center" });
+    slide.addText(COMPANY_NAME, { x: 0, y: 4.2, w: 13.33, h: 0.5, fontSize: 16, color: "BAE6FD", align: "center" });
     slide.addText(COMPANY_TAGLINE, { x: 0, y: 4.7, w: 13.33, h: 0.4, fontSize: 11, color: "93C5FD", align: "center" });
-
     const fileName = (singleArea ? "PPT_" + singleArea.replace(/[^a-z0-9]/gi, "_") : "PPT_Selected_Sites") + "_" + new Date().toISOString().slice(0,10) + ".pptx";
     await pptx.writeFile({ fileName });
     hideProgress();
-
-    let msg = "✅ PPT ban gayi!\n\nFile: " + fileName + "\n\n";
-    msg += "📊 Total slides: " + (list.length + 3) + "\n\n";
-    msg += "🖱️ TEST KARNE KA SAHI TARIKA:\n";
-    msg += "1. PPT kholo PowerPoint me\n";
-    msg += "2. F5 dabao (Slide Show mode)\n";
-    msg += "3. '📍 Open Map' button par click karo\n";
-    msg += "4. Google Maps khulega ✅\n\n";
-    msg += "⚠️ IMPORTANT: Editing mode me click nahi chalega. Sirf F5 (Slide Show) me chalega.";
-    alert(msg);
-
+    alert("PPT ban gayi: " + fileName);
   } catch(e){
     hideProgress();
     alert("PPT generate nahi ho payi: " + e.message);
-    console.error(e);
   }
 }
 
-/* ============ SHARE ============ */
 function openShareDialog(isSelected){
   if(isSelected){
     document.getElementById("shareModalTitle").textContent = "Share Selected Sites";
@@ -1587,7 +1459,7 @@ function closeShareModal(){ document.getElementById("shareModal").classList.remo
 function shareArea(areaName){
   shareContext = { mode: "area", areaName: areaName };
   document.getElementById("shareModalTitle").textContent = "Share Area - " + areaName;
-  document.getElementById("shareModalDesc").textContent = "Choose how you want to share this entire area (sites, images, PPT).";
+  document.getElementById("shareModalDesc").textContent = "Choose how you want to share this entire area.";
   document.getElementById("shareModal").classList.add("show");
 }
 function getShareSites(){
@@ -1613,90 +1485,19 @@ function buildProfessionalReport(siteList, reportTitle, areaName){
   const maint = siteList.filter(s => s.status === "Under Maintenance").length;
   const today = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
   const areaDisplay = areaName || "All Areas";
-  let html = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(reportTitle)}</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"><style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',-apple-system,sans-serif;background:#eef2f7;color:#0f172a;line-height:1.6}
-.page{max-width:1080px;margin:0 auto;background:#fff;box-shadow:0 12px 60px rgba(15,23,42,0.08)}
-.cover{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#1d4ed8 100%);color:#fff;padding:70px 60px 60px;position:relative;overflow:hidden}
-.cover-inner{position:relative;z-index:1}
-.cover-brand{display:flex;align-items:center;gap:14px;margin-bottom:50px}
-.cover-logo{width:48px;height:48px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#1e40af}
-.cover-brand-text{font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;opacity:0.9}
-.cover-tagline{font-size:12px;opacity:0.7;margin-top:2px}
-.cover h1{font-size:48px;font-weight:900;letter-spacing:-1px;line-height:1.1;margin-bottom:16px}
-.cover h2{font-size:22px;font-weight:500;opacity:0.85;margin-bottom:40px}
-.cover-meta{display:flex;gap:36px;flex-wrap:wrap;padding-top:30px;border-top:1px solid rgba(255,255,255,0.15)}
-.cover-meta-item .lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:0.6;display:block;margin-bottom:4px}
-.cover-meta-item .val{font-size:16px;font-weight:700}
-.section{padding:50px 60px}
-.section-title{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#1e40af;margin-bottom:6px}
-.section-sub{font-size:26px;font-weight:800;letter-spacing:-0.5px;margin-bottom:32px}
-.exec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:12px}
-.exec-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:22px;position:relative;overflow:hidden}
-.exec-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%}
-.exec-card.total::before{background:#64748b}.exec-card.avail::before{background:#10b981}.exec-card.notavail::before{background:#ef4444}.exec-card.maint::before{background:#f59e0b}
-.exec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:#64748b;margin-bottom:10px}
-.exec-num{font-size:38px;font-weight:900;line-height:1}
-.exec-card.total .exec-num{color:#0f172a}.exec-card.avail .exec-num{color:#047857}.exec-card.notavail .exec-num{color:#b91c1c}.exec-card.maint .exec-num{color:#b45309}
-.exec-bar{height:6px;background:#e2e8f0;border-radius:3px;margin-top:16px;overflow:hidden;display:flex}
-.site{background:#fff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(15,23,42,0.04);margin-bottom:18px}
-.site-header{padding:14px 20px;background:linear-gradient(90deg,#f8fafc 0%,#fff 100%);border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.site-num{width:36px;height:36px;background:#1e40af;color:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
-.site-title{flex:1;font-size:17px;font-weight:800;min-width:200px;word-break:break-word}
-.site-status{padding:5px 14px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#fff}
-.site-status.available{background:#059669}.site-status.not{background:#dc2626}.site-status.maint{background:#d97706}
-.site-body{padding:24px;display:grid;grid-template-columns:400px 1fr;gap:28px}
-.site-image{width:400px;height:400px;border-radius:12px;object-fit:cover;border:1px solid #e2e8f0}
-.site-image.no-img{display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:14px;border:2px dashed #cbd5e1;background:#f8fafc}
-.detail-row{display:flex;gap:14px;padding:10px 0;border-bottom:1px dashed #f1f5f9}
-.detail-row:last-child{border-bottom:0}
-.detail-row .lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;min-width:88px;padding-top:2px}
-.detail-row .val{font-size:14px;font-weight:600;color:#0f172a;word-break:break-word;flex:1}
-.detail-row .val.loc{color:#1e40af}
-.detail-row .val.map a{color:#0891b2;text-decoration:none;word-break:break-all;font-size:12px}
-.days-chip{display:inline-block;background:#eef2ff;color:#4338ca;font-weight:700;font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid #c7d2fe;margin-left:8px}
-.report-footer{background:#0f172a;color:#94a3b8;padding:36px 60px;text-align:center}
-.report-footer .fbrand{font-size:14px;font-weight:800;color:#fff;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
-.report-footer .fline{font-size:10px;opacity:0.5;margin-top:20px}
-@media (max-width:768px){.cover{padding:44px 24px}.cover h1{font-size:30px}.cover h2{font-size:16px}.section{padding:30px 20px}.section-sub{font-size:20px}.exec-grid{grid-template-columns:1fr 1fr;gap:12px}.exec-num{font-size:28px}.site-body{grid-template-columns:1fr;gap:16px}.site-image{width:100%;height:auto;max-height:400px}.detail-row{flex-direction:column;gap:4px}}
-</style></head><body><div class="page">
-<div class="cover"><div class="cover-inner">
-<div class="cover-brand"><div class="cover-logo">S</div><div><div class="cover-brand-text">${COMPANY_NAME}</div><div class="cover-tagline">${COMPANY_TAGLINE}</div></div></div>
-<h1>${esc(reportTitle)}</h1><h2>${esc(areaDisplay)}</h2>
-<div class="cover-meta">
-<div class="cover-meta-item"><span class="lbl">Report Date</span><span class="val">${today}</span></div>
-<div class="cover-meta-item"><span class="lbl">Total Sites</span><span class="val">${total}</span></div>
-<div class="cover-meta-item"><span class="lbl">Generated</span><span class="val">${new Date().toLocaleString('en-GB')}</span></div>
-</div></div></div>
-<div class="section"><div class="section-title">Executive Summary</div><div class="section-sub">Site Availability Overview</div>
-<div class="exec-grid">
-<div class="exec-card total"><div class="exec-label">Total Sites</div><div class="exec-num">${total}</div></div>
-<div class="exec-card avail"><div class="exec-label">Available</div><div class="exec-num">${avail}</div></div>
-<div class="exec-card notavail"><div class="exec-label">Not Available</div><div class="exec-num">${notAvail}</div></div>
-<div class="exec-card maint"><div class="exec-label">Maintenance</div><div class="exec-num">${maint}</div></div>
-</div>
-<div class="exec-bar">${total > 0 ? `<span style="width:${(avail/total)*100}%;background:#10b981"></span><span style="width:${(notAvail/total)*100}%;background:#ef4444"></span><span style="width:${(maint/total)*100}%;background:#f59e0b"></span>` : ''}</div>
-</div>
-<div class="section" style="padding-top:0"><div class="section-title">Site Details</div><div class="section-sub">${total} Site${total === 1 ? '' : 's'} Listed</div><div class="site-list">`;
+  let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc(reportTitle)}</title><style>body{font-family:Arial;padding:20px}.cover{background:#1e40af;color:#fff;padding:30px;border-radius:12px}.site{border:1px solid #e2e8f0;padding:14px;border-radius:10px;margin:10px 0}.site img{max-width:300px;border-radius:8px}</style></head><body><div class="cover"><h1>${esc(reportTitle)}</h1><h2>${esc(areaDisplay)}</h2><p>Date: ${today} | Total: ${total} | Available: ${avail} | Not Available: ${notAvail} | Maintenance: ${maint}</p></div>`;
   siteList.forEach((x, i) => {
     const days = calcDays(x.fromDate, x.toDate);
-    let stCls = "available", stText = "Available";
-    if(x.status === "Not Available"){ stCls = "not"; stText = "Not Available"; }
-    else if(x.status === "Under Maintenance"){ stCls = "maint"; stText = "Under Maintenance"; }
-    const mapUrl = getGoogleMapsUrl(x);
     const imgData = x.hasImage ? (imageCache[x.id] || "") : "";
-    html += `<div class="site"><div class="site-header"><div class="site-num">${i+1}</div><div class="site-title">${esc(x.site)}</div><div class="site-status ${stCls}">${stText}</div></div><div class="site-body">`;
-    if(imgData) html += `<img class="site-image" src="${imgData}" alt="">`;
-    else html += `<div class="site-image no-img">No Image</div>`;
-    html += `<div class="site-details">`;
-    if(x.area) html += `<div class="detail-row"><div class="lbl">Area</div><div class="val">${esc(x.area)}</div></div>`;
-    if(x.location) html += `<div class="detail-row"><div class="lbl">Location</div><div class="val loc">${esc(x.location)}</div></div>`;
-    if(x.customer) html += `<div class="detail-row"><div class="lbl">Company</div><div class="val">${esc(x.customer)}</div></div>`;
-    if(x.fromDate || x.toDate) html += `<div class="detail-row"><div class="lbl">Booking</div><div class="val">${esc(x.fromDate || "")} → ${esc(x.toDate || "")}${days > 0 ? `<span class="days-chip">${days} day${days===1?'':'s'}</span>` : ''}</div></div>`;
-    if(mapUrl) html += `<div class="detail-row"><div class="lbl">Map</div><div class="val map"><a href="${mapUrl}" target="_blank">${mapUrl}</a></div></div>`;
-    html += `</div></div></div>`;
+    html += `<div class="site"><h3>${i+1}. ${esc(x.site)}</h3>${imgData ? `<img src="${imgData}">` : "<i>No image</i>"}`;
+    html += `<p>Status: <b>${esc(x.status)}</b></p>`;
+    if(x.area) html += `<p>Area: ${esc(x.area)}</p>`;
+    if(x.location) html += `<p>Location: ${esc(x.location)}</p>`;
+    if(x.customer) html += `<p>Company: ${esc(x.customer)}</p>`;
+    if(x.fromDate || x.toDate) html += `<p>Booking: ${esc(x.fromDate||"")} → ${esc(x.toDate||"")} (${days} days)</p>`;
+    html += `</div>`;
   });
-  html += `</div></div><div class="report-footer"><div class="fbrand">${COMPANY_NAME}</div><div>${COMPANY_TAGLINE}</div><div class="fline">© ${new Date().getFullYear()} ${COMPANY_NAME}</div></div></div></body></html>`;
+  html += `</body></html>`;
   return html;
 }
 async function buildShareZip(){
@@ -1705,25 +1506,21 @@ async function buildShareZip(){
   const zip = new JSZip();
   const reportTitle = getShareTitle();
   let areaName = shareContext.mode === "area" ? shareContext.areaName : null;
-  let autoDetectedArea = null;
   if(!areaName && list.length > 0){
     const uniqueAreas = [...new Set(list.map(s => s.area || "Unassigned"))];
-    if(uniqueAreas.length === 1) autoDetectedArea = uniqueAreas[0];
+    if(uniqueAreas.length === 1) areaName = uniqueAreas[0];
   }
-  const pptArea = areaName || autoDetectedArea;
   showProgress("Loading images...", "");
   for(const x of list){
     if(x.hasImage && !imageCache[x.id]){ const d = await getImage(x.id); if(d) imageCache[x.id] = d; }
   }
-  showProgress("Building report...", "");
   const reportHtml = buildProfessionalReport(list, reportTitle, areaName);
   zip.file("Report.html", reportHtml);
   let pptIncluded = false;
   let pptFileName = "";
-  if(pptArea){
-    showProgress("Loading PPT...", pptArea);
+  if(areaName){
     try {
-      const ppt = await getPpt(pptArea);
+      const ppt = await getPpt(areaName);
       if(ppt && ppt.data && ppt.data.indexOf(",") > -1){
         const base64 = ppt.data.split(",")[1];
         const ext = (ppt.name && ppt.name.split(".").pop()) || "pptx";
@@ -1731,28 +1528,11 @@ async function buildShareZip(){
         zip.file(pptFileName, base64, { base64: true });
         pptIncluded = true;
       }
-    } catch(e){ console.warn("PPT load fail:", e); }
+    } catch(e){}
   }
-  const readme = `Professional Site Report
-========================================
-Generated: ${new Date().toLocaleString('en-GB')}
-Report Type: ${reportTitle}
-Total Sites: ${list.length}
-PPT Area: ${pptArea || "N/A"}
-PPT Included: ${pptIncluded ? "YES" : "NO"}
-
-FILES IN THIS ZIP:
-------------------
-1. Report.html - Full site report with images (open in browser)
-${pptIncluded ? "2. " + pptFileName + " - Presentation file" : "2. (No PPT uploaded for this area)"}
-3. README.txt
-
-${COMPANY_NAME}
-${COMPANY_TAGLINE}
-`;
-  zip.file("README.txt", readme);
+  zip.file("README.txt", "Report: " + reportTitle + "\nGenerated: " + new Date().toLocaleString('en-GB') + "\nPPT: " + (pptIncluded ? pptFileName : "N/A"));
   const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
-  return { blob, fileName: getShareFileName() + ".zip", pptIncluded, pptArea };
+  return { blob, fileName: getShareFileName() + ".zip", pptIncluded, pptArea: areaName };
 }
 async function shareAsZip(){
   closeShareModal();
@@ -1766,14 +1546,6 @@ async function shareAsZip(){
     a.href = url; a.download = result.fileName;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 5000);
-    let msg = "✅ Report download ho gayi:\n" + result.fileName + "\n\n";
-    if(result.pptIncluded){
-      msg += "📦 Isme 3 files hain:\n• Report.html\n• Presentation.pptx (" + result.pptArea + ")\n• README.txt";
-    } else {
-      msg += "📄 Isme 2 files hain:\n• Report.html\n• README.txt\n\n";
-      msg += "⚠️ PPT nahi mili is area ki.";
-    }
-    alert(msg);
   } catch(e){ hideProgress(); alert("Error: " + e.message); }
 }
 async function shareNative(){
@@ -1792,19 +1564,12 @@ async function shareNative(){
     const a = document.createElement("a");
     a.href = url; a.download = result.fileName;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
   } catch(e){ hideProgress(); alert("Error: " + e.message); }
 }
 function buildShareText(){
   const list = getShareSites();
-  const title = getShareTitle();
-  let text = "*" + title + "*\n" + new Date().toLocaleDateString('en-GB') + "\nTotal: " + list.length + "\n\n";
-  const avail = list.filter(s => s.status === "Available").length;
-  const notAvail = list.filter(s => s.status === "Not Available").length;
-  const maint = list.filter(s => s.status === "Under Maintenance").length;
-  text += "Available: " + avail + " | Not Available: " + notAvail + " | Maintenance: " + maint + "\n\n";
+  let text = "*" + getShareTitle() + "*\n" + new Date().toLocaleDateString('en-GB') + "\nTotal: " + list.length + "\n\n";
   list.forEach((x, i) => {
-    const days = calcDays(x.fromDate, x.toDate);
     text += "*" + (i+1) + ". " + x.site + "*\n";
     if(x.area) text += "   Area: " + x.area + "\n";
     if(x.location) text += "   Location: " + x.location + "\n";
@@ -1812,168 +1577,22 @@ function buildShareText(){
     text += "   Status: " + x.status + "\n";
     if(x.fromDate) text += "   From: " + x.fromDate + "\n";
     if(x.toDate) text += "   To: " + x.toDate + "\n";
-    if(days > 0) text += "   Days: " + days + "\n";
-    const map = getGoogleMapsUrl(x);
-    if(map) text += "   Map: " + map + "\n";
     text += "\n";
   });
-  text += COMPANY_NAME;
   return text;
 }
 let whatsappWindow = null;
 function shareViaWhatsAppText(){
   closeShareModal();
-  const list = getShareSites();
-  if(list.length === 0){ alert("Koi site nahi mili"); return; }
   const text = buildShareText();
   const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
-  try {
-    if(whatsappWindow && !whatsappWindow.closed){ whatsappWindow.location.href = waUrl; whatsappWindow.focus(); }
-    else {
-      whatsappWindow = window.open(waUrl, "sms_whatsapp");
-      if(!whatsappWindow){
-        const a = document.createElement("a");
-        a.href = waUrl; a.target = "_blank"; a.rel = "noopener";
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      }
-    }
-  } catch(e){ window.location.href = waUrl; }
+  window.open(waUrl, "_blank");
 }
 function shareViaEmailText(){
   closeShareModal();
-  const list = getShareSites();
-  if(list.length === 0){ alert("Koi site nahi mili"); return; }
-  const subject = getShareTitle();
-  const body = buildShareText();
-  window.location.href = "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  window.location.href = "mailto:?subject=" + encodeURIComponent(getShareTitle()) + "&body=" + encodeURIComponent(buildShareText());
 }
 
-async function generatePDF(list, title){
-  if(list.length === 0){ alert("No sites"); return; }
-  showProgress("Preparing images...", "0 / " + list.length);
-  for(let i = 0; i < list.length; i++){
-    const x = list[i];
-    if(x.hasImage && !imageCache[x.id]){
-      document.getElementById("progressSub").textContent = "Image " + (i+1) + " / " + list.length;
-      try { const d = await getImage(x.id); if(d) imageCache[x.id] = d; } catch(e){}
-    }
-  }
-  showProgress("Generating PDF...", "0 / " + list.length);
-  try {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-    const pw = doc.internal.pageSize.getWidth();
-    const ph = doc.internal.pageSize.getHeight();
-    const m = 12;
-    doc.setFillColor(15, 23, 42);
-    doc.rect(0, 0, pw, 42, "F");
-    doc.setTextColor(255,255,255);
-    doc.setFontSize(20);
-    doc.setFont("helvetica","bold");
-    doc.text("SITE MANAGEMENT REPORT", m, 20);
-    doc.setFontSize(10);
-    doc.setFont("helvetica","normal");
-    doc.text(title, m, 30);
-    doc.setFontSize(8);
-    doc.text("Generated: "+new Date().toLocaleString('en-GB'), m, 36);
-    let y = 54;
-    let lastArea = "";
-    for(let i=0; i<list.length; i++){
-      const x = list[i];
-      document.getElementById("progressSub").textContent = "Site "+(i+1)+" / "+list.length;
-      const areaName = x.area || "Unassigned";
-      if(areaName !== lastArea){
-        if(y + 20 > ph - 15){ doc.addPage(); y = m + 5; }
-        doc.setFillColor(37, 99, 235);
-        doc.roundedRect(m, y, pw-2*m, 10, 2, 2, "F");
-        doc.setTextColor(255,255,255);
-        doc.setFontSize(12);
-        doc.setFont("helvetica","bold");
-        doc.text(" " + areaName, m + 4, y + 7);
-        y += 14;
-        lastArea = areaName;
-      }
-      const imgW = 76, imgH = 76, imgX = m+3, imgY = y+3;
-      const textX = imgX+imgW+5;
-      const textW = m + (pw-2*m) - textX - 5;
-      doc.setFontSize(11);
-      doc.setFont("helvetica","bold");
-      const siteLines = doc.splitTextToSize(x.site, textW);
-      const blockH = 90;
-      if(y + blockH + 5 > ph - 15){ doc.addPage(); y = m + 5; }
-      doc.setDrawColor(226,232,240);
-      doc.setFillColor(248,250,252);
-      doc.roundedRect(m, y, pw-2*m, blockH, 2, 2, "FD");
-      doc.setFillColor(30,58,138);
-      doc.circle(m+4, y+4, 3.5, "F");
-      doc.setTextColor(255,255,255);
-      doc.setFontSize(7);
-      doc.setFont("helvetica","bold");
-      doc.text(String(i+1), m+4, y+5.2, { align: "center" });
-      const imgData = x.hasImage ? imageCache[x.id] : null;
-      if(imgData){
-        try { doc.addImage(imgData, "JPEG", imgX, imgY, imgW, imgH); } catch(e){}
-      } else {
-        doc.setDrawColor(203,213,225);
-        doc.setFillColor(241,245,249);
-        doc.roundedRect(imgX, imgY, imgW, imgH, 2, 2, "FD");
-        doc.setTextColor(148,163,184);
-        doc.setFontSize(10);
-        doc.text("No Image", imgX+imgW/2, imgY+imgH/2, { align: "center" });
-      }
-      let tY = y + 9;
-      doc.setTextColor(15,23,42);
-      doc.setFontSize(13);
-      doc.setFont("helvetica","bold");
-      doc.text(siteLines, textX, tY);
-      tY += siteLines.length * 6;
-      if(x.location){
-        doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.setTextColor(51,65,85);
-        doc.text("Location:", textX, tY); tY += 5;
-        doc.setFont("helvetica","normal"); doc.setTextColor(30,64,175);
-        const locLines = doc.splitTextToSize(x.location, textW-2);
-        doc.text(locLines, textX+2, tY); tY += locLines.length * 5;
-      }
-      if(x.customer){
-        doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.setTextColor(51,65,85);
-        doc.text("Company:", textX, tY); tY += 5;
-        doc.setFont("helvetica","normal"); doc.setTextColor(15,23,42);
-        const cLines = doc.splitTextToSize(x.customer, textW-2);
-        doc.text(cLines, textX+2, tY); tY += cLines.length * 5;
-      }
-      const colors = { "Available": [16,185,129], "Not Available": [239,68,68], "Under Maintenance": [245,158,11] };
-      const c = colors[x.status] || [100,116,139];
-      doc.setFillColor(c[0], c[1], c[2]);
-      const stText = x.status.toUpperCase();
-      doc.setTextColor(255,255,255);
-      doc.setFontSize(8);
-      doc.setFont("helvetica","bold");
-      const stW = doc.getTextWidth(stText) + 8;
-      doc.roundedRect(textX, tY-3, stW, 6, 1, 1, "F");
-      doc.text(stText, textX + stW/2, tY+1, { align: "center" });
-      tY += 7;
-      if(x.fromDate || x.toDate){
-        doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.setTextColor(51,65,85);
-        const days = calcDays(x.fromDate, x.toDate);
-        doc.text("Booking: "+(x.fromDate||"")+"  "+(x.toDate||"")+(days > 0 ? " ("+days+"d)" : ""), textX, tY);
-      }
-      y += blockH + 4;
-    }
-    const totalPages = doc.internal.getNumberOfPages();
-    for(let p=1; p<=totalPages; p++){
-      doc.setPage(p);
-      doc.setFontSize(8);
-      doc.setTextColor(148,163,184);
-      doc.text("Site Management System  -  Page "+p+" of "+totalPages, pw/2, ph-6, { align: "center" });
-    }
-    doc.save("site_report_"+new Date().toISOString().slice(0,10)+".pdf");
-  } catch(e){ alert("PDF error: "+e.message); }
-  finally { hideProgress(); }
-}
-function generatePDFSelected(){
-  if(selectedSites.size === 0){ alert("No sites selected"); return; }
-  generatePDF(sites.filter(s => selectedSites.has(s.id)), "Selected Sites Report");
-}
 function openBulkUpload(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin bulk upload kar sakta hai"); return; }
   bulkParsedSites = [];
@@ -2127,7 +1746,7 @@ function formatBytes(b){
 function handlePptUpload(e){
   const file = e.target.files[0]; if(!file) return;
   const name = file.name.toLowerCase();
-  const okType = name.endsWith(".ppt") || name.endsWith(".pptx") || file.type === "application/vnd.ms-powerpoint" || file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+  const okType = name.endsWith(".ppt") || name.endsWith(".pptx");
   if(!okType){ alert("Sirf .ppt ya .pptx file allowed hai"); e.target.value = ""; return; }
   if(file.size > MAX_PPT_SIZE){ alert("Max 100 MB allowed hai"); e.target.value = ""; return; }
   const reader = new FileReader();
@@ -2206,7 +1825,7 @@ function processBulkPptFiles(fileList){
   const valid = []; const invalid = [];
   files.forEach(f => {
     const name = f.name.toLowerCase();
-    const okType = name.endsWith(".ppt") || name.endsWith(".pptx") || f.type === "application/vnd.ms-powerpoint" || f.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    const okType = name.endsWith(".ppt") || name.endsWith(".pptx");
     if(!okType){ invalid.push({ file: f, reason: "Not a PPT" }); return; }
     if(f.size > MAX_PPT_SIZE){ invalid.push({ file: f, reason: "Over 100 MB" }); return; }
     valid.push(f);
@@ -2234,4 +1853,99 @@ function renderBulkPptPreview(invalidList){
   let sumHtml = "<b>" + bulkPptParsed.length + "</b> file(s)";
   if(matched.length) sumHtml += " - <span style='color:#047857'>" + matched.length + " matched</span>";
   if(invalidList && invalidList.length) sumHtml += " - <span style='color:#b91c1c'>" + invalidList.length + " invalid</span>";
-  sum.innerHTML
+  sum.innerHTML = sumHtml;
+  let html = '<table><thead><tr><th>#</th><th>File</th><th>Size</th><th>Matched Area</th><th>Status</th></tr></thead><tbody>';
+  bulkPptParsed.forEach((p, i) => {
+    html += '<tr><td>' + (i+1) + '</td><td>' + esc(p.name) + '</td><td>' + formatBytes(p.size) + '</td><td>' + esc(p.area || "—") + '</td><td>' + (p.matched ? '<span style="color:#047857;font-weight:700">✓ Ready</span>' : '<span style="color:#b91c1c;font-weight:700">✗ No Match</span>') + '</td></tr>';
+  });
+  if(invalidList && invalidList.length){
+    invalidList.forEach((iv, i) => {
+      html += '<tr><td>' + (bulkPptParsed.length + i + 1) + '</td><td>' + esc(iv.file.name) + '</td><td>' + formatBytes(iv.file.size) + '</td><td>—</td><td><span style="color:#b91c1c">' + esc(iv.reason) + '</span></td></tr>';
+    });
+  }
+  html += '</tbody></table>';
+  prev.innerHTML = html;
+  wrap.style.display = "block";
+  if(matched.length > 0){
+    btn.disabled = false; btn.style.background = "#3b82f6"; btn.style.color = "#fff"; btn.style.cursor = "pointer";
+  } else {
+    btn.disabled = true; btn.style.background = "#cbd5e1"; btn.style.color = "#64748b";
+  }
+}
+async function confirmBulkPptUpload(){
+  const matched = bulkPptParsed.filter(p => p.matched);
+  if(matched.length === 0){ alert("Koi matched file nahi hai"); return; }
+  if(!confirm(matched.length + " PPT file(s) upload hongi. Continue?")) return;
+  showProgress("Uploading PPTs...", "0 / " + matched.length);
+  let success = 0;
+  for(let i = 0; i < matched.length; i++){
+    const p = matched[i];
+    document.getElementById("progressSub").textContent = (i+1) + " / " + matched.length + " - " + p.area;
+    const obj = { name: p.name, size: p.size, type: p.type, data: p.dataUrl };
+    const result = await savePpt(p.area, obj);
+    if(result && result.success) success++;
+  }
+  hideProgress();
+  await refreshPptCache();
+  render();
+  closeBulkPptModal();
+  alert(success + " / " + matched.length + " PPT upload ho gayi");
+}
+
+function exportCSV(){
+  if(sites.length === 0){ alert("Koi site nahi"); return; }
+  const headers = ["Area","Site","Location","Company","Status","From","To"];
+  const rows = [headers.join(",")];
+  sites.forEach(x => {
+    rows.push([x.area||"", x.site||"", x.location||"", x.customer||"", x.status||"", x.fromDate||"", x.toDate||""].map(v => '"'+String(v).replace(/"/g,'""')+'"').join(","));
+  });
+  const csv = "\ufeff" + rows.join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sites_"+new Date().toISOString().slice(0,10)+".csv";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function downloadBackup(){
+  const data = { sites, areas, bookingHistory, exportedOn: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "backup_"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function triggerImport(){ document.getElementById("importFile").click(); }
+function handleImportFile(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if(!data.sites) throw new Error("Invalid backup");
+      if(!confirm("Import karein? Current data replace ho jayega.")) return;
+      sites = data.sites || [];
+      areas = data.areas || [...DEFAULT_AREAS];
+      bookingHistory = data.bookingHistory || [];
+      await persistNow();
+      populateAreaDropdowns(); render();
+      alert("Import successful");
+    } catch(err){ alert("Import failed: " + err.message); }
+  };
+  reader.readAsText(file); e.target.value = "";
+}
+async function bulkDeleteSelected(){
+  if(selectedSites.size === 0){ alert("Koi site select nahi"); return; }
+  if(!confirm(selectedSites.size + " site(s) delete karni hain?")) return;
+  const ids = new Set([...selectedSites].map(String));
+  for(const id of ids){ if(imageCache[id]) await deleteImage(id); }
+  sites = sites.filter(s => !ids.has(String(s.id)));
+  selectedSites.clear();
+  await persistNow();
+  render();
+  alert("Sites deleted");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initDateDropdowns();
+  initBulkDateDropdowns();
+  checkSession();
+});
+</script>
+</body>
+</html>
