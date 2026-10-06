@@ -36,12 +36,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .btn-gray{background:#6b7280;color:#fff}
 .btn-red{background:#dc2626;color:#fff}
 .btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
-.btn-notify{background:#10b981;color:#fff}
 .btn-telegram{background:#0088cc;color:#fff}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
-
-/* ============ CARDS ============ */
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;position:relative;overflow:hidden;cursor:pointer;min-height:100px;display:flex;flex-direction:column;justify-content:center;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
 .card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,0.08);border-color:#cbd5e1}
@@ -63,7 +60,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card.total::before{background:linear-gradient(180deg,#3b82f6,#1d4ed8)}
 .card.total b{color:#1e40af}
 .card.total .card-icon{color:#3b82f6;opacity:0.2}
-
 .toolbar{background:#fff;padding:10px;border-radius:10px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border:1px solid #e2e8f0;align-items:center}
 .toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-family:inherit;background:#fff;outline:none;color:#0f172a;min-width:160px;flex:1;font-size:13px !important;height:36px}
 .toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;height:36px;white-space:nowrap}
@@ -269,7 +265,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <span class="header-user" id="userInfo">Loading...</span>
     <div class="header-actions">
       <button class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()" title="Telegram notifications">📱 Telegram</button>
-      <button class="btn-notify" id="notifyBtn" onclick="toggleNotifications()" title="Browser notifications">🔔 Notify</button>
       <button class="btn-yellow admin-only" onclick="openBulkUpload()">Bulk</button>
       <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
       <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
@@ -304,7 +299,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div class="toolbar">
   <input id="search" type="text" placeholder="Search sites..." oninput="debouncedRender()">
-
   <div class="filter-box">
     <select id="filter" onchange="onFilterChange()">
       <option value="ALL">All Status</option>
@@ -314,21 +308,17 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     </select>
     <div class="date-group">
       <input type="text" class="date-input" id="dateFilterFrom" placeholder="dd/mm/yyyy" maxlength="10" 
-             oninput="formatDateInput(this)" 
-             onkeydown="handleDateKeyDown(event)"
-             onblur="onDateBlur()">
+             oninput="handleDateInput(this,'from')" 
+             onkeydown="handleDateKeyDown(event)">
       <span class="date-sep">→</span>
       <input type="text" class="date-input" id="dateFilterTo" placeholder="dd/mm/yyyy" maxlength="10" 
-             oninput="formatDateInput(this)" 
-             onkeydown="handleDateKeyDown(event)"
-             onblur="onDateBlur()">
+             oninput="handleDateInput(this,'to')" 
+             onkeydown="handleDateKeyDown(event)">
     </div>
     <button type="button" class="apply-btn" onclick="applyFilters()" title="Apply filter (Enter)">🔍 Apply</button>
     <button type="button" class="clear-btn" id="clearFilterBtn" onclick="clearAllFilters()" title="Clear all filters">✕</button>
   </div>
-
   <span class="filter-active-badge" id="filterBadge"></span>
-
   <button class="admin-only" onclick="openAreaManager()">Manage Areas</button>
   <button class="admin-only multi-area-btn" onclick="openMultiAreaSelect()">☑ Select Areas</button>
   <button onclick="openAdd()">+ Add Site</button>
@@ -367,7 +357,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <b>Step 6:</b> Wahan <code>"chat":{"id":123456789}</code> milega — wahi <b>Chat ID</b> hai<br>
   <b>Step 7:</b> Neeche dono values paste karo aur Save dabao 🎉
 </div>
-
 <div class="formgrid" style="grid-template-columns:1fr">
   <label>Bot Token
     <input id="tgBotToken" type="text" placeholder="123456:ABC-XYZ..." autocomplete="off" style="font-family:monospace;font-size:12px !important">
@@ -384,9 +373,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <span style="font-weight:600;color:#0f172a">Sirf "Not Available" aur "Under Maintenance" ke liye bhejo</span>
   </label>
 </div>
-
 <div id="telegramStatus" style="margin-top:12px;padding:10px;border-radius:8px;font-size:12px;display:none"></div>
-
 <div class="modal-actions">
   <button class="secondary" onclick="testTelegram()">🧪 Test Message</button>
   <button class="secondary" onclick="closeTelegramSettings()">Cancel</button>
@@ -419,7 +406,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <button class="bulk-tab" onclick="switchBulkTab('ppts')" id="tabPpts">📊 PPTs (Area-wise)</button>
   <button class="bulk-tab" onclick="switchBulkTab('logo')" id="tabLogo">🎨 Logo Settings</button>
 </div>
-
 <div class="bulk-tab-content active" id="tabContentSites">
   <div class="bulk-info">
     <b>CSV Format:</b><br>
@@ -438,7 +424,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <div class="bulk-preview" id="bulkPreview"></div>
   </div>
 </div>
-
 <div class="bulk-tab-content" id="tabContentImages">
   <div class="bulk-info" style="font-size:11px">
     File ka naam <b>site ke naam</b> se match hona chahiye.<br>
@@ -456,7 +441,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <div class="bulk-preview" id="bulkImagePreview" style="max-height:220px"></div>
   </div>
 </div>
-
 <div class="bulk-tab-content" id="tabContentPpts">
   <div class="bulk-info" style="font-size:11px">
     PPT file ka naam <b>area ke naam</b> se match hona chahiye.<br>
@@ -474,7 +458,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <div class="bulk-preview" id="bulkPptPreview" style="max-height:260px"></div>
   </div>
 </div>
-
 <div class="bulk-tab-content" id="tabContentLogo">
   <div class="bulk-info" style="font-size:12px">
     <b>Logo Change Karein</b><br>
@@ -484,34 +467,28 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     • Thank You slide par dikhega<br>
     <b>Recommended:</b> 800x300px PNG (transparent background)
   </div>
-  
   <div style="text-align:center;margin-bottom:16px;padding:16px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0">
     <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Current Logo</div>
     <img id="currentLogoPreview" src="" alt="Current Logo" style="max-width:300px;max-height:100px;border-radius:8px;background:#fff;padding:8px;border:1px solid #e2e8f0" />
   </div>
-  
   <div class="drop-zone" id="logoDropZone" onclick="document.getElementById('logoFile').click()" style="border-color:#fde68a;background:#fffbeb">
     <div class="dz-icon">🎨</div>
     <div style="font-size:14px;font-weight:700">Click to upload new logo</div>
     <div style="font-size:11px;color:#64748b">PNG, JPG, SVG — Max 2 MB</div>
   </div>
   <input type="file" id="logoFile" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
-  
   <div id="newLogoPreviewWrap" style="display:none;text-align:center;margin-top:12px">
     <div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">New Logo (Preview)</div>
     <img id="newLogoPreview" src="" alt="New Logo" style="max-width:300px;max-height:100px;border-radius:8px;background:#fff;padding:8px;border:2px solid #059669" />
   </div>
-  
   <div id="logoUploadActions" style="display:none;margin-top:16px;gap:10px;flex-wrap:wrap">
     <button onclick="saveNewLogo()" style="flex:1;background:#059669;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;border:0;cursor:pointer;min-height:44px">✓ Save & Apply Logo</button>
     <button onclick="cancelLogoUpload()" style="background:#fff;color:#334155;border:1px solid #cbd5e1;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;min-height:44px">Cancel</button>
   </div>
-  
   <div style="margin-top:16px;padding:12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:11px;color:#991b1b">
     ⚠️ <b>Note:</b> Logo change karne ke baad, purani PPTs mein purana hi logo rahega. Nayi PPT mein naya logo aayega.
   </div>
 </div>
-
 <div class="modal-actions">
   <button class="secondary" onclick="closeBulkModal()">Cancel</button>
   <button id="bulkUploadBtn" onclick="confirmBulkUpload()" style="background:#3b82f6;color:#fff">Upload All</button>
@@ -522,7 +499,13 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <h2 id="modalTitle">Add Site</h2>
 <div class="formgrid">
 <label class="full-width">Area<select id="farea"></select></label>
-<label class="full-width">Site Name / ID<div><input id="fsite"></div></label>
+<label class="full-width">Site Code / ID
+  <div style="display:flex;gap:8px">
+    <input id="fsitecode" placeholder="e.g. CG01" style="flex:0 0 140px;font-family:monospace;font-weight:700;text-transform:uppercase">
+    <input id="fsite" placeholder="Full site name (optional)" style="flex:1">
+  </div>
+  <div style="font-size:11px;color:#64748b;margin-top:4px">Site Code chhota rakho (CG01). Full name optional hai.</div>
+</label>
 <label class="full-width">Location / Address
   <div><input id="flocation" placeholder="Address ya GPS location" oninput="onLocationManualChange()"></div>
   <div class="gps-box">
@@ -619,7 +602,6 @@ const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing
 const MAX_PPT_SIZE = 100 * 1024 * 1024;
 const COMPANY_NAME = "DS Outdoor Media";
 const COMPANY_TAGLINE = "Professional Site Booking & Management";
-// ✅ Date filter: 2050 tak allowed (badha diya)
 const MAX_FILTER_YEAR = 2050;
 let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 let newLogoData = "";
@@ -648,19 +630,9 @@ let lastDataHash = "";
 let dateFilterFrom = "";
 let dateFilterTo = "";
 let renderDebounceTimer = null;
-let notificationsEnabled = false;
 let lastKnownStatuses = {};
 
-/* ============ TELEGRAM CONFIG ============ */
-let telegramConfig = {
-  botToken: "",
-  chatId: "",
-  enabled: false,
-  onlyNotAvailMaint: true
-};
-
-/* ============ BLUR BG CACHE ============ */
-const blurImageCache = {};
+let telegramConfig = { botToken: "", chatId: "", enabled: false, onlyNotAvailMaint: true };
 
 /* ============ TOAST ============ */
 function showToast(title, message, type){
@@ -674,13 +646,10 @@ function showToast(title, message, type){
     '<button class="toast-close" onclick="this.parentElement.remove()">×</button>';
   container.appendChild(toast);
   setTimeout(() => toast.classList.add("show"), 10);
-  setTimeout(() => {
-    toast.classList.remove("show");
-    setTimeout(() => toast.remove(), 300);
-  }, 6000);
+  setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 300); }, 6000);
 }
 
-/* ============ TELEGRAM NOTIFICATIONS ============ */
+/* ============ TELEGRAM ============ */
 function loadTelegramConfig(){
   try {
     const saved = localStorage.getItem("sms_telegram_config");
@@ -691,7 +660,7 @@ function loadTelegramConfig(){
       telegramConfig.enabled = !!parsed.enabled;
       telegramConfig.onlyNotAvailMaint = parsed.onlyNotAvailMaint !== false;
     }
-  } catch(e){ console.warn("Telegram config load fail:", e); }
+  } catch(e){}
   updateTelegramBtn();
 }
 function saveTelegramConfig(){
@@ -714,231 +683,107 @@ function openTelegramSettings(){
   document.getElementById("tgChatId").value = telegramConfig.chatId || "";
   document.getElementById("tgEnabled").checked = !!telegramConfig.enabled;
   document.getElementById("tgOnlyNotAvail").checked = telegramConfig.onlyNotAvailMaint !== false;
-  const status = document.getElementById("telegramStatus");
-  status.style.display = "none";
+  document.getElementById("telegramStatus").style.display = "none";
   document.getElementById("telegramModal").classList.add("show");
 }
-function closeTelegramSettings(){
-  document.getElementById("telegramModal").classList.remove("show");
-}
+function closeTelegramSettings(){ document.getElementById("telegramModal").classList.remove("show"); }
 function saveTelegramSettings(){
   const token = document.getElementById("tgBotToken").value.trim();
   const chatId = document.getElementById("tgChatId").value.trim();
   const enabled = document.getElementById("tgEnabled").checked;
   const onlyNot = document.getElementById("tgOnlyNotAvail").checked;
-  
-  if(enabled && (!token || !chatId)){
-    showTelegramStatus("❌ Bot Token aur Chat ID dono required hain (jab Enabled checked ho)", "error");
-    return;
-  }
-  
+  if(enabled && (!token || !chatId)){ showTelegramStatus("❌ Bot Token aur Chat ID dono required", "error"); return; }
   telegramConfig.botToken = token;
   telegramConfig.chatId = chatId;
   telegramConfig.enabled = enabled;
   telegramConfig.onlyNotAvailMaint = onlyNot;
   saveTelegramConfig();
-  
-  if(enabled){
-    showTelegramStatus("✅ Settings save ho gayi! Ab test karo.", "success");
-    showToast("Telegram Saved", "Notifications enable ho gayi hain", "success");
-  } else {
-    showTelegramStatus("ℹ️ Notifications disabled hain", "info");
-    showToast("Telegram Saved", "Notifications disabled hain", "info");
-  }
+  if(enabled){ showTelegramStatus("✅ Settings save ho gayi!", "success"); showToast("Telegram Saved", "Notifications enable ho gayi", "success"); }
+  else { showTelegramStatus("ℹ️ Notifications disabled", "info"); showToast("Telegram Saved", "Notifications disabled", "info"); }
 }
 function showTelegramStatus(msg, type){
   const el = document.getElementById("telegramStatus");
-  el.textContent = msg;
-  el.style.display = "block";
+  el.textContent = msg; el.style.display = "block";
   if(type === "success"){ el.style.background = "#ecfdf5"; el.style.color = "#065f46"; el.style.border = "1px solid #a7f3d0"; }
   else if(type === "error"){ el.style.background = "#fef2f2"; el.style.color = "#991b1b"; el.style.border = "1px solid #fecaca"; }
   else { el.style.background = "#eff6ff"; el.style.color = "#1e40af"; el.style.border = "1px solid #bfdbfe"; }
 }
-
 async function sendTelegramMessage(text){
   if(!telegramConfig.enabled) return false;
   if(!telegramConfig.botToken || !telegramConfig.chatId) return false;
-  
   try {
     const url = "https://api.telegram.org/bot" + telegramConfig.botToken + "/sendMessage";
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: telegramConfig.chatId,
-        text: text,
-        parse_mode: "HTML",
-        disable_web_page_preview: true
-      })
-    });
+    const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: telegramConfig.chatId, text: text, parse_mode: "HTML", disable_web_page_preview: true }) });
     const data = await res.json();
     return data.ok === true;
-  } catch(e){
-    console.warn("Telegram send fail:", e);
-    return false;
-  }
+  } catch(e){ return false; }
 }
-
 async function testTelegram(){
   const token = document.getElementById("tgBotToken").value.trim();
   const chatId = document.getElementById("tgChatId").value.trim();
-  if(!token || !chatId){
-    showTelegramStatus("❌ Pehle Bot Token aur Chat ID daalo", "error");
-    return;
-  }
+  if(!token || !chatId){ showTelegramStatus("❌ Pehle Bot Token aur Chat ID daalo", "error"); return; }
   showTelegramStatus("⏳ Test message bhej rahe hain...", "info");
-  
-  // Temporarily set for test
   const savedEnabled = telegramConfig.enabled;
-  telegramConfig.enabled = true;
-  telegramConfig.botToken = token;
-  telegramConfig.chatId = chatId;
-  
-  const testMsg = "🧪 <b>Test Message</b>\n\n" +
-    "DS Outdoor Media - Site Management System\n" +
-    "Aapke Telegram notifications successfully kaam kar rahe hain! ✅\n\n" +
-    "🕐 " + new Date().toLocaleString('en-GB') + "\n" +
-    "📍 Test Site: TEST001\n" +
-    "Status: Available";
-  
+  telegramConfig.enabled = true; telegramConfig.botToken = token; telegramConfig.chatId = chatId;
+  const testMsg = "🧪 <b>Test Message</b>\n\nDS Outdoor Media - Site Management\nNotifications kaam kar rahe hain! ✅\n\n🕐 " + new Date().toLocaleString('en-GB');
   const ok = await sendTelegramMessage(testMsg);
-  
-  if(!ok){
-    telegramConfig.enabled = savedEnabled;
-    showTelegramStatus("❌ Test fail! Check karo:\n• Bot Token sahi hai?\n• Chat ID sahi hai?\n• Telegram me /start bheja tha?", "error");
-  } else {
-    showTelegramStatus("✅ Test message bhej diya! Telegram check karo.", "success");
-  }
+  if(!ok){ telegramConfig.enabled = savedEnabled; showTelegramStatus("❌ Test fail! Check:\n• Token sahi?\n• Chat ID sahi?\n• Telegram me /start bheja?", "error"); }
+  else { showTelegramStatus("✅ Test message bhej diya! Telegram check karo.", "success"); }
 }
-
 async function notifyTelegram(site, oldStatus, newStatus){
   if(!telegramConfig.enabled) return;
   if(!telegramConfig.botToken || !telegramConfig.chatId) return;
-  
-  // Filter: only Not Available / Under Maintenance
   if(telegramConfig.onlyNotAvailMaint){
     if(newStatus !== "Not Available" && newStatus !== "Under Maintenance") return;
   }
-  
   let emoji = "🔔", statusText = newStatus, extraInfo = "";
-  
   if(newStatus === "Not Available"){
     emoji = "🚨";
-    extraInfo = "\n👤 <b>Customer:</b> " + (site.customer || "—") +
-                "\n💰 <b>Rate:</b> " + (site.rate ? "₹" + Number(site.rate).toLocaleString('en-IN') + "/mo" : "—") +
-                "\n📅 <b>From:</b> " + (site.fromDate || "—") +
-                "\n📅 <b>To:</b> " + (site.toDate || "—");
+    extraInfo = "\n👤 <b>Customer:</b> " + (site.customer || "—") + "\n💰 <b>Rate:</b> " + (site.rate ? "₹" + Number(site.rate).toLocaleString('en-IN') + "/mo" : "—") + "\n📅 <b>From:</b> " + (site.fromDate || "—") + "\n📅 <b>To:</b> " + (site.toDate || "—");
   } else if(newStatus === "Under Maintenance"){
     emoji = "⚠️";
-    extraInfo = "\n📅 <b>From:</b> " + (site.fromDate || "—") +
-                "\n📅 <b>To:</b> " + (site.toDate || "—");
+    extraInfo = "\n📅 <b>From:</b> " + (site.fromDate || "—") + "\n📅 <b>To:</b> " + (site.toDate || "—");
   }
-  
   const msg = emoji + " <b>SITE " + statusText.toUpperCase() + "</b>\n\n" +
     "🏷️ <b>Site:</b> " + (site.site || "—") + "\n" +
+    (site.siteCode ? "🔢 <b>Code:</b> " + site.siteCode + "\n" : "") +
     "📍 <b>Area:</b> " + (site.area || "Unassigned") + "\n" +
     "🗺️ <b>Location:</b> " + (site.location || "—") + extraInfo + "\n\n" +
     "🕐 " + new Date().toLocaleString('en-GB');
-  
   await sendTelegramMessage(msg);
-}
-
-/* ============ BROWSER NOTIFICATIONS ============ */
-async function initNotifications(){
-  if(!("Notification" in window)) {
-    document.getElementById("notifyBtn").style.display = "none";
-    return;
-  }
-  if(Notification.permission === "granted"){
-    notificationsEnabled = true;
-    updateNotifyBtn();
-  } else if(Notification.permission === "denied"){
-    document.getElementById("notifyBtn").style.display = "none";
-  } else {
-    updateNotifyBtn();
-  }
-}
-function updateNotifyBtn(){
-  const btn = document.getElementById("notifyBtn");
-  if(!btn) return;
-  if(notificationsEnabled){
-    btn.textContent = "🔔 ON";
-    btn.style.background = "#10b981";
-  } else {
-    btn.textContent = "🔕 OFF";
-    btn.style.background = "#6b7280";
-  }
-}
-async function toggleNotifications(){
-  if(!("Notification" in window)){ alert("Browser notifications support nahi karta"); return; }
-  if(notificationsEnabled){
-    notificationsEnabled = false;
-    updateNotifyBtn();
-    showToast("Notifications OFF", "Aapko ab alerts nahi milenge", "info");
-    return;
-  }
-  const perm = await Notification.requestPermission();
-  if(perm === "granted"){
-    notificationsEnabled = true;
-    updateNotifyBtn();
-    showToast("Notifications ON", "Ab site bookings & maintenance ke alerts milenge", "success");
-    sendBrowserNotification("🔔 Notifications Enabled", "Ab aapko site updates ke alerts milenge", "info");
-  } else {
-    showToast("Permission Denied", "Browser settings me notification allow karein", "warning");
-  }
-}
-function sendBrowserNotification(title, body, type){
-  if(!notificationsEnabled) return;
-  if(Notification.permission !== "granted") return;
-  try {
-    const n = new Notification(title, {
-      body: body, icon: LOGO_URL, badge: LOGO_URL,
-      tag: "sms-" + Date.now(),
-      requireInteraction: type === "danger"
-    });
-    setTimeout(() => n.close(), 8000);
-  } catch(e){ console.warn("Notification error:", e); }
 }
 function notifyStatusChange(site, oldStatus, newStatus){
   const isBooked = (newStatus === "Not Available") && (oldStatus === "Available" || !oldStatus);
   const isMaint = (newStatus === "Under Maintenance") && (oldStatus !== "Under Maintenance");
   const isReleased = (newStatus === "Available") && (oldStatus === "Not Available" || oldStatus === "Under Maintenance");
-  let title, body, type, toastType;
-  if(isBooked){ title = "🚨 Site Booked!"; body = site.site + " (" + (site.area||"") + ") — " + (site.customer||"Customer") + " ne book kiya"; type = "danger"; toastType = "danger"; }
-  else if(isMaint){ title = "⚠️ Maintenance Alert"; body = site.site + " (" + (site.area||"") + ") ab maintenance me hai"; type = "warning"; toastType = "warning"; }
-  else if(isReleased){ title = "✅ Site Available"; body = site.site + " (" + (site.area||"") + ") ab available hai"; type = "success"; toastType = "success"; }
+  let title, body, toastType;
+  if(isBooked){ title = "🚨 Site Booked!"; body = site.site + " (" + (site.area||"") + ") — " + (site.customer||"Customer") + " ne book kiya"; toastType = "danger"; }
+  else if(isMaint){ title = "⚠️ Maintenance Alert"; body = site.site + " (" + (site.area||"") + ") ab maintenance me hai"; toastType = "warning"; }
+  else if(isReleased){ title = "✅ Site Available"; body = site.site + " (" + (site.area||"") + ") ab available hai"; toastType = "success"; }
   else return;
-  
-  // Browser notification + in-app toast
-  sendBrowserNotification(title, body, type);
   showToast(title, body, toastType);
-  
-  // ✅ Telegram notification (async, fire and forget)
-  notifyTelegram(site, oldStatus, newStatus).catch(e => console.warn("TG notify fail:", e));
+  notifyTelegram(site, oldStatus, newStatus).catch(e => console.warn("TG fail:", e));
 }
 
 /* ============ API ============ */
-async function apiGet(path){
-  try { const r = await fetch(API_URL + path, { method: "GET" }); return await r.json(); }
-  catch(e){ return { success: false, error: e.message }; }
-}
-async function apiPost(path, body){
-  try {
-    const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    return await r.json();
-  } catch(e){ return { success: false, error: e.message }; }
-}
-async function apiDelete(path){
-  try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); }
-  catch(e){ return { success: false, error: e.message }; }
-}
+async function apiGet(path){ try { const r = await fetch(API_URL + path, { method: "GET" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+async function apiPost(path, body){ try { const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+async function apiDelete(path){ try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+
 async function loadCloudData(){
   const result = await apiGet("/data");
   if(result && result.success){
     sites = Array.isArray(result.sites) ? result.sites : [];
     areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
     bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
-    sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
+    sites.forEach((s, i) => {
+      if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
+      // Ensure siteCode exists (from site name if missing)
+      if(!s.siteCode){
+        const m = (s.site||"").match(/^([A-Z]{2,5}\d{1,4})/i);
+        s.siteCode = m ? m[1].toUpperCase() : "";
+      }
+    });
     lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
     sites.forEach(s => { lastKnownStatuses[s.id] = s.status; });
     return true;
@@ -948,17 +793,10 @@ async function loadCloudData(){
 async function persistNow(){
   if(pendingSaveTimer){ clearTimeout(pendingSaveTimer); pendingSaveTimer = null; }
   const result = await apiPost("/data", { sites, areas, bookingHistory });
-  if(result && result.success){
-    lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
-    return true;
-  }
+  if(result && result.success){ lastDataHash = JSON.stringify({ sites, areas, bookingHistory }); return true; }
   return false;
 }
-async function saveImage(key, dataUrl){
-  const result = await apiPost("/image/" + encodeURIComponent(key), { data: dataUrl });
-  if(result && result.success){ imageCache[key] = dataUrl; imageFailed.delete(key); delete blurImageCache[key]; }
-  return result;
-}
+async function saveImage(key, dataUrl){ const result = await apiPost("/image/" + encodeURIComponent(key), { data: dataUrl }); if(result && result.success){ imageCache[key] = dataUrl; imageFailed.delete(key); } return result; }
 async function getImage(key){
   if(imageCache[key]) return imageCache[key];
   if(imageFailed.has(key)) return null;
@@ -967,12 +805,7 @@ async function getImage(key){
   imageFailed.add(key);
   return null;
 }
-async function deleteImage(key){
-  delete imageCache[key];
-  delete blurImageCache[key];
-  imageFailed.delete(key);
-  return await apiDelete("/image/" + encodeURIComponent(key));
-}
+async function deleteImage(key){ delete imageCache[key]; imageFailed.delete(key); return await apiDelete("/image/" + encodeURIComponent(key)); }
 async function savePpt(areaName, obj){
   const CHUNK_SIZE = 20000000;
   const data = obj.data || "";
@@ -988,37 +821,19 @@ async function savePpt(areaName, obj){
     const start = i * CHUNK_SIZE;
     const chunk = data.substring(start, start + CHUNK_SIZE);
     const chunkResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/chunk/" + i, { data: chunk });
-    if(!chunkResult || !chunkResult.success) return { success: false, error: "Chunk " + i + " failed" };
-    const ps = document.getElementById("progressSub");
-    if(ps) ps.textContent = "Uploading chunk " + (i+1) + " / " + totalChunks;
+    if(!chunkResult || !chunkResult.success) return { success: false, error: "Chunk failed" };
+    const ps = document.getElementById("progressSub"); if(ps) ps.textContent = "Chunk " + (i+1) + " / " + totalChunks;
   }
   const completeResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/complete", {});
   if(completeResult && completeResult.success) pptCache[areaName] = true;
   return completeResult;
 }
-async function getPpt(areaName){
-  const result = await apiGet("/ppt/" + encodeURIComponent(areaName));
-  if(result && result.success && result.data){
-    return { name: result.name, size: result.size, type: result.type, data: result.data };
-  }
-  return null;
-}
-async function deletePptFromDB(areaName){
-  delete pptCache[areaName];
-  return await apiDelete("/ppt/" + encodeURIComponent(areaName));
-}
+async function getPpt(areaName){ const result = await apiGet("/ppt/" + encodeURIComponent(areaName)); if(result && result.success && result.data){ return { name: result.name, size: result.size, type: result.type, data: result.data }; } return null; }
+async function deletePptFromDB(areaName){ delete pptCache[areaName]; return await apiDelete("/ppt/" + encodeURIComponent(areaName)); }
 async function refreshPptCache(){
   pptCache = {};
-  try {
-    const result = await apiGet("/ppt-list");
-    if(result && result.success && result.list){
-      for(const area in result.list){ pptCache[area] = true; }
-      return;
-    }
-  } catch(e){}
-  for(const a of areas){
-    try { const p = await getPpt(a); if(p && p.data) pptCache[a] = true; } catch(e){}
-  }
+  try { const result = await apiGet("/ppt-list"); if(result && result.success && result.list){ for(const area in result.list){ pptCache[area] = true; } return; } } catch(e){}
+  for(const a of areas){ try { const p = await getPpt(a); if(p && p.data) pptCache[a] = true; } catch(e){} }
 }
 
 /* ============ LOGO ============ */
@@ -1027,22 +842,17 @@ async function loadLogoFromCloud(){
     const result = await apiGet("/logo");
     if(result && result.success && result.data){
       LOGO_URL = result.data;
-      const logoImg = document.getElementById("currentLogoPreview");
-      if(logoImg) logoImg.src = result.data;
-      const loginLogo = document.getElementById("loginLogoImg");
-      if(loginLogo){ loginLogo.src = result.data; loginLogo.style.display = "inline-block"; }
+      const logoImg = document.getElementById("currentLogoPreview"); if(logoImg) logoImg.src = result.data;
+      const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo){ loginLogo.src = result.data; loginLogo.style.display = "inline-block"; }
       return true;
     }
-  } catch(e){ console.warn("Logo load fail:", e); }
-  const logoImg = document.getElementById("currentLogoPreview");
-  if(logoImg) logoImg.src = LOGO_URL;
-  const loginLogo = document.getElementById("loginLogoImg");
-  if(loginLogo) loginLogo.src = LOGO_URL;
+  } catch(e){}
+  const logoImg = document.getElementById("currentLogoPreview"); if(logoImg) logoImg.src = LOGO_URL;
+  const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo) loginLogo.src = LOGO_URL;
   return false;
 }
 (function setupLogoDropZone(){
-  const dz = document.getElementById("logoDropZone");
-  if(!dz) return;
+  const dz = document.getElementById("logoDropZone"); if(!dz) return;
   dz.addEventListener("dragover", e => { e.preventDefault(); dz.style.background = "#fef3c7"; });
   dz.addEventListener("dragleave", () => dz.style.background = "#fffbeb");
   dz.addEventListener("drop", e => { e.preventDefault(); dz.style.background = "#fffbeb"; const files = e.dataTransfer.files; if(files && files.length > 0) processLogoFile(files[0]); });
@@ -1050,7 +860,7 @@ async function loadLogoFromCloud(){
 function handleLogoUpload(e){ const file = e.target.files[0]; if(!file) return; processLogoFile(file); e.target.value = ""; }
 function processLogoFile(file){
   if(!file.type.startsWith("image/")){ alert("Only image files allowed"); return; }
-  if(file.size > 2*1024*1024){ alert("Max 2 MB allowed. Aapki file: " + (file.size/1024/1024).toFixed(2) + " MB"); return; }
+  if(file.size > 2*1024*1024){ alert("Max 2 MB allowed"); return; }
   const reader = new FileReader();
   reader.onload = (ev) => {
     let dataUrl = ev.target.result;
@@ -1060,20 +870,16 @@ function processLogoFile(file){
       const MAX_W = 800, MAX_H = 300;
       let w = img.width, h = img.height;
       if(w > MAX_W || h > MAX_H){ const r = Math.min(MAX_W / w, MAX_H / h); w = Math.round(w * r); h = Math.round(h * r); }
-      const canvas = document.createElement("canvas");
-      canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext("2d");
-      ctx.imageSmoothingQuality = "high";
-      if(file.type === "image/png"){ ctx.clearRect(0, 0, w, h); }
-      else { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h); }
+      const canvas = document.createElement("canvas"); canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d"); ctx.imageSmoothingQuality = "high";
+      if(file.type === "image/png"){ ctx.clearRect(0, 0, w, h); } else { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h); }
       ctx.drawImage(img, 0, 0, w, h);
       const mimeType = file.type === "image/png" ? "image/png" : "image/jpeg";
       let quality = 0.9;
       let result = canvas.toDataURL(mimeType, quality);
       let attempts = 0;
       while(result.length > 1.5 * 1024 * 1024 && quality > 0.6 && attempts < 8){ quality -= 0.05; result = canvas.toDataURL(mimeType, quality); attempts++; }
-      newLogoData = result;
-      showNewLogoPreview(result);
+      newLogoData = result; showNewLogoPreview(result);
     };
     img.onerror = () => { alert("Image load fail"); };
     img.src = dataUrl;
@@ -1085,11 +891,7 @@ function showNewLogoPreview(dataUrl){
   document.getElementById("newLogoPreviewWrap").style.display = "block";
   document.getElementById("logoUploadActions").style.display = "flex";
 }
-function cancelLogoUpload(){
-  newLogoData = "";
-  document.getElementById("newLogoPreviewWrap").style.display = "none";
-  document.getElementById("logoUploadActions").style.display = "none";
-}
+function cancelLogoUpload(){ newLogoData = ""; document.getElementById("newLogoPreviewWrap").style.display = "none"; document.getElementById("logoUploadActions").style.display = "none"; }
 async function saveNewLogo(){
   if(!newLogoData){ alert("Pehle logo select karein"); return; }
   showProgress("Saving logo...", "Uploading to cloud");
@@ -1098,11 +900,9 @@ async function saveNewLogo(){
     if(result && result.success){
       LOGO_URL = newLogoData;
       document.getElementById("currentLogoPreview").src = newLogoData;
-      const loginLogo = document.getElementById("loginLogoImg");
-      if(loginLogo){ loginLogo.src = newLogoData; loginLogo.style.display = "inline-block"; }
-      cancelLogoUpload(); hideProgress();
-      alert("✅ Logo successfully update ho gaya!");
-    } else { hideProgress(); alert("Failed: " + (result.error || "Unknown error")); }
+      const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo){ loginLogo.src = newLogoData; loginLogo.style.display = "inline-block"; }
+      cancelLogoUpload(); hideProgress(); alert("✅ Logo update ho gaya!");
+    } else { hideProgress(); alert("Failed: " + (result.error || "Unknown")); }
   } catch(e){ hideProgress(); alert("Error: " + e.message); }
 }
 
@@ -1122,10 +922,7 @@ async function doLogin(){
     currentUser = data.user;
     sessionStorage.setItem("sms_user", JSON.stringify(currentUser));
     showApp();
-  } catch(e){
-    err.textContent = "Server connect fail"; err.classList.add("show");
-    btn.disabled = false; btn.textContent = "Sign In";
-  }
+  } catch(e){ err.textContent = "Server connect fail"; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; }
 }
 async function showApp(){
   document.getElementById("loginOverlay").classList.add("hidden");
@@ -1142,7 +939,6 @@ async function showApp(){
   await autoReleaseExpiredSites();
   render();
   startAutoRefresh();
-  initNotifications();
 }
 function doLogout(){
   if(!confirm("Logout?")) return;
@@ -1163,14 +959,9 @@ function startAutoRefresh(){
     if(result && result.success){
       const newHash = JSON.stringify({ sites: result.sites || [], areas: result.areas || [], bookingHistory: result.bookingHistory || [] });
       if(newHash !== lastDataHash){
-        const modal = document.getElementById("modal");
-        if(modal && modal.classList.contains("show")) return;
+        const modal = document.getElementById("modal"); if(modal && modal.classList.contains("show")) return;
         const newSites = result.sites || [];
-        newSites.forEach(s => {
-          if(!s.id) return;
-          const oldStatus = lastKnownStatuses[s.id];
-          if(oldStatus && oldStatus !== s.status){ notifyStatusChange(s, oldStatus, s.status); }
-        });
+        newSites.forEach(s => { if(!s.id) return; const oldStatus = lastKnownStatuses[s.id]; if(oldStatus && oldStatus !== s.status){ notifyStatusChange(s, oldStatus, s.status); } });
         sites = newSites;
         areas = (result.areas && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
         bookingHistory = result.bookingHistory || [];
@@ -1192,17 +983,8 @@ function normalizeStatus(s){
   return "Available";
 }
 function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
-function formatBytes(b){
-  if(!b) return "0 B";
-  const k = 1024; const sizes = ["B","KB","MB","GB"];
-  const i = Math.floor(Math.log(b) / Math.log(k));
-  return (b / Math.pow(k, i)).toFixed(i === 0 ? 0 : 1) + " " + sizes[i];
-}
-function showProgress(t, s){
-  document.getElementById("progressText").textContent = t || "Working...";
-  document.getElementById("progressSub").textContent = s || "";
-  document.getElementById("progressOverlay").classList.add("show");
-}
+function formatBytes(b){ if(!b) return "0 B"; const k = 1024; const sizes = ["B","KB","MB","GB"]; const i = Math.floor(Math.log(b) / Math.log(k)); return (b / Math.pow(k, i)).toFixed(i === 0 ? 0 : 1) + " " + sizes[i]; }
+function showProgress(t, s){ document.getElementById("progressText").textContent = t || "Working..."; document.getElementById("progressSub").textContent = s || ""; document.getElementById("progressOverlay").classList.add("show"); }
 function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
 
 /* ============ FILTER ============ */
@@ -1227,17 +1009,26 @@ function populateAreaDropdowns(){
   areas.forEach(a => { formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
 }
 
-/* ============ DATE INPUT ============ */
-function formatDateInput(input){
+/* ============ ✅ DATE INPUT (FIXED BACKSPACE) ============ */
+function handleDateInput(input, which){
+  // Store cursor position
   const oldVal = input.value;
-  const isDeleting = input.dataset.lastLength && oldVal.length < parseInt(input.dataset.lastLength);
+  const oldLen = parseInt(input.dataset.lastLength || "0");
+  const isDeleting = oldVal.length < oldLen;
+  
+  // Update length for next comparison
   input.dataset.lastLength = oldVal.length;
+  
+  // ✅ If user is deleting (backspace/delete), don't auto-format
+  // Just allow them to delete freely. Only strip garbage characters.
   if(isDeleting){
-    const cleaned = oldVal.replace(/[^\d\/]/g, "");
-    if(cleaned !== oldVal){ input.value = cleaned; }
+    input.value = oldVal.replace(/[^\d\/]/g, "");
     return;
   }
-  let val = input.value.replace(/\D/g, "");
+  
+  // ✅ Auto-format when typing
+  let val = oldVal.replace(/\D/g, "");
+  
   if(val.length >= 2){
     let dd = val.substring(0, 2);
     if(parseInt(dd) > 31) dd = "31";
@@ -1256,68 +1047,36 @@ function formatDateInput(input){
 function handleDateKeyDown(event){
   if(event.key === "Enter"){ event.preventDefault(); applyFilters(); }
 }
-function onDateBlur(){
-  const from = document.getElementById("dateFilterFrom").value.trim();
-  const to = document.getElementById("dateFilterTo").value.trim();
-  const validPattern = /^\d{2}\/\d{2}\/\d{4}$/;
-  if((from && validPattern.test(from)) || (to && validPattern.test(to))){
-    if((!from || validPattern.test(from)) && (!to || validPattern.test(to))){ applyFilters(); }
-  }
-}
-
-/* ============ VALIDATION ============ */
 function validateFilterDate(dateStr, fieldName){
   if(!dateStr) return { ok: true };
   const p = String(dateStr).trim().split("/");
-  if(p.length !== 3) return { ok: false, msg: fieldName + " date format galat hai (dd/mm/yyyy)" };
+  if(p.length !== 3) return { ok: false, msg: fieldName + " format galat hai (dd/mm/yyyy)" };
   const dd = parseInt(p[0]), mm = parseInt(p[1]), yyyy = parseInt(p[2]);
   if(isNaN(dd) || isNaN(mm) || isNaN(yyyy)) return { ok: false, msg: fieldName + " date valid nahi hai" };
-  if(yyyy < 1900 || yyyy > MAX_FILTER_YEAR) return { ok: false, msg: fieldName + " year 1900-" + MAX_FILTER_YEAR + " ke beech honi chahiye" };
+  if(yyyy < 1900 || yyyy > MAX_FILTER_YEAR) return { ok: false, msg: fieldName + " year 1900-" + MAX_FILTER_YEAR + " ke beech" };
   const testDate = new Date(yyyy, mm - 1, dd);
   if(testDate.getFullYear() !== yyyy || testDate.getMonth() !== (mm - 1) || testDate.getDate() !== dd){
-    return { ok: false, msg: fieldName + " date exist nahi karti (jaise 31/02/2024)" };
-  }
-  // Min 01/01/2000
-  const minDate = new Date(2000, 0, 1);
-  if(testDate < minDate){
-    return { ok: false, msg: fieldName + " date 01/01/2000 se pehle allowed nahi hai" };
+    return { ok: false, msg: fieldName + " date exist nahi karti" };
   }
   return { ok: true };
 }
-
 function applyFilters(){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
   const validPattern = /^\d{2}\/\d{2}\/\d{4}$/;
-  
-  if(fromInput && !validPattern.test(fromInput)){ 
-    showToast("Invalid Date", "From date complete karein (dd/mm/yyyy)", "warning");
-    document.getElementById("dateFilterFrom").focus();
-    return;
-  }
-  if(toInput && !validPattern.test(toInput)){ 
-    showToast("Invalid Date", "To date complete karein (dd/mm/yyyy)", "warning");
-    document.getElementById("dateFilterTo").focus();
-    return;
-  }
-  
-  const fromCheck = validateFilterDate(fromInput, "From");
-  if(!fromCheck.ok){ showToast("Invalid Date", fromCheck.msg, "warning"); document.getElementById("dateFilterFrom").focus(); return; }
-  const toCheck = validateFilterDate(toInput, "To");
-  if(!toCheck.ok){ showToast("Invalid Date", toCheck.msg, "warning"); document.getElementById("dateFilterTo").focus(); return; }
-  
+  if(fromInput && !validPattern.test(fromInput)){ showToast("Invalid Date", "From date complete karein (dd/mm/yyyy)", "warning"); document.getElementById("dateFilterFrom").focus(); return; }
+  if(toInput && !validPattern.test(toInput)){ showToast("Invalid Date", "To date complete karein (dd/mm/yyyy)", "warning"); document.getElementById("dateFilterTo").focus(); return; }
+  const fromCheck = validateFilterDate(fromInput, "From"); if(!fromCheck.ok){ showToast("Invalid Date", fromCheck.msg, "warning"); return; }
+  const toCheck = validateFilterDate(toInput, "To"); if(!toCheck.ok){ showToast("Invalid Date", toCheck.msg, "warning"); return; }
   if(fromInput && toInput){
-    const fromISO = ddmmyyyyToISOForFilter(fromInput);
-    const toISO = ddmmyyyyToISOForFilter(toInput);
+    const fromISO = ddmmyyyyToISOForFilter(fromInput), toISO = ddmmyyyyToISOForFilter(toInput);
     if(fromISO > toISO){ showToast("Invalid Range", "From date, To date se pehle honi chahiye", "warning"); return; }
   }
-  
   areaFilters = {};
   render();
   updateFilterBadge();
   autoSelectFilteredSites();
 }
-
 function autoSelectFilteredSites(){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
@@ -1329,25 +1088,11 @@ function autoSelectFilteredSites(){
   sites.forEach(s => {
     if(f !== "ALL" && s.status !== f) return;
     if(!siteMatchesDateFilter(s)) return;
-    const hay = (s.site + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
+    const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
     if(q && !hay.includes(q)) return;
     if(!selectedSites.has(s.id)){ selectedSites.add(s.id); count++; }
   });
-  if(count > 0){
-    updateSelectBar();
-    showToast("Auto-selected", count + " site(s) filter ke according select ho gayi", "success");
-  }
-}
-function isValidDate(s){
-  const p = String(s).trim().split("/");
-  if(p.length !== 3) return false;
-  const dd = parseInt(p[0]), mm = parseInt(p[1]), yyyy = parseInt(p[2]);
-  if(isNaN(dd) || isNaN(mm) || isNaN(yyyy)) return false;
-  if(mm < 1 || mm > 12) return false;
-  if(dd < 1 || dd > 31) return false;
-  if(yyyy < 1900 || yyyy > 2200) return false;
-  const d = new Date(yyyy, mm - 1, dd);
-  return d.getFullYear() === yyyy && d.getMonth() === (mm - 1) && d.getDate() === dd;
+  if(count > 0){ updateSelectBar(); showToast("Auto-selected", count + " site(s) select ho gayi", "success"); }
 }
 function clearAllFilters(){
   document.getElementById("filter").value = "ALL";
@@ -1382,6 +1127,7 @@ function ddmmyyyyToISOForFilter(s){
   if(p[2].length !== 4) return "";
   return p[2] + "-" + p[1].padStart(2,"0") + "-" + p[0].padStart(2,"0");
 }
+/* ✅ CHECK: Is site's date range overlapping with filter range? */
 function siteMatchesDateFilter(site){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
@@ -1390,9 +1136,13 @@ function siteMatchesDateFilter(site){
   const filterTo = toInput ? ddmmyyyyToISOForFilter(toInput) : "";
   if(fromInput && !filterFrom) return true;
   if(toInput && !filterTo) return true;
-  if(!site.fromDate && !site.toDate) return false;
   const siteFrom = site.fromDate ? ddmmyyyyToISO(site.fromDate) : "";
   const siteTo = site.toDate ? ddmmyyyyToISO(site.toDate) : "";
+  // ✅ If site has no dates, and filter has dates → include it (available sites often have no dates)
+  if(!siteFrom && !siteTo){
+    // Include "Available" sites with no date range in any filter
+    return true;
+  }
   if(filterFrom && filterTo){
     if(siteFrom && siteTo){
       if(siteFrom > filterTo) return false;
@@ -1414,7 +1164,8 @@ function siteMatchesDateFilter(site){
   }
   return true;
 }
-function getFilteredSitesForCounts(){
+/* ✅ Get filtered sites (for cards AND for area display) */
+function getFilteredSites(){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
   const q = (document.getElementById("search").value || "").toLowerCase().trim();
@@ -1424,14 +1175,14 @@ function getFilteredSitesForCounts(){
   return sites.filter(s => {
     if(hasDateFilter && !siteMatchesDateFilter(s)) return false;
     if(hasSearch){
-      const hay = (s.site + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
+      const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
       if(!hay.includes(q)) return false;
     }
     return true;
   });
 }
 function updateCardsWithFilteredCounts(){
-  const filtered = getFilteredSitesForCounts();
+  const filtered = getFilteredSites();
   const counts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
   filtered.forEach(x => counts[x.status] = (counts[x.status] || 0) + 1);
   document.getElementById("total").textContent = filtered.length;
@@ -1450,34 +1201,21 @@ async function refreshPage(e){
   const btn = document.querySelector(".refresh-btn");
   if(btn){ btn.disabled = true; btn.textContent = "Refreshing..."; }
   try {
-    imageFailed.clear();
-    imageCache = {};
-    pptCache = {};
-    selectedSites.clear();
-    Object.keys(blurImageCache).forEach(k => delete blurImageCache[k]);
+    imageFailed.clear(); imageCache = {}; pptCache = {}; selectedSites.clear();
     document.getElementById("filter").value = "ALL";
     document.getElementById("search").value = "";
     document.getElementById("dateFilterFrom").value = "";
     document.getElementById("dateFilterTo").value = "";
     dateFilterFrom = ""; dateFilterTo = ""; areaFilters = {};
-    await loadCloudData();
-    await refreshPptCache();
-    await loadLogoFromCloud();
+    await loadCloudData(); await refreshPptCache(); await loadLogoFromCloud();
     collapsedAreas = new Set(areas);
-    render();
-    updateFilterBadge();
+    render(); updateFilterBadge();
     if(btn){ btn.textContent = "✓ Refreshed"; setTimeout(() => { btn.textContent = "Refresh"; btn.disabled = false; }, 800); }
-  } catch(err){
-    console.error("Refresh error:", err);
-    if(btn){ btn.textContent = "Refresh"; btn.disabled = false; }
-  }
+  } catch(err){ console.error(err); if(btn){ btn.textContent = "Refresh"; btn.disabled = false; } }
 }
 
 /* ============ MULTI AREA ============ */
-function openMultiAreaSelect(){
-  if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  multiAreaSelected.clear(); renderMultiAreaList(); document.getElementById("multiAreaModal").classList.add("show");
-}
+function openMultiAreaSelect(){ if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; } multiAreaSelected.clear(); renderMultiAreaList(); document.getElementById("multiAreaModal").classList.add("show"); }
 function closeMultiAreaModal(){ multiAreaSelected.clear(); document.getElementById("multiAreaModal").classList.remove("show"); }
 function renderMultiAreaList(){
   const list = document.getElementById("multiAreaList");
@@ -1486,31 +1224,21 @@ function renderMultiAreaList(){
   areas.forEach(a => {
     const siteCount = sites.filter(s => s.area === a).length;
     const isSel = multiAreaSelected.has(a);
-    html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '">';
-    html += '<input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleMultiArea(\'' + esc(a).replace(/'/g, "\\'") + '\')">';
-    html += '<span class="name">' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + siteCount + ' sites)</span></span>';
-    html += '</div>';
+    html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '"><input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleMultiArea(\'' + esc(a).replace(/'/g, "\\'") + '\')"><span class="name">' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + siteCount + ' sites)</span></span></div>';
   });
   list.innerHTML = html;
   document.getElementById("multiAreaSelCount").textContent = multiAreaSelected.size + " selected";
 }
-function toggleMultiArea(areaName){
-  if(multiAreaSelected.has(areaName)) multiAreaSelected.delete(areaName);
-  else multiAreaSelected.add(areaName);
-  renderMultiAreaList();
-}
+function toggleMultiArea(areaName){ if(multiAreaSelected.has(areaName)) multiAreaSelected.delete(areaName); else multiAreaSelected.add(areaName); renderMultiAreaList(); }
 function multiAreaSelectAll(){ areas.forEach(a => multiAreaSelected.add(a)); renderMultiAreaList(); }
 function multiAreaDeselectAll(){ multiAreaSelected.clear(); renderMultiAreaList(); }
 function applyMultiAreaSelection(){
   if(multiAreaSelected.size === 0){ alert("Koi area select nahi"); return; }
   let totalSites = 0;
-  sites.forEach(s => {
-    const sArea = s.area || "Unassigned";
-    if(multiAreaSelected.has(sArea)){ selectedSites.add(s.id); totalSites++; }
-  });
+  sites.forEach(s => { const sArea = s.area || "Unassigned"; if(multiAreaSelected.has(sArea)){ selectedSites.add(s.id); totalSites++; } });
   closeMultiAreaModal();
   render();
-  alert("✅ " + totalSites + " sites selected from " + multiAreaSelected.size + " area(s)");
+  alert("✅ " + totalSites + " sites selected");
 }
 
 /* ============ BULK ============ */
@@ -1531,10 +1259,7 @@ function openBulkUpload(){
   document.getElementById("bulkPptPreviewWrap").style.display = "none";
   document.getElementById("newLogoPreviewWrap").style.display = "none";
   document.getElementById("logoUploadActions").style.display = "none";
-  document.getElementById("bulkFile").value = "";
-  document.getElementById("bulkImageFiles").value = "";
-  document.getElementById("bulkPptFiles").value = "";
-  document.getElementById("logoFile").value = "";
+  document.getElementById("bulkFile").value = ""; document.getElementById("bulkImageFiles").value = ""; document.getElementById("bulkPptFiles").value = ""; document.getElementById("logoFile").value = "";
   switchBulkTab("sites");
   document.getElementById("bulkModal").classList.add("show");
 }
@@ -1594,9 +1319,12 @@ function parseCSV(text){
     let areaVal = idx.area !== undefined ? (cells[idx.area]||"").trim() : "";
     if(!areaVal) areaVal = "Unassigned";
     if(areaVal !== "Unassigned" && !areas.includes(areaVal) && !newAreas.includes(areaVal)) newAreas.push(areaVal);
+    const siteName = cells[idx.site];
+    const codeMatch = siteName.match(/^([A-Z]{2,5}\d{1,4})/i);
+    const siteCode = codeMatch ? codeMatch[1].toUpperCase() : "";
     bulkParsedSites.push({
       id: "id_"+Math.random().toString(36).slice(2,10),
-      area: areaVal, site: cells[idx.site],
+      area: areaVal, site: siteName, siteCode: siteCode,
       location: idx.location !== undefined ? (cells[idx.location]||"") : "",
       customer: idx.company !== undefined ? (cells[idx.company]||"") : "",
       rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "",
@@ -1612,9 +1340,9 @@ function parseCSV(text){
   const prev = document.getElementById("bulkPreview");
   if(bulkParsedSites.length === 0){ sum.textContent = "No valid sites"; wrap.style.display = "block"; return; }
   sum.textContent = bulkParsedSites.length + " valid sites ready";
-  let html = '<table><thead><tr><th>#</th><th>Area</th><th>Site</th><th>Location</th><th>Rate</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>#</th><th>Area</th><th>Site</th><th>Code</th><th>Location</th><th>Rate</th></tr></thead><tbody>';
   bulkParsedSites.slice(0, 30).forEach((p, i) => {
-    html += '<tr><td>'+(i+1)+'</td><td>'+esc(p.area)+'</td><td>'+esc(p.site)+'</td><td>'+esc(p.location)+'</td><td>'+esc(p.rate)+'</td></tr>';
+    html += '<tr><td>'+(i+1)+'</td><td>'+esc(p.area)+'</td><td>'+esc(p.site)+'</td><td>'+esc(p.siteCode||"—")+'</td><td>'+esc(p.location)+'</td><td>'+esc(p.rate)+'</td></tr>';
   });
   html += '</tbody></table>';
   prev.innerHTML = html;
@@ -1635,7 +1363,11 @@ function findSiteForImageFilename(fileName){
   const siteList = bulkParsedSites.length > 0 ? bulkParsedSites : sites;
   let hit = siteList.find(s => s.site && s.site.toLowerCase() === base.toLowerCase());
   if(hit) return hit;
+  hit = siteList.find(s => s.siteCode && s.siteCode.toLowerCase() === base.toLowerCase());
+  if(hit) return hit;
   hit = siteList.find(s => s.site && norm(s.site) === baseNorm);
+  if(hit) return hit;
+  hit = siteList.find(s => s.siteCode && norm(s.siteCode) === baseNorm);
   if(hit) return hit;
   const sorted = [...siteList].sort((a,b) => (b.site||"").length - (a.site||"").length);
   for(const s of sorted){
@@ -1645,13 +1377,17 @@ function findSiteForImageFilename(fileName){
     if(baseNorm === sNorm) return s;
     if(baseNorm.startsWith(sNorm)) return s;
     if(baseNorm.includes(sNorm)) return s;
+    if(s.siteCode){
+      const cNorm = norm(s.siteCode);
+      if(baseNorm === cNorm || baseNorm.startsWith(cNorm)) return s;
+    }
   }
   return null;
 }
 function processBulkImageFiles(fileList){
   const files = Array.from(fileList);
   if(files.length === 0) return;
-  if(files.length > 400){ alert("Max 400 images. Pehli 400 process hongi."); }
+  if(files.length > 400){ alert("Max 400 images."); }
   const limitedFiles = files.slice(0, 400);
   const valid = []; const invalid = [];
   limitedFiles.forEach(f => {
@@ -1669,12 +1405,7 @@ function processBulkImageFiles(fileList){
     reader.onload = (ev) => {
       compressImageSmart(ev.target.result, (compressed) => {
         const matchedSite = findSiteForImageFilename(f.name);
-        bulkParsedImages.push({
-          file: f, name: f.name, size: f.size,
-          siteId: matchedSite ? matchedSite.id : null,
-          siteName: matchedSite ? matchedSite.site : null,
-          matched: !!matchedSite, dataUrl: compressed
-        });
+        bulkParsedImages.push({ file: f, name: f.name, size: f.size, siteId: matchedSite ? matchedSite.id : null, siteName: matchedSite ? matchedSite.site : null, matched: !!matchedSite, dataUrl: compressed });
         pending--;
         if(pending === 0){ renderBulkImagePreview(invalid); }
       });
@@ -1691,7 +1422,7 @@ function renderBulkImagePreview(invalidList){
   if(matched.length) sumHtml += " - <span style='color:#047857'>" + matched.length + " matched</span>";
   if(invalidList && invalidList.length) sumHtml += " - <span style='color:#b91c1c'>" + invalidList.length + " invalid</span>";
   sum.innerHTML = sumHtml;
-  let html = '<table><thead><tr><th>#</th><th>Image</th><th>Size</th><th>Matched Site</th><th>Status</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>#</th><th>Image</th><th>Size</th><th>Matched</th><th>Status</th></tr></thead><tbody>';
   bulkParsedImages.slice(0, 50).forEach((p, i) => {
     html += '<tr><td>' + (i+1) + '</td><td>' + esc(p.name) + '</td><td>' + formatBytes(p.size) + '</td><td>' + esc(p.siteName || "—") + '</td><td>' + (p.matched ? '✓' : '✗') + '</td></tr>';
   });
@@ -1757,7 +1488,7 @@ function renderBulkPptPreview(invalidList){
   if(matched.length) sumHtml += " - <span style='color:#047857'>" + matched.length + " matched</span>";
   if(invalidList && invalidList.length) sumHtml += " - <span style='color:#b91c1c'>" + invalidList.length + " invalid</span>";
   sum.innerHTML = sumHtml;
-  let html = '<table><thead><tr><th>#</th><th>File</th><th>Size</th><th>Matched Area</th><th>Status</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>#</th><th>File</th><th>Size</th><th>Matched</th><th>Status</th></tr></thead><tbody>';
   bulkPptParsed.forEach((p, i) => {
     html += '<tr><td>' + (i+1) + '</td><td>' + esc(p.name) + '</td><td>' + formatBytes(p.size) + '</td><td>' + esc(p.area || "—") + '</td><td>' + (p.matched ? '✓' : '✗') + '</td></tr>';
   });
@@ -1785,20 +1516,15 @@ async function confirmBulkUpload(){
     const matched = bulkParsedImages.filter(p => p.matched && p.siteId && p.dataUrl);
     if(matched.length === 0){ alert("Koi matched image nahi"); return; }
     const estMin = Math.ceil(matched.length * 2 / 60);
-    if(!confirm("Upload " + matched.length + " images?\n\n⏱️ ~" + estMin + " min (2 sec gap per image)")) return;
+    if(!confirm("Upload " + matched.length + " images?\n\n⏱️ ~" + estMin + " min")) return;
     let success = 0, failed = 0;
     for(let i = 0; i < matched.length; i++){
       const p = matched[i];
       showProgress("Uploading images...", "Image " + (i+1) + " / " + matched.length + " • " + (p.siteName || p.name));
-      try {
-        const result = await saveImage(p.siteId, p.dataUrl);
-        if(result && result.success){ success++; const ms = sites.find(s => s.id === p.siteId); if(ms){ ms.hasImage = true; } }
-        else failed++;
-      } catch(e){ failed++; }
+      try { const result = await saveImage(p.siteId, p.dataUrl); if(result && result.success){ success++; const ms = sites.find(s => s.id === p.siteId); if(ms){ ms.hasImage = true; } } else failed++; } catch(e){ failed++; }
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
-    await persistNow(); hideProgress();
-    render(); closeBulkModal();
+    await persistNow(); hideProgress(); render(); closeBulkModal();
     alert("✅ Images: " + success + " / " + matched.length + (failed > 0 ? "\n❌ Failed: " + failed : ""));
     return;
   }
@@ -1815,18 +1541,14 @@ async function confirmBulkUpload(){
       const result = await savePpt(p.area, obj);
       if(result && result.success) success++;
     }
-    await refreshPptCache(); hideProgress();
-    render(); closeBulkModal();
+    await refreshPptCache(); hideProgress(); render(); closeBulkModal();
     alert("✅ PPTs: " + success + " / " + matched.length);
     return;
   }
 }
 
 /* ============ AREA MGMT ============ */
-function openAreaManager(){
-  if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  selectedAreas.clear(); renderAreaList(); document.getElementById("areaModal").classList.add("show");
-}
+function openAreaManager(){ if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; } selectedAreas.clear(); renderAreaList(); document.getElementById("areaModal").classList.add("show"); }
 function closeAreaModal(){ selectedAreas.clear(); document.getElementById("areaModal").classList.remove("show"); }
 function renderAreaList(){
   const list = document.getElementById("areaList");
@@ -1835,12 +1557,7 @@ function renderAreaList(){
   areas.forEach((a, i) => {
     const count = sites.filter(s => s.area === a).length;
     const isSel = selectedAreas.has(a);
-    html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '">';
-    html += '<input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\')">';
-    html += '<span class="name">' + esc(a) + ' (' + count + ')</span>';
-    html += '<button onclick="renameArea(' + i + ')" style="padding:6px 12px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Rename</button>';
-    html += '<button onclick="deleteArea(' + i + ')" style="padding:6px 12px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Delete</button>';
-    html += '</div>';
+    html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '"><input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\')"><span class="name">' + esc(a) + ' (' + count + ')</span><button onclick="renameArea(' + i + ')" style="padding:6px 12px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Rename</button><button onclick="deleteArea(' + i + ')" style="padding:6px 12px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Delete</button></div>';
   });
   list.innerHTML = html; updateAreaSelCount();
 }
@@ -1899,10 +1616,9 @@ function toggleAreaCollapse(areaName){ if(collapsedAreas.has(areaName)) collapse
 function setAreaFilter(areaName, value){ areaFilters[areaName] = value; render(); }
 
 /* ============ DATE UTILS ============ */
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const YEARS = [];
 const CUR_YEAR = new Date().getFullYear();
-for(let y = CUR_YEAR - 2; y <= 2050; y++) YEARS.push(y); // ✅ 2050 tak
+for(let y = CUR_YEAR - 2; y <= 2050; y++) YEARS.push(y);
 function initDateDropdowns(){
   [["ffrom_d","ffrom_m","ffrom_y"],["fto_d","fto_m","fto_y"]].forEach(ids => {
     const d = document.getElementById(ids[0]), m = document.getElementById(ids[1]), y = document.getElementById(ids[2]);
@@ -1980,7 +1696,7 @@ async function autoReleaseExpiredSites(){
   return changed;
 }
 
-/* ============ RENDER ============ */
+/* ============ ✅ RENDER (FIXED: date filter shows all matching statuses) ============ */
 async function render(){
   await autoReleaseExpiredSites();
   syncCardHighlight();
@@ -1988,7 +1704,10 @@ async function render(){
   dateFilterTo = ddmmyyyyToISOForFilter(document.getElementById("dateFilterTo").value.trim());
   const q = (document.getElementById("search").value || "").toLowerCase().trim();
   const f = document.getElementById("filter").value;
+  
+  // ✅ Cards counts reflect date filter
   updateCardsWithFilteredCounts();
+  
   if(collapsedAreas === null) collapsedAreas = new Set(areas);
   const isFiltering = (f !== "ALL") || (q && q.length > 0) || dateFilterFrom || dateFilterTo;
   if(isFiltering) collapsedAreas.clear();
@@ -2004,10 +1723,14 @@ async function render(){
     const areaSites = sites.filter(s => {
       const sArea = s.area || "Unassigned";
       if(sArea !== areaName) return false;
+      // ✅ Status filter (from main dropdown) applies
       if(f !== "ALL" && s.status !== f) return false;
+      // ✅ Area-specific filter
       if(areaFilter !== "ALL" && s.status !== areaFilter) return false;
+      // ✅ Date filter
       if(!siteMatchesDateFilter(s)) return false;
-      const hay = (s.site + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
+      // ✅ Search
+      const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
       if(q && !hay.includes(q)) return false;
       return true;
     });
@@ -2036,8 +1759,7 @@ async function render(){
       headerHTML += '<button onclick="event.stopPropagation(); quickAddSiteInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">+ Add</button>';
       headerHTML += '</div>';
     }
-    headerHTML += '<span>' + (isCollapsed ? '▶' : '▼') + '</span>';
-    headerHTML += '</div>';
+    headerHTML += '<span>' + (isCollapsed ? '▶' : '▼') + '</span></div>';
     header.innerHTML = headerHTML;
     block.appendChild(header);
     const content = document.createElement("div");
@@ -2072,7 +1794,7 @@ async function render(){
         const actionBtns = (currentUser.role === "Admin" || currentUser.role === "Viewer") ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' + mapBtn + histBtn : mapBtn + histBtn;
         cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
         cardsHTML += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' onchange="toggleSelect(\'' + x.id + '\')"><span class="site-card-num">#' + (idx + 1) + '</span>' + imgHTML + '</div>';
-        cardsHTML += '<div class="site-card-body"><div class="site-card-name">' + esc(x.site) + (x.location ? ' <span class="site-card-loc-inline">' + esc(x.location) + '</span>' : '') + '</div>';
+        cardsHTML += '<div class="site-card-body"><div class="site-card-name">' + esc(x.site) + (x.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;margin-left:6px">' + esc(x.siteCode) + '</span>' : '') + (x.location ? ' <span class="site-card-loc-inline">' + esc(x.location) + '</span>' : '') + '</div>';
         cardsHTML += '<div class="site-card-meta">';
         if(x.customer) cardsHTML += '<span class="site-card-comp">' + esc(x.customer) + '</span>';
         if(x.rate) cardsHTML += '<span class="site-card-rate">' + formatINR(x.rate) + '/month</span>';
@@ -2178,6 +1900,7 @@ document.addEventListener("change", function(e){
 function openAdd(){
   editIndex = -1;
   document.getElementById("modalTitle").textContent = "Add New Site";
+  document.getElementById("fsitecode").value = "";
   document.getElementById("fsite").value = "";
   document.getElementById("flocation").value = "";
   document.getElementById("flocation").dataset.lat = ""; document.getElementById("flocation").dataset.lng = "";
@@ -2202,6 +1925,7 @@ async function editSite(i){
   document.getElementById("modalTitle").textContent = "Edit Site";
   if(x.area && !areas.includes(x.area)){ areas.push(x.area); populateAreaDropdowns(); }
   document.getElementById("farea").value = x.area || areas[0] || "";
+  document.getElementById("fsitecode").value = x.siteCode || "";
   document.getElementById("fsite").value = x.site || "";
   document.getElementById("flocation").value = x.location || "";
   document.getElementById("flocation").dataset.lat = x.lat || ""; document.getElementById("flocation").dataset.lng = x.lng || "";
@@ -2232,9 +1956,13 @@ async function saveSite(){
   const hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
   const oldStatus = editIndex < 0 ? null : sites[editIndex].status;
   const loc = document.getElementById("flocation");
+  const siteCodeInput = document.getElementById("fsitecode").value.trim().toUpperCase();
+  const siteNameInput = document.getElementById("fsite").value.trim();
+  const finalSiteName = siteNameInput || siteCodeInput || "Unnamed Site";
+  const finalSiteCode = siteCodeInput || (finalSiteName.match(/^([A-Z]{2,5}\d{1,4})/i) || [])[1]?.toUpperCase() || "";
   const newSite = {
     id, area: areaVal,
-    site: document.getElementById("fsite").value.trim() || "Unnamed Site",
+    site: finalSiteName, siteCode: finalSiteCode,
     location: loc.value.trim(),
     lat: loc.dataset.lat || "", lng: loc.dataset.lng || "",
     customer: document.getElementById("fcustomer").value.trim(),
@@ -2259,13 +1987,7 @@ function handleImageUpload(e){
   if(file.size > 8*1024*1024){ alert("Max 8 MB"); return; }
   showProgress("Processing...", "");
   const reader = new FileReader();
-  reader.onload = (ev) => {
-    compressImageSmart(ev.target.result, (compressed) => {
-      hideProgress();
-      currentImageData = compressed;
-      showImagePreview(compressed);
-    });
-  };
+  reader.onload = (ev) => { compressImageSmart(ev.target.result, (compressed) => { hideProgress(); currentImageData = compressed; showImagePreview(compressed); }); };
   reader.readAsDataURL(file);
   e.target.value = "";
 }
@@ -2275,38 +1997,18 @@ function compressImageSmart(dataUrl, cb){
     const MAX_W = 1024, MAX_H = 1024, MAX_B = 800 * 1024;
     let w = img.width, h = img.height;
     if(w > MAX_W || h > MAX_H){ const r = Math.min(MAX_W / w, MAX_H / h); w = Math.round(w * r); h = Math.round(h * r); }
-    const canvas = document.createElement("canvas");
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext("2d", { alpha: false });
-    ctx.imageSmoothingQuality = "high";
-    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h);
-    ctx.drawImage(img, 0, 0, w, h);
-    let quality = 0.75;
-    let result = canvas.toDataURL("image/jpeg", quality);
-    let attempts = 0;
+    const canvas = document.createElement("canvas"); canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d", { alpha: false }); ctx.imageSmoothingQuality = "high";
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
+    let quality = 0.75; let result = canvas.toDataURL("image/jpeg", quality); let attempts = 0;
     while(result.length > MAX_B && quality > 0.5 && attempts < 10){ quality -= 0.05; result = canvas.toDataURL("image/jpeg", quality); attempts++; }
     cb(result);
   };
   img.onerror = () => { alert("Image load fail"); cb(dataUrl); };
   img.src = dataUrl;
 }
-function showImagePreview(data){
-  document.getElementById("imagePreview").src = data;
-  document.getElementById("imagePreviewWrap").style.display = "block";
-  document.getElementById("imageUploadBox").style.display = "none";
-}
-function removeImage(){
-  currentImageData = "";
-  document.getElementById("imagePreview").src = "";
-  document.getElementById("imagePreviewWrap").style.display = "none";
-  document.getElementById("imageUploadBox").style.display = "block";
-}
-async function openImageViewer(siteId){
-  let data = await getImage(siteId);
-  if(!data){ alert("Image not found"); return; }
-  document.getElementById("viewerImage").src = data;
-  document.getElementById("imageViewer").classList.add("show");
-}
+function showImagePreview(data){ document.getElementById("imagePreview").src = data; document.getElementById("imagePreviewWrap").style.display = "block"; document.getElementById("imageUploadBox").style.display = "none"; }
+function removeImage(){ currentImageData = ""; document.getElementById("imagePreview").src = ""; document.getElementById("imagePreviewWrap").style.display = "none"; document.getElementById("imageUploadBox").style.display = "block"; }
 function closeImageViewer(){ document.getElementById("imageViewer").classList.remove("show"); }
 function captureGPS(){
   const btn = document.getElementById("gpsBtn"), status = document.getElementById("gpsStatus");
@@ -2316,8 +2018,7 @@ function captureGPS(){
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       const lat = pos.coords.latitude.toFixed(7), lng = pos.coords.longitude.toFixed(7);
-      document.getElementById("flocation").dataset.lat = lat;
-      document.getElementById("flocation").dataset.lng = lng;
+      document.getElementById("flocation").dataset.lat = lat; document.getElementById("flocation").dataset.lng = lng;
       const cur = document.getElementById("flocation").value.trim();
       document.getElementById("flocation").value = cur ? cur + " | " + lat + ", " + lng : lat + ", " + lng;
       status.className = "gps-status ok"; status.textContent = "Accurate: " + Math.round(pos.coords.accuracy) + "m";
@@ -2335,92 +2036,61 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-/* ============ IMAGE PROCESSING FOR PPT (BLUR BG) ============ */
+/* ============ ✅ NEW: IMAGE PROCESSING FOR PPT (CROP TO FIT, NO BLUR) ============ */
+/* Fit image to exact box ratio by cropping (like CSS object-fit: cover)
+   - No blur, no black bars
+   - Just center-crop to fill the entire box
+*/
 function processImageForPPT(dataUrl, boxRatio){
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
       const imgRatio = img.width / img.height;
       let sx, sy, sw, sh;
+      
+      // ✅ COVER MODE: Crop to fill entire box
       if(imgRatio > boxRatio){
+        // Image is wider → crop left/right
         sh = img.height;
         sw = img.height * boxRatio;
         sx = (img.width - sw) / 2;
         sy = 0;
       } else {
+        // Image is taller → crop top/bottom
         sw = img.width;
         sh = img.width / boxRatio;
         sx = 0;
         sy = (img.height - sh) / 2;
       }
-      const bgW = 1600;
-      const bgH = Math.round(bgW / boxRatio);
-      const blurW = 60;
-      const blurH = Math.round(blurW / boxRatio);
-      const blurCanvas = document.createElement("canvas");
-      blurCanvas.width = blurW;
-      blurCanvas.height = blurH;
-      const blurCtx = blurCanvas.getContext("2d");
-      blurCtx.imageSmoothingQuality = "low";
-      blurCtx.drawImage(img, sx, sy, sw, sh, 0, 0, blurW, blurH);
-      blurCtx.fillStyle = "rgba(15, 23, 42, 0.55)";
-      blurCtx.fillRect(0, 0, blurW, blurH);
-      const finalBgCanvas = document.createElement("canvas");
-      finalBgCanvas.width = bgW;
-      finalBgCanvas.height = bgH;
-      const finalBgCtx = finalBgCanvas.getContext("2d");
-      finalBgCtx.imageSmoothingQuality = "high";
-      finalBgCtx.drawImage(blurCanvas, 0, 0, bgW, bgH);
-      const mainW = 1600;
-      const mainH = Math.round(mainW / boxRatio);
-      const mainCanvas = document.createElement("canvas");
-      mainCanvas.width = mainW;
-      mainCanvas.height = mainH;
-      const mainCtx = mainCanvas.getContext("2d");
-      mainCtx.imageSmoothingQuality = "high";
-      let mDrawW, mDrawH, mDrawX, mDrawY;
-      if(imgRatio > boxRatio){
-        mDrawW = mainW;
-        mDrawH = mainW / imgRatio;
-        mDrawX = 0;
-        mDrawY = (mainH - mDrawH) / 2;
-      } else {
-        mDrawH = mainH;
-        mDrawW = mainH * imgRatio;
-        mDrawX = (mainW - mDrawW) / 2;
-        mDrawY = 0;
+      
+      // Output at high resolution (1600px wide)
+      const outW = 1600;
+      const outH = Math.round(outW / boxRatio);
+      const canvas = document.createElement("canvas");
+      canvas.width = outW;
+      canvas.height = outH;
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, outW, outH);
+      
+      // Compress
+      let quality = 0.88;
+      let result = canvas.toDataURL("image/jpeg", quality);
+      let attempts = 0;
+      while(result.length > 1200 * 1024 && quality > 0.55 && attempts < 8){
+        quality -= 0.05;
+        result = canvas.toDataURL("image/jpeg", quality);
+        attempts++;
       }
-      mainCtx.drawImage(img, mDrawX, mDrawY, mDrawW, mDrawH);
-      const compress = (canvas, maxBytes) => {
-        let quality = 0.85;
-        let result = canvas.toDataURL("image/jpeg", quality);
-        let attempts = 0;
-        while(result.length > maxBytes && quality > 0.5 && attempts < 8){
-          quality -= 0.05;
-          result = canvas.toDataURL("image/jpeg", quality);
-          attempts++;
-        }
-        return result;
-      };
-      resolve({
-        bg: compress(finalBgCanvas, 400 * 1024),
-        main: compress(mainCanvas, 900 * 1024)
-      });
+      
+      resolve(result);
     };
     img.onerror = () => resolve(null);
     img.src = dataUrl;
   });
 }
-function getImageAspectRatio(dataUrl){
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => resolve(img.width / img.height);
-    img.onerror = () => resolve(1);
-    img.src = dataUrl;
-  });
-}
 
-/* ============ PPT GENERATOR ============ */
+/* ============ ✅ PPT GENERATOR (CLEAN CROP, NO BLUR) ============ */
 async function generateSelectedSitesPPT(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   const list = sites.filter(s => selectedSites.has(s.id));
@@ -2445,6 +2115,7 @@ async function generateSelectedSitesPPT(){
       if(logoResult && logoResult.success && logoResult.data){ currentLogoUrl = logoResult.data; }
     } catch(e){}
 
+    // ===== COVER SLIDE =====
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
@@ -2469,6 +2140,7 @@ async function generateSelectedSitesPPT(){
     slide.addText("Generated", { x: 8.7, y: 5.4, w: 4, h: 0.3, fontSize: 9, bold: true, color: "93C5FD" });
     slide.addText(new Date().toLocaleString('en-GB'), { x: 8.7, y: 5.7, w: 4, h: 0.4, fontSize: 12, bold: true, color: "FFFFFF" });
 
+    // ===== SITE SLIDES =====
     for(let i = 0; i < list.length; i++){
       const x = list[i];
       showProgress("Generating PPT...", "Slide " + (i+1) + " / " + list.length);
@@ -2479,7 +2151,7 @@ async function generateSelectedSitesPPT(){
       let imgData = null;
       if(x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
       const mapLink = getGoogleMapsUrl(x);
-      const siteCode = (x.site || "").split("_")[0].trim() || "";
+      const siteCode = x.siteCode || ((x.site || "").split("_")[0].trim()) || "";
       
       slide = pptx.addSlide();
       slide.background = { color: "FFFFFF" };
@@ -2496,36 +2168,23 @@ async function generateSelectedSitesPPT(){
       slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
+      // ===== ✅ IMAGE AREA - CLEAN CROP (NO BLUR) =====
       const imgBoxX = 0, imgBoxY = 0.65, imgBoxW = 13.33, imgBoxH = 5.4;
       const boxRatio = imgBoxW / imgBoxH;
       
       let imageAdded = false;
       if(imgData && typeof imgData === "string"){
         try {
-          let processed = blurImageCache[x.id];
-          if(!processed){
-            processed = await processImageForPPT(imgData, boxRatio);
-            if(processed) blurImageCache[x.id] = processed;
-          }
-          if(processed && processed.bg && processed.main){
-            slide.addImage({ data: processed.bg, x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH });
-            const imgRatio = await getImageAspectRatio(imgData);
-            let mainDrawW, mainDrawH, mainDrawX, mainDrawY;
-            if(imgRatio > boxRatio){
-              mainDrawW = imgBoxW;
-              mainDrawH = imgBoxW / imgRatio;
-              mainDrawX = imgBoxX;
-              mainDrawY = imgBoxY + (imgBoxH - mainDrawH) / 2;
-            } else {
-              mainDrawH = imgBoxH;
-              mainDrawW = imgBoxH * imgRatio;
-              mainDrawX = imgBoxX + (imgBoxW - mainDrawW) / 2;
-              mainDrawY = imgBoxY;
-            }
-            slide.addImage({ data: imgData, x: mainDrawX, y: mainDrawY, w: mainDrawW, h: mainDrawH });
+          // Process image: crop to fit box exactly
+          const processed = await processImageForPPT(imgData, boxRatio);
+          if(processed){
+            // Draw cropped image filling entire box - NO blur, NO bars
+            slide.addImage({ data: processed, x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH });
             imageAdded = true;
           }
-        } catch(e){ console.warn("Image processing failed:", e); }
+        } catch(e){ console.warn("Image crop failed:", e); }
+        
+        // Fallback: contain (with dark bg)
         if(!imageAdded){
           try {
             slide.addShape(pptx.ShapeType.rect, { x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH, fill: { color: "0F172A" } });
@@ -2534,6 +2193,7 @@ async function generateSelectedSitesPPT(){
           } catch(e2){ console.warn("Fallback failed:", e2); }
         }
       }
+      
       if(!imageAdded){
         slide.addShape(pptx.ShapeType.rect, { x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH, fill: { color: "0F172A" } });
         slide.addShape(pptx.ShapeType.roundRect, { x: 4.5, y: imgBoxY + 1.8, w: 4.33, h: 1.8, fill: { color: "1E293B" }, line: { color: "334155", width: 2, dashType: "dash" }, rectRadius: 0.15 });
@@ -2541,6 +2201,7 @@ async function generateSelectedSitesPPT(){
         slide.addText("No Image Available", { x: 4.5, y: imgBoxY + 2.7, w: 4.33, h: 0.4, fontSize: 14, color: "94A3B8", align: "center", valign: "middle", italic: true });
       }
 
+      // ===== INFO BAR =====
       const infoY = 6.15, infoH = 1.25;
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
       
@@ -2570,6 +2231,7 @@ async function generateSelectedSitesPPT(){
       }
     }
 
+    // ===== THANK YOU SLIDE =====
     showProgress("Generating PPT...", "Final slide");
     slide = pptx.addSlide();
     slide.background = { color: "1E3A8A" };
@@ -2609,26 +2271,17 @@ function showHistory(index){
   const history = bookingHistory.filter(h => h.site === site.site);
   document.getElementById("historyTitle").textContent = "Booking History - " + site.site;
   const content = document.getElementById("historyContent");
-  if(history.length === 0){
-    content.innerHTML = '<div class="empty-history">No booking history found for this site.</div>';
-  } else {
+  if(history.length === 0){ content.innerHTML = '<div class="empty-history">No booking history found.</div>'; }
+  else {
     let html = "";
-    history.slice().reverse().forEach((h, i) => {
-      html += '<div class="history-item">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px">';
-      html += '<b style="color:#6d28d9;font-size:14px">' + esc(h.site) + '</b>';
-      html += '<span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span>';
-      html += '</div>';
-      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
+    history.slice().reverse().forEach(h => {
+      html += '<div class="history-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px"><b style="color:#6d28d9;font-size:14px">' + esc(h.site) + '</b><span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
       html += '<div><span style="color:#64748b">Company:</span> <b>' + esc(h.customer || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">Rate:</span> <b>' + (h.rate ? "₹" + Number(h.rate).toLocaleString('en-IN') : "—") + '</b></div>';
       html += '<div><span style="color:#64748b">From:</span> <b>' + esc(h.fromDate || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">To:</span> <b>' + esc(h.toDate || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">Days:</span> <b>' + (h.days || 0) + '</b></div>';
-      html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div>';
-      html += '</div>';
-      if(h.location) html += '<div style="margin-top:6px;font-size:11px;color:#0891b2">📍 ' + esc(h.location) + '</div>';
-      html += '</div>';
+      html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div></div></div>';
     });
     content.innerHTML = html;
   }
@@ -2636,12 +2289,10 @@ function showHistory(index){
 }
 function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
 function downloadHistoryCSV(){
-  if(bookingHistory.length === 0){ alert("No history to download"); return; }
+  if(bookingHistory.length === 0){ alert("No history"); return; }
   const headers = ["Site", "Company", "From", "To", "Days", "Ended On", "Status", "Location", "Rate"];
   let csv = headers.join(",") + "\n";
-  bookingHistory.forEach(h => {
-    csv += [h.site, h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status, h.location, h.rate].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n";
-  });
+  bookingHistory.forEach(h => { csv += [h.site, h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status, h.location, h.rate].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n"; });
   const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "booking_history_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
 }
@@ -2650,36 +2301,23 @@ function openHistorySearch(){
   if(query === null) return;
   const q = query.trim().toLowerCase();
   if(!q){ showAllHistory(); return; }
-  const matched = sites.find(s => s.site.toLowerCase().includes(q));
-  if(matched){
-    const idx = sites.indexOf(matched);
-    showHistory(idx);
-  } else {
-    alert("Koi site nahi mili: " + query);
-  }
+  const matched = sites.find(s => s.site.toLowerCase().includes(q) || (s.siteCode||"").toLowerCase().includes(q));
+  if(matched){ showHistory(sites.indexOf(matched)); } else { alert("Koi site nahi mili: " + query); }
 }
 function showAllHistory(){
   document.getElementById("historyTitle").textContent = "All Booking History";
   const content = document.getElementById("historyContent");
-  if(bookingHistory.length === 0){
-    content.innerHTML = '<div class="empty-history">No booking history found.</div>';
-  } else {
+  if(bookingHistory.length === 0){ content.innerHTML = '<div class="empty-history">No history found.</div>'; }
+  else {
     let html = "";
     bookingHistory.slice().reverse().forEach(h => {
-      html += '<div class="history-item">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px">';
-      html += '<b style="color:#6d28d9;font-size:14px">' + esc(h.site) + '</b>';
-      html += '<span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span>';
-      html += '</div>';
-      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
+      html += '<div class="history-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px"><b style="color:#6d28d9;font-size:14px">' + esc(h.site) + '</b><span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
       html += '<div><span style="color:#64748b">Company:</span> <b>' + esc(h.customer || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">Rate:</span> <b>' + (h.rate ? "₹" + Number(h.rate).toLocaleString('en-IN') : "—") + '</b></div>';
       html += '<div><span style="color:#64748b">From:</span> <b>' + esc(h.fromDate || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">To:</span> <b>' + esc(h.toDate || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">Days:</span> <b>' + (h.days || 0) + '</b></div>';
-      html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div>';
-      html += '</div>';
-      html += '</div>';
+      html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div></div></div>';
     });
     content.innerHTML = html;
   }
@@ -2688,30 +2326,22 @@ function showAllHistory(){
 
 /* ============ CSV EXPORT ============ */
 function exportCSV(){
-  if(sites.length === 0){ alert("No sites to export"); return; }
-  const headers = ["Area", "Site", "Location", "Company", "Rate", "Status", "From", "To", "Lat", "Lng", "HasImage"];
+  if(sites.length === 0){ alert("No sites"); return; }
+  const headers = ["Area", "Site", "Site Code", "Location", "Company", "Rate", "Status", "From", "To", "Lat", "Lng", "HasImage"];
   let csv = headers.join(",") + "\n";
-  sites.forEach(s => {
-    csv += [s.area, s.site, s.location, s.customer, s.rate, s.status, s.fromDate, s.toDate, s.lat, s.lng, s.hasImage ? "Yes" : "No"]
-      .map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n";
-  });
+  sites.forEach(s => { csv += [s.area, s.site, s.siteCode||"", s.location, s.customer, s.rate, s.status, s.fromDate, s.toDate, s.lat, s.lng, s.hasImage ? "Yes" : "No"].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n"; });
   const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "sites_export_" + new Date().toISOString().slice(0,10) + ".csv";
-  a.click();
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sites_export_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
 }
 
 /* ============ BULK DELETE ============ */
 async function bulkDeleteSelected(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
   if(selectedSites.size === 0){ alert("Koi site select nahi"); return; }
-  if(!confirm(selectedSites.size + " sites delete karein?\n\nYeh action undo nahi ho sakta!")) return;
+  if(!confirm(selectedSites.size + " sites delete karein?\n\nUndo nahi ho sakta!")) return;
   const ids = new Set([...selectedSites].map(String));
   const toDelete = sites.filter(s => ids.has(String(s.id)));
-  for(const s of toDelete){
-    if(s.hasImage) await deleteImage(s.id);
-  }
+  for(const s of toDelete){ if(s.hasImage) await deleteImage(s.id); }
   sites = sites.filter(s => !ids.has(String(s.id)));
   selectedSites.clear();
   await persistNow();
@@ -2724,41 +2354,21 @@ async function downloadBackup(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
   showProgress("Creating backup...", "Collecting data");
   try {
-    const backup = {
-      version: "1.0",
-      exportedAt: new Date().toISOString(),
-      exportedBy: currentUser.username,
-      sites: sites,
-      areas: areas,
-      bookingHistory: bookingHistory,
-      logo: LOGO_URL,
-      telegram: telegramConfig
-    };
+    const backup = { version: "1.0", exportedAt: new Date().toISOString(), exportedBy: currentUser.username, sites: sites, areas: areas, bookingHistory: bookingHistory, logo: LOGO_URL, telegram: telegramConfig };
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "sms_backup_" + new Date().toISOString().slice(0,19).replace(/[:T]/g, "-") + ".json";
-    a.click();
-    hideProgress();
-    alert("✅ Backup downloaded successfully!");
-  } catch(e){
-    hideProgress();
-    alert("Backup failed: " + e.message);
-  }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sms_backup_" + new Date().toISOString().slice(0,19).replace(/[:T]/g, "-") + ".json"; a.click();
+    hideProgress(); alert("✅ Backup downloaded!");
+  } catch(e){ hideProgress(); alert("Backup failed: " + e.message); }
 }
-function triggerImport(){
-  if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  document.getElementById("importFile").click();
-}
+function triggerImport(){ if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; } document.getElementById("importFile").click(); }
 function handleImportFile(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  if(!file.name.endsWith(".json")){ alert("Only .json backup files"); e.target.value = ""; return; }
+  const file = e.target.files[0]; if(!file) return;
+  if(!file.name.endsWith(".json")){ alert("Only .json files"); e.target.value = ""; return; }
   const reader = new FileReader();
   reader.onload = async (ev) => {
     try {
       const backup = JSON.parse(ev.target.result);
-      if(!backup.sites || !Array.isArray(backup.sites)){ alert("Invalid backup file"); return; }
+      if(!backup.sites || !Array.isArray(backup.sites)){ alert("Invalid backup"); return; }
       if(!confirm("Import " + backup.sites.length + " sites?\n\n⚠️ Current data replace ho jayega!")) return;
       showProgress("Importing...", "");
       sites = backup.sites || [];
@@ -2766,22 +2376,11 @@ function handleImportFile(e){
       bookingHistory = backup.bookingHistory || [];
       sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
       if(backup.logo){ LOGO_URL = backup.logo; }
-      if(backup.telegram){
-        telegramConfig.botToken = backup.telegram.botToken || telegramConfig.botToken;
-        telegramConfig.chatId = backup.telegram.chatId || telegramConfig.chatId;
-        telegramConfig.enabled = !!backup.telegram.enabled;
-        telegramConfig.onlyNotAvailMaint = backup.telegram.onlyNotAvailMaint !== false;
-        saveTelegramConfig();
-      }
+      if(backup.telegram){ telegramConfig = { ...telegramConfig, ...backup.telegram }; saveTelegramConfig(); }
       await persistNow();
-      populateAreaDropdowns();
-      render();
-      hideProgress();
+      populateAreaDropdowns(); render(); hideProgress();
       alert("✅ Import successful!\n\nSites: " + sites.length + "\nAreas: " + areas.length);
-    } catch(err){
-      hideProgress();
-      alert("Import failed: " + err.message);
-    }
+    } catch(err){ hideProgress(); alert("Import failed: " + err.message); }
   };
   reader.readAsText(file);
   e.target.value = "";
@@ -2795,9 +2394,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const el = document.getElementById(id);
     if(el) el.addEventListener("change", updateCalcPreview);
   });
-  document.getElementById("loginPass").addEventListener("keypress", e => {
-    if(e.key === "Enter") doLogin();
-  });
+  document.getElementById("loginPass").addEventListener("keypress", e => { if(e.key === "Enter") doLogin(); });
   document.getElementById("dateFilterFrom").dataset.lastLength = "0";
   document.getElementById("dateFilterTo").dataset.lastLength = "0";
   loadTelegramConfig();
