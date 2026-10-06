@@ -90,25 +90,26 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 .area-filter-count{font-size:11px;color:#64748b;margin-left:auto;font-weight:600}
 .empty-area{padding:18px;text-align:center;color:#94a3b8;font-style:italic;font-size:12px}
 .site-cards-grid{display:grid;grid-template-columns:1fr;gap:4px;padding:6px}
-.site-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px;display:flex;flex-direction:row;align-items:flex-start;gap:8px;min-width:0}
+.site-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px;display:flex;flex-direction:row;align-items:flex-start;gap:12px;min-width:0}
 .site-card.not-card{background:#fef2f2;border-color:#fecaca}
 .site-card.maint-card{background:#fffbeb;border-color:#fcd34d}
 .site-card.selected-card{background:#fef3c7;border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.2)}
-.site-card-top{display:flex;align-items:center;gap:5px;flex-shrink:0;padding-top:2px}
-.site-card-cb{width:16px;height:16px;cursor:pointer;accent-color:#3b82f6;flex-shrink:0}
-.site-card-num{font-size:9px;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:1px 5px;border-radius:3px;min-width:24px;text-align:center}
-.site-card-img{width:40px;height:40px;border-radius:6px;object-fit:cover;border:1px solid #e2e8f0;cursor:pointer;flex-shrink:0}
-.site-card-img.no-img{display:flex;align-items:center;justify-content:center;font-size:14px;color:#cbd5e1;background:#f8fafc;border:1px dashed #e2e8f0}
-.site-card-body{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
-.site-card-name{font-size:13px;font-weight:700;color:#0f172a;line-height:1.35;word-break:break-word;overflow-wrap:anywhere}
-.site-card-loc-inline{font-size:10px;color:#0891b2;font-weight:500;background:#f0f9ff;padding:2px 6px;border-radius:3px;border:1px solid #bae6fd;margin-left:6px;display:inline-block;vertical-align:middle;line-height:1.3;word-break:break-word;max-width:100%}
-.site-card-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:10px;color:#64748b}
-.site-card-meta .site-card-comp{font-size:10px;color:#334155;font-weight:500;word-break:break-word}
-.site-card-meta .site-card-dates{font-size:10px;color:#64748b;display:flex;align-items:center;gap:3px;flex-wrap:wrap}
-.site-card-status{flex-shrink:0;display:flex;align-items:center;padding-top:2px}
-.site-card-status .status{font-size:9px;padding:3px 8px;white-space:nowrap}
+.site-card-top{display:flex;align-items:center;gap:6px;flex-shrink:0;padding-top:2px}
+.site-card-cb{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6;flex-shrink:0}
+.site-card-num{font-size:10px;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:2px 6px;border-radius:3px;min-width:28px;text-align:center}
+.site-card-img{width:80px;height:80px;border-radius:8px;object-fit:cover;border:1px solid #e2e8f0;cursor:pointer;flex-shrink:0;transition:transform 0.15s ease}
+.site-card-img:hover{transform:scale(1.05)}
+.site-card-img.no-img{display:flex;align-items:center;justify-content:center;font-size:18px;color:#cbd5e1;background:#f8fafc;border:1px dashed #e2e8f0}
+.site-card-body{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.site-card-name{font-size:14px;font-weight:700;color:#0f172a;line-height:1.4;word-break:break-word;overflow-wrap:anywhere}
+.site-card-loc-inline{font-size:11px;color:#0891b2;font-weight:500;background:#f0f9ff;padding:3px 8px;border-radius:4px;border:1px solid #bae6fd;margin-left:6px;display:inline-block;vertical-align:middle;line-height:1.3;word-break:break-word;max-width:100%}
+.site-card-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:11px;color:#64748b}
+.site-card-meta .site-card-comp{font-size:11px;color:#334155;font-weight:500;word-break:break-word}
+.site-card-meta .site-card-dates{font-size:11px;color:#64748b;display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.site-card-status{flex-shrink:0;display:flex;align-items:center;padding-top:4px}
+.site-card-status .status{font-size:10px;padding:4px 10px;white-space:nowrap}
 .site-card-actions{display:flex;gap:4px;flex-shrink:0;padding-top:2px;flex-direction:column}
-.site-card-actions button{padding:5px 10px;font-size:11px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;background:#f1f5f9;color:#334155;white-space:nowrap;min-height:30px}
+.site-card-actions button{padding:6px 12px;font-size:11px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent;background:#f1f5f9;color:#334155;white-space:nowrap;min-height:32px}
 .site-card-actions button.history-btn{background:#ede9fe;color:#6d28d9}
 .site-card-actions button.map-btn{background:#cffafe;color:#0e7490}
 .status{font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;font-size:9px;text-transform:uppercase;letter-spacing:0.3px}
@@ -138,8 +139,8 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 .image-upload-box .iu-title{font-size:13px;font-weight:600;color:#334155;margin-bottom:4px}
 .image-upload-box .iu-sub{font-size:11px;color:#94a3b8}
 .image-preview-wrap{position:relative;display:inline-block;margin-top:12px}
-.image-preview-wrap img{max-width:200px;max-height:200px;border-radius:10px;border:2px solid #e2e8f0;display:block}
-.image-preview-wrap .remove-img{position:absolute;top:-8px;right:-8px;background:#dc2626;color:#fff;width:30px;height:30px;border-radius:50%;border:2px solid #fff;cursor:pointer;font-size:14px;font-weight:700}
+.image-preview-wrap img{max-width:400px;max-height:400px;border-radius:10px;border:2px solid #e2e8f0;display:block}
+.image-preview-wrap .remove-img{position:absolute;top:-8px;right:-8px;background:#dc2626;color:#fff;width:32px;height:32px;border-radius:50%;border:2px solid #fff;cursor:pointer;font-size:16px;font-weight:700}
 .ppt-upload-box{background:#fdf2f8;border:2px dashed #f9a8d4;border-radius:10px;padding:16px;margin-top:10px;text-align:center;cursor:pointer}
 .ppt-upload-box .pu-icon{font-size:28px;margin-bottom:6px}
 .ppt-upload-box .pu-title{font-size:13px;font-weight:600;color:#9d174d;margin-bottom:4px}
@@ -159,7 +160,7 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 .empty-history{text-align:center;color:#94a3b8;padding:40px 20px;font-style:italic;font-size:13px}
 .image-viewer{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.95);z-index:3000;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
 .image-viewer.show{display:flex}
-.image-viewer img{max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain}
+.image-viewer img{max-width:100%;max-height:95vh;border-radius:12px;object-fit:contain}
 .image-viewer .close-viewer{position:absolute;top:16px;right:16px;background:#fff;color:#0f172a;width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:20px;font-weight:700}
 .drop-zone{border:2px dashed #cbd5e1;border-radius:12px;padding:32px 16px;text-align:center;background:#f8fafc;cursor:pointer;margin-bottom:16px}
 .drop-zone .dz-icon{font-size:40px;margin-bottom:10px}
@@ -212,13 +213,13 @@ header.scrolled{box-shadow:0 4px 14px rgba(0,0,0,0.22)}
   .area-header .area-name{font-size:13px}
   .area-header > div{flex-wrap:wrap;justify-content:flex-end}
   .area-count{font-size:9px !important;padding:2px 6px !important}
-  .site-card{padding:10px;flex-wrap:wrap;gap:8px;position:relative}
+  .site-card{padding:10px;flex-wrap:wrap;gap:10px;position:relative}
   .site-card-top{flex-direction:row;align-items:center;width:auto}
-  .site-card-img{width:44px;height:44px}
+  .site-card-img{width:88px;height:88px}
   .site-card-body{flex:1 1 100%;order:3;margin-top:2px}
   .site-card-status{position:absolute;top:10px;right:10px;padding-top:0}
   .site-card-actions{flex-direction:row;flex-wrap:wrap;width:100%;order:4;padding-top:0;gap:6px}
-  .site-card-actions button{flex:1;min-width:calc(33% - 4px);padding:7px 6px;font-size:11px;min-height:34px;justify-content:center}
+  .site-card-actions button{flex:1;min-width:calc(33% - 4px);padding:8px 6px;font-size:11px;min-height:36px;justify-content:center}
   .site-card-name{font-size:13px}
   .site-card-loc-inline{margin-left:0;margin-top:2px;display:inline-block}
   .box{padding:20px 16px;border-radius:14px;max-height:94vh}
@@ -1475,57 +1476,60 @@ async function generateSelectedSitesPPT(){
       slide = pptx.addSlide();
       slide.background = { color: "FFFFFF" };
 
+      // Top bar - area name
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.5, fill: { color: "1E3A8A" } });
       slide.addText((x.area || "Unassigned").toUpperCase(), { x: 0.5, y: 0.1, w: 8, h: 0.3, fontSize: 10, bold: true, color: "FFFFFF", charSpacing: 3 });
       slide.addText("SITE " + (i+1) + " / " + list.length, { x: 8, y: 0.1, w: 4.8, h: 0.3, fontSize: 10, bold: true, color: "BAE6FD", align: "right", charSpacing: 2 });
 
+      // Status badge top right
       slide.addShape(pptx.ShapeType.roundRect, { x: 10.5, y: 0.65, w: 2.4, h: 0.35, fill: { color: stColor }, line: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 10.5, y: 0.65, w: 2.4, h: 0.35, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
+      // Site number badge
       slide.addShape(pptx.ShapeType.roundRect, { x: 0.5, y: 0.65, w: 0.55, h: 0.55, fill: { color: "1E40AF" }, line: { color: "1E40AF" }, rectRadius: 0.1 });
       slide.addText(String(i+1), { x: 0.5, y: 0.65, w: 0.55, h: 0.55, fontSize: 18, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
+      // Site title
       slide.addText(x.site, { x: 1.2, y: 0.7, w: 9.2, h: 0.9, fontSize: 20, bold: true, color: "0F172A" });
 
+      // Image - LEFT SIDE (now 2x bigger: 10.4 x 9.6 inches - full height)
       if(imgData){
         try {
-          slide.addImage({ data: imgData, x: 0.5, y: 1.85, w: 5.2, h: 4.8, sizing: { type: "contain", w: 5.2, h: 4.8 } });
-          slide.addShape(pptx.ShapeType.rect, { x: 0.5, y: 1.85, w: 5.2, h: 4.8, fill: { type: "none" }, line: { color: "E2E8F0", width: 1 } });
+          slide.addImage({ data: imgData, x: 0.3, y: 1.7, w: 10.4, h: 5.3, sizing: { type: "contain", w: 10.4, h: 5.3 } });
+          slide.addShape(pptx.ShapeType.rect, { x: 0.3, y: 1.7, w: 10.4, h: 5.3, fill: { type: "none" }, line: { color: "E2E8F0", width: 1 } });
         } catch(e){ console.warn("Image add fail:", e); }
       } else {
-        slide.addShape(pptx.ShapeType.rect, { x: 0.5, y: 1.85, w: 5.2, h: 4.8, fill: { color: "F1F5F9" }, line: { color: "CBD5E1", width: 1, dashType: "dash" } });
-        slide.addText("No Image", { x: 0.5, y: 1.85, w: 5.2, h: 4.8, fontSize: 14, color: "94A3B8", align: "center", valign: "middle" });
+        slide.addShape(pptx.ShapeType.rect, { x: 0.3, y: 1.7, w: 10.4, h: 5.3, fill: { color: "F1F5F9" }, line: { color: "CBD5E1", width: 1, dashType: "dash" } });
+        slide.addText("No Image", { x: 0.3, y: 1.7, w: 10.4, h: 5.3, fontSize: 18, color: "94A3B8", align: "center", valign: "middle" });
       }
 
-      const detailX = 6.0;
-      const detailW = 6.9;
-      let detailY = 1.85;
-      const rowH = 0.6;
+      // Details - RIGHT SIDE (narrow column)
+      const detailX = 10.9;
+      const detailW = 2.1;
+      let detailY = 1.7;
+      const rowH = 0.72;
 
       function addDetailRow(label, value){
         if(!value) return;
-        slide.addShape(pptx.ShapeType.rect, { x: detailX, y: detailY, w: detailW, h: rowH, fill: { color: "F8FAFC" }, line: { color: "F1F5F9", width: 1 } });
-        slide.addText(label, { x: detailX + 0.15, y: detailY + 0.05, w: 1.3, h: rowH - 0.1, fontSize: 9, bold: true, color: "64748B", charSpacing: 1 });
-        slide.addText(value, { x: detailX + 1.5, y: detailY + 0.05, w: detailW - 1.6, h: rowH - 0.1, fontSize: 12, bold: true, color: "0F172A", valign: "middle" });
-        detailY += rowH + 0.08;
+        slide.addShape(pptx.ShapeType.rect, { x: detailX, y: detailY, w: detailW, h: rowH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 1 } });
+        slide.addText(label, { x: detailX + 0.08, y: detailY + 0.05, w: detailW - 0.16, h: 0.28, fontSize: 8, bold: true, color: "64748B", charSpacing: 1 });
+        slide.addText(value, { x: detailX + 0.08, y: detailY + 0.32, w: detailW - 0.16, h: rowH - 0.4, fontSize: 9, bold: true, color: "0F172A", valign: "top" });
+        detailY += rowH + 0.05;
       }
 
       addDetailRow("AREA", x.area || "Unassigned");
       addDetailRow("LOCATION", x.location || "");
       addDetailRow("COMPANY", x.customer || "");
       if(x.fromDate || x.toDate){
-        addDetailRow("BOOKING", (x.fromDate || "") + " → " + (x.toDate || "") + (days > 0 ? " (" + days + " days)" : ""));
+        addDetailRow("BOOKING", (x.fromDate || "") + " → " + (x.toDate || "") + (days > 0 ? " (" + days + "d)" : ""));
       }
       if(x.lat && x.lng){
         addDetailRow("GPS", x.lat + ", " + x.lng);
       }
-      if(x.location){
-        const mapUrl = getGoogleMapsUrl(x);
-        if(mapUrl) addDetailRow("MAP", mapUrl);
-      }
 
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 7.1, w: 13.33, h: 0.4, fill: { color: "0F172A" } });
-      slide.addText(COMPANY_NAME + "  •  Page " + (i + 3), { x: 0.5, y: 7.15, w: 12.33, h: 0.3, fontSize: 8, color: "94A3B8", align: "center" });
+      // Footer
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 7.15, w: 13.33, h: 0.35, fill: { color: "0F172A" } });
+      slide.addText(COMPANY_NAME + "  •  Page " + (i + 3), { x: 0.5, y: 7.2, w: 12.33, h: 0.25, fontSize: 8, color: "94A3B8", align: "center" });
     }
 
     // ---------- END SLIDE ----------
@@ -1544,10 +1548,10 @@ async function generateSelectedSitesPPT(){
     msg += "📊 Total slides: " + (list.length + 3) + "\n";
     msg += "• 1 Cover\n";
     msg += "• 1 Executive Summary\n";
-    msg += "• " + list.length + " Site slides\n";
+    msg += "• " + list.length + " Site slides (big images)\n";
     msg += "• 1 Thank You\n\n";
     if(singleArea){
-      msg += "💡 Tip: Ye PPT " + singleArea + " area ki original PPT ke saath merge karne ke liye:\n";
+      msg += "💡 Tip: " + singleArea + " area ki original PPT bhi chahiye?\n";
       msg += "Area header → Share → ZIP download karein.";
     }
     alert(msg);
@@ -1634,9 +1638,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#eef2f7;color:#0f17
 .site-title{flex:1;font-size:17px;font-weight:800;min-width:200px;word-break:break-word}
 .site-status{padding:5px 14px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#fff}
 .site-status.available{background:#059669}.site-status.not{background:#dc2626}.site-status.maint{background:#d97706}
-.site-body{padding:20px;display:grid;grid-template-columns:200px 1fr;gap:24px}
-.site-image{width:200px;height:200px;border-radius:12px;object-fit:cover;border:1px solid #e2e8f0}
-.site-image.no-img{display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:12px;border:2px dashed #cbd5e1;background:#f8fafc}
+.site-body{padding:24px;display:grid;grid-template-columns:400px 1fr;gap:28px}
+.site-image{width:400px;height:400px;border-radius:12px;object-fit:cover;border:1px solid #e2e8f0}
+.site-image.no-img{display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:14px;border:2px dashed #cbd5e1;background:#f8fafc}
 .detail-row{display:flex;gap:14px;padding:10px 0;border-bottom:1px dashed #f1f5f9}
 .detail-row:last-child{border-bottom:0}
 .detail-row .lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;min-width:88px;padding-top:2px}
@@ -1647,7 +1651,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#eef2f7;color:#0f17
 .report-footer{background:#0f172a;color:#94a3b8;padding:36px 60px;text-align:center}
 .report-footer .fbrand{font-size:14px;font-weight:800;color:#fff;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
 .report-footer .fline{font-size:10px;opacity:0.5;margin-top:20px}
-@media (max-width:768px){.cover{padding:44px 24px}.cover h1{font-size:30px}.cover h2{font-size:16px}.section{padding:30px 20px}.section-sub{font-size:20px}.exec-grid{grid-template-columns:1fr 1fr;gap:12px}.exec-num{font-size:28px}.site-body{grid-template-columns:1fr;gap:16px}.site-image{width:100%;height:auto;max-height:280px}.detail-row{flex-direction:column;gap:4px}}
+@media (max-width:768px){.cover{padding:44px 24px}.cover h1{font-size:30px}.cover h2{font-size:16px}.section{padding:30px 20px}.section-sub{font-size:20px}.exec-grid{grid-template-columns:1fr 1fr;gap:12px}.exec-num{font-size:28px}.site-body{grid-template-columns:1fr;gap:16px}.site-image{width:100%;height:auto;max-height:400px}.detail-row{flex-direction:column;gap:4px}}
 </style></head><body><div class="page">
 <div class="cover"><div class="cover-inner">
 <div class="cover-brand"><div class="cover-logo">S</div><div><div class="cover-brand-text">${COMPANY_NAME}</div><div class="cover-tagline">${COMPANY_TAGLINE}</div></div></div>
@@ -1882,13 +1886,13 @@ async function generatePDF(list, title){
         y += 14;
         lastArea = areaName;
       }
-      const imgW = 38, imgH = 38, imgX = m+5, imgY = y+6;
+      const imgW = 76, imgH = 76, imgX = m+3, imgY = y+3;
       const textX = imgX+imgW+5;
       const textW = m + (pw-2*m) - textX - 5;
       doc.setFontSize(11);
       doc.setFont("helvetica","bold");
       const siteLines = doc.splitTextToSize(x.site, textW);
-      const blockH = 52;
+      const blockH = 90;
       if(y + blockH + 5 > ph - 15){ doc.addPage(); y = m + 5; }
       doc.setDrawColor(226,232,240);
       doc.setFillColor(248,250,252);
@@ -1907,42 +1911,42 @@ async function generatePDF(list, title){
         doc.setFillColor(241,245,249);
         doc.roundedRect(imgX, imgY, imgW, imgH, 2, 2, "FD");
         doc.setTextColor(148,163,184);
-        doc.setFontSize(8);
+        doc.setFontSize(10);
         doc.text("No Image", imgX+imgW/2, imgY+imgH/2, { align: "center" });
       }
-      let tY = y + 7;
+      let tY = y + 9;
       doc.setTextColor(15,23,42);
-      doc.setFontSize(11);
+      doc.setFontSize(13);
       doc.setFont("helvetica","bold");
       doc.text(siteLines, textX, tY);
-      tY += siteLines.length * 5;
+      tY += siteLines.length * 6;
       if(x.location){
-        doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.setTextColor(51,65,85);
-        doc.text("Location:", textX, tY); tY += 4;
+        doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.setTextColor(51,65,85);
+        doc.text("Location:", textX, tY); tY += 5;
         doc.setFont("helvetica","normal"); doc.setTextColor(30,64,175);
         const locLines = doc.splitTextToSize(x.location, textW-2);
-        doc.text(locLines, textX+2, tY); tY += locLines.length * 4;
+        doc.text(locLines, textX+2, tY); tY += locLines.length * 5;
       }
       if(x.customer){
-        doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.setTextColor(51,65,85);
-        doc.text("Company:", textX, tY); tY += 4;
+        doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.setTextColor(51,65,85);
+        doc.text("Company:", textX, tY); tY += 5;
         doc.setFont("helvetica","normal"); doc.setTextColor(15,23,42);
         const cLines = doc.splitTextToSize(x.customer, textW-2);
-        doc.text(cLines, textX+2, tY); tY += cLines.length * 4;
+        doc.text(cLines, textX+2, tY); tY += cLines.length * 5;
       }
       const colors = { "Available": [16,185,129], "Not Available": [239,68,68], "Under Maintenance": [245,158,11] };
       const c = colors[x.status] || [100,116,139];
       doc.setFillColor(c[0], c[1], c[2]);
       const stText = x.status.toUpperCase();
       doc.setTextColor(255,255,255);
-      doc.setFontSize(7);
+      doc.setFontSize(8);
       doc.setFont("helvetica","bold");
-      const stW = doc.getTextWidth(stText) + 6;
-      doc.roundedRect(textX, tY-3, stW, 5, 1, 1, "F");
-      doc.text(stText, textX + stW/2, tY+0.3, { align: "center" });
-      tY += 5.5;
+      const stW = doc.getTextWidth(stText) + 8;
+      doc.roundedRect(textX, tY-3, stW, 6, 1, 1, "F");
+      doc.text(stText, textX + stW/2, tY+1, { align: "center" });
+      tY += 7;
       if(x.fromDate || x.toDate){
-        doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.setTextColor(51,65,85);
+        doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.setTextColor(51,65,85);
         const days = calcDays(x.fromDate, x.toDate);
         doc.text("Booking: "+(x.fromDate||"")+"  "+(x.toDate||"")+(days > 0 ? " ("+days+"d)" : ""), textX, tY);
       }
