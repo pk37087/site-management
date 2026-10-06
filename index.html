@@ -53,10 +53,10 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toolbar button{padding:11px 16px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px}
 .toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
 .toolbar button.multi-area-btn{background:#7c3aed;color:#fff;border-color:#6d28d9}
-.date-filter-row{display:flex;gap:8px;align-items:center;background:#eff6ff;padding:8px 12px;border-radius:8px;border:1px solid #bfdbfe;flex-wrap:wrap}
-.date-filter-row label{font-size:12px;font-weight:600;color:#1e40af}
-.date-filter-row input[type="date"]{padding:8px 10px;border:1px solid #bfdbfe;border-radius:6px;font-family:inherit;font-size:13px;background:#fff}
-.date-filter-row button{background:#fff;color:#334155;border:1px solid #bfdbfe;padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;font-family:inherit;min-height:36px}
+.date-filter-inline{display:flex;gap:6px;align-items:center;background:#eff6ff;padding:6px 10px;border-radius:8px;border:1px solid #bfdbfe;flex-wrap:wrap}
+.date-filter-inline input{padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;font-size:13px;width:110px;background:#fff}
+.date-filter-inline input:focus{border-color:#3b82f6;outline:none;box-shadow:0 0 0 2px rgba(59,130,246,0.1)}
+.date-filter-inline button{padding:8px 10px;font-size:12px;border-radius:6px;background:#fff;color:#334155;border:1px solid #cbd5e1;cursor:pointer;font-family:inherit;font-weight:600;min-height:36px}
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:10px 14px;border-radius:10px;margin-bottom:14px;display:none;gap:8px;flex-wrap:wrap;align-items:stretch}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 16px;border-radius:6px;font-weight:700;font-size:13px;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:110px}
@@ -242,12 +242,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <option>Not Available</option>
 <option>Under Maintenance</option>
 </select>
-<div class="date-filter-row">
-  <label>📅 Date Filter:</label>
-  <input type="date" id="dateFilterFrom" onchange="render()" title="From date">
-  <span style="color:#64748b;font-size:12px">to</span>
-  <input type="date" id="dateFilterTo" onchange="render()" title="To date">
-  <button onclick="clearDateFilter()">Clear</button>
+<div class="date-filter-inline">
+  <span style="font-size:12px;font-weight:600;color:#475569;white-space:nowrap">📅 Date:</span>
+  <input type="text" id="dateFilterFrom" placeholder="dd/mm/yyyy" maxlength="10" oninput="formatDateInput(this)" onchange="render()">
+  <span style="font-size:12px;color:#64748b">to</span>
+  <input type="text" id="dateFilterTo" placeholder="dd/mm/yyyy" maxlength="10" oninput="formatDateInput(this)" onchange="render()">
+  <button type="button" onclick="clearDateFilter()" title="Clear date filter">✕</button>
 </div>
 <button class="admin-only" onclick="openAreaManager()">Manage Areas</button>
 <button class="admin-only multi-area-btn" onclick="openMultiAreaSelect()">☑ Select Areas</button>
@@ -516,7 +516,6 @@ let bulkParsedImages = [];
 let bulkPptParsed = [];
 let collapsedAreas = null;
 let areaFilters = {};
-let currentPptArea = null;
 let pendingSaveTimer = null;
 let autoRefreshTimer = null;
 let lastDataHash = "";
@@ -865,7 +864,7 @@ function populateAreaDropdowns(){
   areas.forEach(a => { formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
 }
 
-/* ============ DATE FILTER ============ */
+/* ============ DATE FILTER (DD/MM/YYYY) ============ */
 function clearDateFilter(){
   document.getElementById("dateFilterFrom").value = "";
   document.getElementById("dateFilterTo").value = "";
@@ -873,30 +872,65 @@ function clearDateFilter(){
   dateFilterTo = "";
   render();
 }
+
+function formatDateInput(input){
+  let val = input.value.replace(/\D/g, "");
+  if(val.length >= 2){
+    let dd = val.substring(0, 2);
+    if(parseInt(dd) > 31) dd = "31";
+    if(parseInt(dd) === 0) dd = "01";
+    val = dd + "/" + val.substring(2);
+  }
+  if(val.length >= 5){
+    let parts = val.split("/");
+    let mm = parts[1].substring(0, 2);
+    if(parseInt(mm) > 12) mm = "12";
+    if(parseInt(mm) === 0) mm = "01";
+    val = parts[0] + "/" + mm + (parts[1].length > 2 ? "/" + parts[1].substring(2, 6) : "");
+  }
+  input.value = val.substring(0, 10);
+}
+
+function ddmmyyyyToISOForFilter(s){
+  if(!s) return "";
+  const p = String(s).trim().split("/");
+  if(p.length !== 3) return "";
+  if(p[2].length !== 4) return "";
+  return p[2] + "-" + p[1].padStart(2,"0") + "-" + p[0].padStart(2,"0");
+}
+
 function siteMatchesDateFilter(site){
-  if(!dateFilterFrom && !dateFilterTo) return true;
-  // If site has no dates, only show if no date filter is applied
+  const fromInput = document.getElementById("dateFilterFrom").value.trim();
+  const toInput = document.getElementById("dateFilterTo").value.trim();
+  
+  if(!fromInput && !toInput) return true;
+  
+  const filterFrom = fromInput ? ddmmyyyyToISOForFilter(fromInput) : "";
+  const filterTo = toInput ? ddmmyyyyToISOForFilter(toInput) : "";
+  
+  if(fromInput && !filterFrom) return true;
+  if(toInput && !filterTo) return true;
+  
   if(!site.fromDate && !site.toDate) return false;
+  
   const siteFrom = site.fromDate ? ddmmyyyyToISO(site.fromDate) : "";
   const siteTo = site.toDate ? ddmmyyyyToISO(site.toDate) : "";
-  // Check overlap
-  if(dateFilterFrom && siteTo && siteTo < dateFilterFrom) return false;
-  if(dateFilterTo && siteFrom && siteFrom > dateFilterTo) return false;
+  
+  if(filterFrom && siteTo && siteTo < filterFrom) return false;
+  if(filterTo && siteFrom && siteFrom > filterTo) return false;
   return true;
 }
 
 /* ============ REFRESH PAGE (FIXED) ============ */
 async function refreshPage(e){
-  if(e){ e.stopPropagation(); e.preventDefault(); }
+  if(e){ e.stopPropagation(); if(e.preventDefault) e.preventDefault(); }
   const btn = document.querySelector(".refresh-btn");
   if(btn){ btn.disabled = true; btn.textContent = "Refreshing..."; }
   try {
-    // Clear all caches
     imageFailed.clear();
     imageCache = {};
     pptCache = {};
     selectedSites.clear();
-    // Reset filters
     document.getElementById("filter").value = "ALL";
     document.getElementById("search").value = "";
     document.getElementById("dateFilterFrom").value = "";
@@ -904,7 +938,6 @@ async function refreshPage(e){
     dateFilterFrom = "";
     dateFilterTo = "";
     areaFilters = {};
-    // Reload everything
     await loadCloudData();
     await refreshPptCache();
     await loadLogoFromCloud();
@@ -1312,14 +1345,6 @@ async function confirmBulkUpload(){
   }
 }
 
-async function quickAddArea(){
-  if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  const name = prompt("Naya area:");
-  if(!name || name.trim() === "") return;
-  if(areas.includes(name.trim())){ alert("Already exists"); return; }
-  areas.push(name.trim());
-  await persistNow(); populateAreaDropdowns(); render();
-}
 function openAreaManager(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
   selectedAreas.clear(); renderAreaList(); document.getElementById("areaModal").classList.add("show");
@@ -1478,9 +1503,8 @@ async function autoReleaseExpiredSites(){
 async function render(){
   await autoReleaseExpiredSites();
   syncCardHighlight();
-  // Read date filter
-  dateFilterFrom = document.getElementById("dateFilterFrom").value || "";
-  dateFilterTo = document.getElementById("dateFilterTo").value || "";
+  dateFilterFrom = ddmmyyyyToISOForFilter(document.getElementById("dateFilterFrom").value.trim());
+  dateFilterTo = ddmmyyyyToISOForFilter(document.getElementById("dateFilterTo").value.trim());
   
   const q = (document.getElementById("search").value || "").toLowerCase().trim();
   const f = document.getElementById("filter").value;
