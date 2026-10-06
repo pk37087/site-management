@@ -27,9 +27,10 @@ input,select,textarea{font-size:16px !important}
 .login-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:12px;border-radius:8px;font-size:13px;margin-top:16px;display:none}
 .login-error.show{display:block}
 header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:fixed;top:0;left:0;right:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.header-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .header-left h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
 .header-left h1::before{content:'';display:inline-block;width:8px;height:8px;background:#fff;border-radius:2px;box-shadow:0 0 0 3px rgba(255,255,255,0.25)}
-.header-user{background:rgba(255,255,255,0.15);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap}
+.header-user{background:rgba(255,255,255,0.18);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap;border:1px solid rgba(255,255,255,0.2)}
 .header-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .header-actions button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;white-space:nowrap;min-height:36px}
 .btn-yellow{background:#f59e0b;color:#fff}
@@ -37,6 +38,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .btn-red{background:#dc2626;color:#fff}
 .btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
 .btn-telegram{background:#0088cc;color:#fff}
+.btn-refresh-header{background:#0ea5e9;color:#fff}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
@@ -224,8 +226,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 @media (max-width:768px){
   header{padding:10px 12px}
   .header-left h1{font-size:15px}
-  .header-user{font-size:11px;padding:5px 10px;order:2}
-  .header-actions{width:100%;justify-content:flex-start;order:3;gap:5px}
+  .header-user{font-size:11px;padding:5px 10px}
+  .header-actions{width:100%;justify-content:flex-start;gap:5px}
   .header-actions button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center}
   #app{padding-top:130px}
   .container{padding:0 12px}
@@ -287,16 +289,17 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div id="app" class="hidden">
 <header id="mainHeader">
-  <div class="header-left"><h1>Site Management</h1></div>
-  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;width:auto;flex:1;justify-content:flex-end">
+  <div class="header-left">
+    <h1>Site Management</h1>
     <span class="header-user" id="userInfo">Loading...</span>
-    <div class="header-actions">
-      <button class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()" title="Telegram notifications">📱 Telegram</button>
-      <button class="btn-yellow admin-only" onclick="openBulkUpload()">Bulk</button>
-      <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
-      <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
-      <button class="btn-red" onclick="doLogout()">Logout</button>
-    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-refresh-header" onclick="refreshPage(event)" title="Refresh data">🔄 Refresh</button>
+    <button class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()" title="Telegram notifications">📱 Telegram</button>
+    <button class="btn-yellow admin-only" onclick="openBulkUpload()">Bulk</button>
+    <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
+    <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
+    <button class="btn-red" onclick="doLogout()">Logout</button>
   </div>
 </header>
 <div class="container">
@@ -308,10 +311,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div class="card maintenance" id="cardMaintenance" onclick="filterByCard('Under Maintenance')"><span class="card-icon">⚠</span><span class="card-label">Under Maintenance</span><b id="maintenance">0</b></div>
 </div>
 
-<!-- ✅ Toolbar with Refresh moved up next to search -->
 <div class="toolbar">
   <input id="search" type="text" placeholder="Search sites..." oninput="debouncedRender()">
-  <button class="refresh-btn" onclick="refreshPage(event)" title="Refresh data">🔄 Refresh</button>
   <div class="multi-status-wrap" id="multiStatusWrap">
     <button type="button" class="multi-status-btn" onclick="toggleMultiStatusPanel(event)">
       <span id="multiStatusLabel">Status: All</span>
@@ -412,14 +413,14 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div class="ppt-option" id="pptOpt4" onclick="selectPPTOption('contain')">
     <div class="ppt-preview">
       <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
-        <rect x="5" y="5" width="190" height="60" fill="#1e3a8a" rx="3"/>
+        <rect x="5" y="5" width="190" height="60" fill="#000000" rx="3"/>
         <rect x="55" y="8" width="90" height="54" fill="#1e40af" rx="3"/>
         <text x="100" y="40" fill="white" font-size="10" text-anchor="middle" font-weight="bold">IMAGE</text>
         <rect x="5" y="68" width="190" height="17" fill="#f1f5f9" rx="3"/>
       </svg>
     </div>
     <div class="ppt-title">Theme Background</div>
-    <div class="ppt-desc">Full image + theme color BG</div>
+    <div class="ppt-desc">Full image + black BG</div>
   </div>
 </div>
 
@@ -595,7 +596,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <h2 id="historyTitle">Booking History</h2>
 <div id="historyContent"></div>
 <div class="modal-actions">
-  <button class="secondary" onclick="downloadHistoryCSV()" style="background:#059669;color:#fff">Download History CSV</button>
+  <button class="secondary" onclick="downloadHistoryCSV()" style="background:#059669;color:#fff">📥 Download History CSV</button>
   <button class="secondary" onclick="closeHistoryModal()">Close</button>
 </div>
 </div></div>
@@ -615,7 +616,7 @@ const COMPANY_NAME = "DS Outdoor Media";
 const COMPANY_TAGLINE = "Professional Site Booking & Management";
 const MAX_FILTER_YEAR = 2050;
 const ALL_STATUSES = ["Available", "Not Available", "Under Maintenance"];
-const THEME_COLOR = "1E40AF"; // Navy theme color
+const THEME_COLOR = "1E40AF";
 let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 let newLogoData = "";
 
@@ -672,10 +673,7 @@ function autoSelectByStatus(){
     if(!activeStatuses.has(s.status)) return;
     if(!selectedSites.has(s.id)){ selectedSites.add(s.id); count++; }
   });
-  if(count > 0){
-    updateSelectBar();
-    showToast("Auto-selected", count + " site(s) status ke according select ho gayi", "success");
-  }
+  if(count > 0){ updateSelectBar(); showToast("Auto-selected", count + " site(s) status ke according select ho gayi", "success"); }
 }
 function updateMultiStatusLabel(){
   const label = document.getElementById("multiStatusLabel");
@@ -702,7 +700,7 @@ function updatePPTFormatUI(){
       split: "💡 <b>Split View:</b> Image left me (actual size preserve), details right side me. Best professional look.",
       cover: "💡 <b>Full Cover:</b> Image pura box fill karegi (crop hoke). Modern look.",
       blur: "💡 <b>Blur Background:</b> Puri image center + blurred background. Premium look.",
-      contain: "💡 <b>Theme Background:</b> Puri image center + navy blue theme background. Clean professional look."
+      contain: "💡 <b>Theme Background:</b> Puri image center + black background. Clean professional look."
     };
     note.innerHTML = notes[pptFormat] || "";
   }
@@ -1168,7 +1166,7 @@ function debouncedRender(){ if(renderDebounceTimer) clearTimeout(renderDebounceT
 /* ============ REFRESH ============ */
 async function refreshPage(e){
   if(e){ e.stopPropagation(); if(e.preventDefault) e.preventDefault(); }
-  const btn = e.target.closest(".refresh-btn") || document.querySelector(".refresh-btn");
+  const btn = e.target.closest(".refresh-btn, .btn-refresh-header");
   if(btn){ btn.disabled = true; btn.textContent = "Refreshing..."; }
   try {
     imageFailed.clear(); imageCache = {}; pptCache = {}; selectedSites.clear();
@@ -1640,6 +1638,8 @@ function updateCalcPreview(){
   if(from && to && days === 0) extra = " - To date From se pehle!";
   document.getElementById("calcPreview").innerHTML = "From: " + (from||"") + " - To: " + (to||"") + " - Days: " + days + extra;
 }
+
+/* ✅ AUTO-RELEASE: when site booking/maintenance date expires, log to history */
 async function autoReleaseExpiredSites(){
   const today = new Date(); today.setHours(0,0,0,0);
   let changed = false;
@@ -1647,7 +1647,21 @@ async function autoReleaseExpiredSites(){
     if(x.toDate){
       const toDate = new Date(ddmmyyyyToISO(x.toDate)); toDate.setHours(0,0,0,0);
       if(toDate < today && (x.status === "Not Available" || x.status === "Under Maintenance")){
-        bookingHistory.push({ site: x.site, customer: x.customer||"", fromDate: x.fromDate||"", toDate: x.toDate||"", days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'), status: x.status, location: x.location||"", rate: x.rate||"" });
+        // ✅ Add to booking history BEFORE resetting
+        bookingHistory.push({
+          site: x.site,
+          siteCode: x.siteCode || "",
+          area: x.area || "Unassigned",
+          customer: x.customer || "",
+          fromDate: x.fromDate || "",
+          toDate: x.toDate || "",
+          days: calcDays(x.fromDate, x.toDate),
+          endedOn: today.toLocaleDateString('en-GB'),
+          status: x.status,
+          location: x.location || "",
+          rate: x.rate || ""
+        });
+        // Reset site back to Available
         x.status = "Available"; x.customer = ""; x.fromDate = ""; x.toDate = "";
         changed = true;
       }
@@ -2110,11 +2124,8 @@ async function generateSelectedSitesPPT(){
             const imgRatio = await getImageRatio(imgData);
             const panelRatio = leftW / boxH;
             let drawW, drawH, drawX, drawY;
-            if(imgRatio > panelRatio){
-              drawW = leftW; drawH = leftW / imgRatio; drawX = leftX; drawY = boxY + (boxH - drawH) / 2;
-            } else {
-              drawH = boxH; drawW = boxH * imgRatio; drawX = leftX + (leftW - drawW) / 2; drawY = boxY;
-            }
+            if(imgRatio > panelRatio){ drawW = leftW; drawH = leftW / imgRatio; drawX = leftX; drawY = boxY + (boxH - drawH) / 2; }
+            else { drawH = boxH; drawW = boxH * imgRatio; drawX = leftX + (leftW - drawW) / 2; drawY = boxY; }
             slide.addShape(pptx.ShapeType.rect, { x: drawX, y: drawY, w: drawW, h: drawH, fill: { type: 'solid', color: 'FFFFFF' }, line: { color: 'FFFFFF', width: 2 } });
             slide.addImage({ data: imgData, x: drawX, y: drawY, w: drawW, h: drawH });
             imageAdded = true;
@@ -2229,16 +2240,15 @@ async function generateSelectedSitesPPT(){
         }
 
       } else {
-        // ✅ THEME BACKGROUND - now like blur but with solid theme color instead of blur
+        // ✅ THEME BACKGROUND with BLACK side areas
         const imgBoxY = 0.65, imgBoxH = 5.4;
         const boxRatio = 13.33 / imgBoxH;
-        // Solid navy theme background
-        slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: THEME_COLOR } });
+        // Black background for side areas
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "000000" } });
         
         let imageAdded = false;
         if(imgData){
           try {
-            // Full image centered (actual size preserved)
             const imgRatio = await getImageRatio(imgData);
             let mDrawW, mDrawH, mDrawX, mDrawY;
             if(imgRatio > boxRatio){ mDrawW = 13.33; mDrawH = 13.33 / imgRatio; mDrawX = 0; mDrawY = imgBoxY + (imgBoxH - mDrawH) / 2; }
@@ -2248,7 +2258,7 @@ async function generateSelectedSitesPPT(){
           } catch(e){ console.warn(e); }
         }
         if(!imageAdded){
-          slide.addShape(pptx.ShapeType.roundRect, { x: 4.5, y: imgBoxY + 1.8, w: 4.33, h: 1.8, fill: { color: "0F172A" }, line: { color: "3B82F6", width: 2, dashType: "dash" }, rectRadius: 0.15 });
+          slide.addShape(pptx.ShapeType.roundRect, { x: 4.5, y: imgBoxY + 1.8, w: 4.33, h: 1.8, fill: { color: "1E293B" }, line: { color: "3B82F6", width: 2, dashType: "dash" }, rectRadius: 0.15 });
           slide.addText("📷", { x: 4.5, y: imgBoxY + 1.9, w: 4.33, h: 0.7, fontSize: 44, align: "center", valign: "middle" });
           slide.addText("No Image Available", { x: 4.5, y: imgBoxY + 2.7, w: 4.33, h: 0.4, fontSize: 14, color: "94A3B8", align: "center", italic: true });
         }
@@ -2313,13 +2323,17 @@ function showHistory(index){
   else {
     let html = "";
     history.slice().reverse().forEach(h => {
-      html += '<div class="history-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px"><b style="color:#6d28d9;font-size:14px">' + esc(h.site) + '</b><span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
+      html += '<div class="history-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px"><b style="color:#6d28d9;font-size:14px">' + esc(h.site) + (h.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px;font-family:monospace">' + esc(h.siteCode) + '</span>' : '') + '</b><span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
+      html += '<div><span style="color:#64748b">Area:</span> <b>' + esc(h.area || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">Company:</span> <b>' + esc(h.customer || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">Rate:</span> <b>' + (h.rate ? "₹" + Number(h.rate).toLocaleString('en-IN') : "—") + '</b></div>';
+      html += '<div><span style="color:#64748b">Days:</span> <b>' + (h.days || 0) + '</b></div>';
       html += '<div><span style="color:#64748b">From:</span> <b>' + esc(h.fromDate || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">To:</span> <b>' + esc(h.toDate || "—") + '</b></div>';
-      html += '<div><span style="color:#64748b">Days:</span> <b>' + (h.days || 0) + '</b></div>';
-      html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div></div></div>';
+      html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div>';
+      html += '</div>';
+      if(h.location) html += '<div style="margin-top:6px;font-size:11px;color:#0891b2">📍 ' + esc(h.location) + '</div>';
+      html += '</div>';
     });
     content.innerHTML = html;
   }
@@ -2327,10 +2341,12 @@ function showHistory(index){
 }
 function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
 function downloadHistoryCSV(){
-  if(bookingHistory.length === 0){ alert("No history"); return; }
-  const headers = ["Site", "Company", "From", "To", "Days", "Ended On", "Status", "Location", "Rate"];
+  if(bookingHistory.length === 0){ alert("No history to download"); return; }
+  const headers = ["Site", "Site Code", "Area", "Company", "From", "To", "Days", "Ended On", "Status", "Location", "Rate"];
   let csv = headers.join(",") + "\n";
-  bookingHistory.forEach(h => { csv += [h.site, h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status, h.location, h.rate].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n"; });
+  bookingHistory.forEach(h => {
+    csv += [h.site, h.siteCode || "", h.area || "", h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status, h.location, h.rate].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n";
+  });
   const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "booking_history_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
 }
@@ -2349,13 +2365,15 @@ function showAllHistory(){
   else {
     let html = "";
     bookingHistory.slice().reverse().forEach(h => {
-      html += '<div class="history-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px"><b style="color:#6d28d9;font-size:14px">' + esc(h.site) + '</b><span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
+      html += '<div class="history-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px"><b style="color:#6d28d9;font-size:14px">' + esc(h.site) + (h.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px;font-family:monospace">' + esc(h.siteCode) + '</span>' : '') + '</b><span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
+      html += '<div><span style="color:#64748b">Area:</span> <b>' + esc(h.area || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">Company:</span> <b>' + esc(h.customer || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">Rate:</span> <b>' + (h.rate ? "₹" + Number(h.rate).toLocaleString('en-IN') : "—") + '</b></div>';
+      html += '<div><span style="color:#64748b">Days:</span> <b>' + (h.days || 0) + '</b></div>';
       html += '<div><span style="color:#64748b">From:</span> <b>' + esc(h.fromDate || "—") + '</b></div>';
       html += '<div><span style="color:#64748b">To:</span> <b>' + esc(h.toDate || "—") + '</b></div>';
-      html += '<div><span style="color:#64748b">Days:</span> <b>' + (h.days || 0) + '</b></div>';
-      html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div></div></div>';
+      html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div>';
+      html += '</div></div>';
     });
     content.innerHTML = html;
   }
