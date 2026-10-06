@@ -486,7 +486,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="bulk-tab-bar">
   <button class="bulk-tab active" onclick="switchBulkTab('sites')" id="tabSites">📋 Sites (CSV)</button>
   <button class="bulk-tab" onclick="switchBulkTab('images')" id="tabImages">🖼️ Images</button>
-  <button class="bulk-tab" onclick="switchBulkTab('ppts')" id="tabPpts">📊 PPTs (Area-wise)</button>
   <button class="bulk-tab" onclick="switchBulkTab('logo')" id="tabLogo">🎨 Logo Settings</button>
 </div>
 <div class="bulk-tab-content active" id="tabContentSites">
@@ -501,12 +500,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div class="drop-zone" id="bulkImageDropZone" onclick="document.getElementById('bulkImageFiles').click()" style="border-color:#bfdbfe;background:#eff6ff"><div class="dz-icon">🖼️</div><div style="font-size:14px;font-weight:700">Click or drag images here</div></div>
   <input type="file" id="bulkImageFiles" accept="image/*" multiple style="display:none" onchange="handleBulkImageFiles(event)">
   <div id="bulkImagePreviewWrap" style="display:none"><div class="bulk-summary" id="bulkImageSummary"></div><div class="bulk-preview" id="bulkImagePreview" style="max-height:220px"></div></div>
-</div>
-<div class="bulk-tab-content" id="tabContentPpts">
-  <div class="bulk-info" style="font-size:11px">PPT file ka naam <b>area ke naam</b> se match hona chahiye.<br>Example: <code>Chandigarh.pptx</code></div>
-  <div class="drop-zone" id="bulkPptDropZone" onclick="document.getElementById('bulkPptFiles').click()" style="border-color:#f9a8d4;background:#fdf2f8"><div class="dz-icon">📊</div><div style="font-size:14px;font-weight:700">Click or drag PPT files here</div></div>
-  <input type="file" id="bulkPptFiles" accept=".ppt,.pptx" multiple style="display:none" onchange="handleBulkPptFiles(event)">
-  <div id="bulkPptPreviewWrap" style="display:none"><div class="bulk-summary" id="bulkPptSummary"></div><div class="bulk-preview" id="bulkPptPreview" style="max-height:260px"></div></div>
 </div>
 <div class="bulk-tab-content" id="tabContentLogo">
   <div class="bulk-info" style="font-size:12px"><b>Logo Change Karein</b><br>Login page, PPT cover, Thank You slide par dikhega<br><b>Recommended:</b> 800x300px PNG</div>
@@ -635,7 +628,6 @@ let editIndex = -1;
 let currentImageData = "";
 let bulkParsedSites = [];
 let bulkParsedImages = [];
-let bulkPptParsed = [];
 let collapsedAreas = null;
 let areaFilters = {};
 let pendingSaveTimer = null;
@@ -839,29 +831,6 @@ async function getImage(key){
   imageFailed.add(key); return null;
 }
 async function deleteImage(key){ delete imageCache[key]; imageFailed.delete(key); return await apiDelete("/image/" + encodeURIComponent(key)); }
-async function savePpt(areaName, obj){
-  const CHUNK_SIZE = 20000000;
-  const data = obj.data || ""; const totalChunks = Math.ceil(data.length / CHUNK_SIZE) || 1;
-  if(totalChunks === 1){ const result = await apiPost("/ppt/" + encodeURIComponent(areaName), { name: obj.name, size: obj.size, type: obj.type, data: data }); if(result && result.success) pptCache[areaName] = true; return result; }
-  const initResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/init", { name: obj.name, size: obj.size, type: obj.type });
-  if(!initResult || !initResult.success) return initResult;
-  for(let i = 0; i < totalChunks; i++){
-    const start = i * CHUNK_SIZE; const chunk = data.substring(start, start + CHUNK_SIZE);
-    const chunkResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/chunk/" + i, { data: chunk });
-    if(!chunkResult || !chunkResult.success) return { success: false, error: "Chunk failed" };
-    const ps = document.getElementById("progressSub"); if(ps) ps.textContent = "Chunk " + (i+1) + " / " + totalChunks;
-  }
-  const completeResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/complete", {});
-  if(completeResult && completeResult.success) pptCache[areaName] = true;
-  return completeResult;
-}
-async function getPpt(areaName){ const result = await apiGet("/ppt/" + encodeURIComponent(areaName)); if(result && result.success && result.data){ return { name: result.name, size: result.size, type: result.type, data: result.data }; } return null; }
-async function deletePptFromDB(areaName){ delete pptCache[areaName]; return await apiDelete("/ppt/" + encodeURIComponent(areaName)); }
-async function refreshPptCache(){
-  pptCache = {};
-  try { const result = await apiGet("/ppt-list"); if(result && result.success && result.list){ for(const area in result.list){ pptCache[area] = true; } return; } } catch(e){}
-  for(const a of areas){ try { const p = await getPpt(a); if(p && p.data) pptCache[a] = true; } catch(e){} }
-}
 
 /* ============ LOGO ============ */
 async function loadLogoFromCloud(){
@@ -954,7 +923,6 @@ async function showApp(){
   loadTelegramConfig();
   loadPPTFormat();
   await loadCloudData();
-  await refreshPptCache();
   hideProgress();
   populateAreaDropdowns();
   await loadLogoFromCloud();
@@ -987,7 +955,6 @@ function startAutoRefresh(){
         sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
         sites.forEach(s => { lastKnownStatuses[s.id] = s.status; });
         lastDataHash = newHash;
-        await refreshPptCache();
         render();
       }
     }
@@ -1169,9 +1136,9 @@ async function refreshPage(e){
   const btn = e.target.closest(".refresh-btn, .btn-refresh-header");
   if(btn){ btn.disabled = true; btn.textContent = "Refreshing..."; }
   try {
-    imageFailed.clear(); imageCache = {}; pptCache = {}; selectedSites.clear();
+    imageFailed.clear(); imageCache = {}; selectedSites.clear();
     clearAllFilters();
-    await loadCloudData(); await refreshPptCache(); await loadLogoFromCloud();
+    await loadCloudData(); await loadLogoFromCloud();
     collapsedAreas = new Set(areas);
     render(); updateFilterBadge();
     if(btn){ btn.textContent = "✓ Refreshed"; setTimeout(() => { btn.textContent = "🔄 Refresh"; btn.disabled = false; }, 800); }
@@ -1211,19 +1178,17 @@ function switchBulkTab(tab){
   document.querySelectorAll(".bulk-tab-content").forEach(t => t.classList.remove("active"));
   if(tab === "sites"){ document.getElementById("tabSites").classList.add("active"); document.getElementById("tabContentSites").classList.add("active"); }
   else if(tab === "images"){ document.getElementById("tabImages").classList.add("active"); document.getElementById("tabContentImages").classList.add("active"); }
-  else if(tab === "ppts"){ document.getElementById("tabPpts").classList.add("active"); document.getElementById("tabContentPpts").classList.add("active"); }
   else if(tab === "logo"){ document.getElementById("tabLogo").classList.add("active"); document.getElementById("tabContentLogo").classList.add("active"); loadLogoFromCloud(); }
   updateBulkUploadBtn();
 }
 function openBulkUpload(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  bulkParsedSites = []; bulkParsedImages = []; bulkPptParsed = []; newLogoData = "";
+  bulkParsedSites = []; bulkParsedImages = []; newLogoData = "";
   document.getElementById("bulkPreviewWrap").style.display = "none";
   document.getElementById("bulkImagePreviewWrap").style.display = "none";
-  document.getElementById("bulkPptPreviewWrap").style.display = "none";
   document.getElementById("newLogoPreviewWrap").style.display = "none";
   document.getElementById("logoUploadActions").style.display = "none";
-  document.getElementById("bulkFile").value = ""; document.getElementById("bulkImageFiles").value = ""; document.getElementById("bulkPptFiles").value = ""; document.getElementById("logoFile").value = "";
+  document.getElementById("bulkFile").value = ""; document.getElementById("bulkImageFiles").value = ""; document.getElementById("logoFile").value = "";
   switchBulkTab("sites");
   document.getElementById("bulkModal").classList.add("show");
 }
@@ -1235,7 +1200,6 @@ function updateBulkUploadBtn(){
   btn.style.display = "inline-flex";
   if(activeTab === "tabSites"){ btn.disabled = bulkParsedSites.length === 0; btn.textContent = "Upload " + bulkParsedSites.length + " Site(s)"; }
   else if(activeTab === "tabImages"){ const count = bulkParsedImages.filter(p => p.matched).length; btn.disabled = count === 0; btn.textContent = "Upload " + count + " Image(s)"; }
-  else if(activeTab === "tabPpts"){ const count = bulkPptParsed.filter(p => p.matched).length; btn.disabled = count === 0; btn.textContent = "Upload " + count + " PPT(s)"; }
   if(btn.disabled){ btn.style.background = "#cbd5e1"; btn.style.color = "#64748b"; }
   else { btn.style.background = "#3b82f6"; btn.style.color = "#fff"; btn.style.cursor = "pointer"; }
 }
@@ -1392,72 +1356,6 @@ function renderBulkImagePreview(invalidList){
   wrap.style.display = "block";
   updateBulkUploadBtn();
 }
-(function setupBulkPptDropZone(){
-  const dz = document.getElementById("bulkPptDropZone"); if(!dz) return;
-  dz.addEventListener("dragover", e => { e.preventDefault(); dz.style.background = "#fbcfe8"; });
-  dz.addEventListener("dragleave", () => dz.style.background = "#fdf2f8");
-  dz.addEventListener("drop", e => { e.preventDefault(); dz.style.background = "#fdf2f8"; const files = e.dataTransfer.files; if(files && files.length > 0) processBulkPptFiles(files); });
-})();
-function handleBulkPptFiles(e){ const files = e.target.files; if(files && files.length > 0) processBulkPptFiles(files); e.target.value = ""; }
-function findAreaForFilename(fileName){
-  const base = fileName.replace(/\.(pptx?|PPTX?)$/, "").trim();
-  const norm = (s) => String(s).toLowerCase().replace(/[\s_\-\.]+/g, "");
-  let hit = areas.find(a => a.toLowerCase() === base.toLowerCase());
-  if(hit) return hit;
-  const baseNorm = norm(base);
-  hit = areas.find(a => norm(a) === baseNorm);
-  if(hit) return hit;
-  const sorted = [...areas].sort((a,b) => b.length - a.length);
-  for(const a of sorted){
-    const aNorm = norm(a); if(!aNorm) continue;
-    if(baseNorm === aNorm) return a;
-    if(baseNorm.startsWith(aNorm)) return a;
-    if(baseNorm.includes(aNorm)) return a;
-  }
-  return null;
-}
-function processBulkPptFiles(fileList){
-  const files = Array.from(fileList); if(files.length === 0) return;
-  const valid = []; const invalid = [];
-  files.forEach(f => {
-    const name = f.name.toLowerCase();
-    const okType = name.endsWith(".ppt") || name.endsWith(".pptx");
-    if(!okType){ invalid.push({ file: f, reason: "Not a PPT" }); return; }
-    if(f.size > MAX_PPT_SIZE){ invalid.push({ file: f, reason: "Over 100 MB" }); return; }
-    valid.push(f);
-  });
-  if(valid.length === 0){ alert("Koi valid PPT nahi"); return; }
-  let pending = valid.length;
-  bulkPptParsed = [];
-  valid.forEach(f => {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const matchedArea = findAreaForFilename(f.name);
-      bulkPptParsed.push({ file: f, name: f.name, size: f.size, type: f.type, area: matchedArea, matched: !!matchedArea, dataUrl: ev.target.result });
-      pending--;
-      if(pending === 0){ renderBulkPptPreview(invalid); }
-    };
-    reader.readAsDataURL(f);
-  });
-}
-function renderBulkPptPreview(invalidList){
-  const wrap = document.getElementById("bulkPptPreviewWrap");
-  const sum = document.getElementById("bulkPptSummary");
-  const prev = document.getElementById("bulkPptPreview");
-  const matched = bulkPptParsed.filter(p => p.matched);
-  let sumHtml = "<b>" + bulkPptParsed.length + "</b> file(s)";
-  if(matched.length) sumHtml += " - <span style='color:#047857'>" + matched.length + " matched</span>";
-  if(invalidList && invalidList.length) sumHtml += " - <span style='color:#b91c1c'>" + invalidList.length + " invalid</span>";
-  sum.innerHTML = sumHtml;
-  let html = '<table><thead><tr><th>#</th><th>File</th><th>Size</th><th>Matched</th><th>Status</th></tr></thead><tbody>';
-  bulkPptParsed.forEach((p, i) => {
-    html += '<tr><td>' + (i+1) + '</td><td>' + esc(p.name) + '</td><td>' + formatBytes(p.size) + '</td><td>' + esc(p.area || "—") + '</td><td>' + (p.matched ? '✓' : '✗') + '</td></tr>';
-  });
-  html += '</tbody></table>';
-  prev.innerHTML = html;
-  wrap.style.display = "block";
-  updateBulkUploadBtn();
-}
 async function confirmBulkUpload(){
   const activeTab = document.querySelector(".bulk-tab.active").id;
   if(activeTab === "tabSites"){
@@ -1489,23 +1387,6 @@ async function confirmBulkUpload(){
     alert("✅ Images: " + success + " / " + matched.length + (failed > 0 ? "\n❌ Failed: " + failed : ""));
     return;
   }
-  if(activeTab === "tabPpts"){
-    const matched = bulkPptParsed.filter(p => p.matched);
-    if(matched.length === 0){ alert("Koi matched PPT nahi"); return; }
-    if(!confirm("Upload " + matched.length + " PPT file(s)?")) return;
-    showProgress("Uploading PPTs...", "0 / " + matched.length);
-    let success = 0;
-    for(let i = 0; i < matched.length; i++){
-      const p = matched[i];
-      document.getElementById("progressSub").textContent = (i+1) + " / " + matched.length + " - " + p.area;
-      const obj = { name: p.name, size: p.size, type: p.type, data: p.dataUrl };
-      const result = await savePpt(p.area, obj);
-      if(result && result.success) success++;
-    }
-    await refreshPptCache(); hideProgress(); render(); closeBulkModal();
-    alert("✅ PPTs: " + success + " / " + matched.length);
-    return;
-  }
 }
 
 /* ============ AREA MGMT ============ */
@@ -1533,11 +1414,10 @@ async function bulkDeleteAreas(){
   if(selectedAreas.size === 0){ alert("Koi select nahi"); return; }
   const arr = [...selectedAreas];
   if(!confirm("Delete " + arr.length + " areas?")) return;
-  for(const a of arr){ await deletePptFromDB(a); }
   sites.forEach(s => { if(selectedAreas.has(s.area)) s.area = "Unassigned"; });
   areas = areas.filter(a => !selectedAreas.has(a));
   selectedAreas.clear();
-  await persistNow(); populateAreaDropdowns(); await refreshPptCache(); renderAreaList(); render();
+  await persistNow(); populateAreaDropdowns(); renderAreaList(); render();
 }
 async function addNewArea(){
   const name = document.getElementById("newAreaName").value.trim();
@@ -1554,11 +1434,9 @@ async function renameArea(index){
   if(!newName || newName.trim() === "") return;
   if(newName !== oldName && areas.includes(newName)){ alert("Already exists"); return; }
   const trimmed = newName.trim();
-  const ppt = await getPpt(oldName);
-  if(ppt){ await savePpt(trimmed, ppt); await deletePptFromDB(oldName); }
   areas[index] = trimmed;
   sites.forEach(s => { if(s.area === oldName) s.area = trimmed; });
-  await persistNow(); await refreshPptCache();
+  await persistNow();
   renderAreaList(); populateAreaDropdowns(); render();
 }
 async function deleteArea(index){
@@ -1566,7 +1444,6 @@ async function deleteArea(index){
   const count = sites.filter(s => s.area === areaName).length;
   if(count > 0){ if(!confirm(areaName + " mein " + count + " sites. Continue?")) return; sites.forEach(s => { if(s.area === areaName) s.area = "Unassigned"; }); }
   else { if(!confirm("Delete '" + areaName + "'?")) return; }
-  await deletePptFromDB(areaName);
   areas.splice(index, 1);
   await persistNow();
   renderAreaList(); populateAreaDropdowns(); render();
@@ -1647,21 +1524,12 @@ async function autoReleaseExpiredSites(){
     if(x.toDate){
       const toDate = new Date(ddmmyyyyToISO(x.toDate)); toDate.setHours(0,0,0,0);
       if(toDate < today && (x.status === "Not Available" || x.status === "Under Maintenance")){
-        // ✅ Add to booking history BEFORE resetting
         bookingHistory.push({
-          site: x.site,
-          siteCode: x.siteCode || "",
-          area: x.area || "Unassigned",
-          customer: x.customer || "",
-          fromDate: x.fromDate || "",
-          toDate: x.toDate || "",
-          days: calcDays(x.fromDate, x.toDate),
-          endedOn: today.toLocaleDateString('en-GB'),
-          status: x.status,
-          location: x.location || "",
-          rate: x.rate || ""
+          site: x.site, siteCode: x.siteCode || "", area: x.area || "Unassigned",
+          customer: x.customer || "", fromDate: x.fromDate || "", toDate: x.toDate || "",
+          days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'),
+          status: x.status, location: x.location || "", rate: x.rate || ""
         });
-        // Reset site back to Available
         x.status = "Available"; x.customer = ""; x.fromDate = ""; x.toDate = "";
         changed = true;
       }
@@ -2243,7 +2111,6 @@ async function generateSelectedSitesPPT(){
         // ✅ THEME BACKGROUND with BLACK side areas
         const imgBoxY = 0.65, imgBoxH = 5.4;
         const boxRatio = 13.33 / imgBoxH;
-        // Black background for side areas
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "000000" } });
         
         let imageAdded = false;
