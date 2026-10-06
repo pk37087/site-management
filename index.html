@@ -258,6 +258,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <button class="btn-refresh-header" onclick="refreshPage(event)" title="Refresh data">🔄 Refresh</button>
     <button class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()" title="Telegram notifications">📱 Telegram</button>
     <button class="btn-yellow admin-only" onclick="openBulkUpload()">Bulk</button>
+    <button class="btn-yellow admin-only" onclick="openBulkImageUpload()">Bulk Images</button>
+    <button class="btn-light admin-only" onclick="openLogoUpload()" title="Upload logo">🖼️ Logo</button>
     <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
     <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
     <button class="btn-red" onclick="doLogout()">Logout</button>
@@ -329,7 +331,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
 </label>
 <label class="full-width">Location / Address
-  <div><input id="flocation" placeholder="Address ya GPS location" oninput="onLocationManualChange()"></div>
+  <div><input id="flocation" placeholder="Address or GPS location" oninput="onLocationManualChange()"></div>
   <div class="gps-box">
     <span class="gps-status" id="gpsStatus">GPS not captured</span>
     <button type="button" class="gps-btn" onclick="captureGPS()" id="gpsBtn">Use GPS</button>
@@ -350,7 +352,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <span style="font-weight:600;color:#0ea5e9;font-size:11px">⚡ Auto from dates</span>
   </div>
   <select id="fstatus" disabled style="margin-top:6px;background:#f1f5f9;cursor:not-allowed;font-weight:700"><option>Available</option><option>Not Available</option><option>Under Maintenance</option></select>
-  <div id="statusHint" style="font-size:12px;color:#0c4a6e;margin-top:6px;background:#f0f9ff;padding:8px 12px;border-radius:6px;border:1px solid #bae6fd;font-weight:600">💡 Status dates ke hisaab se automatically set hoga</div>
+  <div id="statusHint" style="font-size:12px;color:#0c4a6e;margin-top:6px;background:#f0f9ff;padding:8px 12px;border-radius:6px;border:1px solid #bae6fd;font-weight:600">💡 Status will be set automatically based on dates</div>
 </label>
 <label>Booking From<div class="date-row"><select id="ffrom_d"></select><select id="ffrom_m"></select><select id="ffrom_y"></select></div></label>
 <label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
@@ -378,12 +380,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <h2>📱 Telegram Notifications</h2>
 <div style="background:#fffbeb;border:1px solid #fcd34d;padding:12px;border-radius:8px;margin-bottom:12px;font-size:12px;color:#92400e;line-height:1.6">
   <b>Setup Guide:</b><br>
-  <b>Step 1:</b> Telegram me <code>@BotFather</code> → <code>/newbot</code><br>
-  <b>Step 2:</b> Bot ka naam + username do<br>
-  <b>Step 3:</b> BotFather tumhe <b>Token</b> dega<br>
-  <b>Step 4:</b> Apne bot ko Telegram me khol ke <code>/start</code> bhejo<br>
-  <b>Step 5:</b> Browser me kholo: <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code><br>
-  <b>Step 6:</b> Wahan <code>"chat":{"id":123456789}</code> milega — wahi <b>Chat ID</b> hai
+  <b>Step 1:</b> Open Telegram and search <code>@BotFather</code> → send <code>/newbot</code><br>
+  <b>Step 2:</b> Give your bot a name and username<br>
+  <b>Step 3:</b> BotFather will give you a <b>Token</b><br>
+  <b>Step 4:</b> Open your bot in Telegram and send <code>/start</code><br>
+  <b>Step 5:</b> Open in browser: <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code><br>
+  <b>Step 6:</b> Find <code>"chat":{"id":123456789}</code> — that is your <b>Chat ID</b>
 </div>
 <div class="formgrid" style="grid-template-columns:1fr">
   <label>Bot Token<input id="tgBotToken" type="text" placeholder="123456:ABC-XYZ..." autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
@@ -394,7 +396,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </label>
   <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:4px;font-size:13px">
     <input type="checkbox" id="tgOnlyNotAvail" checked style="width:20px;height:20px;cursor:pointer;accent-color:#0088cc">
-    <span style="font-weight:600;color:#0f172a">Sirf "Not Available" aur "Under Maintenance" ke liye</span>
+    <span style="font-weight:600;color:#0f172a">Only for "Not Available" and "Under Maintenance"</span>
   </label>
 </div>
 <div id="telegramStatus" style="margin-top:12px;padding:10px;border-radius:8px;font-size:12px;display:none"></div>
@@ -408,7 +410,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <!-- MULTI AREA SELECT MODAL -->
 <div class="modal" id="multiAreaModal"><div class="box">
 <h2>☑ Select Multiple Areas</h2>
-<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Areas select karein aur unki saari sites ko ek saath select karein.</p>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Select areas to select all their sites at once.</p>
 <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
   <button onclick="multiAreaSelectAll()" id="multiAreaSelAllBtn" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Select All Areas</button>
   <button onclick="multiAreaDeselectAll()" style="padding:8px 14px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Deselect All</button>
@@ -471,6 +473,9 @@ let renderDebounceTimer = null;
 let activeStatuses = new Set();
 let telegramConfig = { botToken: "", chatId: "", enabled: false, onlyNotAvailMaint: true };
 let historySearchQuery = "";
+let bulkPreviewData = [];
+let bulkImageMatches = [];
+let newLogoData = null;
 
 /* ============ TOAST ============ */
 function showToast(title, message, type){
@@ -484,18 +489,24 @@ function showToast(title, message, type){
   setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 300); }, 6000);
 }
 
-/* ============ CORE DATE & STATUS LOGIC ============ */
-/* RULE:
-   - To date STRICTLY greater than today → Not Available
-   - To date TODAY or PAST → Available
-   - Matlab: Aaj wali (From = To = Today) bhi Available hogi
-*/
-
-function todayMidnight(){
-  const t = new Date();
-  t.setHours(0,0,0,0);
-  return t;
+/* ============ PROGRESS ============ */
+function showProgress(t, s){
+  let ov = document.getElementById("progressOverlay");
+  if(!ov){
+    ov = document.createElement("div");
+    ov.id = "progressOverlay";
+    ov.style.cssText = "display:none;position:fixed;inset:0;background:rgba(15,23,42,0.7);z-index:9998;align-items:center;justify-content:center;padding:16px";
+    ov.innerHTML = '<div style="background:#fff;border-radius:16px;padding:28px;text-align:center;min-width:260px;box-shadow:0 20px 60px rgba(0,0,0,0.3)"><div style="width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div><div id="progressText" style="font-weight:700;font-size:15px;margin-bottom:6px">Working...</div><div id="progressSub" style="font-size:12px;color:#64748b"></div></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style>';
+    document.body.appendChild(ov);
+  }
+  document.getElementById("progressText").textContent = t || "Working...";
+  document.getElementById("progressSub").textContent = s || "";
+  ov.style.display = "flex";
 }
+function hideProgress(){ const ov = document.getElementById("progressOverlay"); if(ov) ov.style.display = "none"; }
+
+/* ============ CORE DATE & STATUS LOGIC ============ */
+function todayMidnight(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
 
 function parseDDMMYYYY(s){
   if(!s) return null;
@@ -514,8 +525,6 @@ function calcStatusFromDates(fromStr, toStr){
   if(!fromD || !toD) return "Available";
   const today = todayMidnight();
   const toMid = new Date(toD); toMid.setHours(0,0,0,0);
-  // ✅ To date STRICTLY future → Not Available
-  // To date TODAY ya PAST → Available
   if(toMid > today) return "Not Available";
   return "Available";
 }
@@ -565,7 +574,7 @@ function updateCalcPreview(){
   const to = getDateFromDropdowns("fto");
   const days = calcDays(from, to);
   let extra = "";
-  if(from && to && days === 0) extra = " ⚠️ To date From se pehle!";
+  if(from && to && days === 0) extra = " ⚠️ To date is before From date!";
   document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " &nbsp;|&nbsp; <b>To:</b> " + (to||"—") + " &nbsp;|&nbsp; <b>Days:</b> " + days + extra;
   
   const status = calcStatusFromDates(from, to);
@@ -574,7 +583,7 @@ function updateCalcPreview(){
   sel.value = status;
   
   if(status === "Not Available"){
-    hint.innerHTML = "🚨 <b>Not Available</b> — Booking future me khatam hogi (To: " + to + ")";
+    hint.innerHTML = "🚨 <b>Not Available</b> — Booking ends in the future (To: " + to + ")";
     hint.style.background = "#fef2f2";
     hint.style.borderColor = "#fecaca";
     hint.style.color = "#991b1b";
@@ -582,15 +591,15 @@ function updateCalcPreview(){
     const todayISO = ddmmyyyyToISO(new Date().toLocaleDateString('en-GB'));
     const toISO = ddmmyyyyToISO(to);
     if(toISO === todayISO){
-      hint.innerHTML = "✅ <b>Available</b> — Booking aaj (" + to + ") khatam ho rahi hai";
+      hint.innerHTML = "✅ <b>Available</b> — Booking ends today (" + to + ")";
     } else {
-      hint.innerHTML = "✅ <b>Available</b> — Booking past me khatam ho chuki hai";
+      hint.innerHTML = "✅ <b>Available</b> — Booking ended in the past";
     }
     hint.style.background = "#ecfdf5";
     hint.style.borderColor = "#a7f3d0";
     hint.style.color = "#065f46";
   } else {
-    hint.innerHTML = "💡 Booking dates dene par status automatically <b>Not Available</b> ho jayega";
+    hint.innerHTML = "💡 Status will be set automatically once booking dates are entered";
     hint.style.background = "#f0f9ff";
     hint.style.borderColor = "#bae6fd";
     hint.style.color = "#0c4a6e";
@@ -604,7 +613,7 @@ async function doLogin(){
   const btn = document.getElementById("loginBtn");
   const err = document.getElementById("loginError");
   err.classList.remove("show");
-  if(!username || !password){ err.textContent = "Username aur password required"; err.classList.add("show"); return; }
+  if(!username || !password){ err.textContent = "Username and password required"; err.classList.add("show"); return; }
   btn.disabled = true; btn.textContent = "Signing in...";
   try {
     const res = await fetch(API_URL + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
@@ -613,7 +622,7 @@ async function doLogin(){
     currentUser = data.user;
     sessionStorage.setItem("sms_user", JSON.stringify(currentUser));
     showApp();
-  } catch(e){ err.textContent = "Server connect fail"; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; }
+  } catch(e){ err.textContent = "Server connection failed"; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; }
 }
 
 async function showApp(){
@@ -663,8 +672,6 @@ function startAutoRefresh(){
 /* ============ UTILS ============ */
 function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
-function showProgress(t, s){ document.getElementById("progressText").textContent = t || "Working..."; document.getElementById("progressSub").textContent = s || ""; document.getElementById("progressOverlay").classList.add("show"); }
-function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
 
 /* ============ API ============ */
 async function apiGet(path){ try { const r = await fetch(API_URL + path, { method: "GET" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
@@ -703,15 +710,25 @@ async function deleteImage(key){ delete imageCache[key]; imageFailed.delete(key)
 
 /* ============ LOGO ============ */
 async function loadLogoFromCloud(){
+  const localLogo = localStorage.getItem("custom_logo");
+  if(localLogo && localLogo.length > 10){
+    LOGO_URL = localLogo;
+    const loginLogo = document.getElementById("loginLogoImg");
+    if(loginLogo){ loginLogo.src = localLogo; loginLogo.style.display = "inline-block"; }
+    return true;
+  }
   try {
     const result = await apiGet("/logo");
     if(result && result.success && result.data){
       LOGO_URL = result.data;
-      const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo){ loginLogo.src = result.data; loginLogo.style.display = "inline-block"; }
+      localStorage.setItem("custom_logo", result.data);
+      const loginLogo = document.getElementById("loginLogoImg");
+      if(loginLogo){ loginLogo.src = result.data; loginLogo.style.display = "inline-block"; }
       return true;
     }
   } catch(e){}
-  const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo) loginLogo.src = LOGO_URL;
+  const loginLogo = document.getElementById("loginLogoImg");
+  if(loginLogo) loginLogo.src = LOGO_URL;
   return false;
 }
 
@@ -812,7 +829,6 @@ function updateCardsWithFilteredCounts(){
   document.getElementById("avail").textContent = counts.Available;
   document.getElementById("notavail").textContent = counts["Not Available"];
   document.getElementById("maintenance").textContent = counts["Under Maintenance"];
-  // 更新卡片激活状态
   document.getElementById("cardTotal").classList.toggle("active-filter", activeStatuses.size === 0 && !document.getElementById("search").value.trim() && !document.getElementById("dateFilterFrom").value.trim() && !document.getElementById("dateFilterTo").value.trim());
   document.getElementById("cardAvailable").classList.toggle("active-filter", activeStatuses.has("Available"));
   document.getElementById("cardNotAvailable").classList.toggle("active-filter", activeStatuses.has("Not Available"));
@@ -827,7 +843,6 @@ function debouncedRender(){
 
 async function render(){
   updateCardsWithFilteredCounts();
-  // 更新多状态按钮
   const multiLabel = document.getElementById("multiStatusLabel");
   const multiCount = document.getElementById("multiStatusCount");
   if(activeStatuses.size === 0){
@@ -838,7 +853,6 @@ async function render(){
     multiCount.textContent = activeStatuses.size;
     multiCount.style.display = "inline";
   }
-  // 过滤徽章
   const badge = document.getElementById("filterBadge");
   const hasDate = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
   const hasSearch = document.getElementById("search").value.trim();
@@ -859,7 +873,6 @@ async function render(){
   const filteredSites = getFilteredSites();
   visibleSites = filteredSites;
 
-  // 按区域分组
   const grouped = {};
   areas.forEach(a => grouped[a] = []);
   filteredSites.forEach(s => {
@@ -867,7 +880,6 @@ async function render(){
     grouped[s.area].push(s);
   });
 
-  // 处理折叠状态
   if(!collapsedAreas){
     collapsedAreas = new Set();
     Object.keys(grouped).forEach(a => { if(grouped[a].length === 0) collapsedAreas.add(a); });
@@ -878,18 +890,15 @@ async function render(){
 
   for(const area of sortedAreas){
     const areaSites = grouped[area] || [];
-    if(areaSites.length === 0 && !document.getElementById("search").value.trim() && activeStatuses.size === 0 && !hasDate) continue; // 无过滤时不显示空区域
+    if(areaSites.length === 0 && !document.getElementById("search").value.trim() && activeStatuses.size === 0 && !hasDate) continue;
     const isCollapsed = collapsedAreas.has(area);
-    const areaId = "area_" + area.replace(/[^a-zA-Z0-9]/g, "_");
 
-    // 区域过滤状态
     if(!areaFilters[area]) areaFilters[area] = "ALL";
     const areaStatusFilter = areaFilters[area];
     let displaySites = areaSites;
     if(areaStatusFilter !== "ALL"){
       displaySites = areaSites.filter(s => s.status === areaStatusFilter);
     }
-    // 全局状态过滤
     if(activeStatuses.size > 0){
       displaySites = displaySites.filter(s => activeStatuses.has(s.status));
     }
@@ -929,14 +938,11 @@ async function render(){
     html += '</div></div>';
   }
 
-  // 添加空状态
   if(filteredSites.length === 0){
     html = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8"><div style="font-size:48px;margin-bottom:16px">🔍</div><div style="font-size:16px;font-weight:600">No sites found</div><div style="font-size:13px;margin-top:8px">Try adjusting your filters</div></div>';
   }
 
   container.innerHTML = html;
-
-  // 更新选择栏
   updateSelectBar();
 }
 
@@ -997,7 +1003,7 @@ function renderSiteCard(site, idx){
   return html;
 }
 
-/* ============ 区域交互 ============ */
+/* ============ AREA INTERACTIONS ============ */
 function toggleAreaCollapse(event, area){
   if(event.target.tagName === "INPUT" || event.target.tagName === "BUTTON") return;
   if(collapsedAreas.has(area)) collapsedAreas.delete(area);
@@ -1034,10 +1040,8 @@ function toggleSiteSelect(id, checked){
   if(checked) selectedSites.add(id);
   else selectedSites.delete(id);
   updateSelectBar();
-  // 更新卡片样式
   const card = document.querySelector('.site-card[data-id="' + id + '"]');
   if(card) card.classList.toggle("selected-card", checked);
-  // 更新区域全选
   render();
 }
 
@@ -1050,7 +1054,6 @@ function updateSelectBar(){
   } else {
     bar.classList.remove("show");
   }
-  // 管理员显示删除按钮
   if(currentUser && currentUser.role === "Admin"){
     document.getElementById("deleteBtn").style.display = selectedSites.size > 0 ? "inline-flex" : "none";
   }
@@ -1073,7 +1076,7 @@ function bulkDeleteSelected(){
   });
 }
 
-/* ============ 添加/编辑站点 ============ */
+/* ============ ADD/EDIT SITE ============ */
 function openAdd(){
   editIndex = -1;
   document.getElementById("modalTitle").textContent = "Add Site";
@@ -1169,24 +1172,14 @@ async function saveSite(){
   if(!siteCode && !siteName){ showToast("Error", "Site code or name is required", "danger"); return; }
 
   const siteData = {
-    area,
-    siteCode,
-    site: siteName || siteCode,
-    location,
-    customer,
-    rate,
-    fromDate,
-    toDate,
-    status,
-    imageKey: ""
+    area, siteCode, site: siteName || siteCode, location, customer,
+    rate, fromDate, toDate, status, imageKey: ""
   };
 
   if(currentImageData){
     const key = "img_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
     const result = await saveImage(key, currentImageData);
-    if(result && result.success){
-      siteData.imageKey = key;
-    }
+    if(result && result.success){ siteData.imageKey = key; }
   }
 
   if(editIndex >= 0){
@@ -1201,16 +1194,10 @@ async function saveSite(){
     sites[editIndex] = { ...oldSite, ...siteData };
     if(oldSite.status !== status || oldSite.toDate !== toDate){
       bookingHistory.push({
-        id: "hist_" + Date.now(),
-        siteId: siteData.id,
-        siteName: siteData.site,
-        siteCode: siteData.siteCode,
-        area: siteData.area,
-        fromDate: siteData.fromDate,
-        toDate: siteData.toDate,
-        status: siteData.status,
-        customer: siteData.customer,
-        rate: siteData.rate,
+        id: "hist_" + Date.now(), siteId: siteData.id, siteName: siteData.site,
+        siteCode: siteData.siteCode, area: siteData.area,
+        fromDate: siteData.fromDate, toDate: siteData.toDate,
+        status: siteData.status, customer: siteData.customer, rate: siteData.rate,
         changedAt: new Date().toISOString(),
         changedBy: currentUser ? currentUser.username : "unknown",
         action: "edited"
@@ -1220,16 +1207,10 @@ async function saveSite(){
     siteData.id = "id_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
     sites.push(siteData);
     bookingHistory.push({
-      id: "hist_" + Date.now(),
-      siteId: siteData.id,
-      siteName: siteData.site,
-      siteCode: siteData.siteCode,
-      area: siteData.area,
-      fromDate: siteData.fromDate,
-      toDate: siteData.toDate,
-      status: siteData.status,
-      customer: siteData.customer,
-      rate: siteData.rate,
+      id: "hist_" + Date.now(), siteId: siteData.id, siteName: siteData.site,
+      siteCode: siteData.siteCode, area: siteData.area,
+      fromDate: siteData.fromDate, toDate: siteData.toDate,
+      status: siteData.status, customer: siteData.customer, rate: siteData.rate,
       changedAt: new Date().toISOString(),
       changedBy: currentUser ? currentUser.username : "unknown",
       action: "created"
@@ -1336,7 +1317,7 @@ function openMap(location){
   window.open("https://www.google.com/maps?q=" + encodeURIComponent(location), "_blank");
 }
 
-/* ============ 历史记录 ============ */
+/* ============ HISTORY ============ */
 function openHistoryModal(){
   historySearchQuery = "";
   document.getElementById("historySearchInput").value = "";
@@ -1432,7 +1413,7 @@ function downloadHistoryCSV(){
   URL.revokeObjectURL(url);
 }
 
-/* ============ 导出 CSV ============ */
+/* ============ EXPORT CSV ============ */
 function exportCSV(){
   let csv = "Area,Site Code,Site Name,Location,Company,Rate,From,To,Days,Status\n";
   visibleSites.forEach(s => {
@@ -1457,7 +1438,7 @@ function exportCSV(){
   URL.revokeObjectURL(url);
 }
 
-/* ============ 区域管理 ============ */
+/* ============ AREA MANAGEMENT ============ */
 function openAreaManager(){
   selectedAreas.clear();
   renderAreaList();
@@ -1541,7 +1522,7 @@ function renameArea(area){
   });
 }
 
-/* ============ 多区域选择 ============ */
+/* ============ MULTI AREA SELECT ============ */
 function openMultiAreaSelect(){
   multiAreaSelected.clear();
   renderMultiAreaList();
@@ -1583,10 +1564,9 @@ function applyMultiAreaSelection(){
   showToast("Selected", toSelect.length + " sites selected from " + multiAreaSelected.size + " areas", "success");
 }
 
-/* ============ 批量状态更新 ============ */
+/* ============ BULK STATUS ============ */
 function openBulkStatusModal(){
   if(selectedSites.size === 0) return;
-  // 简单实现：使用 prompt 选择状态
   const status = prompt("Enter status for " + selectedSites.size + " selected sites:\n(Available / Not Available / Under Maintenance)");
   if(!status) return;
   const valid = ["Available", "Not Available", "Under Maintenance"];
@@ -1599,15 +1579,9 @@ function openBulkStatusModal(){
       if(oldStatus !== status){
         bookingHistory.push({
           id: "hist_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-          siteId: site.id,
-          siteName: site.site,
-          siteCode: site.siteCode,
-          area: site.area,
-          fromDate: site.fromDate,
-          toDate: site.toDate,
-          status: status,
-          customer: site.customer,
-          rate: site.rate,
+          siteId: site.id, siteName: site.site, siteCode: site.siteCode,
+          area: site.area, fromDate: site.fromDate, toDate: site.toDate,
+          status: status, customer: site.customer, rate: site.rate,
           changedAt: new Date().toISOString(),
           changedBy: currentUser ? currentUser.username : "unknown",
           action: "bulk_status"
@@ -1618,18 +1592,15 @@ function openBulkStatusModal(){
   persistNow().then(() => {
     showToast("Updated", "Status updated for selected sites", "success");
     render();
-    if(telegramConfig.enabled){
-      // 可以发送通知
-    }
   });
 }
 
-/* ============ PPT 生成 ============ */
+/* ============ PPT (placeholder) ============ */
 function generateSelectedSitesPPT(){
   showToast("Info", "PPT generation feature coming soon!", "info");
 }
 
-/* ============ 备份/导入 ============ */
+/* ============ BACKUP / IMPORT ============ */
 function downloadBackup(){
   const data = { sites, areas, bookingHistory, exportedAt: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -1670,12 +1641,439 @@ function handleImportFile(event){
   event.target.value = "";
 }
 
-/* ============ 批量上传 ============ */
+/* ============ BULK SITE UPLOAD ============ */
 function openBulkUpload(){
-  showToast("Info", "Bulk upload feature coming soon!", "info");
+  const modalHtml = `
+  <div class="modal" id="bulkModal">
+    <div class="box" style="width:min(900px,100%)">
+      <h2>📦 Bulk Site Upload</h2>
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
+        <b>CSV Format:</b> Area, Site Code, Site Name, Location, Company, Rate, From (dd/mm/yyyy), To (dd/mm/yyyy)<br>
+        <b>Example:</b> Chandigarh, CG01, Sector 17, 30.7123, 76.7890, ABC Corp, 15000, 01/01/2025, 31/12/2025
+      </div>
+      
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <button onclick="downloadBulkTemplate()" style="padding:10px 16px;background:#6b7280;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+          📥 Download CSV Template
+        </button>
+        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
+          📁 Choose CSV File
+          <input type="file" id="bulkFileInput" accept=".csv" style="display:none" onchange="handleBulkFile(event)">
+        </label>
+        <button onclick="closeBulkModal()" style="padding:10px 16px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:auto">
+          Cancel
+        </button>
+      </div>
+      
+      <div id="bulkPreview" style="display:none">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Preview (<span id="bulkCount">0</span> sites)</h3>
+        <div style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px">
+          <table style="width:100%;border-collapse:collapse;font-size:12px" id="bulkTable">
+            <thead style="background:#f8fafc;position:sticky;top:0">
+              <tr>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Area</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Code</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Name</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Location</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Company</th>
+                <th style="padding:8px;text-align:right;border-bottom:1px solid #e2e8f0">Rate</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">From</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">To</th>
+              </tr>
+            </thead>
+            <tbody id="bulkTableBody"></tbody>
+          </table>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary" onclick="closeBulkModal()">Cancel</button>
+          <button onclick="confirmBulkUpload()" style="background:#10b981;color:#fff">✅ Confirm & Upload All</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  const oldModal = document.getElementById("bulkModal");
+  if(oldModal) oldModal.remove();
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+  document.getElementById("bulkModal").classList.add("show");
 }
 
-/* ============ 刷新 ============ */
+function closeBulkModal(){
+  const modal = document.getElementById("bulkModal");
+  if(modal) modal.remove();
+  bulkPreviewData = [];
+}
+
+function downloadBulkTemplate(){
+  const csv = "Area,Site Code,Site Name,Location,Company,Rate,From,To\n" +
+    "Chandigarh,CG01,Sector 17,30.7123;76.7890,ABC Corp,15000,01/01/2025,31/12/2025\n" +
+    "Gurgaon,GG02,Cyber Hub,28.4595;77.0266,XYZ Ltd,25000,15/03/2025,14/03/2026";
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "bulk-upload-template.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function handleBulkFile(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const text = e.target.result;
+      const lines = text.split(/\r?\n/).filter(l => l.trim());
+      if(lines.length < 2){ showToast("Error", "CSV file is empty or invalid", "danger"); return; }
+      const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
+      const idx = {
+        area: headers.findIndex(h => h.includes("area")),
+        siteCode: headers.findIndex(h => h.includes("code")),
+        siteName: headers.findIndex(h => h.includes("name")),
+        location: headers.findIndex(h => h.includes("location") || h.includes("address")),
+        company: headers.findIndex(h => h.includes("company") || h.includes("customer")),
+        rate: headers.findIndex(h => h.includes("rate") || h.includes("price")),
+        from: headers.findIndex(h => h.includes("from")),
+        to: headers.findIndex(h => h.includes("to"))
+      };
+      if(idx.area === -1 || (idx.siteCode === -1 && idx.siteName === -1)){
+        showToast("Error", "CSV must have Area and (Site Code or Site Name) columns", "danger"); return;
+      }
+      bulkPreviewData = [];
+      for(let i = 1; i < lines.length; i++){
+        const cols = parseCSVLine(lines[i]);
+        if(cols.length < 2) continue;
+        const area = idx.area >= 0 ? (cols[idx.area] || "").trim() : "";
+        if(!area) continue;
+        const siteCode = idx.siteCode >= 0 ? (cols[idx.siteCode] || "").trim().toUpperCase() : "";
+        const siteName = idx.siteName >= 0 ? (cols[idx.siteName] || "").trim() : "";
+        const location = idx.location >= 0 ? (cols[idx.location] || "").trim() : "";
+        const company = idx.company >= 0 ? (cols[idx.company] || "").trim() : "";
+        const rate = idx.rate >= 0 ? parseFloat(cols[idx.rate]) || 0 : 0;
+        let fromDate = idx.from >= 0 ? (cols[idx.from] || "").trim() : "";
+        let toDate = idx.to >= 0 ? (cols[idx.to] || "").trim() : "";
+        fromDate = normalizeDate(fromDate);
+        toDate = normalizeDate(toDate);
+        bulkPreviewData.push({
+          area, siteCode, site: siteName || siteCode, location, customer: company,
+          rate, fromDate, toDate
+        });
+      }
+      if(bulkPreviewData.length === 0){ showToast("Error", "No valid rows found in CSV", "danger"); return; }
+      renderBulkPreview();
+    } catch(err){
+      showToast("Error", "Failed to parse CSV: " + err.message, "danger");
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = "";
+}
+
+function parseCSVLine(line){
+  const result = [];
+  let current = "";
+  let inQuotes = false;
+  for(let i = 0; i < line.length; i++){
+    const ch = line[i];
+    if(ch === '"') inQuotes = !inQuotes;
+    else if(ch === ',' && !inQuotes){ result.push(current); current = ""; }
+    else current += ch;
+  }
+  result.push(current);
+  return result;
+}
+
+function normalizeDate(s){
+  if(!s) return "";
+  s = s.trim();
+  if(/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)){ const p = s.split("-"); return p[2] + "/" + p[1] + "/" + p[0]; }
+  if(/^\d{2}-\d{2}-\d{4}$/.test(s)){ const p = s.split("-"); return p[0] + "/" + p[1] + "/" + p[2]; }
+  return s;
+}
+
+function renderBulkPreview(){
+  const preview = document.getElementById("bulkPreview");
+  const tbody = document.getElementById("bulkTableBody");
+  const count = document.getElementById("bulkCount");
+  count.textContent = bulkPreviewData.length;
+  let html = "";
+  bulkPreviewData.forEach(d => {
+    html += `<tr style="border-bottom:1px solid #f1f5f9">
+      <td style="padding:6px 8px">${esc(d.area)}</td>
+      <td style="padding:6px 8px;font-family:monospace">${esc(d.siteCode)}</td>
+      <td style="padding:6px 8px">${esc(d.site)}</td>
+      <td style="padding:6px 8px;font-size:11px;color:#64748b">${esc(d.location).substring(0,30)}</td>
+      <td style="padding:6px 8px">${esc(d.customer)}</td>
+      <td style="padding:6px 8px;text-align:right">${d.rate ? "₹" + d.rate.toLocaleString("en-IN") : "—"}</td>
+      <td style="padding:6px 8px">${esc(d.fromDate) || "—"}</td>
+      <td style="padding:6px 8px">${esc(d.toDate) || "—"}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+  preview.style.display = "block";
+}
+
+async function confirmBulkUpload(){
+  if(bulkPreviewData.length === 0) return;
+  if(!confirm(`Upload ${bulkPreviewData.length} sites?`)) return;
+  showProgress("Uploading...", "Adding sites to database");
+  let added = 0;
+  const now = Date.now();
+  for(const d of bulkPreviewData){
+    if(!areas.includes(d.area)) areas.push(d.area);
+    const status = calcStatusFromDates(d.fromDate, d.toDate);
+    const siteData = {
+      id: "id_" + now + "_" + Math.random().toString(36).slice(2, 8),
+      area: d.area, siteCode: d.siteCode, site: d.site || d.siteCode,
+      location: d.location, customer: d.customer, rate: d.rate,
+      fromDate: d.fromDate, toDate: d.toDate, status: status, imageKey: ""
+    };
+    sites.push(siteData);
+    bookingHistory.push({
+      id: "hist_" + now + "_" + Math.random().toString(36).slice(2, 6),
+      siteId: siteData.id, siteName: siteData.site, siteCode: siteData.siteCode,
+      area: siteData.area, fromDate: siteData.fromDate, toDate: siteData.toDate,
+      status: siteData.status, customer: siteData.customer, rate: siteData.rate,
+      changedAt: new Date().toISOString(),
+      changedBy: currentUser ? currentUser.username : "unknown",
+      action: "bulk_created"
+    });
+    added++;
+  }
+  const ok = await persistNow();
+  hideProgress();
+  if(ok){
+    showToast("Success", added + " sites uploaded successfully", "success");
+    closeBulkModal();
+    populateAreaDropdowns();
+    render();
+  } else {
+    showToast("Error", "Upload failed. Please try again.", "danger");
+  }
+}
+
+/* ============ BULK IMAGE UPLOAD ============ */
+function openBulkImageUpload(){
+  const modalHtml = `
+  <div class="modal" id="bulkImgModal">
+    <div class="box" style="width:min(900px,100%)">
+      <h2>🖼️ Bulk Image Upload</h2>
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
+        <b>How it works:</b> Image file name should match the <b>Site Code</b> (e.g., <code>CG01.jpg</code> for site code <code>CG01</code>).<br>
+        You can select multiple images at once. Supported: JPG, PNG, WebP.
+      </div>
+      
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
+          📁 Choose Images
+          <input type="file" id="bulkImgInput" accept="image/*" multiple style="display:none" onchange="handleBulkImages(event)">
+        </label>
+        <button onclick="closeBulkImgModal()" style="padding:10px 16px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:auto">
+          Cancel
+        </button>
+      </div>
+      
+      <div id="bulkImgPreview" style="display:none">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Matched Images (<span id="bulkImgCount">0</span>)</h3>
+        <div id="bulkImgList" style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;padding:10px"></div>
+        <div class="modal-actions">
+          <button class="secondary" onclick="closeBulkImgModal()">Cancel</button>
+          <button onclick="confirmBulkImages()" style="background:#10b981;color:#fff">✅ Upload All Images</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  const oldModal = document.getElementById("bulkImgModal");
+  if(oldModal) oldModal.remove();
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+  document.getElementById("bulkImgModal").classList.add("show");
+}
+
+function closeBulkImgModal(){
+  const modal = document.getElementById("bulkImgModal");
+  if(modal) modal.remove();
+  bulkImageMatches = [];
+}
+
+function readFileAsDataURL(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleBulkImages(event){
+  const files = Array.from(event.target.files);
+  if(files.length === 0) return;
+  bulkImageMatches = [];
+  const listEl = document.getElementById("bulkImgList");
+  for(const file of files){
+    const baseName = file.name.replace(/\.[^.]+$/, "").trim().toUpperCase();
+    const site = sites.find(s => 
+      (s.siteCode && s.siteCode.toUpperCase() === baseName) ||
+      (s.site && s.site.toUpperCase() === baseName)
+    );
+    if(site){
+      const dataUrl = await readFileAsDataURL(file);
+      bulkImageMatches.push({ site, file, dataUrl });
+    }
+  }
+  if(bulkImageMatches.length === 0){
+    listEl.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;font-style:italic">No matching sites found. Make sure image filenames match site codes.</div>';
+  } else {
+    let html = "";
+    bulkImageMatches.forEach((m) => {
+      html += `<div style="display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid #f1f5f9">
+        <img src="${m.dataUrl}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid #e2e8f0">
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:13px">${esc(m.site.site || m.site.siteCode)}</div>
+          <div style="font-size:11px;color:#64748b">${esc(m.site.area)} • ${esc(m.file.name)}</div>
+        </div>
+        <span style="color:#10b981;font-weight:700;font-size:12px">✓ Matched</span>
+      </div>`;
+    });
+    listEl.innerHTML = html;
+  }
+  document.getElementById("bulkImgCount").textContent = bulkImageMatches.length;
+  document.getElementById("bulkImgPreview").style.display = "block";
+  event.target.value = "";
+}
+
+async function confirmBulkImages(){
+  if(bulkImageMatches.length === 0) return;
+  if(!confirm(`Upload ${bulkImageMatches.length} images?`)) return;
+  showProgress("Uploading images...", "This may take a moment");
+  let uploaded = 0;
+  const now = Date.now();
+  for(let i = 0; i < bulkImageMatches.length; i++){
+    const m = bulkImageMatches[i];
+    const key = "img_" + now + "_" + i + "_" + Math.random().toString(36).slice(2, 6);
+    const result = await saveImage(key, m.dataUrl);
+    if(result && result.success){
+      if(m.site.imageKey) await deleteImage(m.site.imageKey);
+      m.site.imageKey = key;
+      uploaded++;
+    }
+  }
+  const ok = await persistNow();
+  hideProgress();
+  if(ok){
+    showToast("Success", uploaded + " images uploaded", "success");
+    closeBulkImgModal();
+    render();
+  } else {
+    showToast("Error", "Failed to save images", "danger");
+  }
+}
+
+/* ============ LOGO UPLOAD ============ */
+function openLogoUpload(){
+  const modalHtml = `
+  <div class="modal" id="logoModal">
+    <div class="box" style="width:min(500px,100%)">
+      <h2>🖼️ Upload Logo</h2>
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
+        Logo will be displayed on the login screen and can be used in exports. Recommended size: 200x60px, PNG with transparent background.
+      </div>
+      
+      <div style="text-align:center;margin-bottom:16px">
+        <img id="logoPreviewImg" src="" style="max-width:200px;max-height:80px;object-fit:contain;border:1px solid #e2e8f0;border-radius:8px;padding:8px;background:#f8fafc;display:none" onerror="this.style.display='none'">
+        <div id="logoPreviewPlaceholder" style="display:none;padding:20px;color:#94a3b8;font-style:italic">No logo set</div>
+      </div>
+      
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
+          📁 Choose Logo
+          <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoFile(event)">
+        </label>
+        <button onclick="removeLogo()" style="padding:10px 16px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+          🗑️ Remove Logo
+        </button>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="secondary" onclick="closeLogoModal()">Cancel</button>
+        <button onclick="saveLogo()" style="background:#10b981;color:#fff">✅ Save Logo</button>
+      </div>
+    </div>
+  </div>`;
+  const oldModal = document.getElementById("logoModal");
+  if(oldModal) oldModal.remove();
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+  document.getElementById("logoModal").classList.add("show");
+  newLogoData = null;
+  const img = document.getElementById("logoPreviewImg");
+  const placeholder = document.getElementById("logoPreviewPlaceholder");
+  const localLogo = localStorage.getItem("custom_logo");
+  const currentLogo = localLogo || LOGO_URL;
+  if(currentLogo && currentLogo.length > 10){
+    img.src = currentLogo;
+    img.style.display = "block";
+    placeholder.style.display = "none";
+  } else {
+    img.style.display = "none";
+    placeholder.style.display = "block";
+  }
+}
+
+function closeLogoModal(){
+  const modal = document.getElementById("logoModal");
+  if(modal) modal.remove();
+  newLogoData = null;
+}
+
+function handleLogoFile(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  if(file.size > 2 * 1024 * 1024){ showToast("Error", "Logo must be under 2 MB", "danger"); return; }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    newLogoData = e.target.result;
+    const img = document.getElementById("logoPreviewImg");
+    img.src = newLogoData;
+    img.style.display = "block";
+    document.getElementById("logoPreviewPlaceholder").style.display = "none";
+  };
+  reader.readAsDataURL(file);
+  event.target.value = "";
+}
+
+async function removeLogo(){
+  if(!confirm("Remove logo?")) return;
+  newLogoData = "";
+  document.getElementById("logoPreviewImg").style.display = "none";
+  document.getElementById("logoPreviewPlaceholder").style.display = "block";
+}
+
+async function saveLogo(){
+  if(newLogoData === null){
+    showToast("Info", "No changes made", "info");
+    closeLogoModal();
+    return;
+  }
+  showProgress("Saving logo...", "");
+  if(newLogoData === ""){
+    try { await apiDelete("/logo"); } catch(e){}
+    LOGO_URL = "";
+    localStorage.removeItem("custom_logo");
+    const loginLogo = document.getElementById("loginLogoImg");
+    if(loginLogo) loginLogo.style.display = "none";
+  } else {
+    LOGO_URL = newLogoData;
+    localStorage.setItem("custom_logo", newLogoData);
+    const loginLogo = document.getElementById("loginLogoImg");
+    if(loginLogo){ loginLogo.src = newLogoData; loginLogo.style.display = "inline-block"; }
+    try { await apiPost("/logo", { data: newLogoData }); } catch(e){}
+  }
+  hideProgress();
+  showToast("Success", "Logo updated", "success");
+  closeLogoModal();
+}
+
+/* ============ REFRESH ============ */
 async function refreshPage(event){
   if(event) event.preventDefault();
   const btn = event ? event.target.closest("button") : null;
@@ -1690,7 +2088,7 @@ async function refreshPage(event){
   if(btn) btn.textContent = "🔄 Refresh";
 }
 
-/* ============ 自动释放过期站点 ============ */
+/* ============ AUTO RELEASE EXPIRED ============ */
 async function autoReleaseExpiredSites(){
   let changed = false;
   const today = todayMidnight();
@@ -1707,19 +2105,14 @@ async function autoReleaseExpiredSites(){
       }
     }
   });
-  if(changed){
-    await persistNow();
-  }
+  if(changed) await persistNow();
 }
 
-/* ============ Telegram ============ */
+/* ============ TELEGRAM ============ */
 function loadTelegramConfig(){
   try {
     const saved = localStorage.getItem("telegram_config");
-    if(saved){
-      const config = JSON.parse(saved);
-      telegramConfig = { ...telegramConfig, ...config };
-    }
+    if(saved){ telegramConfig = { ...telegramConfig, ...JSON.parse(saved) }; }
   } catch(e){}
   const tokenEl = document.getElementById("tgBotToken");
   const chatEl = document.getElementById("tgChatId");
@@ -1811,7 +2204,7 @@ async function testTelegram(){
   }
 }
 
-/* ============ 初始化 ============ */
+/* ============ INIT ============ */
 checkSession();
 </script>
 </body>
