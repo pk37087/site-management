@@ -40,16 +40,16 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
 
-/* ============ BIG PROFESSIONAL CARDS ============ */
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px 24px;position:relative;overflow:hidden;cursor:pointer;min-height:130px;display:flex;flex-direction:column;justify-content:center;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+/* ============ SLIGHTLY SMALLER CARDS ============ */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;position:relative;overflow:hidden;cursor:pointer;min-height:100px;display:flex;flex-direction:column;justify-content:center;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
 .card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,0.08);border-color:#cbd5e1}
-.card::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:#94a3b8}
-.card::after{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:rgba(148,163,184,0.06);pointer-events:none}
+.card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
+.card::after{content:'';position:absolute;top:-30px;right:-30px;width:90px;height:90px;border-radius:50%;background:rgba(148,163,184,0.06);pointer-events:none}
 .card.active-filter{box-shadow:0 0 0 3px rgba(59,130,246,0.25),0 8px 20px rgba(15,23,42,0.08);border-color:#3b82f6;transform:translateY(-2px)}
-.card .card-label{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.8px;display:block;margin-bottom:10px}
-.card b{font-size:44px;font-weight:800;color:#0f172a;line-height:1;display:block;letter-spacing:-1px}
-.card .card-icon{position:absolute;top:18px;right:20px;font-size:24px;opacity:0.15;font-weight:900}
+.card .card-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.7px;display:block;margin-bottom:6px}
+.card b{font-size:34px;font-weight:800;color:#0f172a;line-height:1;display:block;letter-spacing:-0.5px}
+.card .card-icon{position:absolute;top:14px;right:16px;font-size:20px;opacity:0.15;font-weight:900}
 .card.available::before{background:linear-gradient(180deg,#10b981,#059669)}
 .card.available b{color:#047857}
 .card.available .card-icon{color:#10b981;opacity:0.2}
@@ -209,10 +209,10 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   #app{padding-top:130px}
   .container{padding:0 12px}
   .cards{grid-template-columns:1fr 1fr;gap:10px}
-  .card{padding:16px;min-height:105px}
-  .card b{font-size:32px}
-  .card .card-label{font-size:10px;margin-bottom:6px}
-  .card .card-icon{font-size:20px;top:12px;right:14px}
+  .card{padding:14px;min-height:90px}
+  .card b{font-size:28px}
+  .card .card-label{font-size:9px;margin-bottom:4px}
+  .card .card-icon{font-size:16px;top:10px;right:12px}
   .toolbar{padding:8px;gap:6px}
   .toolbar #search{min-width:100%;flex:1 1 100%}
   .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center;height:36px;min-height:36px}
@@ -278,7 +278,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </header>
 <div class="container">
 
-<!-- BIG PROFESSIONAL CARDS -->
 <div class="cards">
   <div class="card total" id="cardTotal" onclick="filterByCard('ALL')">
     <span class="card-icon">📊</span>
@@ -580,6 +579,7 @@ const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing
 const MAX_PPT_SIZE = 100 * 1024 * 1024;
 const COMPANY_NAME = "DS Outdoor Media";
 const COMPANY_TAGLINE = "Professional Site Booking & Management";
+const MAX_FILTER_YEARS_AHEAD = 10; // Filter date max 10 years aage tak allowed
 let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 let newLogoData = "";
 
@@ -610,8 +610,8 @@ let renderDebounceTimer = null;
 let notificationsEnabled = false;
 let lastKnownStatuses = {};
 
-/* ============ BLUR BG CACHE (avoid reprocessing same image) ============ */
-const blurImageCache = {}; // key: siteId, value: cropped/blurred dataURL
+/* ============ BLUR BG CACHE ============ */
+const blurImageCache = {};
 
 /* ============ TOAST ============ */
 function showToast(title, message, type){
@@ -680,9 +680,7 @@ function sendBrowserNotification(title, body, type){
   if(Notification.permission !== "granted") return;
   try {
     const n = new Notification(title, {
-      body: body,
-      icon: LOGO_URL,
-      badge: LOGO_URL,
+      body: body, icon: LOGO_URL, badge: LOGO_URL,
       tag: "sms-" + Date.now(),
       requireInteraction: type === "danger"
     });
@@ -693,23 +691,11 @@ function notifyStatusChange(site, oldStatus, newStatus){
   const isBooked = (newStatus === "Not Available") && (oldStatus === "Available" || !oldStatus);
   const isMaint = (newStatus === "Under Maintenance") && (oldStatus !== "Under Maintenance");
   const isReleased = (newStatus === "Available") && (oldStatus === "Not Available" || oldStatus === "Under Maintenance");
-  
   let title, body, type, toastType;
-  if(isBooked){
-    title = "🚨 Site Booked!";
-    body = site.site + " (" + (site.area||"") + ") — " + (site.customer||"Customer") + " ne book kiya";
-    type = "danger"; toastType = "danger";
-  } else if(isMaint){
-    title = "⚠️ Maintenance Alert";
-    body = site.site + " (" + (site.area||"") + ") ab maintenance me hai";
-    type = "warning"; toastType = "warning";
-  } else if(isReleased){
-    title = "✅ Site Available";
-    body = site.site + " (" + (site.area||"") + ") ab available hai";
-    type = "success"; toastType = "success";
-  } else {
-    return;
-  }
+  if(isBooked){ title = "🚨 Site Booked!"; body = site.site + " (" + (site.area||"") + ") — " + (site.customer||"Customer") + " ne book kiya"; type = "danger"; toastType = "danger"; }
+  else if(isMaint){ title = "⚠️ Maintenance Alert"; body = site.site + " (" + (site.area||"") + ") ab maintenance me hai"; type = "warning"; toastType = "warning"; }
+  else if(isReleased){ title = "✅ Site Available"; body = site.site + " (" + (site.area||"") + ") ab available hai"; type = "success"; toastType = "success"; }
+  else return;
   sendBrowserNotification(title, body, type);
   showToast(title, body, toastType);
 }
@@ -837,50 +823,28 @@ async function loadLogoFromCloud(){
   if(loginLogo) loginLogo.src = LOGO_URL;
   return false;
 }
-
 (function setupLogoDropZone(){
   const dz = document.getElementById("logoDropZone");
   if(!dz) return;
   dz.addEventListener("dragover", e => { e.preventDefault(); dz.style.background = "#fef3c7"; });
   dz.addEventListener("dragleave", () => dz.style.background = "#fffbeb");
-  dz.addEventListener("drop", e => { 
-    e.preventDefault(); 
-    dz.style.background = "#fffbeb"; 
-    const files = e.dataTransfer.files; 
-    if(files && files.length > 0) processLogoFile(files[0]);
-  });
+  dz.addEventListener("drop", e => { e.preventDefault(); dz.style.background = "#fffbeb"; const files = e.dataTransfer.files; if(files && files.length > 0) processLogoFile(files[0]); });
 })();
-
-function handleLogoUpload(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  processLogoFile(file);
-  e.target.value = "";
-}
-
+function handleLogoUpload(e){ const file = e.target.files[0]; if(!file) return; processLogoFile(file); e.target.value = ""; }
 function processLogoFile(file){
   if(!file.type.startsWith("image/")){ alert("Only image files allowed"); return; }
   if(file.size > 2*1024*1024){ alert("Max 2 MB allowed. Aapki file: " + (file.size/1024/1024).toFixed(2) + " MB"); return; }
   const reader = new FileReader();
   reader.onload = (ev) => {
     let dataUrl = ev.target.result;
-    if(file.type === "image/svg+xml"){
-      newLogoData = dataUrl;
-      showNewLogoPreview(dataUrl);
-      return;
-    }
+    if(file.type === "image/svg+xml"){ newLogoData = dataUrl; showNewLogoPreview(dataUrl); return; }
     const img = new Image();
     img.onload = () => {
       const MAX_W = 800, MAX_H = 300;
       let w = img.width, h = img.height;
-      if(w > MAX_W || h > MAX_H){
-        const r = Math.min(MAX_W / w, MAX_H / h);
-        w = Math.round(w * r);
-        h = Math.round(h * r);
-      }
+      if(w > MAX_W || h > MAX_H){ const r = Math.min(MAX_W / w, MAX_H / h); w = Math.round(w * r); h = Math.round(h * r); }
       const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
+      canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext("2d");
       ctx.imageSmoothingQuality = "high";
       if(file.type === "image/png"){ ctx.clearRect(0, 0, w, h); }
@@ -890,11 +854,7 @@ function processLogoFile(file){
       let quality = 0.9;
       let result = canvas.toDataURL(mimeType, quality);
       let attempts = 0;
-      while(result.length > 1.5 * 1024 * 1024 && quality > 0.6 && attempts < 8){
-        quality -= 0.05;
-        result = canvas.toDataURL(mimeType, quality);
-        attempts++;
-      }
+      while(result.length > 1.5 * 1024 * 1024 && quality > 0.6 && attempts < 8){ quality -= 0.05; result = canvas.toDataURL(mimeType, quality); attempts++; }
       newLogoData = result;
       showNewLogoPreview(result);
     };
@@ -923,17 +883,10 @@ async function saveNewLogo(){
       document.getElementById("currentLogoPreview").src = newLogoData;
       const loginLogo = document.getElementById("loginLogoImg");
       if(loginLogo){ loginLogo.src = newLogoData; loginLogo.style.display = "inline-block"; }
-      cancelLogoUpload();
-      hideProgress();
+      cancelLogoUpload(); hideProgress();
       alert("✅ Logo successfully update ho gaya!");
-    } else {
-      hideProgress();
-      alert("Failed: " + (result.error || "Unknown error"));
-    }
-  } catch(e){
-    hideProgress();
-    alert("Error: " + e.message);
-  }
+    } else { hideProgress(); alert("Failed: " + (result.error || "Unknown error")); }
+  } catch(e){ hideProgress(); alert("Error: " + e.message); }
 }
 
 /* ============ LOGIN ============ */
@@ -948,18 +901,12 @@ async function doLogin(){
   try {
     const res = await fetch(API_URL + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
     const data = await res.json();
-    if(!data.success){
-      err.textContent = data.error || "Login failed";
-      err.classList.add("show");
-      btn.disabled = false; btn.textContent = "Sign In";
-      return;
-    }
+    if(!data.success){ err.textContent = data.error || "Login failed"; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; return; }
     currentUser = data.user;
     sessionStorage.setItem("sms_user", JSON.stringify(currentUser));
     showApp();
   } catch(e){
-    err.textContent = "Server connect fail";
-    err.classList.add("show");
+    err.textContent = "Server connect fail"; err.classList.add("show");
     btn.disabled = false; btn.textContent = "Sign In";
   }
 }
@@ -1004,9 +951,7 @@ function startAutoRefresh(){
         newSites.forEach(s => {
           if(!s.id) return;
           const oldStatus = lastKnownStatuses[s.id];
-          if(oldStatus && oldStatus !== s.status){
-            notifyStatusChange(s, oldStatus, s.status);
-          }
+          if(oldStatus && oldStatus !== s.status){ notifyStatusChange(s, oldStatus, s.status); }
         });
         sites = newSites;
         areas = (result.areas && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
@@ -1028,11 +973,7 @@ function normalizeStatus(s){
   if(s.includes("not") || s.includes("unavail")) return "Not Available";
   return "Available";
 }
-function formatINR(v){
-  const n = parseFloat(v);
-  if(isNaN(n)) return "";
-  return "₹" + n.toLocaleString('en-IN');
-}
+function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
 function formatBytes(b){
   if(!b) return "0 B";
   const k = 1024; const sizes = ["B","KB","MB","GB"];
@@ -1052,9 +993,7 @@ function filterByCard(status){
   document.getElementById("filter").value = status;
   document.getElementById("search").value = ""; 
   areaFilters = {};
-  render(); 
-  syncCardHighlight();
-  updateFilterBadge();
+  render(); syncCardHighlight(); updateFilterBadge();
 }
 function syncCardHighlight(){
   const f = document.getElementById("filter").value;
@@ -1107,24 +1046,66 @@ function onDateBlur(){
     if((!from || validPattern.test(from)) && (!to || validPattern.test(to))){ applyFilters(); }
   }
 }
+
+/* ============ VALIDATION: check if date is valid AND within limits ============ */
+function validateFilterDate(dateStr, fieldName){
+  if(!dateStr) return { ok: true };
+  const p = String(dateStr).trim().split("/");
+  if(p.length !== 3) return { ok: false, msg: fieldName + " date format galat hai (dd/mm/yyyy)" };
+  const dd = parseInt(p[0]), mm = parseInt(p[1]), yyyy = parseInt(p[2]);
+  if(isNaN(dd) || isNaN(mm) || isNaN(yyyy)) return { ok: false, msg: fieldName + " date valid nahi hai" };
+  if(yyyy < 1900 || yyyy > 2200) return { ok: false, msg: fieldName + " year 1900-2200 ke beech honi chahiye" };
+  const testDate = new Date(yyyy, mm - 1, dd);
+  if(testDate.getFullYear() !== yyyy || testDate.getMonth() !== (mm - 1) || testDate.getDate() !== dd){
+    return { ok: false, msg: fieldName + " date exist nahi karti (jaise 31/02/2024)" };
+  }
+  // Range check: Max 10 years from now
+  const today = new Date();
+  const maxDate = new Date(today.getFullYear() + MAX_FILTER_YEARS_AHEAD, today.getMonth(), today.getDate());
+  const minDate = new Date(2000, 0, 1); // 1 Jan 2000 se pehle allowed nahi
+  if(testDate > maxDate){
+    return { ok: false, msg: fieldName + " date " + (today.getFullYear() + MAX_FILTER_YEARS_AHEAD) + " se aage nahi ho sakti. Max allowed: " + maxDate.toLocaleDateString('en-GB') };
+  }
+  if(testDate < minDate){
+    return { ok: false, msg: fieldName + " date 01/01/2000 se pehle allowed nahi hai" };
+  }
+  return { ok: true };
+}
+
 function applyFilters(){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
   const validPattern = /^\d{2}\/\d{2}\/\d{4}$/;
-  if(fromInput && !validPattern.test(fromInput)){ alert("From date complete karein (dd/mm/yyyy)"); document.getElementById("dateFilterFrom").focus(); return; }
-  if(toInput && !validPattern.test(toInput)){ alert("To date complete karein (dd/mm/yyyy)"); document.getElementById("dateFilterTo").focus(); return; }
-  if(fromInput && !isValidDate(fromInput)){ alert("From date valid nahi hai"); return; }
-  if(toInput && !isValidDate(toInput)){ alert("To date valid nahi hai"); return; }
+  
+  if(fromInput && !validPattern.test(fromInput)){ 
+    showToast("Invalid Date", "From date complete karein (dd/mm/yyyy)", "warning");
+    document.getElementById("dateFilterFrom").focus();
+    return;
+  }
+  if(toInput && !validPattern.test(toInput)){ 
+    showToast("Invalid Date", "To date complete karein (dd/mm/yyyy)", "warning");
+    document.getElementById("dateFilterTo").focus();
+    return;
+  }
+  
+  // ✅ Full validation with range check
+  const fromCheck = validateFilterDate(fromInput, "From");
+  if(!fromCheck.ok){ showToast("Invalid Date", fromCheck.msg, "warning"); document.getElementById("dateFilterFrom").focus(); return; }
+  const toCheck = validateFilterDate(toInput, "To");
+  if(!toCheck.ok){ showToast("Invalid Date", toCheck.msg, "warning"); document.getElementById("dateFilterTo").focus(); return; }
+  
   if(fromInput && toInput){
     const fromISO = ddmmyyyyToISOForFilter(fromInput);
     const toISO = ddmmyyyyToISOForFilter(toInput);
-    if(fromISO > toISO){ alert("From date, To date se pehle honi chahiye"); return; }
+    if(fromISO > toISO){ showToast("Invalid Range", "From date, To date se pehle honi chahiye", "warning"); return; }
   }
+  
   areaFilters = {};
   render();
   updateFilterBadge();
   autoSelectFilteredSites();
 }
+
 function autoSelectFilteredSites(){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
@@ -1283,14 +1264,9 @@ async function refreshPage(e){
 /* ============ MULTI AREA ============ */
 function openMultiAreaSelect(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  multiAreaSelected.clear();
-  renderMultiAreaList();
-  document.getElementById("multiAreaModal").classList.add("show");
+  multiAreaSelected.clear(); renderMultiAreaList(); document.getElementById("multiAreaModal").classList.add("show");
 }
-function closeMultiAreaModal(){
-  multiAreaSelected.clear();
-  document.getElementById("multiAreaModal").classList.remove("show");
-}
+function closeMultiAreaModal(){ multiAreaSelected.clear(); document.getElementById("multiAreaModal").classList.remove("show"); }
 function renderMultiAreaList(){
   const list = document.getElementById("multiAreaList");
   if(areas.length === 0){ list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px">No areas.</div>'; return; }
@@ -1609,8 +1585,7 @@ async function confirmBulkUpload(){
       } catch(e){ failed++; }
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
-    await persistNow();
-    hideProgress();
+    await persistNow(); hideProgress();
     render(); closeBulkModal();
     alert("✅ Images: " + success + " / " + matched.length + (failed > 0 ? "\n❌ Failed: " + failed : ""));
     return;
@@ -1628,8 +1603,7 @@ async function confirmBulkUpload(){
       const result = await savePpt(p.area, obj);
       if(result && result.success) success++;
     }
-    await refreshPptCache();
-    hideProgress();
+    await refreshPptCache(); hideProgress();
     render(); closeBulkModal();
     alert("✅ PPTs: " + success + " / " + matched.length);
     return;
@@ -2061,8 +2035,7 @@ async function saveSite(){
   if(currentImageData){ await saveImage(id, currentImageData); }
   else if(hadImage){ await deleteImage(id); }
   if(editIndex < 0) sites.push(newSite); else sites[editIndex] = newSite;
-  await persistNow();
-  hideProgress();
+  await persistNow(); hideProgress();
   closeModal(); render();
   if(oldStatus && oldStatus !== statusVal){ notifyStatusChange(newSite, oldStatus, statusVal); }
   else if(editIndex < 0 && statusVal !== "Available"){ notifyStatusChange(newSite, "Available", statusVal); }
@@ -2089,25 +2062,17 @@ function compressImageSmart(dataUrl, cb){
   img.onload = () => {
     const MAX_W = 1024, MAX_H = 1024, MAX_B = 800 * 1024;
     let w = img.width, h = img.height;
-    if(w > MAX_W || h > MAX_H){
-      const r = Math.min(MAX_W / w, MAX_H / h);
-      w = Math.round(w * r); h = Math.round(h * r);
-    }
+    if(w > MAX_W || h > MAX_H){ const r = Math.min(MAX_W / w, MAX_H / h); w = Math.round(w * r); h = Math.round(h * r); }
     const canvas = document.createElement("canvas");
     canvas.width = w; canvas.height = h;
     const ctx = canvas.getContext("2d", { alpha: false });
     ctx.imageSmoothingQuality = "high";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h);
     ctx.drawImage(img, 0, 0, w, h);
     let quality = 0.75;
     let result = canvas.toDataURL("image/jpeg", quality);
     let attempts = 0;
-    while(result.length > MAX_B && quality > 0.5 && attempts < 10){
-      quality -= 0.05;
-      result = canvas.toDataURL("image/jpeg", quality);
-      attempts++;
-    }
+    while(result.length > MAX_B && quality > 0.5 && attempts < 10){ quality -= 0.05; result = canvas.toDataURL("image/jpeg", quality); attempts++; }
     cb(result);
   };
   img.onerror = () => { alert("Image load fail"); cb(dataUrl); };
@@ -2158,27 +2123,14 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-/* ============ IMAGE PROCESSING FOR PPT (BLUR BG + COVER) ============ */
-/* Returns { main: dataURL, bg: dataURL } 
-   - main = original image (fit contain, letterbox transparent)
-   - bg   = blurred, zoomed, dark-tinted version covering entire box
-*/
+/* ============ IMAGE PROCESSING FOR PPT (BLUR BG) ============ */
 function processImageForPPT(dataUrl, boxRatio){
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
       const imgRatio = img.width / img.height;
       
-      // ---- 1. Create BLURRED BACKGROUND (cover, zoomed, dark) ----
-      const bgW = 1600;
-      const bgH = Math.round(bgW / boxRatio);
-      const bgCanvas = document.createElement("canvas");
-      bgCanvas.width = bgW;
-      bgCanvas.height = bgH;
-      const bgCtx = bgCanvas.getContext("2d");
-      bgCtx.imageSmoothingQuality = "high";
-      
-      // Cover fit (crop to fill)
+      // ---- 1. Cover crop coords ----
       let sx, sy, sw, sh;
       if(imgRatio > boxRatio){
         sh = img.height;
@@ -2191,15 +2143,10 @@ function processImageForPPT(dataUrl, boxRatio){
         sx = 0;
         sy = (img.height - sh) / 2;
       }
-      // Draw cropped + zoomed (1.15x) for blur bleed
-      bgCtx.drawImage(img, sx, sy, sw, sh, 0, 0, bgW, bgH);
       
-      // Dark overlay for readability
-      bgCtx.fillStyle = "rgba(15, 23, 42, 0.55)";
-      bgCtx.fillRect(0, 0, bgW, bgH);
-      
-      // ---- 2. Create BLURED version by drawing scaled-down then up ----
-      // (Canvas filter blur is slow, so we use pixelation + smooth scale)
+      // ---- 2. Blurred background ----
+      const bgW = 1600;
+      const bgH = Math.round(bgW / boxRatio);
       const blurW = 60;
       const blurH = Math.round(blurW / boxRatio);
       const blurCanvas = document.createElement("canvas");
@@ -2211,7 +2158,6 @@ function processImageForPPT(dataUrl, boxRatio){
       blurCtx.fillStyle = "rgba(15, 23, 42, 0.55)";
       blurCtx.fillRect(0, 0, blurW, blurH);
       
-      // Now scale back up smoothly (creates blur effect)
       const finalBgCanvas = document.createElement("canvas");
       finalBgCanvas.width = bgW;
       finalBgCanvas.height = bgH;
@@ -2219,7 +2165,7 @@ function processImageForPPT(dataUrl, boxRatio){
       finalBgCtx.imageSmoothingQuality = "high";
       finalBgCtx.drawImage(blurCanvas, 0, 0, bgW, bgH);
       
-      // ---- 3. Create MAIN image (contain fit, transparent letterbox) ----
+      // ---- 3. Main image (contain, transparent bars) ----
       const mainW = 1600;
       const mainH = Math.round(mainW / boxRatio);
       const mainCanvas = document.createElement("canvas");
@@ -2230,13 +2176,11 @@ function processImageForPPT(dataUrl, boxRatio){
       
       let mDrawW, mDrawH, mDrawX, mDrawY;
       if(imgRatio > boxRatio){
-        // Wider → fit width
         mDrawW = mainW;
         mDrawH = mainW / imgRatio;
         mDrawX = 0;
         mDrawY = (mainH - mDrawH) / 2;
       } else {
-        // Taller → fit height
         mDrawH = mainH;
         mDrawW = mainH * imgRatio;
         mDrawX = (mainW - mDrawW) / 2;
@@ -2244,7 +2188,6 @@ function processImageForPPT(dataUrl, boxRatio){
       }
       mainCtx.drawImage(img, mDrawX, mDrawY, mDrawW, mDrawH);
       
-      // ---- 4. Compress both ----
       const compress = (canvas, maxBytes) => {
         let quality = 0.85;
         let result = canvas.toDataURL("image/jpeg", quality);
@@ -2263,6 +2206,14 @@ function processImageForPPT(dataUrl, boxRatio){
       });
     };
     img.onerror = () => resolve(null);
+    img.src = dataUrl;
+  });
+}
+function getImageAspectRatio(dataUrl){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(img.width / img.height);
+    img.onerror = () => resolve(1);
     img.src = dataUrl;
   });
 }
@@ -2345,14 +2296,12 @@ async function generateSelectedSitesPPT(){
       slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
-      // ===== IMAGE AREA WITH BLUR BACKGROUND =====
       const imgBoxX = 0, imgBoxY = 0.65, imgBoxW = 13.33, imgBoxH = 5.4;
       const boxRatio = imgBoxW / imgBoxH;
       
       let imageAdded = false;
       if(imgData && typeof imgData === "string"){
         try {
-          // Check cache first
           let processed = blurImageCache[x.id];
           if(!processed){
             processed = await processImageForPPT(imgData, boxRatio);
@@ -2360,57 +2309,29 @@ async function generateSelectedSitesPPT(){
           }
           
           if(processed && processed.bg && processed.main){
-            // Draw blurred bg first (fills entire box)
-            slide.addImage({ 
-              data: processed.bg, 
-              x: imgBoxX, 
-              y: imgBoxY, 
-              w: imgBoxW, 
-              h: imgBoxH 
-            });
-            
-            // Draw main image on top (contain fit, centered)
-            // Main image has same ratio as box, but with transparent bars
-            // So we add it centered
+            slide.addImage({ data: processed.bg, x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH });
             const imgRatio = await getImageAspectRatio(imgData);
             let mainDrawW, mainDrawH, mainDrawX, mainDrawY;
-            
             if(imgRatio > boxRatio){
-              // Wider: fit width, letterbox top/bottom
               mainDrawW = imgBoxW;
               mainDrawH = imgBoxW / imgRatio;
               mainDrawX = imgBoxX;
               mainDrawY = imgBoxY + (imgBoxH - mainDrawH) / 2;
             } else {
-              // Taller: fit height, letterbox left/right
               mainDrawH = imgBoxH;
               mainDrawW = imgBoxH * imgRatio;
               mainDrawX = imgBoxX + (imgBoxW - mainDrawW) / 2;
               mainDrawY = imgBoxY;
             }
-            
-            // Draw main image using original data (crisp)
-            slide.addImage({ 
-              data: imgData, 
-              x: mainDrawX, 
-              y: mainDrawY, 
-              w: mainDrawW, 
-              h: mainDrawH
-            });
-            
+            slide.addImage({ data: imgData, x: mainDrawX, y: mainDrawY, w: mainDrawW, h: mainDrawH });
             imageAdded = true;
           }
         } catch(e){ console.warn("Image processing failed:", e); }
         
-        // Fallback: original contain
         if(!imageAdded){
           try {
             slide.addShape(pptx.ShapeType.rect, { x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH, fill: { color: "0F172A" } });
-            slide.addImage({ 
-              data: imgData, 
-              x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH,
-              sizing: { type: "contain", w: imgBoxW, h: imgBoxH }
-            });
+            slide.addImage({ data: imgData, x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH, sizing: { type: "contain", w: imgBoxW, h: imgBoxH } });
             imageAdded = true;
           } catch(e2){ console.warn("Fallback failed:", e2); }
         }
@@ -2423,7 +2344,6 @@ async function generateSelectedSitesPPT(){
         slide.addText("No Image Available", { x: 4.5, y: imgBoxY + 2.7, w: 4.33, h: 0.4, fontSize: 14, color: "94A3B8", align: "center", valign: "middle", italic: true });
       }
 
-      // ===== INFO BAR =====
       const infoY = 6.15, infoH = 1.25;
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
       
@@ -2485,15 +2405,6 @@ async function generateSelectedSitesPPT(){
     console.error("PPT generation error:", e);
     alert("PPT generation failed: " + e.message);
   }
-}
-
-function getImageAspectRatio(dataUrl){
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => resolve(img.width / img.height);
-    img.onerror = () => resolve(1);
-    img.src = dataUrl;
-  });
 }
 
 /* ============ HISTORY ============ */
