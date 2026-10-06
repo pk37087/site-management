@@ -498,7 +498,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
 const MAX_PPT_SIZE = 100 * 1024 * 1024;
-const COMPANY_NAME = "Site Management System";
+const COMPANY_NAME = "DS Outdoor Media";
 const COMPANY_TAGLINE = "Professional Site Booking & Management";
 const LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 
@@ -1652,14 +1652,13 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-/* ============ PPT GENERATOR (Logo + Dynamic Area + Site Code) ============ */
+/* ============ PPT GENERATOR (Professional Logo + Tagline) ============ */
 async function generateSelectedSitesPPT(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   const list = sites.filter(s => selectedSites.has(s.id));
   if(list.length === 0){ alert("Koi site nahi"); return; }
   const uniqueAreas = [...new Set(list.map(s => s.area || "Unassigned"))];
   const singleArea = uniqueAreas.length === 1 ? uniqueAreas[0] : null;
-  // DYNAMIC AREA DISPLAY NAME
   const areaDisplayName = uniqueAreas.length === 1 
     ? uniqueAreas[0] 
     : uniqueAreas.length <= 3 
@@ -1672,20 +1671,30 @@ async function generateSelectedSitesPPT(){
     pptx.author = COMPANY_NAME;
     pptx.title = uniqueAreas.length === 1 ? "Site Report - " + uniqueAreas[0] : "Site Report - Multiple Areas";
 
-    // COVER SLIDE WITH LOGO
+    // COVER SLIDE WITH PROFESSIONAL LOGO + TAGLINE
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
     
-    // WHITE BACKGROUND BOX FOR LOGO
-    slide.addShape(pptx.ShapeType.roundRect, { x: 0.5, y: 0.5, w: 2.7, h: 1.1, fill: { color: "FFFFFF" }, rectRadius: 0.08 });
+    // LARGE WHITE LOGO BOX WITH BORDER
+    slide.addShape(pptx.ShapeType.roundRect, { 
+      x: 0.7, y: 0.6, w: 4.0, h: 1.7, 
+      fill: { color: "FFFFFF" }, line: { color: "1D4ED8", width: 1.5 }, rectRadius: 0.1 
+    });
     try {
-      slide.addImage({ path: LOGO_URL, x: 0.6, y: 0.6, w: 2.5, h: 0.9, sizing: { type: "contain", w: 2.5, h: 0.9 } });
+      slide.addImage({ 
+        path: LOGO_URL, 
+        x: 0.9, y: 0.75, w: 3.6, h: 0.85, 
+        sizing: { type: "contain", w: 3.6, h: 0.85 } 
+      });
+      slide.addText("Professional Site Booking & Management", { 
+        x: 0.9, y: 1.75, w: 3.6, h: 0.4, 
+        fontSize: 9, color: "1E40AF", align: "center", valign: "middle", italic: true, bold: true 
+      });
     } catch(e) {
-      slide.addText(COMPANY_NAME, { x: 0.6, y: 0.6, w: 2.5, h: 0.9, fontSize: 10, bold: true, color: "1E40AF", align: "center", valign: "middle" });
+      slide.addText(COMPANY_NAME, { x: 0.9, y: 0.75, w: 3.6, h: 0.85, fontSize: 16, bold: true, color: "1E40AF", align: "center", valign: "middle" });
+      slide.addText("Professional Site Booking & Management", { x: 0.9, y: 1.75, w: 3.6, h: 0.4, fontSize: 9, color: "1E40AF", align: "center", valign: "middle", italic: true });
     }
-    
-    slide.addText(COMPANY_TAGLINE, { x: 3.4, y: 0.8, w: 8, h: 0.35, fontSize: 11, color: "CBD5E1", italic: true });
     
     // DYNAMIC AREA NAME
     const coverAreaFontSize = areaDisplayName.length > 40 ? 28 : areaDisplayName.length > 25 ? 36 : 48;
@@ -1711,7 +1720,6 @@ async function generateSelectedSitesPPT(){
       if(x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
       const mapLink = getGoogleMapsUrl(x);
       
-      // SITE CODE EXTRACT (first part before underscore)
       const siteCode = (x.site || "").split("_")[0].trim() || "";
       
       slide = pptx.addSlide();
@@ -1721,7 +1729,6 @@ async function generateSelectedSitesPPT(){
       slide.addText(String(i+1), { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fontSize: 16, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
       slide.addText(x.site, { x: 0.78, y: 0.05, w: 8.0, h: 0.55, fontSize: 14, bold: true, color: "FFFFFF", valign: "middle" });
       
-      // SITE CODE BADGE (top-right area, before status)
       if(siteCode){
         slide.addShape(pptx.ShapeType.roundRect, { 
           x: 8.9, y: 0.12, w: 1.4, h: 0.42, 
@@ -1775,13 +1782,15 @@ async function generateSelectedSitesPPT(){
       slide.addText(COMPANY_NAME + "  •  Page " + (i + 2), { x: 0.5, y: 7.18, w: 12.33, h: 0.28, fontSize: 8, color: "94A3B8", align: "center", valign: "middle" });
     }
 
-    // THANK YOU SLIDE
+    // THANK YOU SLIDE WITH LOGO
     slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
-    slide.addText("THANK YOU", { x: 0, y: 3, w: 13.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center", charSpacing: 8 });
-    slide.addText(COMPANY_NAME, { x: 0, y: 4.2, w: 13.33, h: 0.5, fontSize: 16, color: "BAE6FD", align: "center", charSpacing: 3 });
-    slide.addText(COMPANY_TAGLINE, { x: 0, y: 4.7, w: 13.33, h: 0.4, fontSize: 11, color: "93C5FD", align: "center" });
+    try {
+      slide.addImage({ path: LOGO_URL, x: 5.4, y: 2.0, w: 2.5, h: 0.9, sizing: { type: "contain", w: 2.5, h: 0.9 } });
+    } catch(e){}
+    slide.addText("THANK YOU", { x: 0, y: 3.3, w: 13.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center", charSpacing: 8 });
+    slide.addText("Professional Site Booking & Management", { x: 0, y: 4.5, w: 13.33, h: 0.4, fontSize: 12, color: "BAE6FD", align: "center", italic: true });
 
     const fileName = (singleArea ? "PPT_" + singleArea.replace(/[^a-z0-9]/gi, "_") : "PPT_MultiArea") + "_" + new Date().toISOString().slice(0,10) + ".pptx";
     showProgress("Finalizing...", "Writing file");
