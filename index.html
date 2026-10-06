@@ -6,7 +6,6 @@
 <title>Site Management System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{max-width:100%}
@@ -50,29 +49,46 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card .card-icon{position:absolute;top:14px;right:16px;font-size:20px;opacity:0.15;font-weight:900}
 .card.available::before{background:linear-gradient(180deg,#10b981,#059669)}
 .card.available b{color:#047857}
+.card.available .card-icon{color:#10b981;opacity:0.2}
 .card.notavailable::before{background:linear-gradient(180deg,#ef4444,#dc2626)}
 .card.notavailable b{color:#b91c1c}
+.card.notavailable .card-icon{color:#ef4444;opacity:0.2}
 .card.maintenance::before{background:linear-gradient(180deg,#f59e0b,#d97706)}
 .card.maintenance b{color:#b45309}
+.card.maintenance .card-icon{color:#f59e0b;opacity:0.2}
 .card.total::before{background:linear-gradient(180deg,#3b82f6,#1d4ed8)}
 .card.total b{color:#1e40af}
+.card.total .card-icon{color:#3b82f6;opacity:0.2}
 .toolbar{background:#fff;padding:10px;border-radius:10px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border:1px solid #e2e8f0;align-items:center}
 .toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-family:inherit;background:#fff;outline:none;color:#0f172a;min-width:160px;flex:1;font-size:13px !important;height:36px}
 .toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;height:36px;white-space:nowrap}
+.toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
+.toolbar button.multi-area-btn{background:#7c3aed;color:#fff;border-color:#6d28d9}
 .filter-box{display:flex;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;flex-wrap:nowrap;height:36px}
 .filter-box .date-group{display:flex;align-items:center;background:#fff;border-right:1px solid #cbd5e1;height:100%}
 .filter-box .date-input{padding:0 8px;border:0;font-family:inherit;font-size:12px !important;width:95px;background:#fff;color:#0f172a;outline:none;height:100%}
+.filter-box .date-input:focus{background:#eff6ff}
+.filter-box .date-input::placeholder{color:#94a3b8;font-size:11px}
 .filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700;display:flex;align-items:center}
 .filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-family:inherit;font-weight:700;font-size:11px;height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.filter-box .apply-btn:hover{background:#2563eb}
 .filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none;align-items:center}
+.filter-box .clear-btn.show{display:flex}
+.filter-box .clear-btn:hover{background:#fef2f2}
+.filter-active-badge{background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;border:1px solid #93c5fd;display:none;align-items:center;gap:3px;white-space:nowrap;height:24px}
+.filter-active-badge.show{display:inline-flex}
 .multi-status-wrap{position:relative;height:36px;display:flex}
 .multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;white-space:nowrap;border-radius:6px;min-width:130px}
+.multi-status-btn:hover{background:#eff6ff}
+.multi-status-btn .ms-arrow{font-size:10px;color:#64748b}
+.multi-status-btn .ms-count{background:#3b82f6;color:#fff;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700}
 .multi-status-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,0.15);z-index:100;min-width:220px;padding:6px}
 .multi-status-panel.show{display:block}
 .multi-status-panel label{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
 .multi-status-panel label:hover{background:#f1f5f9}
 .multi-status-panel label input{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6}
 .multi-status-panel .ms-divider{height:1px;background:#e2e8f0;margin:6px 4px}
+.multi-status-panel .ms-all{color:#3b82f6}
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:8px 10px;border-radius:8px;margin-bottom:12px;display:none;gap:6px;flex-wrap:wrap;align-items:stretch}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 12px;border-radius:5px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;min-height:36px;min-width:90px}
@@ -86,7 +102,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .area-header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:8px;border-radius:14px 14px 0 0}
 .area-header .area-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
 .area-header .area-count{background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.area-header .area-actions{display:flex;gap:6px}
+.area-header .area-actions button{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;min-height:28px}
+.area-header .select-all-cb{width:18px;height:18px;cursor:pointer;accent-color:#fff;margin-right:4px}
 .area-block.collapsed .area-content{display:none}
+.area-filter-bar{padding:8px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.area-filter-bar select{padding:6px 10px;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;font-family:inherit;outline:none}
 .empty-area{padding:18px;text-align:center;color:#94a3b8;font-style:italic;font-size:12px}
 .site-cards-grid{display:grid;grid-template-columns:1fr;gap:4px;padding:6px}
 .site-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px;display:flex;align-items:flex-start;gap:12px}
@@ -100,6 +121,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .site-card-img.no-img{display:flex;align-items:center;justify-content:center;font-size:26px;color:#94a3b8;background:#f8fafc;border:2px dashed #cbd5e1;cursor:pointer}
 .site-card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 .site-card-name{font-size:14px;font-weight:700;color:#0f172a;line-height:1.4;word-break:break-word}
+.site-card-loc-inline{font-size:11px;color:#0891b2;background:#f0f9ff;padding:3px 8px;border-radius:4px;border:1px solid #bae6fd;margin-left:6px}
 .site-card-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:#64748b}
 .site-card-comp{color:#334155;font-weight:500}
 .site-card-rate{color:#059669;font-weight:700;background:#ecfdf5;padding:2px 8px;border-radius:4px;border:1px solid #a7f3d0}
@@ -112,6 +134,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .s-maintenance{background:#fef3c7;color:#92400e}
 .site-card-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
 .site-card-actions button{padding:6px 12px;font-size:11px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;background:#f1f5f9;color:#334155;border:0;min-height:32px}
+.site-card-actions button.history-btn{background:#ede9fe;color:#6d28d9}
 .site-card-actions button.map-btn{background:#cffafe;color:#0e7490}
 .modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;z-index:2000;overflow-y:auto}
 .modal.show{display:flex}
@@ -139,19 +162,14 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .date-row{display:flex;gap:6px}
 .date-row select{flex:1;padding:11px 6px}
 .calc-preview{background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-top:12px;font-size:12px;color:#0c4a6e}
+.date-warning{background:#fffbeb;border:1px solid #fcd34d;color:#92400e;padding:10px;border-radius:8px;font-size:12px;margin-top:8px;display:none;font-weight:600}
+.date-warning.show{display:block}
 .history-item{background:#f8fafc;border-left:3px solid #7c3aed;padding:12px;margin-bottom:10px;border-radius:8px;font-size:13px;border:1px solid #e2e8f0}
 .empty-history{text-align:center;color:#94a3b8;padding:40px;font-style:italic}
 .image-viewer{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.95);z-index:3000;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
 .image-viewer.show{display:flex}
 .image-viewer img{max-width:100%;max-height:95vh;border-radius:12px}
 .image-viewer .close-viewer{position:absolute;top:16px;right:16px;background:#fff;color:#0f172a;width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:20px;font-weight:700}
-.progress-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:4000;align-items:center;justify-content:center;flex-direction:column;gap:20px;color:#fff;padding:20px;text-align:center}
-.progress-overlay.show{display:flex}
-.progress-overlay .spinner{width:56px;height:56px;border:4px solid rgba(255,255,255,0.2);border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.area-list-item{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px;background:#f8fafc;flex-wrap:wrap}
-.area-list-item input[type="checkbox"]{width:20px;height:20px;cursor:pointer;accent-color:#3b82f6}
-.area-list-item .name{flex:1;font-weight:600;color:#0f172a;min-width:120px}
 .toast{position:fixed;top:80px;right:20px;background:#0f172a;color:#fff;padding:14px 18px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:5000;display:flex;gap:10px;align-items:flex-start;max-width:380px;transform:translateX(450px);transition:transform 0.3s ease;font-size:13px}
 .toast.show{transform:translateX(0)}
 .toast.success{border-left:4px solid #10b981}
@@ -163,27 +181,37 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toast .toast-title{font-weight:700;margin-bottom:2px;font-size:13px}
 .toast .toast-msg{font-size:12px;opacity:0.85;word-break:break-word}
 .toast .toast-close{background:transparent;border:0;color:#fff;cursor:pointer;font-size:16px;opacity:0.6;padding:0;flex-shrink:0}
+.toast .toast-close:hover{opacity:1}
 .history-search-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:14px;display:flex;gap:8px;align-items:center}
 .history-search-box input{flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;outline:none;font-size:14px !important;height:40px}
 .history-search-box button{padding:0 16px;height:40px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px}
+.history-search-box button:hover{background:#2563eb}
 @media (max-width:1024px){#areaContainer{grid-template-columns:1fr}}
 @media (max-width:768px){
+  header{padding:10px 12px}
+  .header-left h1{font-size:15px}
+  .header-user{font-size:11px;padding:5px 10px}
   .header-actions{width:100%;justify-content:flex-start;gap:5px}
   .header-actions button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center}
   #app{padding-top:130px}
   .container{padding:0 12px}
   .cards{grid-template-columns:1fr 1fr;gap:10px}
+  .card{padding:14px;min-height:90px}
   .card b{font-size:28px}
+  .toolbar{padding:8px;gap:6px}
   .toolbar #search{min-width:100%;flex:1 1 100%}
-  .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px}
+  .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center;height:36px;min-height:36px}
   .filter-box{width:100%;flex:1 1 100%;flex-wrap:wrap;height:auto}
   .filter-box .date-group{flex:1 1 100%;border-right:0;border-bottom:1px solid #cbd5e1;height:36px}
+  .filter-box .date-input{flex:1;min-width:90px}
   .filter-box .apply-btn{flex:1;min-width:100%;height:36px;justify-content:center}
+  .filter-box .clear-btn{width:100%;border-left:0;border-top:1px solid #cbd5e1;justify-content:center;height:32px}
   .multi-status-wrap{width:100%;height:36px}
   .multi-status-btn{width:100%}
   .multi-status-panel{width:100%}
   .select-bar button{flex:1;min-width:calc(50% - 3px)}
   .site-card{padding:10px;flex-wrap:wrap;position:relative}
+  .site-card-img{width:88px;height:88px}
   .site-card-body{flex:1 1 100%;order:3}
   .site-card-status{position:absolute;top:10px;right:10px}
   .site-card-actions{flex-direction:row;flex-wrap:wrap;width:100%;order:4;gap:6px}
@@ -194,93 +222,99 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions button{width:100%}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
 }
+@media (max-width:380px){
+  .cards{grid-template-columns:1fr}
+  .header-actions button{min-width:calc(50% - 3px)}
+  .toolbar button{min-width:calc(50% - 3px)}
+  #app{padding-top:160px}
+}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
+    <div style="text-align:center;margin-bottom:20px">
+      <img id="loginLogoImg" src="" alt="" style="max-width:200px;max-height:60px;object-fit:contain" onerror="this.style.display='none'" />
+    </div>
     <h1>Site Management</h1>
     <p class="subtitle">Sign in to continue</p>
     <label for="loginUser">Username</label>
     <input id="loginUser" type="text" placeholder="Enter username" autocomplete="off">
     <label for="loginPass">Password</label>
     <input id="loginPass" type="password" placeholder="Enter password" autocomplete="off">
-    <button id="loginBtn" type="button">Sign In</button>
+    <button id="loginBtn" onclick="doLogin()">Sign In</button>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="app" class="hidden">
-<header>
+<header id="mainHeader">
   <div class="header-left">
     <h1>Site Management</h1>
     <span class="header-user" id="userInfo">Loading...</span>
   </div>
   <div class="header-actions">
-    <button class="btn-refresh-header" id="refreshBtn" type="button">🔄 Refresh</button>
-    <button class="btn-telegram" id="telegramBtn" type="button">📱 Telegram</button>
-    <button class="btn-yellow admin-only" id="bulkBtn" type="button">Bulk</button>
-    <button class="btn-gray admin-only" id="backupBtn" type="button">Backup</button>
-    <button class="btn-light admin-only" id="importBtn" type="button">Import</button>
-    <button class="btn-red" id="logoutBtn" type="button">Logout</button>
+    <button class="btn-refresh-header" onclick="refreshPage(event)" title="Refresh data">🔄 Refresh</button>
+    <button class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()" title="Telegram notifications">📱 Telegram</button>
+    <button class="btn-yellow admin-only" onclick="openBulkUpload()">Bulk</button>
+    <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
+    <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
+    <button class="btn-red" onclick="doLogout()">Logout</button>
   </div>
 </header>
 <div class="container">
 
 <div class="cards">
-  <div class="card total" id="cardTotal"><span class="card-icon">📊</span><span class="card-label">Total Sites</span><b id="total">0</b></div>
-  <div class="card available" id="cardAvailable"><span class="card-icon">✓</span><span class="card-label">Available</span><b id="avail">0</b></div>
-  <div class="card notavailable" id="cardNotAvailable"><span class="card-icon">✕</span><span class="card-label">Not Available</span><b id="notavail">0</b></div>
-  <div class="card maintenance" id="cardMaintenance"><span class="card-icon">⚠</span><span class="card-label">Under Maintenance</span><b id="maintenance">0</b></div>
+  <div class="card total" id="cardTotal" onclick="filterByCard('ALL')"><span class="card-icon">📊</span><span class="card-label">Total Sites</span><b id="total">0</b></div>
+  <div class="card available" id="cardAvailable" onclick="filterByCard('Available')"><span class="card-icon">✓</span><span class="card-label">Available</span><b id="avail">0</b></div>
+  <div class="card notavailable" id="cardNotAvailable" onclick="filterByCard('Not Available')"><span class="card-icon">✕</span><span class="card-label">Not Available</span><b id="notavail">0</b></div>
+  <div class="card maintenance" id="cardMaintenance" onclick="filterByCard('Under Maintenance')"><span class="card-icon">⚠</span><span class="card-label">Under Maintenance</span><b id="maintenance">0</b></div>
 </div>
 
 <div class="toolbar">
-  <input id="search" type="text" placeholder="Search sites...">
+  <input id="search" type="text" placeholder="Search sites..." oninput="debouncedRender()">
   <div class="multi-status-wrap" id="multiStatusWrap">
-    <button type="button" class="multi-status-btn" id="multiStatusBtn">
+    <button type="button" class="multi-status-btn" onclick="toggleMultiStatusPanel(event)">
       <span id="multiStatusLabel">Status: All</span>
+      <span class="ms-count" id="multiStatusCount" style="display:none">0</span>
       <span class="ms-arrow">▼</span>
     </button>
     <div class="multi-status-panel" id="multiStatusPanel">
-      <label><input type="checkbox" id="msAll"> Select All Statuses</label>
+      <label class="ms-all"><input type="checkbox" id="msAll" onchange="toggleAllStatuses(this.checked)"> Select All Statuses</label>
       <div class="ms-divider"></div>
-      <label><input type="checkbox" class="ms-cb" value="Available"> ✅ Available</label>
-      <label><input type="checkbox" class="ms-cb" value="Not Available"> ❌ Not Available</label>
-      <label><input type="checkbox" class="ms-cb" value="Under Maintenance"> ⚠️ Under Maintenance</label>
+      <label><input type="checkbox" class="ms-cb" value="Available" onchange="onStatusCheckChange()"> ✅ Available</label>
+      <label><input type="checkbox" class="ms-cb" value="Not Available" onchange="onStatusCheckChange()"> ❌ Not Available</label>
+      <label><input type="checkbox" class="ms-cb" value="Under Maintenance" onchange="onStatusCheckChange()"> ⚠️ Under Maintenance</label>
     </div>
   </div>
   <div class="filter-box">
     <div class="date-group">
-      <input type="text" class="date-input" id="dateFilterFrom" placeholder="dd/mm/yyyy" maxlength="10">
+      <input type="text" class="date-input" id="dateFilterFrom" placeholder="dd/mm/yyyy" maxlength="10" oninput="handleDateInput(this,'from')" onkeydown="handleDateKeyDown(event)">
       <span class="date-sep">→</span>
-      <input type="text" class="date-input" id="dateFilterTo" placeholder="dd/mm/yyyy" maxlength="10">
+      <input type="text" class="date-input" id="dateFilterTo" placeholder="dd/mm/yyyy" maxlength="10" oninput="handleDateInput(this,'to')" onkeydown="handleDateKeyDown(event)">
     </div>
-    <button type="button" class="apply-btn" id="applyFilterBtn">🔍 Apply</button>
-    <button type="button" class="clear-btn" id="clearFilterBtn">✕</button>
+    <button type="button" class="apply-btn" onclick="applyFilters()" title="Apply filter (Enter)">🔍 Apply</button>
+    <button type="button" class="clear-btn" id="clearFilterBtn" onclick="clearAllFilters()" title="Clear all filters">✕</button>
   </div>
-  <button class="admin-only" id="manageAreasBtn" type="button">Manage Areas</button>
-  <button id="addSiteBtn" type="button">+ Add Site</button>
-  <button id="historyBtn" type="button">History</button>
-  <button id="exportBtn" type="button">Export</button>
+  <span class="filter-active-badge" id="filterBadge"></span>
+  <button class="admin-only" onclick="openAreaManager()">Manage Areas</button>
+  <button class="admin-only multi-area-btn" onclick="openMultiAreaSelect()">☑ Select Areas</button>
+  <button onclick="openAdd()">+ Add Site</button>
+  <button onclick="openHistoryModal()">History</button>
+  <button onclick="exportCSV()">Export</button>
 </div>
 
 <div class="select-bar" id="selectBar">
   <span class="count-badge" id="selCount">0 selected</span>
-  <button class="bulk-status-sel" id="bulkStatusBtn" type="button">Bulk Status</button>
-  <button class="clear-sel" id="clearSelBtn" type="button">Clear</button>
-  <button class="delete-sel" id="deleteBtn" type="button" style="display:none">Delete</button>
+  <button class="ppt-sel" onclick="generateSelectedSitesPPT()">📊 Generate PPT</button>
+  <button class="bulk-status-sel" onclick="openBulkStatusModal()">Bulk Status</button>
+  <button class="clear-sel" onclick="clearSelection()">Clear</button>
+  <button class="delete-sel" id="deleteBtn" onclick="bulkDeleteSelected()" style="display:none">Delete</button>
 </div>
 
 <div id="areaContainer"></div>
 
-</div>
-<div class="progress-overlay" id="progressOverlay">
-  <div class="spinner"></div>
-  <div id="progressText" style="font-size:16px;font-weight:600">Working...</div>
-  <div id="progressSub" style="font-size:13px;opacity:0.7">Please wait</div>
 </div>
 
 <!-- ADD/EDIT SITE MODAL -->
@@ -295,18 +329,18 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
 </label>
 <label class="full-width">Location / Address
-  <div><input id="flocation" placeholder="Address ya GPS location"></div>
+  <div><input id="flocation" placeholder="Address ya GPS location" oninput="onLocationManualChange()"></div>
   <div class="gps-box">
     <span class="gps-status" id="gpsStatus">GPS not captured</span>
-    <button type="button" class="gps-btn" id="gpsBtn">Use GPS</button>
+    <button type="button" class="gps-btn" onclick="captureGPS()" id="gpsBtn">Use GPS</button>
   </div>
 </label>
 <label class="full-width">Site Image (optional)
-  <div class="image-upload-box" id="imageUploadBox">
+  <div class="image-upload-box" id="imageUploadBox" onclick="document.getElementById('fimage').click()">
     <div class="iu-icon">📷</div><div class="iu-title">Click to upload image</div><div class="iu-sub">JPG, PNG - Max 8 MB</div>
   </div>
-  <input type="file" id="fimage" accept="image/*" style="display:none">
-  <div id="imagePreviewWrap" style="display:none;text-align:center"><div class="image-preview-wrap"><img id="imagePreview" src="" alt="preview"><button type="button" class="remove-img" id="removeImgBtn">×</button></div></div>
+  <input type="file" id="fimage" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+  <div id="imagePreviewWrap" style="display:none;text-align:center"><div class="image-preview-wrap"><img id="imagePreview" src="" alt="preview"><button type="button" class="remove-img" onclick="removeImage()">×</button></div></div>
 </label>
 <label>Company<div><input id="fcustomer"></div></label>
 <label>Monthly Rate (₹)<div><input id="frate" type="number" min="0"></div></label>
@@ -322,26 +356,35 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
 </div>
 <div class="calc-preview" id="calcPreview">Enter dates to see auto-calculation</div>
-<div class="modal-actions"><button class="secondary" id="cancelModalBtn" type="button">Cancel</button><button id="saveSiteBtn" type="button">Save Site</button></div>
+<div class="modal-actions"><button class="secondary" onclick="closeModal()">Cancel</button><button onclick="saveSite()">Save Site</button></div>
 </div></div>
 
 <!-- HISTORY MODAL -->
 <div class="modal" id="historyModal"><div class="box">
 <h2 id="historyTitle">Booking History</h2>
-<div class="history-search-box">
-  <input id="historySearchInput" type="text" placeholder="Search by site name or code...">
-  <button id="clearHistoryBtn" type="button">Clear</button>
+<div id="historySearchWrap" class="history-search-box">
+  <input id="historySearchInput" type="text" placeholder="Search by site name or code..." oninput="filterHistoryList()">
+  <button onclick="clearHistorySearch()">Clear</button>
 </div>
 <div id="historyContent"></div>
 <div class="modal-actions">
-  <button class="secondary" id="downloadHistoryBtn" type="button" style="background:#059669;color:#fff">📥 Download CSV</button>
-  <button class="secondary" id="closeHistoryBtn" type="button">Close</button>
+  <button class="secondary" onclick="downloadHistoryCSV()" style="background:#059669;color:#fff">📥 Download CSV</button>
+  <button class="secondary" onclick="closeHistoryModal()">Close</button>
 </div>
 </div></div>
 
 <!-- TELEGRAM MODAL -->
 <div class="modal" id="telegramModal"><div class="box" style="width:min(600px,100%)">
 <h2>📱 Telegram Notifications</h2>
+<div style="background:#fffbeb;border:1px solid #fcd34d;padding:12px;border-radius:8px;margin-bottom:12px;font-size:12px;color:#92400e;line-height:1.6">
+  <b>Setup Guide:</b><br>
+  <b>Step 1:</b> Telegram me <code>@BotFather</code> → <code>/newbot</code><br>
+  <b>Step 2:</b> Bot ka naam + username do<br>
+  <b>Step 3:</b> BotFather tumhe <b>Token</b> dega<br>
+  <b>Step 4:</b> Apne bot ko Telegram me khol ke <code>/start</code> bhejo<br>
+  <b>Step 5:</b> Browser me kholo: <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code><br>
+  <b>Step 6:</b> Wahan <code>"chat":{"id":123456789}</code> milega — wahi <b>Chat ID</b> hai
+</div>
 <div class="formgrid" style="grid-template-columns:1fr">
   <label>Bot Token<input id="tgBotToken" type="text" placeholder="123456:ABC-XYZ..." autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
   <label>Chat ID<input id="tgChatId" type="text" placeholder="123456789" autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
@@ -349,41 +392,65 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <input type="checkbox" id="tgEnabled" style="width:20px;height:20px;cursor:pointer;accent-color:#0088cc">
     <span style="font-weight:600;color:#0f172a">Enable Telegram Notifications</span>
   </label>
+  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:4px;font-size:13px">
+    <input type="checkbox" id="tgOnlyNotAvail" checked style="width:20px;height:20px;cursor:pointer;accent-color:#0088cc">
+    <span style="font-weight:600;color:#0f172a">Sirf "Not Available" aur "Under Maintenance" ke liye</span>
+  </label>
 </div>
 <div id="telegramStatus" style="margin-top:12px;padding:10px;border-radius:8px;font-size:12px;display:none"></div>
 <div class="modal-actions">
-  <button class="secondary" id="testTgBtn" type="button">🧪 Test Message</button>
-  <button class="secondary" id="cancelTgBtn" type="button">Cancel</button>
-  <button id="saveTgBtn" type="button">Save Settings</button>
+  <button class="secondary" onclick="testTelegram()">🧪 Test Message</button>
+  <button class="secondary" onclick="closeTelegramSettings()">Cancel</button>
+  <button onclick="saveTelegramSettings()">Save Settings</button>
 </div>
 </div></div>
 
-<!-- AREA MODAL -->
-<div class="modal" id="areaModal"><div class="box" style="width:min(600px,100%)">
-<h2>Manage Areas</h2>
-<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-  <input id="newAreaName" type="text" placeholder="New area name..." style="flex:1;min-width:180px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none">
-  <button id="addAreaBtn" type="button" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit">+ Add Area</button>
+<!-- MULTI AREA SELECT MODAL -->
+<div class="modal" id="multiAreaModal"><div class="box">
+<h2>☑ Select Multiple Areas</h2>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Areas select karein aur unki saari sites ko ek saath select karein.</p>
+<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+  <button onclick="multiAreaSelectAll()" id="multiAreaSelAllBtn" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Select All Areas</button>
+  <button onclick="multiAreaDeselectAll()" style="padding:8px 14px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Deselect All</button>
+  <span id="multiAreaSelCount" style="font-size:12px;color:#64748b;font-weight:600;display:flex;align-items:center">0 selected</span>
 </div>
-<div id="areaList" style="max-height:50vh;overflow-y:auto"></div>
+<div id="multiAreaList" style="margin-bottom:20px;max-height:400px;overflow-y:auto;"></div>
 <div class="modal-actions">
-  <button class="secondary" id="closeAreaBtn" type="button">Close</button>
+  <button class="secondary" onclick="closeMultiAreaModal()">Cancel</button>
+  <button onclick="applyMultiAreaSelection()" style="background:#7c3aed;color:#fff">Select All Sites in These Areas</button>
 </div>
 </div></div>
 
-<div class="image-viewer" id="imageViewer">
-  <button class="close-viewer" id="closeViewerBtn">×</button>
-  <img id="viewerImage" src="" alt="">
+<!-- AREA MGMT MODAL -->
+<div class="modal" id="areaModal"><div class="box">
+<h2>Manage Areas</h2>
+<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+  <button onclick="toggleAllAreas()" id="areaSelAllBtn" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1;min-width:120px">Select All</button>
+  <button onclick="bulkDeleteAreas()" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1;min-width:120px">Delete Selected</button>
+  <span id="areaSelCount" style="font-size:12px;color:#64748b;font-weight:600">0 selected</span>
 </div>
-<input type="file" id="importFile" accept=".json" style="display:none">
+<div id="areaList" style="margin-bottom:20px;"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+  <input id="newAreaName" placeholder="New area name" style="flex:1;min-width:180px;padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none">
+  <button onclick="addNewArea()" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;min-height:44px">+ Add Area</button>
+</div>
+<div class="modal-actions"><button class="secondary" onclick="closeAreaModal()">Close</button></div>
+</div></div>
+
+<div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
+  <button class="close-viewer" onclick="closeImageViewer()">×</button>
+  <img id="viewerImage" src="" alt="" onclick="event.stopPropagation()">
+</div>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
 <div id="toastContainer"></div>
 
 <script>
-// ==================== CONFIG ====================
 const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
+const COMPANY_NAME = "DS Outdoor Media";
+const THEME_COLOR = "1E40AF";
+let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 
-// ==================== STATE ====================
 let currentUser = null;
 let sites = [];
 let areas = [...DEFAULT_AREAS];
@@ -391,33 +458,44 @@ let bookingHistory = [];
 let imageCache = {};
 let imageFailed = new Set();
 let selectedSites = new Set();
+let selectedAreas = new Set();
+let multiAreaSelected = new Set();
+let visibleSites = [];
 let editIndex = -1;
 let currentImageData = "";
 let collapsedAreas = null;
 let areaFilters = {};
 let autoRefreshTimer = null;
 let lastDataHash = "";
+let renderDebounceTimer = null;
 let activeStatuses = new Set();
-let telegramConfig = { botToken: "", chatId: "", enabled: false };
-let isRendering = false;
-let isReleasing = false;
+let telegramConfig = { botToken: "", chatId: "", enabled: false, onlyNotAvailMaint: true };
+let historySearchQuery = "";
 
-// ==================== TOAST ====================
+/* ============ TOAST ============ */
 function showToast(title, message, type){
   const container = document.getElementById("toastContainer");
-  if(!container) return;
   const toast = document.createElement("div");
   toast.className = "toast " + (type || "info");
   const icons = { success: "✅", info: "ℹ️", warning: "⚠️", danger: "🚨" };
-  toast.innerHTML = '<div class="toast-icon">' + (icons[type] || "ℹ️") + '</div><div class="toast-body"><div class="toast-title">' + esc(title) + '</div><div class="toast-msg">' + esc(message) + '</div></div><button class="toast-close" type="button">×</button>';
-  toast.querySelector('.toast-close').onclick = () => toast.remove();
+  toast.innerHTML = '<div class="toast-icon">' + (icons[type] || "ℹ️") + '</div><div class="toast-body"><div class="toast-title">' + esc(title) + '</div><div class="toast-msg">' + esc(message) + '</div></div><button class="toast-close" onclick="this.parentElement.remove()">×</button>';
   container.appendChild(toast);
   setTimeout(() => toast.classList.add("show"), 10);
   setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 300); }, 6000);
 }
 
-// ==================== DATE / STATUS LOGIC ====================
-function todayMidnight(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
+/* ============ CORE DATE & STATUS LOGIC ============ */
+/* RULE:
+   - To date STRICTLY greater than today → Not Available
+   - To date TODAY or PAST → Available
+   - Matlab: Aaj wali (From = To = Today) bhi Available hogi
+*/
+
+function todayMidnight(){
+  const t = new Date();
+  t.setHours(0,0,0,0);
+  return t;
+}
 
 function parseDDMMYYYY(s){
   if(!s) return null;
@@ -436,37 +514,90 @@ function calcStatusFromDates(fromStr, toStr){
   if(!fromD || !toD) return "Available";
   const today = todayMidnight();
   const toMid = new Date(toD); toMid.setHours(0,0,0,0);
+  // ✅ To date STRICTLY future → Not Available
+  // To date TODAY ya PAST → Available
   if(toMid > today) return "Not Available";
   return "Available";
 }
 
+/* ============ DATE HELPERS ============ */
+function handleDateInput(input, which){
+  const oldVal = input.value;
+  const oldLen = parseInt(input.dataset.lastLength || "0");
+  const isDeleting = oldVal.length < oldLen;
+  input.dataset.lastLength = oldVal.length;
+  if(isDeleting){ input.value = oldVal.replace(/[^\d\/]/g, ""); return; }
+  let val = oldVal.replace(/\D/g, "");
+  if(val.length >= 2){ let dd = val.substring(0, 2); if(parseInt(dd) > 31) dd = "31"; if(parseInt(dd) === 0) dd = "01"; val = dd + "/" + val.substring(2); }
+  if(val.length >= 5){ let parts = val.split("/"); let mm = parts[1].substring(0, 2); if(parseInt(mm) > 12) mm = "12"; if(parseInt(mm) === 0) mm = "01"; val = parts[0] + "/" + mm + (parts[1].length > 2 ? "/" + parts[1].substring(2, 6) : ""); }
+  input.value = val.substring(0, 10);
+}
+function handleDateKeyDown(event){ if(event.key === "Enter"){ event.preventDefault(); applyFilters(); } }
 function ddmmyyyyToISO(s){
   if(!s) return "";
   const p = String(s).trim().split("/");
   if(p.length !== 3) return "";
   return p[2]+"-"+p[1].padStart(2,"0")+"-"+p[0].padStart(2,"0");
 }
-
 function calcDays(f, t){
   if(!f || !t) return 0;
   const fd = new Date(ddmmyyyyToISO(f)), td = new Date(ddmmyyyyToISO(t));
   if(isNaN(fd) || isNaN(td) || td < fd) return 0;
   return Math.floor((td - fd) / 86400000) + 1;
 }
+function getDateFromDropdowns(prefix){
+  const d = document.getElementById(prefix+"_d"), m = document.getElementById(prefix+"_m"), y = document.getElementById(prefix+"_y");
+  if(!d || !m || !y) return "";
+  return d.value && m.value && y.value ? d.value+"/"+m.value+"/"+y.value : "";
+}
+function setDateDropdowns(prefix, val){
+  const d = document.getElementById(prefix+"_d"), m = document.getElementById(prefix+"_m"), y = document.getElementById(prefix+"_y");
+  if(!d || !m || !y) return;
+  if(!val || !/^\d{2}\/\d{2}\/\d{4}$/.test(val)){
+    const t = new Date(); d.value = String(t.getDate()).padStart(2,"0"); m.value = String(t.getMonth()+1).padStart(2,"0"); y.value = t.getFullYear(); return;
+  }
+  const p = val.split("/"); d.value = p[0]; m.value = p[1]; y.value = p[2];
+}
 
-// ==================== UTILS ====================
-function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
-function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
-function showProgress(t, s){ document.getElementById("progressText").textContent = t || "Working..."; document.getElementById("progressSub").textContent = s || ""; document.getElementById("progressOverlay").classList.add("show"); }
-function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
-function debounce(fn, ms){ let timer; return function(){ clearTimeout(timer); timer = setTimeout(() => fn.apply(this, arguments), ms); }; }
+/* ============ LIVE STATUS UPDATE ============ */
+function updateCalcPreview(){
+  const from = getDateFromDropdowns("ffrom");
+  const to = getDateFromDropdowns("fto");
+  const days = calcDays(from, to);
+  let extra = "";
+  if(from && to && days === 0) extra = " ⚠️ To date From se pehle!";
+  document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " &nbsp;|&nbsp; <b>To:</b> " + (to||"—") + " &nbsp;|&nbsp; <b>Days:</b> " + days + extra;
+  
+  const status = calcStatusFromDates(from, to);
+  const sel = document.getElementById("fstatus");
+  const hint = document.getElementById("statusHint");
+  sel.value = status;
+  
+  if(status === "Not Available"){
+    hint.innerHTML = "🚨 <b>Not Available</b> — Booking future me khatam hogi (To: " + to + ")";
+    hint.style.background = "#fef2f2";
+    hint.style.borderColor = "#fecaca";
+    hint.style.color = "#991b1b";
+  } else if(from && to){
+    const todayISO = ddmmyyyyToISO(new Date().toLocaleDateString('en-GB'));
+    const toISO = ddmmyyyyToISO(to);
+    if(toISO === todayISO){
+      hint.innerHTML = "✅ <b>Available</b> — Booking aaj (" + to + ") khatam ho rahi hai";
+    } else {
+      hint.innerHTML = "✅ <b>Available</b> — Booking past me khatam ho chuki hai";
+    }
+    hint.style.background = "#ecfdf5";
+    hint.style.borderColor = "#a7f3d0";
+    hint.style.color = "#065f46";
+  } else {
+    hint.innerHTML = "💡 Booking dates dene par status automatically <b>Not Available</b> ho jayega";
+    hint.style.background = "#f0f9ff";
+    hint.style.borderColor = "#bae6fd";
+    hint.style.color = "#0c4a6e";
+  }
+}
 
-// ==================== API ====================
-async function apiGet(path){ try { const r = await fetch(API_URL + path); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
-async function apiPost(path, body){ try { const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
-async function apiDelete(path){ try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
-
-// ==================== LOGIN ====================
+/* ============ LOGIN ============ */
 async function doLogin(){
   const username = document.getElementById("loginUser").value.trim();
   const password = document.getElementById("loginPass").value;
@@ -476,41 +607,26 @@ async function doLogin(){
   if(!username || !password){ err.textContent = "Username aur password required"; err.classList.add("show"); return; }
   btn.disabled = true; btn.textContent = "Signing in...";
   try {
-    const res = await fetch(API_URL + "/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    });
+    const res = await fetch(API_URL + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
     const data = await res.json();
-    if(!data.success){
-      err.textContent = data.error || "Login failed";
-      err.classList.add("show");
-      btn.disabled = false; btn.textContent = "Sign In";
-      return;
-    }
+    if(!data.success){ err.textContent = data.error || "Login failed"; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; return; }
     currentUser = data.user;
     sessionStorage.setItem("sms_user", JSON.stringify(currentUser));
-    await showApp();
-  } catch(e){
-    err.textContent = "Server connect fail: " + e.message;
-    err.classList.add("show");
-    btn.disabled = false; btn.textContent = "Sign In";
-  }
+    showApp();
+  } catch(e){ err.textContent = "Server connect fail"; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; }
 }
 
 async function showApp(){
-  if(!currentUser) return;
   document.getElementById("loginOverlay").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
   document.getElementById("userInfo").textContent = currentUser.username + " (" + currentUser.role + ")";
-  if(currentUser.role !== "Admin"){
-    document.querySelectorAll(".admin-only").forEach(el => { el.style.display = "none"; });
-  }
+  if(currentUser.role !== "Admin"){ document.querySelectorAll(".admin-only").forEach(el => { el.style.display = "none"; }); }
   showProgress("Loading...", "");
   loadTelegramConfig();
   await loadCloudData();
   hideProgress();
   populateAreaDropdowns();
+  await loadLogoFromCloud();
   await autoReleaseExpiredSites();
   render();
   startAutoRefresh();
@@ -518,66 +634,12 @@ async function showApp(){
 
 function doLogout(){
   if(!confirm("Logout?")) return;
-  currentUser = null;
-  sessionStorage.removeItem("sms_user");
+  currentUser = null; sessionStorage.removeItem("sms_user");
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
   location.reload();
 }
+function checkSession(){ const saved = sessionStorage.getItem("sms_user"); if(saved){ try { currentUser = JSON.parse(saved); showApp(); } catch(e){ sessionStorage.removeItem("sms_user"); } } }
 
-function checkSession(){
-  const saved = sessionStorage.getItem("sms_user");
-  if(saved){
-    try {
-      currentUser = JSON.parse(saved);
-      showApp();
-    } catch(e){ sessionStorage.removeItem("sms_user"); }
-  }
-}
-
-// ==================== DATA ====================
-async function loadCloudData(){
-  const result = await apiGet("/data");
-  if(result && result.success){
-    sites = Array.isArray(result.sites) ? result.sites : [];
-    areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
-    bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
-    sites.forEach((s, i) => {
-      if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
-    });
-    lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
-    return true;
-  }
-  return false;
-}
-
-async function persistNow(){
-  const result = await apiPost("/data", { sites, areas, bookingHistory });
-  if(result && result.success){
-    lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
-    return true;
-  }
-  return false;
-}
-
-async function saveImage(key, dataUrl){
-  const result = await apiPost("/image/" + encodeURIComponent(key), { data: dataUrl });
-  if(result && result.success){ imageCache[key] = dataUrl; imageFailed.delete(key); }
-  return result;
-}
-async function getImage(key){
-  if(imageCache[key]) return imageCache[key];
-  if(imageFailed.has(key)) return null;
-  const result = await apiGet("/image/" + encodeURIComponent(key));
-  if(result && result.success && result.data){ imageCache[key] = result.data; return result.data; }
-  imageFailed.add(key); return null;
-}
-async function deleteImage(key){
-  delete imageCache[key];
-  imageFailed.delete(key);
-  return await apiDelete("/image/" + encodeURIComponent(key));
-}
-
-// ==================== AUTO REFRESH ====================
 function startAutoRefresh(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
   autoRefreshTimer = setInterval(async () => {
@@ -586,8 +648,7 @@ function startAutoRefresh(){
     if(result && result.success){
       const newHash = JSON.stringify({ sites: result.sites || [], areas: result.areas || [], bookingHistory: result.bookingHistory || [] });
       if(newHash !== lastDataHash){
-        const modal = document.getElementById("modal");
-        if(modal && modal.classList.contains("show")) return;
+        const modal = document.getElementById("modal"); if(modal && modal.classList.contains("show")) return;
         sites = result.sites || [];
         areas = (result.areas && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
         bookingHistory = result.bookingHistory || [];
@@ -599,679 +660,806 @@ function startAutoRefresh(){
   }, 20000);
 }
 
-// ==================== AUTO RELEASE ====================
-async function autoReleaseExpiredSites(){
-  if(isReleasing) return false;
-  isReleasing = true;
-  try {
-    const today = todayMidnight();
-    let changed = false;
-    sites.forEach(x => {
-      if(x.toDate){
-        const toD = parseDDMMYYYY(x.toDate);
-        if(!toD) return;
-        toD.setHours(0,0,0,0);
-        if(toD < today && (x.status === "Not Available" || x.status === "Under Maintenance")){
-          bookingHistory.push({
-            site: x.site, siteCode: x.siteCode || "", area: x.area || "Unassigned",
-            customer: x.customer || "", fromDate: x.fromDate || "", toDate: x.toDate || "",
-            days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'),
-            status: x.status, location: x.location || "", rate: x.rate || ""
-          });
-          x.status = "Available";
-          x.customer = "";
-          x.fromDate = "";
-          x.toDate = "";
-          changed = true;
-        }
-      }
+/* ============ UTILS ============ */
+function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
+function showProgress(t, s){ document.getElementById("progressText").textContent = t || "Working..."; document.getElementById("progressSub").textContent = s || ""; document.getElementById("progressOverlay").classList.add("show"); }
+function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
+
+/* ============ API ============ */
+async function apiGet(path){ try { const r = await fetch(API_URL + path, { method: "GET" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+async function apiPost(path, body){ try { const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+async function apiDelete(path){ try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+
+async function loadCloudData(){
+  const result = await apiGet("/data");
+  if(result && result.success){
+    sites = Array.isArray(result.sites) ? result.sites : [];
+    areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
+    bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
+    sites.forEach((s, i) => {
+      if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
+      if(!s.siteCode){ const m = (s.site||"").match(/^([A-Z]{2,5}\d{1,4})/i); s.siteCode = m ? m[1].toUpperCase() : ""; }
     });
-    if(changed) await persistNow();
-    return changed;
-  } finally { isReleasing = false; }
+    lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
+    return true;
+  }
+  return false;
+}
+async function persistNow(){
+  const result = await apiPost("/data", { sites, areas, bookingHistory });
+  if(result && result.success){ lastDataHash = JSON.stringify({ sites, areas, bookingHistory }); return true; }
+  return false;
+}
+async function saveImage(key, dataUrl){ const result = await apiPost("/image/" + encodeURIComponent(key), { data: dataUrl }); if(result && result.success){ imageCache[key] = dataUrl; imageFailed.delete(key); } return result; }
+async function getImage(key){
+  if(imageCache[key]) return imageCache[key];
+  if(imageFailed.has(key)) return null;
+  const result = await apiGet("/image/" + encodeURIComponent(key));
+  if(result && result.success && result.data){ imageCache[key] = result.data; return result.data; }
+  imageFailed.add(key); return null;
+}
+async function deleteImage(key){ delete imageCache[key]; imageFailed.delete(key); return await apiDelete("/image/" + encodeURIComponent(key)); }
+
+/* ============ LOGO ============ */
+async function loadLogoFromCloud(){
+  try {
+    const result = await apiGet("/logo");
+    if(result && result.success && result.data){
+      LOGO_URL = result.data;
+      const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo){ loginLogo.src = result.data; loginLogo.style.display = "inline-block"; }
+      return true;
+    }
+  } catch(e){}
+  const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo) loginLogo.src = LOGO_URL;
+  return false;
 }
 
-// ==================== POPULATE ====================
+/* ============ POPULATE ============ */
 function populateAreaDropdowns(){
-  const formSel = document.getElementById("farea");
-  if(!formSel) return;
+  const formSel = document.getElementById("farea"); if(!formSel) return;
   formSel.innerHTML = '';
   areas.forEach(a => { formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
 }
 
-// ==================== DATE DROPDOWNS ====================
-const YEARS = [];
-const CUR_YEAR = new Date().getFullYear();
-for(let y = CUR_YEAR - 2; y <= 2050; y++) YEARS.push(y);
-
-function initDateDropdowns(){
-  [["ffrom_d","ffrom_m","ffrom_y"],["fto_d","fto_m","fto_y"]].forEach(ids => {
-    const d = document.getElementById(ids[0]), m = document.getElementById(ids[1]), y = document.getElementById(ids[2]);
-    if(!d || !m || !y) return;
-    d.innerHTML = ""; m.innerHTML = ""; y.innerHTML = "";
-    for(let i=1;i<=31;i++) d.innerHTML += '<option value="'+String(i).padStart(2,"0")+'">'+String(i).padStart(2,"0")+'</option>';
-    for(let i=0;i<12;i++) m.innerHTML += '<option value="'+String(i+1).padStart(2,"0")+'">'+String(i+1).padStart(2,"0")+'</option>';
-    YEARS.forEach(yy => y.innerHTML += '<option value="'+yy+'">'+yy+'</option>');
-  });
-}
-
-function getDateFromDropdowns(prefix){
-  const d = document.getElementById(prefix+"_d"), m = document.getElementById(prefix+"_m"), y = document.getElementById(prefix+"_y");
-  if(!d || !m || !y) return "";
-  return d.value && m.value && y.value ? d.value+"/"+m.value+"/"+y.value : "";
-}
-
-function setDateDropdowns(prefix, val){
-  const d = document.getElementById(prefix+"_d"), m = document.getElementById(prefix+"_m"), y = document.getElementById(prefix+"_y");
-  if(!d || !m || !y) return;
-  if(!val || !/^\d{2}\/\d{2}\/\d{4}$/.test(val)){
-    const t = new Date();
-    d.value = String(t.getDate()).padStart(2,"0");
-    m.value = String(t.getMonth()+1).padStart(2,"0");
-    y.value = t.getFullYear();
-    return;
-  }
-  const p = val.split("/");
-  d.value = p[0];
-  m.value = p[1];
-  if(!Array.from(y.options).some(o => o.value === p[2])){
-    const opt = document.createElement("option");
-    opt.value = p[2]; opt.textContent = p[2];
-    y.appendChild(opt);
-  }
-  y.value = p[2];
-}
-
-function updateCalcPreview(){
-  const from = getDateFromDropdowns("ffrom");
-  const to = getDateFromDropdowns("fto");
-  const days = calcDays(from, to);
-  let extra = "";
-  if(from && to && days === 0) extra = " ⚠️ To date From se pehle!";
-  const previewEl = document.getElementById("calcPreview");
-  if(previewEl) previewEl.innerHTML = "<b>From:</b> " + (from||"—") + " &nbsp;|&nbsp; <b>To:</b> " + (to||"—") + " &nbsp;|&nbsp; <b>Days:</b> " + days + extra;
-
-  const status = calcStatusFromDates(from, to);
-  const sel = document.getElementById("fstatus");
-  const hint = document.getElementById("statusHint");
-  if(sel) sel.value = status;
-  if(!hint) return;
-
-  if(status === "Not Available"){
-    hint.innerHTML = "🚨 <b>Not Available</b> — Booking future me khatam hogi";
-    hint.style.background = "#fef2f2"; hint.style.borderColor = "#fecaca"; hint.style.color = "#991b1b";
-  } else if(from && to){
-    hint.innerHTML = "✅ <b>Available</b> — Booking aaj ya past me khatam ho chuki hai";
-    hint.style.background = "#ecfdf5"; hint.style.borderColor = "#a7f3d0"; hint.style.color = "#065f46";
-  } else {
-    hint.innerHTML = "💡 Booking dates dene par status automatically set hoga";
-    hint.style.background = "#f0f9ff"; hint.style.borderColor = "#bae6fd"; hint.style.color = "#0c4a6e";
-  }
-}
-
-// ==================== MODAL ====================
-function openAdd(){
-  editIndex = -1;
-  document.getElementById("modalTitle").textContent = "Add New Site";
-  document.getElementById("fsitecode").value = "";
-  document.getElementById("fsite").value = "";
-  document.getElementById("flocation").value = "";
-  document.getElementById("flocation").dataset.lat = "";
-  document.getElementById("flocation").dataset.lng = "";
-  document.getElementById("fcustomer").value = "";
-  document.getElementById("frate").value = "";
-  currentImageData = "";
-  removeImage();
-  document.getElementById("farea").value = areas[0] || "";
-  const t = new Date();
-  const today = String(t.getDate()).padStart(2,"0")+"/"+String(t.getMonth()+1).padStart(2,"0")+"/"+t.getFullYear();
-  setDateDropdowns("ffrom", today);
-  setDateDropdowns("fto", today);
-  document.getElementById("gpsStatus").textContent = "GPS not captured";
-  document.getElementById("gpsStatus").className = "gps-status";
-  updateCalcPreview();
-  document.getElementById("modal").classList.add("show");
-}
-
-async function editSite(i){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin edit kar sakta hai"); return; }
-  editIndex = i;
-  const x = sites[i];
-  if(!x) return;
-  document.getElementById("modalTitle").textContent = "Edit Site";
-  if(x.area && !areas.includes(x.area)){ areas.push(x.area); populateAreaDropdowns(); }
-  document.getElementById("farea").value = x.area || areas[0] || "";
-  document.getElementById("fsitecode").value = x.siteCode || "";
-  document.getElementById("fsite").value = x.site || "";
-  document.getElementById("flocation").value = x.location || "";
-  document.getElementById("flocation").dataset.lat = x.lat || "";
-  document.getElementById("flocation").dataset.lng = x.lng || "";
-  document.getElementById("fcustomer").value = x.customer || "";
-  document.getElementById("frate").value = x.rate || "";
-  setDateDropdowns("ffrom", x.fromDate || "");
-  setDateDropdowns("fto", x.toDate || "");
-  if(x.lat && x.lng){
-    document.getElementById("gpsStatus").textContent = "GPS: " + x.lat + ", " + x.lng;
-    document.getElementById("gpsStatus").className = "gps-status ok";
-  } else {
-    document.getElementById("gpsStatus").textContent = "GPS not captured";
-    document.getElementById("gpsStatus").className = "gps-status";
-  }
-  if(x.hasImage){
-    let data = await getImage(x.id);
-    if(data){ currentImageData = data; showImagePreview(data); }
-    else { currentImageData = ""; removeImage(); }
-  } else { currentImageData = ""; removeImage(); }
-  updateCalcPreview();
-  document.getElementById("modal").classList.add("show");
-}
-
-function closeModal(){ document.getElementById("modal").classList.remove("show"); }
-
-// ==================== SAVE ====================
-async function saveSite(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin save kar sakta hai"); return; }
-  const fromVal = getDateFromDropdowns("ffrom"), toVal = getDateFromDropdowns("fto");
-  const areaVal = document.getElementById("farea").value;
-  if(!areaVal){ alert("Area select karein"); return; }
-  const statusVal = calcStatusFromDates(fromVal, toVal);
-  const id = editIndex < 0 ? "id_"+Math.random().toString(36).slice(2,10) : sites[editIndex].id;
-  const hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
-  const loc = document.getElementById("flocation");
-  const siteCodeInput = document.getElementById("fsitecode").value.trim().toUpperCase();
-  const siteNameInput = document.getElementById("fsite").value.trim();
-  const finalSiteName = siteNameInput || siteCodeInput || "Unnamed Site";
-  const codeMatch = finalSiteName.match(/^([A-Z]{2,5}\d{1,4})/i);
-  const finalSiteCode = siteCodeInput || (codeMatch ? codeMatch[1].toUpperCase() : "");
-  const newSite = {
-    id, area: areaVal, site: finalSiteName, siteCode: finalSiteCode,
-    location: loc.value.trim(), lat: loc.dataset.lat || "", lng: loc.dataset.lng || "",
-    customer: document.getElementById("fcustomer").value.trim(),
-    rate: document.getElementById("frate").value.trim(),
-    status: statusVal, fromDate: fromVal, toDate: toVal,
-    hasImage: !!currentImageData
-  };
-  showProgress("Saving...", "");
-  try {
-    if(currentImageData){ await saveImage(id, currentImageData); }
-    else if(hadImage){ await deleteImage(id); }
-    if(editIndex < 0) sites.push(newSite);
-    else sites[editIndex] = newSite;
-    await persistNow();
-  } catch(e){ console.error(e); }
-  hideProgress();
-  closeModal();
-  render();
-}
-
-// ==================== IMAGE ====================
-function handleImageUpload(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  if(!file.type.startsWith("image/")){ alert("Only images"); return; }
-  if(file.size > 8*1024*1024){ alert("Max 8 MB"); return; }
-  showProgress("Processing...", "");
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    compressImageSmart(ev.target.result, (compressed) => {
-      hideProgress();
-      currentImageData = compressed;
-      showImagePreview(compressed);
-    });
-  };
-  reader.readAsDataURL(file);
-  e.target.value = "";
-}
-
-function compressImageSmart(dataUrl, cb){
-  const img = new Image();
-  img.onload = () => {
-    const MAX_W = 1024, MAX_H = 1024, MAX_B = 800 * 1024;
-    let w = img.width, h = img.height;
-    if(w > MAX_W || h > MAX_H){
-      const r = Math.min(MAX_W / w, MAX_H / h);
-      w = Math.round(w * r); h = Math.round(h * r);
-    }
-    const canvas = document.createElement("canvas");
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext("2d", { alpha: false });
-    ctx.imageSmoothingQuality = "high";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, w, h);
-    ctx.drawImage(img, 0, 0, w, h);
-    let quality = 0.75;
-    let result = canvas.toDataURL("image/jpeg", quality);
-    let attempts = 0;
-    while(result.length > MAX_B && quality > 0.5 && attempts < 10){
-      quality -= 0.05;
-      result = canvas.toDataURL("image/jpeg", quality);
-      attempts++;
-    }
-    cb(result);
-  };
-  img.onerror = () => { alert("Image load fail"); cb(dataUrl); };
-  img.src = dataUrl;
-}
-
-function showImagePreview(data){
-  document.getElementById("imagePreview").src = data;
-  document.getElementById("imagePreviewWrap").style.display = "block";
-  document.getElementById("imageUploadBox").style.display = "none";
-}
-function removeImage(){
-  currentImageData = "";
-  document.getElementById("imagePreview").src = "";
-  document.getElementById("imagePreviewWrap").style.display = "none";
-  document.getElementById("imageUploadBox").style.display = "block";
-}
-function closeImageViewer(){ document.getElementById("imageViewer").classList.remove("show"); }
-
-function captureGPS(){
-  const btn = document.getElementById("gpsBtn"), status = document.getElementById("gpsStatus");
-  if(!navigator.geolocation){ alert("GPS not supported"); return; }
-  btn.disabled = true; btn.textContent = "Getting...";
-  status.className = "gps-status";
-  status.textContent = "Getting...";
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      const lat = pos.coords.latitude.toFixed(7), lng = pos.coords.longitude.toFixed(7);
-      document.getElementById("flocation").dataset.lat = lat;
-      document.getElementById("flocation").dataset.lng = lng;
-      const cur = document.getElementById("flocation").value.trim();
-      document.getElementById("flocation").value = cur ? cur + " | " + lat + ", " + lng : lat + ", " + lng;
-      status.className = "gps-status ok";
-      status.textContent = "Accurate: " + Math.round(pos.coords.accuracy) + "m";
-      btn.disabled = false; btn.textContent = "Re-capture";
-    },
-    (err) => {
-      btn.disabled = false; btn.textContent = "Use GPS";
-      status.textContent = err.code === 1 ? "Denied" : "Error";
-    },
-    { enableHighAccuracy: true, timeout: 15000 }
-  );
-}
-
-function getGoogleMapsUrl(site){
-  if(site.lat && site.lng) return "https://www.google.com/maps?q=" + site.lat + "," + site.lng;
-  if(site.location) return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(site.location);
-  return "";
-}
-
-function openMap(i){
-  const url = getGoogleMapsUrl(sites[i]);
-  if(!url){ alert("No location"); return; }
-  window.open(url, "_blank");
-}
-
-// ==================== RENDER ====================
-async function render(){
-  if(isRendering) return;
-  isRendering = true;
-  try {
-    await autoReleaseExpiredSites();
-    updateCards();
-    if(collapsedAreas === null) collapsedAreas = new Set(areas);
-    const f = activeStatuses;
-    const q = (document.getElementById("search").value || "").toLowerCase().trim();
-    const isFiltering = f.size > 0 || q;
-    if(isFiltering) collapsedAreas.clear();
-    const container = document.getElementById("areaContainer");
-    container.innerHTML = "";
-    let areasToShow = [...areas];
-    const unassignedCount = sites.filter(s => !s.area || s.area === "Unassigned").length;
-    if(unassignedCount > 0 && !areasToShow.includes("Unassigned")) areasToShow.push("Unassigned");
-    let totalShown = 0;
-
-    for(const areaName of areasToShow){
-      const areaFilter = areaFilters[areaName] || "ALL";
-      const areaSites = sites.filter(s => {
-        const sArea = s.area || "Unassigned";
-        if(sArea !== areaName) return false;
-        if(f.size > 0 && !f.has(s.status)) return false;
-        if(areaFilter !== "ALL" && s.status !== areaFilter) return false;
-        const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
-        if(q && !hay.includes(q)) return false;
-        return true;
-      });
-      if(isFiltering && areaSites.length === 0) continue;
-      totalShown += areaSites.length;
-      const isCollapsed = collapsedAreas.has(areaName);
-      const block = document.createElement("div");
-      block.className = "area-block" + (isCollapsed ? " collapsed" : "");
-      const header = document.createElement("div");
-      header.className = "area-header";
-      const areaAvail = areaSites.filter(s => s.status === "Available").length;
-      const areaNot = areaSites.filter(s => s.status === "Not Available").length;
-      const areaMaint = areaSites.filter(s => s.status === "Under Maintenance").length;
-      let headerHTML = '<div class="area-name">' + esc(areaName) + '</div>';
-      headerHTML += '<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">';
-      headerHTML += '<span class="area-count" style="background:#fff;color:#1f2937">' + areaSites.length + '</span>';
-      headerHTML += '<span class="area-count" style="background:#16a34a;color:#fff">' + areaAvail + '</span>';
-      headerHTML += '<span class="area-count" style="background:#dc2626;color:#fff">' + areaNot + '</span>';
-      headerHTML += '<span class="area-count" style="background:#facc15;color:#111827">' + areaMaint + '</span>';
-      headerHTML += '<span>' + (isCollapsed ? '▶' : '▼') + '</span></div>';
-      header.innerHTML = headerHTML;
-      header.onclick = () => toggleAreaCollapse(areaName);
-      block.appendChild(header);
-      const content = document.createElement("div");
-      content.className = "area-content";
-      if(areaSites.length === 0){
-        content.innerHTML = '<div class="empty-area">No sites.</div>';
-      } else {
-        let cardsHTML = '<div class="site-cards-grid">';
-        areaSites.forEach((x, idx) => {
-          const globalIdx = sites.indexOf(x);
-          const isSel = selectedSites.has(x.id);
-          const days = calcDays(x.fromDate, x.toDate);
-          let sc = "s-available";
-          if(x.status === "Not Available") sc = "s-not";
-          else if(x.status === "Under Maintenance") sc = "s-maintenance";
-          let cardCls = "site-card";
-          if(x.status === "Not Available") cardCls += " not-card";
-          else if(x.status === "Under Maintenance") cardCls += " maint-card";
-          if(isSel) cardCls += " selected-card";
-          let imgHTML = '<div class="site-card-img no-img">📷</div>';
-          if(x.hasImage && !imageFailed.has(x.id)){
-            imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site">';
-          }
-          const canEdit = currentUser && currentUser.role === "Admin";
-          const editBtn = canEdit ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' : '';
-          const mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
-          cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
-          cardsHTML += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' data-id="' + x.id + '"><span class="site-card-num">#' + (idx + 1) + '</span>' + imgHTML + '</div>';
-          cardsHTML += '<div class="site-card-body"><div class="site-card-name">' + esc(x.site) + (x.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;margin-left:6px">' + esc(x.siteCode) + '</span>' : '') + '</div>';
-          cardsHTML += '<div class="site-card-meta">';
-          if(x.customer) cardsHTML += '<span class="site-card-comp">' + esc(x.customer) + '</span>';
-          if(x.rate) cardsHTML += '<span class="site-card-rate">' + formatINR(x.rate) + '/month</span>';
-          if(x.status !== "Available" && (x.fromDate || x.toDate)) cardsHTML += '<span class="site-card-dates">' + esc(x.fromDate || "") + ' - ' + esc(x.toDate || "") + (days > 0 ? ' <span class="days-badge">' + days + 'd</span>' : '') + '</span>';
-          cardsHTML += '</div></div>';
-          cardsHTML += '<div class="site-card-status"><span class="status ' + sc + '">' + esc(x.status) + '</span></div>';
-          cardsHTML += '<div class="site-card-actions">' + editBtn + mapBtn + '</div>';
-          cardsHTML += '</div>';
-        });
-        cardsHTML += '</div>';
-        content.innerHTML = cardsHTML;
-      }
-      block.appendChild(content);
-      container.appendChild(block);
-    }
-    if(totalShown === 0 && isFiltering){
-      container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match your filters.</div>';
-    }
-    document.querySelectorAll('.site-card-cb').forEach(cb => {
-      cb.addEventListener('change', function(){ toggleSelect(this.dataset.id); });
-    });
-    loadVisibleImages();
-    updateSelectBar();
-  } finally { isRendering = false; }
-}
-
-async function loadVisibleImages(){
-  const imgs = document.querySelectorAll("img.site-card-img[data-img-id]");
-  for(const img of imgs){
-    const id = img.dataset.imgId;
-    if(!id) continue;
-    if(imageCache[id]){ img.src = imageCache[id]; }
-    else {
-      const data = await getImage(id);
-      if(data) img.src = data;
-      else { img.outerHTML = '<div class="site-card-img no-img">📷</div>'; }
-    }
-  }
-}
-
-function toggleSelect(id){
-  if(selectedSites.has(id)) selectedSites.delete(id);
-  else selectedSites.add(id);
-  updateSelectBar();
-  document.querySelectorAll("div.site-card[data-site-id]").forEach(card => {
-    if(card.dataset.siteId === id){
-      if(selectedSites.has(id)) card.classList.add("selected-card");
-      else card.classList.remove("selected-card");
-      const cb = card.querySelector('input.site-card-cb');
-      if(cb) cb.checked = selectedSites.has(id);
-    }
-  });
-}
-
-function clearSelection(){ selectedSites.clear(); render(); }
-
-function updateSelectBar(){
-  const bar = document.getElementById("selectBar");
-  document.getElementById("selCount").textContent = selectedSites.size + " selected";
-  if(selectedSites.size > 0) bar.classList.add("show");
-  else bar.classList.remove("show");
-  const delBtn = document.getElementById("deleteBtn");
-  if(delBtn){
-    if(currentUser && currentUser.role === "Admin") delBtn.style.display = "inline-flex";
-    else delBtn.style.display = "none";
-  }
-}
-
-function toggleAreaCollapse(areaName){
-  if(collapsedAreas.has(areaName)) collapsedAreas.delete(areaName);
-  else collapsedAreas.add(areaName);
-  render();
-}
-
-function updateCards(){
-  const counts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
-  sites.forEach(x => counts[x.status] = (counts[x.status] || 0) + 1);
-  document.getElementById("total").textContent = sites.length;
-  document.getElementById("avail").textContent = counts.Available;
-  document.getElementById("notavail").textContent = counts["Not Available"];
-  document.getElementById("maintenance").textContent = counts["Under Maintenance"];
-}
-
-function updateMultiStatusLabel(){
-  const label = document.getElementById("multiStatusLabel");
-  if(!label) return;
-  if(activeStatuses.size === 0) label.textContent = "Status: All";
-  else if(activeStatuses.size === 1) label.textContent = "Status: " + [...activeStatuses][0];
-  else label.textContent = "Status (" + activeStatuses.size + ")";
-}
-
-function filterByStatus(status){
-  if(activeStatuses.has(status)) activeStatuses.delete(status);
-  else activeStatuses.add(status);
-  document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = activeStatuses.has(cb.value); });
-  updateMultiStatusLabel();
-  render();
-}
-
+/* ============ FILTER ============ */
+function toggleMultiStatusPanel(e){ if(e) e.stopPropagation(); document.getElementById("multiStatusPanel").classList.toggle("show"); }
+document.addEventListener("click", (e) => {
+  const wrap = document.getElementById("multiStatusWrap");
+  if(wrap && !wrap.contains(e.target)){ document.getElementById("multiStatusPanel").classList.remove("show"); }
+});
+function toggleAllStatuses(checked){ document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = checked; }); onStatusCheckChange(); }
 function onStatusCheckChange(){
   activeStatuses.clear();
   document.querySelectorAll(".ms-cb:checked").forEach(cb => activeStatuses.add(cb.value));
   const allCb = document.getElementById("msAll");
   if(allCb) allCb.checked = activeStatuses.size === 3;
-  updateMultiStatusLabel();
+  render();
+}
+function statusMatchesFilter(status){ if(activeStatuses.size === 0) return true; return activeStatuses.has(status); }
+
+function filterByCard(status){
+  if(status === "ALL"){
+    activeStatuses.clear();
+    document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
+    document.getElementById("msAll").checked = false;
+  } else {
+    if(activeStatuses.has(status)) activeStatuses.delete(status);
+    else activeStatuses.add(status);
+    document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = activeStatuses.has(cb.value); });
+    document.getElementById("msAll").checked = activeStatuses.size === 3;
+  }
+  document.getElementById("search").value = "";
+  areaFilters = {};
+  render();
+}
+function applyFilters(){ areaFilters = {}; render(); }
+function clearAllFilters(){
+  activeStatuses.clear();
+  document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
+  const allCb = document.getElementById("msAll"); if(allCb) allCb.checked = false;
+  document.getElementById("search").value = "";
+  document.getElementById("dateFilterFrom").value = "";
+  document.getElementById("dateFilterTo").value = "";
+  areaFilters = {};
+  render();
+}
+function ddmmyyyyToISOForFilter(s){
+  if(!s) return "";
+  const p = String(s).trim().split("/");
+  if(p.length !== 3) return "";
+  if(p[2].length !== 4) return "";
+  return p[2] + "-" + p[1].padStart(2,"0") + "-" + p[0].padStart(2,"0");
+}
+function siteMatchesDateFilter(site){
+  const fromInput = document.getElementById("dateFilterFrom").value.trim();
+  const toInput = document.getElementById("dateFilterTo").value.trim();
+  if(!fromInput && !toInput) return true;
+  const filterFrom = fromInput ? ddmmyyyyToISOForFilter(fromInput) : "";
+  const filterTo = toInput ? ddmmyyyyToISOForFilter(toInput) : "";
+  if(fromInput && !filterFrom) return true;
+  if(toInput && !filterTo) return true;
+  const siteFrom = site.fromDate ? ddmmyyyyToISO(site.fromDate) : "";
+  const siteTo = site.toDate ? ddmmyyyyToISO(site.toDate) : "";
+  if(!siteFrom && !siteTo) return true;
+  if(filterFrom && filterTo){
+    if(siteFrom && siteTo){ if(siteFrom > filterTo) return false; if(siteTo < filterFrom) return false; return true; }
+    if(siteFrom && !siteTo) return siteFrom <= filterTo;
+    if(!siteFrom && siteTo) return siteTo >= filterFrom;
+  }
+  if(filterFrom && !filterTo){ if(siteTo) return siteTo >= filterFrom; if(siteFrom) return siteFrom >= filterFrom; return true; }
+  if(!filterFrom && filterTo){ if(siteFrom) return siteFrom <= filterTo; if(siteTo) return siteTo <= filterTo; return true; }
+  return true;
+}
+function getFilteredSites(){
+  const q = (document.getElementById("search").value || "").toLowerCase().trim();
+  const hasDateFilter = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
+  if(!hasDateFilter && !q) return sites;
+  return sites.filter(s => {
+    if(hasDateFilter && !siteMatchesDateFilter(s)) return false;
+    if(q){
+      const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+function updateCardsWithFilteredCounts(){
+  const filtered = getFilteredSites();
+  const counts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
+  filtered.forEach(x => counts[x.status] = (counts[x.status] || 0) + 1);
+  document.getElementById("total").textContent = filtered.length;
+  document.getElementById("avail").textContent = counts.Available;
+  document.getElementById("notavail").textContent = counts["Not Available"];
+  document.getElementById("maintenance").textContent = counts["Under Maintenance"];
+  // 更新卡片激活状态
+  document.getElementById("cardTotal").classList.toggle("active-filter", activeStatuses.size === 0 && !document.getElementById("search").value.trim() && !document.getElementById("dateFilterFrom").value.trim() && !document.getElementById("dateFilterTo").value.trim());
+  document.getElementById("cardAvailable").classList.toggle("active-filter", activeStatuses.has("Available"));
+  document.getElementById("cardNotAvailable").classList.toggle("active-filter", activeStatuses.has("Not Available"));
+  document.getElementById("cardMaintenance").classList.toggle("active-filter", activeStatuses.has("Under Maintenance"));
+}
+
+/* ============ RENDER ============ */
+function debouncedRender(){
+  if(renderDebounceTimer) clearTimeout(renderDebounceTimer);
+  renderDebounceTimer = setTimeout(render, 200);
+}
+
+async function render(){
+  updateCardsWithFilteredCounts();
+  // 更新多状态按钮
+  const multiLabel = document.getElementById("multiStatusLabel");
+  const multiCount = document.getElementById("multiStatusCount");
+  if(activeStatuses.size === 0){
+    multiLabel.textContent = "Status: All";
+    multiCount.style.display = "none";
+  } else {
+    multiLabel.textContent = "Status: " + activeStatuses.size + " selected";
+    multiCount.textContent = activeStatuses.size;
+    multiCount.style.display = "inline";
+  }
+  // 过滤徽章
+  const badge = document.getElementById("filterBadge");
+  const hasDate = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
+  const hasSearch = document.getElementById("search").value.trim();
+  const filterParts = [];
+  if(activeStatuses.size > 0) filterParts.push(activeStatuses.size + " status");
+  if(hasDate) filterParts.push("date range");
+  if(hasSearch) filterParts.push("search");
+  if(filterParts.length > 0){
+    badge.textContent = "Filters: " + filterParts.join(", ");
+    badge.classList.add("show");
+    document.getElementById("clearFilterBtn").classList.add("show");
+  } else {
+    badge.classList.remove("show");
+    document.getElementById("clearFilterBtn").classList.remove("show");
+  }
+
+  const container = document.getElementById("areaContainer");
+  const filteredSites = getFilteredSites();
+  visibleSites = filteredSites;
+
+  // 按区域分组
+  const grouped = {};
+  areas.forEach(a => grouped[a] = []);
+  filteredSites.forEach(s => {
+    if(!grouped[s.area]) grouped[s.area] = [];
+    grouped[s.area].push(s);
+  });
+
+  // 处理折叠状态
+  if(!collapsedAreas){
+    collapsedAreas = new Set();
+    Object.keys(grouped).forEach(a => { if(grouped[a].length === 0) collapsedAreas.add(a); });
+  }
+
+  let html = "";
+  const sortedAreas = Object.keys(grouped).sort((a,b) => a.localeCompare(b));
+
+  for(const area of sortedAreas){
+    const areaSites = grouped[area] || [];
+    if(areaSites.length === 0 && !document.getElementById("search").value.trim() && activeStatuses.size === 0 && !hasDate) continue; // 无过滤时不显示空区域
+    const isCollapsed = collapsedAreas.has(area);
+    const areaId = "area_" + area.replace(/[^a-zA-Z0-9]/g, "_");
+
+    // 区域过滤状态
+    if(!areaFilters[area]) areaFilters[area] = "ALL";
+    const areaStatusFilter = areaFilters[area];
+    let displaySites = areaSites;
+    if(areaStatusFilter !== "ALL"){
+      displaySites = areaSites.filter(s => s.status === areaStatusFilter);
+    }
+    // 全局状态过滤
+    if(activeStatuses.size > 0){
+      displaySites = displaySites.filter(s => activeStatuses.has(s.status));
+    }
+
+    const areaStatusCounts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
+    areaSites.forEach(s => areaStatusCounts[s.status]++);
+
+    html += '<div class="area-block ' + (isCollapsed ? "collapsed" : "") + '" data-area="' + esc(area) + '">';
+    html += '<div class="area-header" onclick="toggleAreaCollapse(event, \'' + esc(area).replace(/'/g, "\\'") + '\')">';
+    html += '<div class="area-name">';
+    html += '<input type="checkbox" class="select-all-cb" onclick="event.stopPropagation();toggleSelectAllInArea(this, \'' + esc(area).replace(/'/g, "\\'") + '\')" ' + (areaSites.length > 0 && areaSites.every(s => selectedSites.has(s.id)) ? "checked" : "") + '>';
+    html += esc(area) + ' <span class="area-count">' + areaSites.length + ' sites</span>';
+    html += '</div>';
+    html += '<div class="area-actions" onclick="event.stopPropagation()">';
+    html += '<button onclick="toggleAreaSelectAll(\'' + esc(area).replace(/'/g, "\\'") + '\')">' + (areaSites.every(s => selectedSites.has(s.id)) && areaSites.length > 0 ? "Deselect All" : "Select All") + '</button>';
+    html += '</div></div>';
+
+    html += '<div class="area-content">';
+    html += '<div class="area-filter-bar">';
+    html += '<select onchange="setAreaFilter(\'' + esc(area).replace(/'/g, "\\'") + '\', this.value)">';
+    html += '<option value="ALL"' + (areaStatusFilter === "ALL" ? " selected" : "") + '>All Status (' + areaSites.length + ')</option>';
+    html += '<option value="Available"' + (areaStatusFilter === "Available" ? " selected" : "") + '>Available (' + areaStatusCounts.Available + ')</option>';
+    html += '<option value="Not Available"' + (areaStatusFilter === "Not Available" ? " selected" : "") + '>Not Available (' + areaStatusCounts["Not Available"] + ')</option>';
+    html += '<option value="Under Maintenance"' + (areaStatusFilter === "Under Maintenance" ? " selected" : "") + '>Under Maintenance (' + areaStatusCounts["Under Maintenance"] + ')</option>';
+    html += '</select>';
+    html += '</div>';
+
+    if(displaySites.length === 0){
+      html += '<div class="empty-area">No sites found' + (areaStatusFilter !== "ALL" ? " with this status filter" : "") + '</div>';
+    } else {
+      html += '<div class="site-cards-grid">';
+      displaySites.forEach((site, idx) => {
+        html += renderSiteCard(site, idx);
+      });
+      html += '</div>';
+    }
+    html += '</div></div>';
+  }
+
+  // 添加空状态
+  if(filteredSites.length === 0){
+    html = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8"><div style="font-size:48px;margin-bottom:16px">🔍</div><div style="font-size:16px;font-weight:600">No sites found</div><div style="font-size:13px;margin-top:8px">Try adjusting your filters</div></div>';
+  }
+
+  container.innerHTML = html;
+
+  // 更新选择栏
+  updateSelectBar();
+}
+
+function renderSiteCard(site, idx){
+  const isSelected = selectedSites.has(site.id);
+  const statusClass = site.status === "Available" ? "s-available" : (site.status === "Not Available" ? "s-not" : "s-maintenance");
+  const cardClass = site.status === "Not Available" ? "not-card" : (site.status === "Under Maintenance" ? "maint-card" : "");
+  const days = calcDays(site.fromDate, site.toDate);
+  const hasImage = !!site.imageKey;
+  let imgHtml = "";
+  if(hasImage){
+    const cached = imageCache[site.imageKey];
+    imgHtml = '<img class="site-card-img" src="' + (cached || '') + '" alt="site" onclick="event.stopPropagation();openImageViewer(\'' + esc(site.imageKey).replace(/'/g, "\\'") + '\')" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" onload="this.nextElementSibling.style.display=\'none\'">' +
+      '<div class="site-card-img no-img" style="display:none" onclick="event.stopPropagation();openImageViewer(\'' + esc(site.imageKey).replace(/'/g, "\\'") + '\')">📷</div>';
+    if(!cached) {
+      getImage(site.imageKey).then(data => {
+        if(data) {
+          const img = document.querySelector('.site-card[data-id="' + site.id + '"] .site-card-img');
+          if(img) { img.src = data; }
+        }
+      });
+    }
+  } else {
+    imgHtml = '<div class="site-card-img no-img" onclick="event.stopPropagation();openEdit(\'' + site.id + '\')">📷</div>';
+  }
+
+  let html = '<div class="site-card ' + cardClass + (isSelected ? ' selected-card' : '') + '" data-id="' + site.id + '">';
+  html += '<div class="site-card-top">';
+  html += '<input type="checkbox" class="site-card-cb" ' + (isSelected ? 'checked' : '') + ' onchange="toggleSiteSelect(\'' + site.id + '\', this.checked)">';
+  html += '<span class="site-card-num">#' + (idx + 1) + '</span>';
+  html += '</div>';
+  html += imgHtml;
+  html += '<div class="site-card-body">';
+  html += '<div class="site-card-name">' + esc(site.site || site.siteCode || "Unnamed Site");
+  if(site.siteCode) html += ' <span style="font-size:11px;color:#64748b;font-family:monospace">(' + esc(site.siteCode) + ')</span>';
+  if(site.location) html += '<span class="site-card-loc-inline">📍 ' + esc(site.location.substring(0, 40)) + '</span>';
+  html += '</div>';
+  html += '<div class="site-card-meta">';
+  if(site.customer) html += '<span class="site-card-comp">🏢 ' + esc(site.customer) + '</span>';
+  if(site.rate) html += '<span class="site-card-rate">' + formatINR(site.rate) + '/mo</span>';
+  html += '</div>';
+  html += '<div class="site-card-dates">';
+  if(site.fromDate) html += '📅 ' + esc(site.fromDate);
+  if(site.toDate) html += ' → ' + esc(site.toDate);
+  if(days > 0) html += ' <span class="days-badge">' + days + ' days</span>';
+  html += '</div>';
+  html += '</div>';
+  html += '<div class="site-card-status">';
+  html += '<span class="status ' + statusClass + '">' + esc(site.status) + '</span>';
+  html += '</div>';
+  html += '<div class="site-card-actions">';
+  html += '<button onclick="event.stopPropagation();openEdit(\'' + site.id + '\')">✏️ Edit</button>';
+  html += '<button class="history-btn" onclick="event.stopPropagation();openSiteHistory(\'' + site.id + '\')">📜 History</button>';
+  if(site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/)){
+    html += '<button class="map-btn" onclick="event.stopPropagation();openMap(\'' + esc(site.location) + '\')">🗺️ Map</button>';
+  }
+  html += '</div></div>';
+  return html;
+}
+
+/* ============ 区域交互 ============ */
+function toggleAreaCollapse(event, area){
+  if(event.target.tagName === "INPUT" || event.target.tagName === "BUTTON") return;
+  if(collapsedAreas.has(area)) collapsedAreas.delete(area);
+  else collapsedAreas.add(area);
   render();
 }
 
-// ==================== TELEGRAM ====================
-function loadTelegramConfig(){
-  try {
-    const saved = localStorage.getItem("sms_telegram_config");
-    if(saved){
-      const parsed = JSON.parse(saved);
-      telegramConfig.botToken = parsed.botToken || "";
-      telegramConfig.chatId = parsed.chatId || "";
-      telegramConfig.enabled = !!parsed.enabled;
-    }
-  } catch(e){}
-  updateTelegramBtn();
+function setAreaFilter(area, value){
+  areaFilters[area] = value;
+  render();
 }
 
-function saveTelegramConfig(){
-  localStorage.setItem("sms_telegram_config", JSON.stringify(telegramConfig));
-  updateTelegramBtn();
+function toggleSelectAllInArea(cb, area){
+  const areaSites = visibleSites.filter(s => s.area === area);
+  areaSites.forEach(s => {
+    if(cb.checked) selectedSites.add(s.id);
+    else selectedSites.delete(s.id);
+  });
+  render();
 }
 
-function updateTelegramBtn(){
-  const btn = document.getElementById("telegramBtn");
-  if(!btn) return;
-  if(telegramConfig.enabled && telegramConfig.botToken && telegramConfig.chatId){
-    btn.textContent = "📱 Telegram ON";
-    btn.style.background = "#0088cc";
+function toggleAreaSelectAll(area){
+  const areaSites = visibleSites.filter(s => s.area === area);
+  const allSelected = areaSites.every(s => selectedSites.has(s.id));
+  if(allSelected){
+    areaSites.forEach(s => selectedSites.delete(s.id));
   } else {
-    btn.textContent = "📱 Telegram";
-    btn.style.background = "#6b7280";
+    areaSites.forEach(s => selectedSites.add(s.id));
+  }
+  render();
+}
+
+function toggleSiteSelect(id, checked){
+  if(checked) selectedSites.add(id);
+  else selectedSites.delete(id);
+  updateSelectBar();
+  // 更新卡片样式
+  const card = document.querySelector('.site-card[data-id="' + id + '"]');
+  if(card) card.classList.toggle("selected-card", checked);
+  // 更新区域全选
+  render();
+}
+
+function updateSelectBar(){
+  const bar = document.getElementById("selectBar");
+  const count = document.getElementById("selCount");
+  if(selectedSites.size > 0){
+    bar.classList.add("show");
+    count.textContent = selectedSites.size + " selected";
+  } else {
+    bar.classList.remove("show");
+  }
+  // 管理员显示删除按钮
+  if(currentUser && currentUser.role === "Admin"){
+    document.getElementById("deleteBtn").style.display = selectedSites.size > 0 ? "inline-flex" : "none";
   }
 }
 
-function openTelegramSettings(){
-  document.getElementById("tgBotToken").value = telegramConfig.botToken || "";
-  document.getElementById("tgChatId").value = telegramConfig.chatId || "";
-  document.getElementById("tgEnabled").checked = !!telegramConfig.enabled;
-  document.getElementById("telegramStatus").style.display = "none";
-  document.getElementById("telegramModal").classList.add("show");
+function clearSelection(){
+  selectedSites.clear();
+  updateSelectBar();
+  render();
 }
 
-function closeTelegramSettings(){ document.getElementById("telegramModal").classList.remove("show"); }
-
-function saveTelegramSettings(){
-  const token = document.getElementById("tgBotToken").value.trim();
-  const chatId = document.getElementById("tgChatId").value.trim();
-  const enabled = document.getElementById("tgEnabled").checked;
-  if(enabled && (!token || !chatId)){ showTelegramStatus("❌ Token aur Chat ID required", "error"); return; }
-  telegramConfig.botToken = token;
-  telegramConfig.chatId = chatId;
-  telegramConfig.enabled = enabled;
-  saveTelegramConfig();
-  showTelegramStatus("✅ Settings saved!", "success");
-  showToast("Telegram", "Settings saved", "success");
+function bulkDeleteSelected(){
+  if(selectedSites.size === 0) return;
+  if(!confirm("Delete " + selectedSites.size + " selected sites? This cannot be undone.")) return;
+  sites = sites.filter(s => !selectedSites.has(s.id));
+  selectedSites.clear();
+  persistNow().then(() => {
+    showToast("Deleted", "Selected sites have been removed", "success");
+    render();
+  });
 }
 
-function showTelegramStatus(msg, type){
-  const el = document.getElementById("telegramStatus");
-  el.textContent = msg;
-  el.style.display = "block";
-  if(type === "success"){ el.style.background = "#ecfdf5"; el.style.color = "#065f46"; }
-  else if(type === "error"){ el.style.background = "#fef2f2"; el.style.color = "#991b1b"; }
-  else { el.style.background = "#eff6ff"; el.style.color = "#1e40af"; }
+/* ============ 添加/编辑站点 ============ */
+function openAdd(){
+  editIndex = -1;
+  document.getElementById("modalTitle").textContent = "Add Site";
+  document.getElementById("farea").value = areas[0] || "";
+  document.getElementById("fsitecode").value = "";
+  document.getElementById("fsite").value = "";
+  document.getElementById("flocation").value = "";
+  document.getElementById("fcustomer").value = "";
+  document.getElementById("frate").value = "";
+  document.getElementById("fstatus").value = "Available";
+  currentImageData = "";
+  document.getElementById("imagePreviewWrap").style.display = "none";
+  document.getElementById("imageUploadBox").style.display = "block";
+  document.getElementById("gpsStatus").textContent = "GPS not captured";
+  document.getElementById("gpsStatus").className = "gps-status";
+  populateDateDropdowns();
+  updateCalcPreview();
+  document.getElementById("modal").classList.add("show");
 }
 
-async function sendTelegramMessage(text){
-  if(!telegramConfig.enabled || !telegramConfig.botToken || !telegramConfig.chatId) return false;
-  try {
-    const url = "https://api.telegram.org/bot" + telegramConfig.botToken + "/sendMessage";
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: telegramConfig.chatId, text: text, parse_mode: "HTML" })
+function openEdit(id){
+  const site = sites.find(s => s.id === id);
+  if(!site) return;
+  editIndex = sites.indexOf(site);
+  document.getElementById("modalTitle").textContent = "Edit Site";
+  document.getElementById("farea").value = site.area || areas[0] || "";
+  document.getElementById("fsitecode").value = site.siteCode || "";
+  document.getElementById("fsite").value = site.site || "";
+  document.getElementById("flocation").value = site.location || "";
+  document.getElementById("fcustomer").value = site.customer || "";
+  document.getElementById("frate").value = site.rate || "";
+  document.getElementById("fstatus").value = site.status || "Available";
+  currentImageData = "";
+  if(site.imageKey){
+    const cached = imageCache[site.imageKey];
+    if(cached){
+      document.getElementById("imagePreview").src = cached;
+      document.getElementById("imagePreviewWrap").style.display = "block";
+      document.getElementById("imageUploadBox").style.display = "none";
+    } else {
+      getImage(site.imageKey).then(data => {
+        if(data){
+          document.getElementById("imagePreview").src = data;
+          document.getElementById("imagePreviewWrap").style.display = "block";
+          document.getElementById("imageUploadBox").style.display = "none";
+        }
+      });
+    }
+  } else {
+    document.getElementById("imagePreviewWrap").style.display = "none";
+    document.getElementById("imageUploadBox").style.display = "block";
+  }
+  document.getElementById("gpsStatus").textContent = site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/) ? "✅ GPS captured" : "GPS not captured";
+  document.getElementById("gpsStatus").className = "gps-status" + (site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/) ? " ok" : "");
+  populateDateDropdowns();
+  setDateDropdowns("ffrom", site.fromDate || "");
+  setDateDropdowns("fto", site.toDate || "");
+  updateCalcPreview();
+  document.getElementById("modal").classList.add("show");
+}
+
+function populateDateDropdowns(){
+  const days = Array.from({length: 31}, (_, i) => String(i + 1).padStart(2, "0"));
+  const months = Array.from({length: 12}, (_, i) => String(i + 1).padStart(2, "0"));
+  const years = Array.from({length: 11}, (_, i) => String(new Date().getFullYear() - 2 + i));
+  ["ffrom_d", "fto_d"].forEach(id => { const el = document.getElementById(id); if(el){ el.innerHTML = days.map(d => '<option value="'+d+'">'+d+'</option>').join(''); } });
+  ["ffrom_m", "fto_m"].forEach(id => { const el = document.getElementById(id); if(el){ el.innerHTML = months.map(m => '<option value="'+m+'">'+m+'</option>').join(''); } });
+  ["ffrom_y", "fto_y"].forEach(id => { const el = document.getElementById(id); if(el){ el.innerHTML = years.map(y => '<option value="'+y+'">'+y+'</option>').join(''); } });
+  const t = new Date();
+  ["ffrom_d", "fto_d"].forEach(id => { const el = document.getElementById(id); if(el) el.value = String(t.getDate()).padStart(2, "0"); });
+  ["ffrom_m", "fto_m"].forEach(id => { const el = document.getElementById(id); if(el) el.value = String(t.getMonth() + 1).padStart(2, "0"); });
+  ["ffrom_y", "fto_y"].forEach(id => { const el = document.getElementById(id); if(el) el.value = String(t.getFullYear()); });
+  ["ffrom_d","ffrom_m","ffrom_y","fto_d","fto_m","fto_y"].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.onchange = updateCalcPreview;
+  });
+}
+
+function closeModal(){ document.getElementById("modal").classList.remove("show"); }
+
+async function saveSite(){
+  const area = document.getElementById("farea").value;
+  const siteCode = document.getElementById("fsitecode").value.trim().toUpperCase();
+  const siteName = document.getElementById("fsite").value.trim();
+  const location = document.getElementById("flocation").value.trim();
+  const customer = document.getElementById("fcustomer").value.trim();
+  const rate = parseFloat(document.getElementById("frate").value) || 0;
+  const fromDate = getDateFromDropdowns("ffrom");
+  const toDate = getDateFromDropdowns("fto");
+  const status = calcStatusFromDates(fromDate, toDate);
+
+  if(!area){ showToast("Error", "Area is required", "danger"); return; }
+  if(!siteCode && !siteName){ showToast("Error", "Site code or name is required", "danger"); return; }
+
+  const siteData = {
+    area,
+    siteCode,
+    site: siteName || siteCode,
+    location,
+    customer,
+    rate,
+    fromDate,
+    toDate,
+    status,
+    imageKey: ""
+  };
+
+  if(currentImageData){
+    const key = "img_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
+    const result = await saveImage(key, currentImageData);
+    if(result && result.success){
+      siteData.imageKey = key;
+    }
+  }
+
+  if(editIndex >= 0){
+    const oldSite = sites[editIndex];
+    if(oldSite.imageKey && oldSite.imageKey !== siteData.imageKey && !currentImageData){
+      await deleteImage(oldSite.imageKey);
+    }
+    if(oldSite.imageKey && currentImageData && oldSite.imageKey !== siteData.imageKey){
+      await deleteImage(oldSite.imageKey);
+    }
+    siteData.id = oldSite.id;
+    sites[editIndex] = { ...oldSite, ...siteData };
+    if(oldSite.status !== status || oldSite.toDate !== toDate){
+      bookingHistory.push({
+        id: "hist_" + Date.now(),
+        siteId: siteData.id,
+        siteName: siteData.site,
+        siteCode: siteData.siteCode,
+        area: siteData.area,
+        fromDate: siteData.fromDate,
+        toDate: siteData.toDate,
+        status: siteData.status,
+        customer: siteData.customer,
+        rate: siteData.rate,
+        changedAt: new Date().toISOString(),
+        changedBy: currentUser ? currentUser.username : "unknown",
+        action: "edited"
+      });
+    }
+  } else {
+    siteData.id = "id_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
+    sites.push(siteData);
+    bookingHistory.push({
+      id: "hist_" + Date.now(),
+      siteId: siteData.id,
+      siteName: siteData.site,
+      siteCode: siteData.siteCode,
+      area: siteData.area,
+      fromDate: siteData.fromDate,
+      toDate: siteData.toDate,
+      status: siteData.status,
+      customer: siteData.customer,
+      rate: siteData.rate,
+      changedAt: new Date().toISOString(),
+      changedBy: currentUser ? currentUser.username : "unknown",
+      action: "created"
     });
-    const data = await res.json();
-    return data.ok === true;
-  } catch(e){ return false; }
+  }
+
+  const ok = await persistNow();
+  if(ok){
+    showToast("Saved", "Site saved successfully", "success");
+    closeModal();
+    render();
+    if(telegramConfig.enabled){
+      sendTelegramNotification(siteData, editIndex >= 0 ? "updated" : "created");
+    }
+  } else {
+    showToast("Error", "Failed to save site", "danger");
+  }
 }
 
-async function testTelegram(){
-  const token = document.getElementById("tgBotToken").value.trim();
-  const chatId = document.getElementById("tgChatId").value.trim();
-  if(!token || !chatId){ showTelegramStatus("❌ Token aur Chat ID daalo", "error"); return; }
-  showTelegramStatus("⏳ Test bhej rahe hain...", "info");
-  const saved = telegramConfig.enabled;
-  telegramConfig.enabled = true;
-  telegramConfig.botToken = token;
-  telegramConfig.chatId = chatId;
-  const ok = await sendTelegramMessage("🧪 Test Message - Site Management");
-  if(!ok){ telegramConfig.enabled = saved; showTelegramStatus("❌ Fail! Settings check karo", "error"); }
-  else showTelegramStatus("✅ Test bhej diya!", "success");
+function onLocationManualChange(){
+  const loc = document.getElementById("flocation").value.trim();
+  if(loc.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/)){
+    document.getElementById("gpsStatus").textContent = "✅ GPS captured (manual)";
+    document.getElementById("gpsStatus").className = "gps-status ok";
+  } else {
+    document.getElementById("gpsStatus").textContent = "GPS not captured";
+    document.getElementById("gpsStatus").className = "gps-status";
+  }
 }
 
-// ==================== HISTORY ====================
+function captureGPS(){
+  if(!navigator.geolocation){ showToast("Error", "Geolocation not supported", "danger"); return; }
+  const btn = document.getElementById("gpsBtn");
+  btn.disabled = true;
+  btn.textContent = "Getting...";
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const loc = pos.coords.latitude.toFixed(6) + ", " + pos.coords.longitude.toFixed(6);
+      document.getElementById("flocation").value = loc;
+      document.getElementById("gpsStatus").textContent = "✅ GPS captured (" + loc + ")";
+      document.getElementById("gpsStatus").className = "gps-status ok";
+      btn.disabled = false;
+      btn.textContent = "Use GPS";
+    },
+    (err) => {
+      showToast("Error", "GPS failed: " + err.message, "danger");
+      btn.disabled = false;
+      btn.textContent = "Use GPS";
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+}
+
+function handleImageUpload(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  if(file.size > 8 * 1024 * 1024){ showToast("Error", "Image must be under 8 MB", "danger"); return; }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    currentImageData = e.target.result;
+    document.getElementById("imagePreview").src = currentImageData;
+    document.getElementById("imagePreviewWrap").style.display = "block";
+    document.getElementById("imageUploadBox").style.display = "none";
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(){
+  currentImageData = "";
+  document.getElementById("imagePreviewWrap").style.display = "none";
+  document.getElementById("imageUploadBox").style.display = "block";
+  document.getElementById("fimage").value = "";
+}
+
+function openImageViewer(key){
+  const cached = imageCache[key];
+  if(cached){
+    document.getElementById("viewerImage").src = cached;
+    document.getElementById("imageViewer").classList.add("show");
+    return;
+  }
+  getImage(key).then(data => {
+    if(data){
+      document.getElementById("viewerImage").src = data;
+      document.getElementById("imageViewer").classList.add("show");
+    } else {
+      showToast("Info", "Image not available", "warning");
+    }
+  });
+}
+
+function closeImageViewer(){ document.getElementById("imageViewer").classList.remove("show"); }
+
+function openMap(location){
+  if(!location) return;
+  const parts = location.split(",");
+  if(parts.length === 2){
+    const lat = parseFloat(parts[0]), lng = parseFloat(parts[1]);
+    if(!isNaN(lat) && !isNaN(lng)){
+      window.open("https://www.google.com/maps?q=" + lat + "," + lng, "_blank");
+      return;
+    }
+  }
+  window.open("https://www.google.com/maps?q=" + encodeURIComponent(location), "_blank");
+}
+
+/* ============ 历史记录 ============ */
 function openHistoryModal(){
+  historySearchQuery = "";
+  document.getElementById("historySearchInput").value = "";
+  renderHistoryList();
+  document.getElementById("historyModal").classList.add("show");
+}
+
+function openSiteHistory(siteId){
+  const site = sites.find(s => s.id === siteId);
+  if(!site) return;
+  historySearchQuery = site.siteCode || site.site || "";
+  document.getElementById("historySearchInput").value = historySearchQuery;
   renderHistoryList();
   document.getElementById("historyModal").classList.add("show");
 }
 
 function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
 
+function filterHistoryList(){
+  historySearchQuery = document.getElementById("historySearchInput").value.trim().toLowerCase();
+  renderHistoryList();
+}
+
+function clearHistorySearch(){
+  historySearchQuery = "";
+  document.getElementById("historySearchInput").value = "";
+  renderHistoryList();
+}
+
 function renderHistoryList(){
-  const content = document.getElementById("historyContent");
-  const list = bookingHistory.slice().reverse();
-  if(list.length === 0){
-    content.innerHTML = '<div class="empty-history">No booking history found.</div>';
+  let filtered = bookingHistory.slice().reverse();
+  if(historySearchQuery){
+    const q = historySearchQuery.toLowerCase();
+    filtered = filtered.filter(h => {
+      const hay = ((h.siteName || "") + " " + (h.siteCode || "") + " " + (h.area || "") + " " + (h.customer || "")).toLowerCase();
+      return hay.includes(q);
+    });
+  }
+  const container = document.getElementById("historyContent");
+  if(filtered.length === 0){
+    container.innerHTML = '<div class="empty-history">No history records found</div>';
     return;
   }
   let html = "";
-  list.forEach(h => {
-    html += '<div class="history-item"><b style="color:#6d28d9">' + esc(h.site) + '</b>';
-    html += '<div style="font-size:12px;margin-top:6px">';
-    html += '<div>Area: <b>' + esc(h.area || "—") + '</b></div>';
-    html += '<div>Company: <b>' + esc(h.customer || "—") + '</b></div>';
-    html += '<div>From: <b>' + esc(h.fromDate || "—") + '</b> To: <b>' + esc(h.toDate || "—") + '</b></div>';
-    html += '<div>Days: <b>' + (h.days || 0) + '</b></div>';
-    html += '<div>Ended: <b>' + esc(h.endedOn || "—") + '</b></div>';
+  filtered.forEach(h => {
+    const statusClass = h.status === "Available" ? "s-available" : (h.status === "Not Available" ? "s-not" : "s-maintenance");
+    const actionText = h.action === "created" ? "🆕 Created" : (h.action === "edited" ? "✏️ Edited" : "🔄 Updated");
+    const date = new Date(h.changedAt);
+    const dateStr = date.toLocaleDateString() + " " + date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
+    html += '<div class="history-item">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">';
+    html += '<div style="flex:1">';
+    html += '<div style="font-weight:700;font-size:14px;margin-bottom:4px">' + esc(h.siteName || h.siteCode || "Unnamed") + ' <span style="font-size:11px;color:#64748b;font-family:monospace">' + esc(h.siteCode || "") + '</span></div>';
+    html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px">';
+    html += '<span class="status ' + statusClass + '" style="font-size:10px">' + esc(h.status) + '</span>';
+    html += '<span style="font-size:11px;color:#64748b">' + esc(h.area) + '</span>';
+    html += '</div>';
+    html += '<div style="font-size:12px;color:#475569">';
+    html += '📅 ' + esc(h.fromDate || "—") + ' → ' + esc(h.toDate || "—");
+    if(h.customer) html += ' &nbsp;|&nbsp; 🏢 ' + esc(h.customer);
+    if(h.rate) html += ' &nbsp;|&nbsp; 💰 ' + formatINR(h.rate);
+    html += '</div>';
+    html += '</div>';
+    html += '<div style="text-align:right;font-size:11px;color:#94a3b8;white-space:nowrap">';
+    html += actionText + '<br>' + dateStr + '<br>by ' + esc(h.changedBy || "—");
+    html += '</div>';
     html += '</div></div>';
   });
-  content.innerHTML = html;
+  container.innerHTML = html;
 }
 
 function downloadHistoryCSV(){
-  if(bookingHistory.length === 0){ alert("No history"); return; }
-  const headers = ["Site", "Site Code", "Area", "Company", "From", "To", "Days", "Ended On", "Status", "Location", "Rate"];
-  let csv = headers.join(",") + "\n";
+  let csv = "Site Name,Site Code,Area,From,To,Status,Customer,Rate,Action,Changed At,Changed By\n";
   bookingHistory.forEach(h => {
-    csv += [h.site, h.siteCode || "", h.area || "", h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status, h.location, h.rate].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n";
+    csv += '"' + (h.siteName || "").replace(/"/g, '""') + '",';
+    csv += '"' + (h.siteCode || "").replace(/"/g, '""') + '",';
+    csv += '"' + (h.area || "").replace(/"/g, '""') + '",';
+    csv += '"' + (h.fromDate || "") + '",';
+    csv += '"' + (h.toDate || "") + '",';
+    csv += '"' + (h.status || "") + '",';
+    csv += '"' + (h.customer || "").replace(/"/g, '""') + '",';
+    csv += (h.rate || 0) + ',';
+    csv += '"' + (h.action || "") + '",';
+    csv += '"' + (h.changedAt || "") + '",';
+    csv += '"' + (h.changedBy || "") + '"\n';
   });
-  const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "history_" + new Date().toISOString().slice(0,10) + ".csv";
+  a.href = url;
+  a.download = "booking-history-" + new Date().toISOString().slice(0, 10) + ".csv";
   a.click();
+  URL.revokeObjectURL(url);
 }
 
-// ==================== EXPORT ====================
+/* ============ 导出 CSV ============ */
 function exportCSV(){
-  if(sites.length === 0){ alert("No sites"); return; }
-  const headers = ["Area", "Site", "Site Code", "Location", "Company", "Rate", "Status", "From", "To"];
-  let csv = headers.join(",") + "\n";
-  sites.forEach(s => {
-    csv += [s.area, s.site, s.siteCode||"", s.location, s.customer, s.rate, s.status, s.fromDate, s.toDate].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n";
+  let csv = "Area,Site Code,Site Name,Location,Company,Rate,From,To,Days,Status\n";
+  visibleSites.forEach(s => {
+    const days = calcDays(s.fromDate, s.toDate);
+    csv += '"' + (s.area || "").replace(/"/g, '""') + '",';
+    csv += '"' + (s.siteCode || "").replace(/"/g, '""') + '",';
+    csv += '"' + (s.site || "").replace(/"/g, '""') + '",';
+    csv += '"' + (s.location || "").replace(/"/g, '""') + '",';
+    csv += '"' + (s.customer || "").replace(/"/g, '""') + '",';
+    csv += (s.rate || 0) + ',';
+    csv += '"' + (s.fromDate || "") + '",';
+    csv += '"' + (s.toDate || "") + '",';
+    csv += days + ',';
+    csv += '"' + (s.status || "") + '"\n';
   });
-  const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "sites_" + new Date().toISOString().slice(0,10) + ".csv";
+  a.href = url;
+  a.download = "sites-export-" + new Date().toISOString().slice(0, 10) + ".csv";
   a.click();
+  URL.revokeObjectURL(url);
 }
 
-// ==================== BULK DELETE ====================
-async function bulkDeleteSelected(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  if(selectedSites.size === 0){ alert("Koi site select nahi"); return; }
-  if(!confirm(selectedSites.size + " sites delete karein?")) return;
-  const ids = new Set([...selectedSites].map(String));
-  const toDelete = sites.filter(s => ids.has(String(s.id)));
-  for(const s of toDelete){ if(s.hasImage) await deleteImage(s.id); }
-  sites = sites.filter(s => !ids.has(String(s.id)));
-  selectedSites.clear();
-  await persistNow();
-  render();
-  alert("✅ " + toDelete.length + " sites deleted");
-}
-
-// ==================== BULK STATUS ====================
-async function openBulkStatusModal(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
-  const status = prompt("Status: Available / Not Available / Under Maintenance");
-  if(!status) return;
-  const newStatus = status.trim();
-  if(!["Available","Not Available","Under Maintenance"].includes(newStatus)){ alert("Invalid status"); return; }
-  const ids = new Set([...selectedSites].map(String));
-  const targets = sites.filter(s => ids.has(String(s.id)));
-  targets.forEach(s => { s.status = newStatus; });
-  await persistNow();
-  render();
-  clearSelection();
-  alert("✅ " + targets.length + " sites updated");
-}
-
-// ==================== AREA MANAGER ====================
+/* ============ 区域管理 ============ */
 function openAreaManager(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
+  selectedAreas.clear();
   renderAreaList();
   document.getElementById("areaModal").classList.add("show");
 }
@@ -1279,293 +1467,352 @@ function openAreaManager(){
 function closeAreaModal(){ document.getElementById("areaModal").classList.remove("show"); }
 
 function renderAreaList(){
-  const list = document.getElementById("areaList");
-  if(!list) return;
-  if(areas.length === 0){
-    list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px">No areas.</div>';
-    return;
-  }
-  let html = '';
+  const container = document.getElementById("areaList");
+  let html = "";
   areas.forEach((a, i) => {
     const count = sites.filter(s => s.area === a).length;
-    html += '<div class="area-list-item"><span class="name">' + esc(a) + ' (' + count + ')</span>';
-    html += '<button onclick="renameArea(' + i + ')" style="padding:6px 12px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Rename</button>';
-    html += '<button onclick="deleteArea(' + i + ')" style="padding:6px 12px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Delete</button>';
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #f1f5f9">';
+    html += '<input type="checkbox" ' + (selectedAreas.has(a) ? "checked" : "") + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\', this.checked)" style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">';
+    html += '<span style="flex:1;font-weight:600">' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + count + ' sites)</span></span>';
+    html += '<button onclick="renameArea(\'' + esc(a).replace(/'/g, "\\'") + '\')" style="padding:5px 10px;background:#f1f5f9;border:0;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit">✏️</button>';
     html += '</div>';
   });
-  list.innerHTML = html;
+  container.innerHTML = html || '<div style="text-align:center;color:#94a3b8;padding:20px">No areas</div>';
+  document.getElementById("areaSelCount").textContent = selectedAreas.size + " selected";
+}
+
+function toggleAreaSelect(area, checked){
+  if(checked) selectedAreas.add(area);
+  else selectedAreas.delete(area);
+  document.getElementById("areaSelCount").textContent = selectedAreas.size + " selected";
+}
+
+function toggleAllAreas(){
+  if(selectedAreas.size === areas.length) selectedAreas.clear();
+  else areas.forEach(a => selectedAreas.add(a));
+  renderAreaList();
+}
+
+async function bulkDeleteAreas(){
+  if(selectedAreas.size === 0){ showToast("Info", "No areas selected", "warning"); return; }
+  const count = sites.filter(s => selectedAreas.has(s.area)).length;
+  if(!confirm("Delete " + selectedAreas.size + " areas and " + count + " sites? This cannot be undone.")) return;
+  sites = sites.filter(s => !selectedAreas.has(s.area));
+  areas = areas.filter(a => !selectedAreas.has(a));
+  selectedAreas.clear();
+  const ok = await persistNow();
+  if(ok){
+    showToast("Deleted", "Selected areas and sites removed", "success");
+    populateAreaDropdowns();
+    renderAreaList();
+    render();
+  }
 }
 
 async function addNewArea(){
   const name = document.getElementById("newAreaName").value.trim();
-  if(!name){ alert("Naam likhein"); return; }
-  if(areas.includes(name)){ alert("Already exists"); return; }
+  if(!name){ showToast("Error", "Enter area name", "danger"); return; }
+  if(areas.includes(name)){ showToast("Error", "Area already exists", "danger"); return; }
   areas.push(name);
-  await persistNow();
+  areas.sort();
   document.getElementById("newAreaName").value = "";
-  renderAreaList();
-  populateAreaDropdowns();
-  render();
-}
-
-async function renameArea(index){
-  const oldName = areas[index];
-  const newName = prompt("Naya name:", oldName);
-  if(!newName || newName.trim() === "") return;
-  if(newName !== oldName && areas.includes(newName)){ alert("Already exists"); return; }
-  const trimmed = newName.trim();
-  areas[index] = trimmed;
-  sites.forEach(s => { if(s.area === oldName) s.area = trimmed; });
-  await persistNow();
-  renderAreaList();
-  populateAreaDropdowns();
-  render();
-}
-
-async function deleteArea(index){
-  const areaName = areas[index];
-  const count = sites.filter(s => s.area === areaName).length;
-  if(count > 0){
-    if(!confirm(areaName + " mein " + count + " sites. Continue?")) return;
-    sites.forEach(s => { if(s.area === areaName) s.area = "Unassigned"; });
-  } else {
-    if(!confirm("Delete '" + areaName + "'?")) return;
+  const ok = await persistNow();
+  if(ok){
+    showToast("Added", "Area added: " + name, "success");
+    populateAreaDropdowns();
+    renderAreaList();
+    render();
   }
-  areas.splice(index, 1);
-  await persistNow();
-  renderAreaList();
-  populateAreaDropdowns();
+}
+
+function renameArea(area){
+  const newName = prompt("Rename area:", area);
+  if(!newName || newName === area) return;
+  if(areas.includes(newName)){ showToast("Error", "Name already exists", "danger"); return; }
+  const idx = areas.indexOf(area);
+  if(idx === -1) return;
+  areas[idx] = newName;
+  sites.forEach(s => { if(s.area === area) s.area = newName; });
+  persistNow().then(() => {
+    showToast("Renamed", area + " → " + newName, "success");
+    populateAreaDropdowns();
+    renderAreaList();
+    render();
+  });
+}
+
+/* ============ 多区域选择 ============ */
+function openMultiAreaSelect(){
+  multiAreaSelected.clear();
+  renderMultiAreaList();
+  document.getElementById("multiAreaModal").classList.add("show");
+}
+
+function closeMultiAreaModal(){ document.getElementById("multiAreaModal").classList.remove("show"); }
+
+function renderMultiAreaList(){
+  const container = document.getElementById("multiAreaList");
+  let html = "";
+  areas.forEach(a => {
+    const count = sites.filter(s => s.area === a).length;
+    html += '<label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;cursor:pointer;' + (multiAreaSelected.has(a) ? "background:#ede9fe" : "") + '">';
+    html += '<input type="checkbox" ' + (multiAreaSelected.has(a) ? "checked" : "") + ' onchange="toggleMultiArea(\'' + esc(a).replace(/'/g, "\\'") + '\', this.checked)" style="width:18px;height:18px;cursor:pointer;accent-color:#7c3aed">';
+    html += '<span style="font-weight:600">' + esc(a) + '</span>';
+    html += '<span style="color:#94a3b8;font-size:12px">(' + count + ' sites)</span>';
+    html += '</label>';
+  });
+  container.innerHTML = html;
+  document.getElementById("multiAreaSelCount").textContent = multiAreaSelected.size + " selected";
+}
+
+function toggleMultiArea(area, checked){
+  if(checked) multiAreaSelected.add(area);
+  else multiAreaSelected.delete(area);
+  renderMultiAreaList();
+}
+
+function multiAreaSelectAll(){ areas.forEach(a => multiAreaSelected.add(a)); renderMultiAreaList(); }
+function multiAreaDeselectAll(){ multiAreaSelected.clear(); renderMultiAreaList(); }
+
+function applyMultiAreaSelection(){
+  const toSelect = sites.filter(s => multiAreaSelected.has(s.area));
+  toSelect.forEach(s => selectedSites.add(s.id));
+  closeMultiAreaModal();
+  updateSelectBar();
   render();
+  showToast("Selected", toSelect.length + " sites selected from " + multiAreaSelected.size + " areas", "success");
 }
 
-// ==================== BULK UPLOAD ====================
-function openBulkUpload(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  const csv = prompt("CSV paste karein (columns: area,site,location,company,rate,from,to):");
-  if(!csv) return;
-  parseCSV(csv);
-}
-
-function parseCSVLine(line){
-  const res = []; let cur = ""; let inQ = false;
-  for(let i=0; i<line.length; i++){
-    const c = line[i];
-    if(c === '"'){ if(inQ && line[i+1] === '"'){ cur += '"'; i++; } else inQ = !inQ; }
-    else if(c === ',' && !inQ){ res.push(cur.trim()); cur = ""; }
-    else cur += c;
-  }
-  res.push(cur.trim());
-  return res;
-}
-
-async function parseCSV(text){
-  const lines = text.split(/\r?\n/).filter(l => l.trim());
-  if(lines.length < 2){ alert("CSV needs header + data"); return; }
-  const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().trim());
-  if(!headers.includes("site")){ alert("'site' column missing"); return; }
-  const idx = {};
-  headers.forEach((h, i) => idx[h] = i);
-  let added = 0, updated = 0;
-  for(let i=1; i<lines.length; i++){
-    const cells = parseCSVLine(lines[i]);
-    if(!cells[idx.site]) continue;
-    let areaVal = idx.area !== undefined ? (cells[idx.area]||"").trim() : "";
-    if(!areaVal) areaVal = "Unassigned";
-    if(areaVal !== "Unassigned" && !areas.includes(areaVal)) areas.push(areaVal);
-    const siteName = cells[idx.site];
-    const codeMatch = siteName.match(/^([A-Z]{2,5}\d{1,4})/i);
-    const siteCode = codeMatch ? codeMatch[1].toUpperCase() : "";
-    const fromD = idx.from !== undefined ? (cells[idx.from]||"") : "";
-    const toD = idx.to !== undefined ? (cells[idx.to]||"") : "";
-    const autoStatus = calcStatusFromDates(fromD, toD);
-    const newSite = {
-      id: "id_"+Math.random().toString(36).slice(2,10),
-      area: areaVal, site: siteName, siteCode: siteCode,
-      location: idx.location !== undefined ? (cells[idx.location]||"") : "",
-      customer: idx.company !== undefined ? (cells[idx.company]||"") : "",
-      rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "",
-      status: autoStatus,
-      fromDate: fromD, toDate: toD,
-      lat: "", lng: "", hasImage: false
-    };
-    const existing = sites.findIndex(s => s.site === siteName);
-    if(existing >= 0){
-      sites[existing] = { ...sites[existing], ...newSite, id: sites[existing].id };
-      updated++;
-    } else {
-      sites.push(newSite);
-      added++;
+/* ============ 批量状态更新 ============ */
+function openBulkStatusModal(){
+  if(selectedSites.size === 0) return;
+  // 简单实现：使用 prompt 选择状态
+  const status = prompt("Enter status for " + selectedSites.size + " selected sites:\n(Available / Not Available / Under Maintenance)");
+  if(!status) return;
+  const valid = ["Available", "Not Available", "Under Maintenance"];
+  if(!valid.includes(status)){ showToast("Error", "Invalid status", "danger"); return; }
+  selectedSites.forEach(id => {
+    const site = sites.find(s => s.id === id);
+    if(site){
+      const oldStatus = site.status;
+      site.status = status;
+      if(oldStatus !== status){
+        bookingHistory.push({
+          id: "hist_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+          siteId: site.id,
+          siteName: site.site,
+          siteCode: site.siteCode,
+          area: site.area,
+          fromDate: site.fromDate,
+          toDate: site.toDate,
+          status: status,
+          customer: site.customer,
+          rate: site.rate,
+          changedAt: new Date().toISOString(),
+          changedBy: currentUser ? currentUser.username : "unknown",
+          action: "bulk_status"
+        });
+      }
     }
-  }
-  await persistNow();
-  populateAreaDropdowns();
-  render();
-  alert("✅ Added: " + added + (updated > 0 ? ", Updated: " + updated : ""));
+  });
+  persistNow().then(() => {
+    showToast("Updated", "Status updated for selected sites", "success");
+    render();
+    if(telegramConfig.enabled){
+      // 可以发送通知
+    }
+  });
 }
 
-// ==================== BACKUP ====================
-async function downloadBackup(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  const backup = { version: "1.0", exportedAt: new Date().toISOString(), sites, areas, bookingHistory };
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+/* ============ PPT 生成 ============ */
+function generateSelectedSitesPPT(){
+  showToast("Info", "PPT generation feature coming soon!", "info");
+}
+
+/* ============ 备份/导入 ============ */
+function downloadBackup(){
+  const data = { sites, areas, bookingHistory, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "sms_backup_" + new Date().toISOString().slice(0,19).replace(/[:T]/g, "-") + ".json";
+  a.href = url;
+  a.download = "site-backup-" + new Date().toISOString().slice(0, 10) + ".json";
   a.click();
+  URL.revokeObjectURL(url);
 }
 
-function triggerImport(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  document.getElementById("importFile").click();
-}
+function triggerImport(){ document.getElementById("importFile").click(); }
 
-function handleImportFile(e){
-  const file = e.target.files[0];
+function handleImportFile(event){
+  const file = event.target.files[0];
   if(!file) return;
   const reader = new FileReader();
-  reader.onload = async (ev) => {
+  reader.onload = async (e) => {
     try {
-      const backup = JSON.parse(ev.target.result);
-      if(!backup.sites || !Array.isArray(backup.sites)){ alert("Invalid backup"); return; }
-      if(!confirm("Import " + backup.sites.length + " sites? Current data replace ho jayega!")) return;
-      sites = backup.sites || [];
-      areas = backup.areas || [...DEFAULT_AREAS];
-      bookingHistory = backup.bookingHistory || [];
+      const data = JSON.parse(e.target.result);
+      if(!data.sites || !Array.isArray(data.sites)){ showToast("Error", "Invalid backup file", "danger"); return; }
+      if(!confirm("Import " + data.sites.length + " sites? This will replace all current data.")) return;
+      sites = data.sites;
+      areas = data.areas || [...DEFAULT_AREAS];
+      bookingHistory = data.bookingHistory || [];
       sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
-      await persistNow();
-      populateAreaDropdowns();
-      render();
-      alert("✅ Import successful!");
-    } catch(err){ alert("Import failed: " + err.message); }
+      const ok = await persistNow();
+      if(ok){
+        showToast("Imported", data.sites.length + " sites imported", "success");
+        populateAreaDropdowns();
+        render();
+      }
+    } catch(err){
+      showToast("Error", "Failed to parse file: " + err.message, "danger");
+    }
   };
   reader.readAsText(file);
-  e.target.value = "";
+  event.target.value = "";
 }
 
-// ==================== EVENTS ====================
-window.addEventListener("DOMContentLoaded", () => {
-  initDateDropdowns();
+/* ============ 批量上传 ============ */
+function openBulkUpload(){
+  showToast("Info", "Bulk upload feature coming soon!", "info");
+}
 
-  // Login
-  document.getElementById("loginBtn").addEventListener("click", doLogin);
-  document.getElementById("loginPass").addEventListener("keypress", e => { if(e.key === "Enter") doLogin(); });
-
-  // Logout
-  document.getElementById("logoutBtn").addEventListener("click", doLogout);
-
-  // Header buttons
-  document.getElementById("refreshBtn").addEventListener("click", async () => {
-    imageFailed.clear(); imageCache = {}; selectedSites.clear();
-    await loadCloudData();
-    collapsedAreas = new Set(areas);
+/* ============ 刷新 ============ */
+async function refreshPage(event){
+  if(event) event.preventDefault();
+  const btn = event ? event.target.closest("button") : null;
+  if(btn) btn.textContent = "⏳ Loading...";
+  const ok = await loadCloudData();
+  if(ok){
     render();
-    showToast("Refreshed", "Data reloaded", "success");
-  });
-  document.getElementById("telegramBtn").addEventListener("click", openTelegramSettings);
-  document.getElementById("bulkBtn").addEventListener("click", openBulkUpload);
-  document.getElementById("backupBtn").addEventListener("click", downloadBackup);
-  document.getElementById("importBtn").addEventListener("click", triggerImport);
+    showToast("Refreshed", "Data loaded from cloud", "success");
+  } else {
+    showToast("Error", "Failed to refresh", "danger");
+  }
+  if(btn) btn.textContent = "🔄 Refresh";
+}
 
-  // Cards
-  document.getElementById("cardTotal").addEventListener("click", () => {
-    activeStatuses.clear();
-    document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
-    updateMultiStatusLabel();
-    render();
-  });
-  document.getElementById("cardAvailable").addEventListener("click", () => filterByStatus("Available"));
-  document.getElementById("cardNotAvailable").addEventListener("click", () => filterByStatus("Not Available"));
-  document.getElementById("cardMaintenance").addEventListener("click", () => filterByStatus("Under Maintenance"));
-
-  // Search
-  document.getElementById("search").addEventListener("input", debounce(render, 200));
-
-  // Multi status
-  document.getElementById("multiStatusBtn").addEventListener("click", (e) => {
-    e.stopPropagation();
-    document.getElementById("multiStatusPanel").classList.toggle("show");
-  });
-  document.addEventListener("click", (e) => {
-    const wrap = document.getElementById("multiStatusWrap");
-    if(wrap && !wrap.contains(e.target)){
-      document.getElementById("multiStatusPanel").classList.remove("show");
+/* ============ 自动释放过期站点 ============ */
+async function autoReleaseExpiredSites(){
+  let changed = false;
+  const today = todayMidnight();
+  sites.forEach(s => {
+    if(s.toDate){
+      const toD = parseDDMMYYYY(s.toDate);
+      if(toD){
+        const toMid = new Date(toD); toMid.setHours(0,0,0,0);
+        const newStatus = toMid > today ? "Not Available" : "Available";
+        if(s.status !== newStatus && s.status !== "Under Maintenance"){
+          s.status = newStatus;
+          changed = true;
+        }
+      }
     }
   });
-  document.getElementById("msAll").addEventListener("change", function(){
-    document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = this.checked);
-    onStatusCheckChange();
-  });
-  document.querySelectorAll(".ms-cb").forEach(cb => cb.addEventListener("change", onStatusCheckChange));
+  if(changed){
+    await persistNow();
+  }
+}
 
-  // Date filters - manual input handling
-  const dFrom = document.getElementById("dateFilterFrom");
-  const dTo = document.getElementById("dateFilterTo");
-  dFrom.addEventListener("input", function(){
-    let v = this.value.replace(/\D/g, "");
-    if(v.length >= 2) v = v.slice(0,2) + "/" + v.slice(2);
-    if(v.length >= 5) v = v.slice(0,5) + "/" + v.slice(5,9);
-    this.value = v;
-  });
-  dTo.addEventListener("input", function(){
-    let v = this.value.replace(/\D/g, "");
-    if(v.length >= 2) v = v.slice(0,2) + "/" + v.slice(2);
-    if(v.length >= 5) v = v.slice(0,5) + "/" + v.slice(5,9);
-    this.value = v;
-  });
+/* ============ Telegram ============ */
+function loadTelegramConfig(){
+  try {
+    const saved = localStorage.getItem("telegram_config");
+    if(saved){
+      const config = JSON.parse(saved);
+      telegramConfig = { ...telegramConfig, ...config };
+    }
+  } catch(e){}
+  const tokenEl = document.getElementById("tgBotToken");
+  const chatEl = document.getElementById("tgChatId");
+  const enabledEl = document.getElementById("tgEnabled");
+  const onlyEl = document.getElementById("tgOnlyNotAvail");
+  if(tokenEl) tokenEl.value = telegramConfig.botToken || "";
+  if(chatEl) chatEl.value = telegramConfig.chatId || "";
+  if(enabledEl) enabledEl.checked = !!telegramConfig.enabled;
+  if(onlyEl) onlyEl.checked = telegramConfig.onlyNotAvailMaint !== false;
+}
 
-  document.getElementById("applyFilterBtn").addEventListener("click", render);
-  document.getElementById("clearFilterBtn").addEventListener("click", () => {
-    dFrom.value = ""; dTo.value = "";
-    render();
-  });
-
-  // Toolbar
-  document.getElementById("manageAreasBtn").addEventListener("click", openAreaManager);
-  document.getElementById("addSiteBtn").addEventListener("click", openAdd);
-  document.getElementById("historyBtn").addEventListener("click", openHistoryModal);
-  document.getElementById("exportBtn").addEventListener("click", exportCSV);
-
-  // Select bar
-  document.getElementById("bulkStatusBtn").addEventListener("click", openBulkStatusModal);
-  document.getElementById("clearSelBtn").addEventListener("click", clearSelection);
-  document.getElementById("deleteBtn").addEventListener("click", bulkDeleteSelected);
-
-  // Modal
-  document.getElementById("cancelModalBtn").addEventListener("click", closeModal);
-  document.getElementById("saveSiteBtn").addEventListener("click", saveSite);
-  document.getElementById("imageUploadBox").addEventListener("click", () => document.getElementById("fimage").click());
-  document.getElementById("fimage").addEventListener("change", handleImageUpload);
-  document.getElementById("removeImgBtn").addEventListener("click", removeImage);
-  document.getElementById("gpsBtn").addEventListener("click", captureGPS);
-  ["ffrom_d","ffrom_m","ffrom_y","fto_d","fto_m","fto_y"].forEach(id => {
-    document.getElementById(id).addEventListener("change", updateCalcPreview);
-  });
-
-  // History modal
-  document.getElementById("closeHistoryBtn").addEventListener("click", closeHistoryModal);
-  document.getElementById("downloadHistoryBtn").addEventListener("click", downloadHistoryCSV);
-
-  // Telegram
-  document.getElementById("cancelTgBtn").addEventListener("click", closeTelegramSettings);
-  document.getElementById("saveTgBtn").addEventListener("click", saveTelegramSettings);
-  document.getElementById("testTgBtn").addEventListener("click", testTelegram);
-
-  // Area modal
-  document.getElementById("closeAreaBtn").addEventListener("click", closeAreaModal);
-  document.getElementById("addAreaBtn").addEventListener("click", addNewArea);
-
-  // Image viewer
-  document.getElementById("closeViewerBtn").addEventListener("click", closeImageViewer);
-  document.getElementById("imageViewer").addEventListener("click", (e) => {
-    if(e.target.id === "imageViewer") closeImageViewer();
-  });
-
-  // Import
-  document.getElementById("importFile").addEventListener("change", handleImportFile);
-
+function openTelegramSettings(){
   loadTelegramConfig();
-  checkSession();
-});
+  const status = document.getElementById("telegramStatus");
+  status.style.display = "none";
+  document.getElementById("telegramModal").classList.add("show");
+}
+
+function closeTelegramSettings(){ document.getElementById("telegramModal").classList.remove("show"); }
+
+async function saveTelegramSettings(){
+  const botToken = document.getElementById("tgBotToken").value.trim();
+  const chatId = document.getElementById("tgChatId").value.trim();
+  const enabled = document.getElementById("tgEnabled").checked;
+  const onlyNotAvailMaint = document.getElementById("tgOnlyNotAvail").checked;
+  if(enabled && (!botToken || !chatId)){
+    showToast("Error", "Bot Token and Chat ID required when enabled", "danger");
+    return;
+  }
+  telegramConfig = { botToken, chatId, enabled, onlyNotAvailMaint };
+  localStorage.setItem("telegram_config", JSON.stringify(telegramConfig));
+  showToast("Saved", "Telegram settings saved", "success");
+  closeTelegramSettings();
+}
+
+async function sendTelegramNotification(site, action){
+  if(!telegramConfig.enabled || !telegramConfig.botToken || !telegramConfig.chatId) return;
+  if(telegramConfig.onlyNotAvailMaint && site.status === "Available") return;
+  const text = "🏗️ *Site " + action + "*\n" +
+    "📍 *" + esc(site.site || site.siteCode) + "*\n" +
+    "📌 Area: " + esc(site.area) + "\n" +
+    "📊 Status: " + esc(site.status) + "\n" +
+    "📅 " + (site.fromDate || "—") + " → " + (site.toDate || "—") + "\n" +
+    "🏢 " + esc(site.customer || "—");
+  try {
+    await fetch("https://api.telegram.org/bot" + telegramConfig.botToken + "/sendMessage", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: telegramConfig.chatId, text, parse_mode: "Markdown" })
+    });
+  } catch(e){}
+}
+
+async function testTelegram(){
+  const botToken = document.getElementById("tgBotToken").value.trim();
+  const chatId = document.getElementById("tgChatId").value.trim();
+  const status = document.getElementById("telegramStatus");
+  if(!botToken || !chatId){
+    status.style.display = "block";
+    status.style.background = "#fef2f2";
+    status.style.color = "#991b1b";
+    status.textContent = "Please enter both Bot Token and Chat ID";
+    return;
+  }
+  status.style.display = "block";
+  status.style.background = "#f0f9ff";
+  status.style.color = "#0c4a6e";
+  status.textContent = "Sending test message...";
+  try {
+    const res = await fetch("https://api.telegram.org/bot" + botToken + "/sendMessage", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text: "🧪 Test message from Site Management System", parse_mode: "Markdown" })
+    });
+    const data = await res.json();
+    if(data.ok){
+      status.style.background = "#ecfdf5";
+      status.style.color = "#065f46";
+      status.textContent = "✅ Test message sent successfully!";
+    } else {
+      status.style.background = "#fef2f2";
+      status.style.color = "#991b1b";
+      status.textContent = "❌ Failed: " + (data.description || "Unknown error");
+    }
+  } catch(e){
+    status.style.background = "#fef2f2";
+    status.style.color = "#991b1b";
+    status.textContent = "❌ Network error: " + e.message;
+  }
+}
+
+/* ============ 初始化 ============ */
+checkSession();
 </script>
 </body>
 </html>
