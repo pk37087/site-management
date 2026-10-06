@@ -81,7 +81,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .filter-active-badge{background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;border:1px solid #93c5fd;display:none;align-items:center;gap:3px;white-space:nowrap;height:24px}
 .filter-active-badge.show{display:inline-flex}
 
-/* Multi-status checkbox dropdown */
 .multi-status-wrap{position:relative;height:36px;display:flex}
 .multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;white-space:nowrap;border-radius:6px;min-width:130px}
 .multi-status-btn:hover{background:#eff6ff}
@@ -211,7 +210,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toast .toast-close{background:transparent;border:0;color:#fff;cursor:pointer;font-size:16px;opacity:0.6;padding:0;flex-shrink:0}
 .toast .toast-close:hover{opacity:1}
 
-/* PPT OPTIONS MODAL */
 .ppt-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
 .ppt-option{background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:14px;cursor:pointer;transition:all 0.2s ease;text-align:center;position:relative}
 .ppt-option:hover{border-color:#93c5fd;background:#eff6ff;transform:translateY(-2px)}
@@ -304,32 +302,14 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="container">
 
 <div class="cards">
-  <div class="card total" id="cardTotal" onclick="filterByCard('ALL')">
-    <span class="card-icon">📊</span>
-    <span class="card-label">Total Sites</span>
-    <b id="total">0</b>
-  </div>
-  <div class="card available" id="cardAvailable" onclick="filterByCard('Available')">
-    <span class="card-icon">✓</span>
-    <span class="card-label">Available</span>
-    <b id="avail">0</b>
-  </div>
-  <div class="card notavailable" id="cardNotAvailable" onclick="filterByCard('Not Available')">
-    <span class="card-icon">✕</span>
-    <span class="card-label">Not Available</span>
-    <b id="notavail">0</b>
-  </div>
-  <div class="card maintenance" id="cardMaintenance" onclick="filterByCard('Under Maintenance')">
-    <span class="card-icon">⚠</span>
-    <span class="card-label">Under Maintenance</span>
-    <b id="maintenance">0</b>
-  </div>
+  <div class="card total" id="cardTotal" onclick="filterByCard('ALL')"><span class="card-icon">📊</span><span class="card-label">Total Sites</span><b id="total">0</b></div>
+  <div class="card available" id="cardAvailable" onclick="filterByCard('Available')"><span class="card-icon">✓</span><span class="card-label">Available</span><b id="avail">0</b></div>
+  <div class="card notavailable" id="cardNotAvailable" onclick="filterByCard('Not Available')"><span class="card-icon">✕</span><span class="card-label">Not Available</span><b id="notavail">0</b></div>
+  <div class="card maintenance" id="cardMaintenance" onclick="filterByCard('Under Maintenance')"><span class="card-icon">⚠</span><span class="card-label">Under Maintenance</span><b id="maintenance">0</b></div>
 </div>
 
 <div class="toolbar">
   <input id="search" type="text" placeholder="Search sites..." oninput="debouncedRender()">
-
-  <!-- Multi-Status Selection -->
   <div class="multi-status-wrap" id="multiStatusWrap">
     <button type="button" class="multi-status-btn" onclick="toggleMultiStatusPanel(event)">
       <span id="multiStatusLabel">Status: All</span>
@@ -344,16 +324,11 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
       <label><input type="checkbox" class="ms-cb" value="Under Maintenance" onchange="onStatusCheckChange()"> ⚠️ Under Maintenance</label>
     </div>
   </div>
-
   <div class="filter-box">
     <div class="date-group">
-      <input type="text" class="date-input" id="dateFilterFrom" placeholder="dd/mm/yyyy" maxlength="10" 
-             oninput="handleDateInput(this,'from')" 
-             onkeydown="handleDateKeyDown(event)">
+      <input type="text" class="date-input" id="dateFilterFrom" placeholder="dd/mm/yyyy" maxlength="10" oninput="handleDateInput(this,'from')" onkeydown="handleDateKeyDown(event)">
       <span class="date-sep">→</span>
-      <input type="text" class="date-input" id="dateFilterTo" placeholder="dd/mm/yyyy" maxlength="10" 
-             oninput="handleDateInput(this,'to')" 
-             onkeydown="handleDateKeyDown(event)">
+      <input type="text" class="date-input" id="dateFilterTo" placeholder="dd/mm/yyyy" maxlength="10" oninput="handleDateInput(this,'to')" onkeydown="handleDateKeyDown(event)">
     </div>
     <button type="button" class="apply-btn" onclick="applyFilters()" title="Apply filter (Enter)">🔍 Apply</button>
     <button type="button" class="clear-btn" id="clearFilterBtn" onclick="clearAllFilters()" title="Clear all filters">✕</button>
@@ -387,10 +362,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <!-- PPT FORMAT OPTIONS MODAL -->
 <div class="modal" id="pptFormatModal"><div class="box" style="width:min(750px,100%)">
 <h2>📊 PPT Image Style</h2>
-<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Site image kaise dikhe PPT me — style choose karo. Actual image size preserve hoga, koi stretch nahi.</p>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Site image kaise dikhe PPT me — style choose karo. Actual image size preserve hoga.</p>
 
 <div class="ppt-options">
-  <!-- Option 1: Split View -->
   <div class="ppt-option" id="pptOpt1" onclick="selectPPTOption('split')">
     <div class="ppt-preview">
       <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
@@ -399,32 +373,27 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
         <rect x="105" y="5" width="90" height="80" fill="#f1f5f9" rx="3"/>
         <text x="150" y="25" fill="#1e40af" font-size="8" text-anchor="middle" font-weight="bold">SITE DETAILS</text>
         <line x1="115" y1="35" x2="185" y2="35" stroke="#cbd5e1" stroke-width="1"/>
-        <text x="150" y="48" fill="#334155" font-size="7" text-anchor="middle">Area / Company</text>
-        <text x="150" y="60" fill="#059669" font-size="7" text-anchor="middle">₹ Rate</text>
-        <text x="150" y="72" fill="#64748b" font-size="7" text-anchor="middle">Duration</text>
+        <text x="150" y="48" fill="#1e40af" font-size="7" text-anchor="middle">Area / Company</text>
+        <text x="150" y="60" fill="#1e40af" font-size="7" text-anchor="middle">₹ Rate</text>
+        <text x="150" y="72" fill="#1e40af" font-size="7" text-anchor="middle">Duration</text>
       </svg>
     </div>
     <div class="ppt-title">Split View ⭐</div>
     <div class="ppt-desc">Image left, details right</div>
   </div>
 
-  <!-- Option 2: Full Cover -->
   <div class="ppt-option" id="pptOpt2" onclick="selectPPTOption('cover')">
     <div class="ppt-preview">
       <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
         <rect x="5" y="5" width="190" height="60" fill="#0f172a" rx="3"/>
         <text x="100" y="40" fill="white" font-size="12" text-anchor="middle" font-weight="bold">IMAGE (Full)</text>
         <rect x="5" y="68" width="190" height="17" fill="#f1f5f9" rx="3"/>
-        <text x="50" y="79" fill="#1e40af" font-size="7" text-anchor="middle">Area</text>
-        <text x="100" y="79" fill="#059669" font-size="7" text-anchor="middle">Company</text>
-        <text x="150" y="79" fill="#d97706" font-size="7" text-anchor="middle">Rate</text>
       </svg>
     </div>
     <div class="ppt-title">Full Cover</div>
     <div class="ppt-desc">Full image fills box</div>
   </div>
 
-  <!-- Option 3: Blur Background -->
   <div class="ppt-option" id="pptOpt3" onclick="selectPPTOption('blur')">
     <div class="ppt-preview">
       <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
@@ -439,18 +408,17 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <div class="ppt-desc">Netflix style, full image + blur</div>
   </div>
 
-  <!-- Option 4: Contain -->
   <div class="ppt-option" id="pptOpt4" onclick="selectPPTOption('contain')">
     <div class="ppt-preview">
       <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
-        <rect x="5" y="5" width="190" height="60" fill="#0f172a" rx="3"/>
+        <rect x="5" y="5" width="190" height="60" fill="#1e3a8a" rx="3"/>
         <rect x="55" y="8" width="90" height="54" fill="#1e40af" rx="3"/>
         <text x="100" y="40" fill="white" font-size="10" text-anchor="middle" font-weight="bold">IMAGE</text>
         <rect x="5" y="68" width="190" height="17" fill="#f1f5f9" rx="3"/>
       </svg>
     </div>
-    <div class="ppt-title">Contain (Fit)</div>
-    <div class="ppt-desc">Puri image, dark borders</div>
+    <div class="ppt-title">Theme Background</div>
+    <div class="ppt-desc">Full image + theme color BG</div>
   </div>
 </div>
 
@@ -475,12 +443,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <b>Step 6:</b> Wahan <code>"chat":{"id":123456789}</code> milega — wahi <b>Chat ID</b> hai
 </div>
 <div class="formgrid" style="grid-template-columns:1fr">
-  <label>Bot Token
-    <input id="tgBotToken" type="text" placeholder="123456:ABC-XYZ..." autocomplete="off" style="font-family:monospace;font-size:12px !important">
-  </label>
-  <label>Chat ID
-    <input id="tgChatId" type="text" placeholder="123456789" autocomplete="off" style="font-family:monospace;font-size:12px !important">
-  </label>
+  <label>Bot Token<input id="tgBotToken" type="text" placeholder="123456:ABC-XYZ..." autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
+  <label>Chat ID<input id="tgChatId" type="text" placeholder="123456789" autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
   <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:8px;font-size:13px">
     <input type="checkbox" id="tgEnabled" style="width:20px;height:20px;cursor:pointer;accent-color:#0088cc">
     <span style="font-weight:600;color:#0f172a">Enable Telegram Notifications</span>
@@ -614,20 +578,10 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <h2>Bulk Status Update</h2>
 <div class="formgrid">
   <div style="grid-column:1/-1">
-    <label>Status
-      <select id="bulkStatusValue">
-        <option value="Available">Available</option>
-        <option value="Not Available">Not Available</option>
-        <option value="Under Maintenance">Under Maintenance</option>
-      </select>
-    </label>
+    <label>Status<select id="bulkStatusValue"><option value="Available">Available</option><option value="Not Available">Not Available</option><option value="Under Maintenance">Under Maintenance</option></select></label>
   </div>
-  <div class="bulk-date-field">
-    <label>From Date<div class="date-row"><select id="bulkStatusFrom_d"></select><select id="bulkStatusFrom_m"></select><select id="bulkStatusFrom_y"></select></div></label>
-  </div>
-  <div class="bulk-date-field">
-    <label>To Date<div class="date-row"><select id="bulkStatusTo_d"></select><select id="bulkStatusTo_m"></select><select id="bulkStatusTo_y"></select></div></label>
-  </div>
+  <div class="bulk-date-field"><label>From Date<div class="date-row"><select id="bulkStatusFrom_d"></select><select id="bulkStatusFrom_m"></select><select id="bulkStatusFrom_y"></select></div></label></div>
+  <div class="bulk-date-field"><label>To Date<div class="date-row"><select id="bulkStatusTo_d"></select><select id="bulkStatusTo_m"></select><select id="bulkStatusTo_y"></select></div></label></div>
 </div>
 <div id="bulkStatusPreview" style="margin-top:14px;background:#f8fafc;border:1px solid #e2e8f0;padding:12px;border-radius:8px;font-size:12px"></div>
 <div class="modal-actions">
@@ -650,7 +604,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <img id="viewerImage" src="" alt="" onclick="event.stopPropagation()">
 </div>
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
-
 <div id="toastContainer"></div>
 
 <script>
@@ -661,6 +614,7 @@ const COMPANY_NAME = "DS Outdoor Media";
 const COMPANY_TAGLINE = "Professional Site Booking & Management";
 const MAX_FILTER_YEAR = 2050;
 const ALL_STATUSES = ["Available", "Not Available", "Under Maintenance"];
+const THEME_COLOR = "1E40AF"; // ✅ Navy blue theme color for all details
 let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 let newLogoData = "";
 
@@ -689,29 +643,17 @@ let dateFilterFrom = "";
 let dateFilterTo = "";
 let renderDebounceTimer = null;
 let lastKnownStatuses = {};
-
-// ✅ Multi-status selection (empty = all statuses)
 let activeStatuses = new Set();
-
-let pptFormat = "split"; // "split", "cover", "blur", "contain"
+let pptFormat = "split";
 let telegramConfig = { botToken: "", chatId: "", enabled: false, onlyNotAvailMaint: true };
 
-/* ============ MULTI STATUS SELECTION ============ */
-function toggleMultiStatusPanel(e){
-  if(e) e.stopPropagation();
-  const panel = document.getElementById("multiStatusPanel");
-  panel.classList.toggle("show");
-}
+/* ============ MULTI STATUS ============ */
+function toggleMultiStatusPanel(e){ if(e) e.stopPropagation(); document.getElementById("multiStatusPanel").classList.toggle("show"); }
 document.addEventListener("click", (e) => {
   const wrap = document.getElementById("multiStatusWrap");
-  if(wrap && !wrap.contains(e.target)){
-    document.getElementById("multiStatusPanel").classList.remove("show");
-  }
+  if(wrap && !wrap.contains(e.target)){ document.getElementById("multiStatusPanel").classList.remove("show"); }
 });
-function toggleAllStatuses(checked){
-  document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = checked; });
-  onStatusCheckChange();
-}
+function toggleAllStatuses(checked){ document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = checked; }); onStatusCheckChange(); }
 function onStatusCheckChange(){
   activeStatuses.clear();
   document.querySelectorAll(".ms-cb:checked").forEach(cb => activeStatuses.add(cb.value));
@@ -720,6 +662,20 @@ function onStatusCheckChange(){
   updateMultiStatusLabel();
   render();
   updateFilterBadge();
+  // ✅ Auto-select sites matching selected statuses
+  autoSelectByStatus();
+}
+function autoSelectByStatus(){
+  if(activeStatuses.size === 0) return;
+  let count = 0;
+  sites.forEach(s => {
+    if(!activeStatuses.has(s.status)) return;
+    if(!selectedSites.has(s.id)){ selectedSites.add(s.id); count++; }
+  });
+  if(count > 0){
+    updateSelectBar();
+    showToast("Auto-selected", count + " site(s) status ke according select ho gayi", "success");
+  }
 }
 function updateMultiStatusLabel(){
   const label = document.getElementById("multiStatusLabel");
@@ -728,17 +684,11 @@ function updateMultiStatusLabel(){
   else if(activeStatuses.size === 1){ label.textContent = "Status: " + Array.from(activeStatuses)[0]; countBadge.style.display = "none"; }
   else { label.textContent = "Status:"; countBadge.textContent = activeStatuses.size; countBadge.style.display = "inline-block"; }
 }
-function statusMatchesFilter(status){
-  if(activeStatuses.size === 0) return true; // All
-  return activeStatuses.has(status);
-}
+function statusMatchesFilter(status){ if(activeStatuses.size === 0) return true; return activeStatuses.has(status); }
 
 /* ============ PPT FORMAT ============ */
 function loadPPTFormat(){
-  try {
-    const saved = localStorage.getItem("sms_ppt_format");
-    if(saved && ["split","cover","blur","contain"].includes(saved)) pptFormat = saved;
-  } catch(e){}
+  try { const saved = localStorage.getItem("sms_ppt_format"); if(saved && ["split","cover","blur","contain"].includes(saved)) pptFormat = saved; } catch(e){}
   updatePPTFormatUI();
 }
 function savePPTFormat(){ localStorage.setItem("sms_ppt_format", pptFormat); }
@@ -752,17 +702,13 @@ function updatePPTFormatUI(){
       split: "💡 <b>Split View:</b> Image left me (actual size preserve), details right side me. Best professional look.",
       cover: "💡 <b>Full Cover:</b> Image pura box fill karegi (crop hoke). Modern look.",
       blur: "💡 <b>Blur Background:</b> Puri image center + blurred background. Premium look.",
-      contain: "💡 <b>Contain:</b> Puri image dikhegi, dark borders ke saath. Safe option."
+      contain: "💡 <b>Theme Background:</b> Puri image dikhegi, navy blue theme background ke saath. Professional look."
     };
     note.innerHTML = notes[pptFormat] || "";
   }
 }
 function selectPPTOption(opt){ pptFormat = opt; savePPTFormat(); updatePPTFormatUI(); }
-function openPPTFormatModal(){
-  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
-  updatePPTFormatUI();
-  document.getElementById("pptFormatModal").classList.add("show");
-}
+function openPPTFormatModal(){ if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; } updatePPTFormatUI(); document.getElementById("pptFormatModal").classList.add("show"); }
 function closePPTFormatModal(){ document.getElementById("pptFormatModal").classList.remove("show"); }
 
 /* ============ TOAST ============ */
@@ -771,10 +717,7 @@ function showToast(title, message, type){
   const toast = document.createElement("div");
   toast.className = "toast " + (type || "info");
   const icons = { success: "✅", info: "ℹ️", warning: "⚠️", danger: "🚨" };
-  toast.innerHTML = '<div class="toast-icon">' + (icons[type] || "ℹ️") + '</div>' +
-    '<div class="toast-body"><div class="toast-title">' + esc(title) + '</div>' +
-    '<div class="toast-msg">' + esc(message) + '</div></div>' +
-    '<button class="toast-close" onclick="this.parentElement.remove()">×</button>';
+  toast.innerHTML = '<div class="toast-icon">' + (icons[type] || "ℹ️") + '</div><div class="toast-body"><div class="toast-title">' + esc(title) + '</div><div class="toast-msg">' + esc(message) + '</div></div><button class="toast-close" onclick="this.parentElement.remove()">×</button>';
   container.appendChild(toast);
   setTimeout(() => toast.classList.add("show"), 10);
   setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 300); }, 6000);
@@ -784,13 +727,7 @@ function showToast(title, message, type){
 function loadTelegramConfig(){
   try {
     const saved = localStorage.getItem("sms_telegram_config");
-    if(saved){
-      const parsed = JSON.parse(saved);
-      telegramConfig.botToken = parsed.botToken || "";
-      telegramConfig.chatId = parsed.chatId || "";
-      telegramConfig.enabled = !!parsed.enabled;
-      telegramConfig.onlyNotAvailMaint = parsed.onlyNotAvailMaint !== false;
-    }
+    if(saved){ const parsed = JSON.parse(saved); telegramConfig.botToken = parsed.botToken || ""; telegramConfig.chatId = parsed.chatId || ""; telegramConfig.enabled = !!parsed.enabled; telegramConfig.onlyNotAvailMaint = parsed.onlyNotAvailMaint !== false; }
   } catch(e){}
   updateTelegramBtn();
 }
@@ -821,20 +758,17 @@ function saveTelegramSettings(){
   else { showTelegramStatus("ℹ️ Disabled", "info"); showToast("Telegram Saved", "Notifications disabled", "info"); }
 }
 function showTelegramStatus(msg, type){
-  const el = document.getElementById("telegramStatus");
-  el.textContent = msg; el.style.display = "block";
+  const el = document.getElementById("telegramStatus"); el.textContent = msg; el.style.display = "block";
   if(type === "success"){ el.style.background = "#ecfdf5"; el.style.color = "#065f46"; el.style.border = "1px solid #a7f3d0"; }
   else if(type === "error"){ el.style.background = "#fef2f2"; el.style.color = "#991b1b"; el.style.border = "1px solid #fecaca"; }
   else { el.style.background = "#eff6ff"; el.style.color = "#1e40af"; el.style.border = "1px solid #bfdbfe"; }
 }
 async function sendTelegramMessage(text){
-  if(!telegramConfig.enabled) return false;
-  if(!telegramConfig.botToken || !telegramConfig.chatId) return false;
+  if(!telegramConfig.enabled || !telegramConfig.botToken || !telegramConfig.chatId) return false;
   try {
     const url = "https://api.telegram.org/bot" + telegramConfig.botToken + "/sendMessage";
     const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: telegramConfig.chatId, text: text, parse_mode: "HTML", disable_web_page_preview: true }) });
-    const data = await res.json();
-    return data.ok === true;
+    const data = await res.json(); return data.ok === true;
   } catch(e){ return false; }
 }
 async function testTelegram(){
@@ -847,21 +781,15 @@ async function testTelegram(){
   const testMsg = "🧪 <b>Test Message</b>\n\nDS Outdoor Media - Site Management\nNotifications kaam kar rahe hain! ✅\n\n🕐 " + new Date().toLocaleString('en-GB');
   const ok = await sendTelegramMessage(testMsg);
   if(!ok){ telegramConfig.enabled = savedEnabled; showTelegramStatus("❌ Fail! Token, Chat ID aur /start check karo", "error"); }
-  else { showTelegramStatus("✅ Test bhej diya! Telegram check karo.", "success"); }
+  else { showTelegramStatus("✅ Test bhej diya!", "success"); }
 }
 async function notifyTelegram(site, oldStatus, newStatus){
-  if(!telegramConfig.enabled) return;
-  if(!telegramConfig.botToken || !telegramConfig.chatId) return;
+  if(!telegramConfig.enabled || !telegramConfig.botToken || !telegramConfig.chatId) return;
   if(telegramConfig.onlyNotAvailMaint){ if(newStatus !== "Not Available" && newStatus !== "Under Maintenance") return; }
   let emoji = "🔔", extraInfo = "";
   if(newStatus === "Not Available"){ emoji = "🚨"; extraInfo = "\n👤 <b>Customer:</b> " + (site.customer || "—") + "\n💰 <b>Rate:</b> " + (site.rate ? "₹" + Number(site.rate).toLocaleString('en-IN') + "/mo" : "—") + "\n📅 <b>From:</b> " + (site.fromDate || "—") + "\n📅 <b>To:</b> " + (site.toDate || "—"); }
   else if(newStatus === "Under Maintenance"){ emoji = "⚠️"; extraInfo = "\n📅 <b>From:</b> " + (site.fromDate || "—") + "\n📅 <b>To:</b> " + (site.toDate || "—"); }
-  const msg = emoji + " <b>SITE " + newStatus.toUpperCase() + "</b>\n\n" +
-    "🏷️ <b>Site:</b> " + (site.site || "—") + "\n" +
-    (site.siteCode ? "🔢 <b>Code:</b> " + site.siteCode + "\n" : "") +
-    "📍 <b>Area:</b> " + (site.area || "Unassigned") + "\n" +
-    "🗺️ <b>Location:</b> " + (site.location || "—") + extraInfo + "\n\n" +
-    "🕐 " + new Date().toLocaleString('en-GB');
+  const msg = emoji + " <b>SITE " + newStatus.toUpperCase() + "</b>\n\n🏷️ <b>Site:</b> " + (site.site || "—") + "\n" + (site.siteCode ? "🔢 <b>Code:</b> " + site.siteCode + "\n" : "") + "📍 <b>Area:</b> " + (site.area || "Unassigned") + "\n🗺️ <b>Location:</b> " + (site.location || "—") + extraInfo + "\n\n🕐 " + new Date().toLocaleString('en-GB');
   await sendTelegramMessage(msg);
 }
 function notifyStatusChange(site, oldStatus, newStatus){
@@ -910,14 +838,12 @@ async function getImage(key){
   if(imageFailed.has(key)) return null;
   const result = await apiGet("/image/" + encodeURIComponent(key));
   if(result && result.success && result.data){ imageCache[key] = result.data; return result.data; }
-  imageFailed.add(key);
-  return null;
+  imageFailed.add(key); return null;
 }
 async function deleteImage(key){ delete imageCache[key]; imageFailed.delete(key); return await apiDelete("/image/" + encodeURIComponent(key)); }
 async function savePpt(areaName, obj){
   const CHUNK_SIZE = 20000000;
-  const data = obj.data || "";
-  const totalChunks = Math.ceil(data.length / CHUNK_SIZE) || 1;
+  const data = obj.data || ""; const totalChunks = Math.ceil(data.length / CHUNK_SIZE) || 1;
   if(totalChunks === 1){ const result = await apiPost("/ppt/" + encodeURIComponent(areaName), { name: obj.name, size: obj.size, type: obj.type, data: data }); if(result && result.success) pptCache[areaName] = true; return result; }
   const initResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/init", { name: obj.name, size: obj.size, type: obj.type });
   if(!initResult || !initResult.success) return initResult;
@@ -1041,15 +967,11 @@ async function showApp(){
 }
 function doLogout(){
   if(!confirm("Logout?")) return;
-  currentUser = null;
-  sessionStorage.removeItem("sms_user");
+  currentUser = null; sessionStorage.removeItem("sms_user");
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
   location.reload();
 }
-function checkSession(){
-  const saved = sessionStorage.getItem("sms_user");
-  if(saved){ try { currentUser = JSON.parse(saved); showApp(); } catch(e){ sessionStorage.removeItem("sms_user"); } }
-}
+function checkSession(){ const saved = sessionStorage.getItem("sms_user"); if(saved){ try { currentUser = JSON.parse(saved); showApp(); } catch(e){ sessionStorage.removeItem("sms_user"); } } }
 function startAutoRefresh(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
   autoRefreshTimer = setInterval(async () => {
@@ -1089,17 +1011,13 @@ function hideProgress(){ document.getElementById("progressOverlay").classList.re
 /* ============ FILTER ============ */
 function onFilterChange(){ areaFilters = {}; render(); updateFilterBadge(); }
 function filterByCard(status){
-  // Clicking a card toggles that single status in multi-select
   if(status === "ALL"){
     activeStatuses.clear();
     document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
     document.getElementById("msAll").checked = false;
   } else {
-    if(activeStatuses.has(status)){
-      activeStatuses.delete(status);
-    } else {
-      activeStatuses.add(status);
-    }
+    if(activeStatuses.has(status)){ activeStatuses.delete(status); }
+    else { activeStatuses.add(status); }
     document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = activeStatuses.has(cb.value); });
     document.getElementById("msAll").checked = activeStatuses.size === ALL_STATUSES.length;
   }
@@ -1107,6 +1025,7 @@ function filterByCard(status){
   updateMultiStatusLabel();
   areaFilters = {};
   render(); syncCardHighlight(); updateFilterBadge();
+  autoSelectByStatus();
 }
 function syncCardHighlight(){
   const hasDate = document.getElementById("dateFilterFrom").value || document.getElementById("dateFilterTo").value;
@@ -1116,9 +1035,7 @@ function syncCardHighlight(){
     const status = Array.from(activeStatuses)[0];
     const map = { "Available":"cardAvailable","Not Available":"cardNotAvailable","Under Maintenance":"cardMaintenance" };
     const el = document.getElementById(map[status]); if(el) el.classList.add("active-filter");
-  } else if(activeStatuses.size === 0){
-    document.getElementById("cardTotal").classList.add("active-filter");
-  }
+  } else if(activeStatuses.size === 0){ document.getElementById("cardTotal").classList.add("active-filter"); }
 }
 function populateAreaDropdowns(){
   const formSel = document.getElementById("farea"); if(!formSel) return;
@@ -1126,7 +1043,7 @@ function populateAreaDropdowns(){
   areas.forEach(a => { formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
 }
 
-/* ============ DATE INPUT (FIXED BACKSPACE) ============ */
+/* ============ DATE INPUT ============ */
 function handleDateInput(input, which){
   const oldVal = input.value;
   const oldLen = parseInt(input.dataset.lastLength || "0");
@@ -1134,19 +1051,8 @@ function handleDateInput(input, which){
   input.dataset.lastLength = oldVal.length;
   if(isDeleting){ input.value = oldVal.replace(/[^\d\/]/g, ""); return; }
   let val = oldVal.replace(/\D/g, "");
-  if(val.length >= 2){
-    let dd = val.substring(0, 2);
-    if(parseInt(dd) > 31) dd = "31";
-    if(parseInt(dd) === 0) dd = "01";
-    val = dd + "/" + val.substring(2);
-  }
-  if(val.length >= 5){
-    let parts = val.split("/");
-    let mm = parts[1].substring(0, 2);
-    if(parseInt(mm) > 12) mm = "12";
-    if(parseInt(mm) === 0) mm = "01";
-    val = parts[0] + "/" + mm + (parts[1].length > 2 ? "/" + parts[1].substring(2, 6) : "");
-  }
+  if(val.length >= 2){ let dd = val.substring(0, 2); if(parseInt(dd) > 31) dd = "31"; if(parseInt(dd) === 0) dd = "01"; val = dd + "/" + val.substring(2); }
+  if(val.length >= 5){ let parts = val.split("/"); let mm = parts[1].substring(0, 2); if(parseInt(mm) > 12) mm = "12"; if(parseInt(mm) === 0) mm = "01"; val = parts[0] + "/" + mm + (parts[1].length > 2 ? "/" + parts[1].substring(2, 6) : ""); }
   input.value = val.substring(0, 10);
 }
 function handleDateKeyDown(event){ if(event.key === "Enter"){ event.preventDefault(); applyFilters(); } }
@@ -1176,7 +1082,7 @@ function applyFilters(){
   areaFilters = {};
   render();
   updateFilterBadge();
-  // ✅ NO auto-select on date filter
+  // ✅ No auto-select on date filter
 }
 function clearAllFilters(){
   activeStatuses.clear();
@@ -1229,16 +1135,8 @@ function siteMatchesDateFilter(site){
     if(siteFrom && !siteTo) return siteFrom <= filterTo;
     if(!siteFrom && siteTo) return siteTo >= filterFrom;
   }
-  if(filterFrom && !filterTo){
-    if(siteTo) return siteTo >= filterFrom;
-    if(siteFrom) return siteFrom >= filterFrom;
-    return true;
-  }
-  if(!filterFrom && filterTo){
-    if(siteFrom) return siteFrom <= filterTo;
-    if(siteTo) return siteTo <= filterTo;
-    return true;
-  }
+  if(filterFrom && !filterTo){ if(siteTo) return siteTo >= filterFrom; if(siteFrom) return siteFrom >= filterFrom; return true; }
+  if(!filterFrom && filterTo){ if(siteFrom) return siteFrom <= filterTo; if(siteTo) return siteTo <= filterTo; return true; }
   return true;
 }
 function getFilteredSites(){
@@ -1266,10 +1164,7 @@ function updateCardsWithFilteredCounts(){
   document.getElementById("notavail").textContent = counts["Not Available"];
   document.getElementById("maintenance").textContent = counts["Under Maintenance"];
 }
-function debouncedRender(){
-  if(renderDebounceTimer) clearTimeout(renderDebounceTimer);
-  renderDebounceTimer = setTimeout(() => { render(); updateFilterBadge(); }, 200);
-}
+function debouncedRender(){ if(renderDebounceTimer) clearTimeout(renderDebounceTimer); renderDebounceTimer = setTimeout(() => { render(); updateFilterBadge(); }, 200); }
 
 /* ============ REFRESH ============ */
 async function refreshPage(e){
@@ -1449,10 +1344,7 @@ function findSiteForImageFilename(fileName){
     if(baseNorm === sNorm) return s;
     if(baseNorm.startsWith(sNorm)) return s;
     if(baseNorm.includes(sNorm)) return s;
-    if(s.siteCode){
-      const cNorm = norm(s.siteCode);
-      if(baseNorm === cNorm || baseNorm.startsWith(cNorm)) return s;
-    }
+    if(s.siteCode){ const cNorm = norm(s.siteCode); if(baseNorm === cNorm || baseNorm.startsWith(cNorm)) return s; }
   }
   return null;
 }
@@ -1789,7 +1681,6 @@ async function render(){
     const areaSites = sites.filter(s => {
       const sArea = s.area || "Unassigned";
       if(sArea !== areaName) return false;
-      // ✅ Multi-status filter
       if(!statusMatchesFilter(s.status)) return false;
       if(areaFilter !== "ALL" && s.status !== areaFilter) return false;
       if(!siteMatchesDateFilter(s)) return false;
@@ -1817,11 +1708,7 @@ async function render(){
     headerHTML += '<span class="area-count" style="background:#16a34a;color:#fff">' + areaAvail + '</span>';
     headerHTML += '<span class="area-count" style="background:#dc2626;color:#fff">' + areaNot + '</span>';
     headerHTML += '<span class="area-count" style="background:#facc15;color:#111827">' + areaMaint + '</span>';
-    if(currentUser.role === "Admin"){
-      headerHTML += '<div class="area-actions">';
-      headerHTML += '<button onclick="event.stopPropagation(); quickAddSiteInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">+ Add</button>';
-      headerHTML += '</div>';
-    }
+    if(currentUser.role === "Admin"){ headerHTML += '<div class="area-actions"><button onclick="event.stopPropagation(); quickAddSiteInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">+ Add</button></div>'; }
     headerHTML += '<span>' + (isCollapsed ? '▶' : '▼') + '</span></div>';
     header.innerHTML = headerHTML;
     block.appendChild(header);
@@ -2016,14 +1903,11 @@ async function saveSite(){
   const finalSiteName = siteNameInput || siteCodeInput || "Unnamed Site";
   const finalSiteCode = siteCodeInput || (finalSiteName.match(/^([A-Z]{2,5}\d{1,4})/i) || [])[1]?.toUpperCase() || "";
   const newSite = {
-    id, area: areaVal,
-    site: finalSiteName, siteCode: finalSiteCode,
-    location: loc.value.trim(),
-    lat: loc.dataset.lat || "", lng: loc.dataset.lng || "",
+    id, area: areaVal, site: finalSiteName, siteCode: finalSiteCode,
+    location: loc.value.trim(), lat: loc.dataset.lat || "", lng: loc.dataset.lng || "",
     customer: document.getElementById("fcustomer").value.trim(),
     rate: document.getElementById("frate").value.trim(),
-    status: statusVal,
-    fromDate: fromVal, toDate: toVal,
+    status: statusVal, fromDate: fromVal, toDate: toVal,
     hasImage: !!currentImageData
   };
   showProgress("Saving...", "");
@@ -2091,8 +1975,7 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-/* ============ IMAGE PROCESSING FOR PPT ============ */
-// Get image aspect ratio
+/* ============ IMAGE PROCESSING ============ */
 function getImageRatio(dataUrl){
   return new Promise((resolve) => {
     const img = new Image();
@@ -2101,7 +1984,6 @@ function getImageRatio(dataUrl){
     img.src = dataUrl;
   });
 }
-// Crop image to exact ratio (like object-fit: cover)
 function cropImageToRatio(dataUrl, targetRatio){
   return new Promise((resolve) => {
     const img = new Image();
@@ -2123,7 +2005,6 @@ function cropImageToRatio(dataUrl, targetRatio){
     img.src = dataUrl;
   });
 }
-// Blur background + contain main image
 function makeBlurBG(dataUrl, boxRatio){
   return new Promise((resolve) => {
     const img = new Image();
@@ -2152,7 +2033,7 @@ function makeBlurBG(dataUrl, boxRatio){
   });
 }
 
-/* ============ ✅ PPT GENERATOR (ACTUAL SIZE PRESERVE) ============ */
+/* ============ ✅ PPT GENERATOR (THEME COLORS UNIFIED) ============ */
 async function generateSelectedSitesPPT(){
   closePPTFormatModal();
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
@@ -2219,50 +2100,48 @@ async function generateSelectedSitesPPT(){
       slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
-      // ===== LAYOUT: SPLIT VIEW (DEFAULT) =====
+      // ===== LAYOUT =====
       if(pptFormat === "split"){
         const boxY = 0.65, boxH = 6.6;
         const leftW = 6.6, leftX = 0;
-        slide.addShape(pptx.ShapeType.rect, { x: leftX, y: boxY, w: leftW, h: boxH, fill: { color: "0F172A" } });
+        // Left panel - navy blue theme BG
+        slide.addShape(pptx.ShapeType.rect, { x: leftX, y: boxY, w: leftW, h: boxH, fill: { color: THEME_COLOR } });
         
         let imageAdded = false;
         if(imgData){
           try {
-            // ✅ ACTUAL SIZE: Fit image by its natural aspect ratio (contain) inside left panel
+            // ✅ Full image inside navy background (contain fit)
             const imgRatio = await getImageRatio(imgData);
             const panelRatio = leftW / boxH;
             let drawW, drawH, drawX, drawY;
             
             if(imgRatio > panelRatio){
-              // Image wider → fit by width, letterbox top/bottom (dark bg fills)
+              // Wider → fit by width
               drawW = leftW;
               drawH = leftW / imgRatio;
               drawX = leftX;
               drawY = boxY + (boxH - drawH) / 2;
             } else {
-              // Image taller → fit by height, letterbox left/right
+              // Taller → fit by height
               drawH = boxH;
               drawW = boxH * imgRatio;
               drawX = leftX + (leftW - drawW) / 2;
               drawY = boxY;
             }
             
-            // ✅ Add a slightly lighter inner frame for letterbox areas
-            if(imgRatio > panelRatio){
-              slide.addShape(pptx.ShapeType.rect, { x: leftX, y: boxY, w: leftW, h: (boxH - drawH) / 2, fill: { color: "1E293B" } });
-              slide.addShape(pptx.ShapeType.rect, { x: leftX, y: drawY + drawH, w: leftW, h: (boxH - drawH) / 2, fill: { color: "1E293B" } });
-            } else {
-              slide.addShape(pptx.ShapeType.rect, { x: leftX, y: boxY, w: (leftW - drawW) / 2, h: boxH, fill: { color: "1E293B" } });
-              slide.addShape(pptx.ShapeType.rect, { x: drawX + drawW, y: boxY, w: (leftW - drawW) / 2, h: boxH, fill: { color: "1E293B" } });
-            }
-            
-            // Add image at actual aspect ratio (no stretch, no crop)
+            // ✅ Subtle border frame around the image (white)
+            slide.addShape(pptx.ShapeType.rect, { 
+              x: drawX, y: drawY, w: drawW, h: drawH, 
+              fill: { type: 'solid', color: 'FFFFFF' },
+              line: { color: 'FFFFFF', width: 2 }
+            });
+            // Add image on top
             slide.addImage({ data: imgData, x: drawX, y: drawY, w: drawW, h: drawH });
             imageAdded = true;
           } catch(e){ console.warn(e); }
         }
         if(!imageAdded){
-          slide.addShape(pptx.ShapeType.roundRect, { x: leftX + 1.5, y: boxY + boxH/2 - 0.7, w: 3.6, h: 1.4, fill: { color: "1E293B" }, line: { color: "334155", width: 1.5, dashType: "dash" }, rectRadius: 0.1 });
+          slide.addShape(pptx.ShapeType.roundRect, { x: leftX + 1.5, y: boxY + boxH/2 - 0.7, w: 3.6, h: 1.4, fill: { color: "0F172A" }, line: { color: "3B82F6", width: 1.5, dashType: "dash" }, rectRadius: 0.1 });
           slide.addText("📷", { x: leftX + 1.5, y: boxY + boxH/2 - 0.6, w: 3.6, h: 0.6, fontSize: 36, align: "center", valign: "middle" });
           slide.addText("No Image", { x: leftX + 1.5, y: boxY + boxH/2, w: 3.6, h: 0.3, fontSize: 12, color: "94A3B8", align: "center", italic: true });
         }
@@ -2271,32 +2150,33 @@ async function generateSelectedSitesPPT(){
         const rightX = leftW, rightW = 13.33 - leftW;
         slide.addShape(pptx.ShapeType.rect, { x: rightX, y: boxY, w: rightW, h: boxH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 1 } });
         
-        // Header
-        slide.addShape(pptx.ShapeType.rect, { x: rightX, y: boxY, w: rightW, h: 0.9, fill: { color: "1E40AF" } });
+        // Header (theme color)
+        slide.addShape(pptx.ShapeType.rect, { x: rightX, y: boxY, w: rightW, h: 0.9, fill: { color: THEME_COLOR } });
         slide.addText("SITE DETAILS", { x: rightX + 0.3, y: boxY + 0.15, w: rightW - 0.6, h: 0.25, fontSize: 9, bold: true, color: "93C5FD", letterSpacing: 2 });
         slide.addText(x.site.substring(0, 40), { x: rightX + 0.3, y: boxY + 0.4, w: rightW - 0.6, h: 0.45, fontSize: 15, bold: true, color: "FFFFFF", valign: "middle" });
 
-        // Detail rows
+        // ✅ ALL DETAILS in THEME COLOR
         const detailStartY = boxY + 1.15;
         const detailH = 0.85;
         const details = [
-          { icon: "📍", label: "AREA", value: x.area || "Unassigned", color: "1E40AF" },
-          { icon: "🏢", label: "COMPANY", value: x.customer || "—", color: "059669" },
-          { icon: "💰", label: "MONTHLY RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", color: "D97706" },
-          { icon: "📅", label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " → " + (x.toDate || "—") + (days > 0 ? " (" + days + " days)" : "") : "—", color: "7C3AED" },
-          { icon: "🗺️", label: "LOCATION", value: x.location || "—", color: "0891B2" }
+          { icon: "📍", label: "AREA", value: x.area || "Unassigned" },
+          { icon: "🏢", label: "COMPANY", value: x.customer || "—" },
+          { icon: "💰", label: "MONTHLY RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—" },
+          { icon: "📅", label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " → " + (x.toDate || "—") + (days > 0 ? " (" + days + " days)" : "") : "—" },
+          { icon: "🗺️", label: "LOCATION", value: x.location || "—" }
         ];
         details.forEach((d, di) => {
           const dy = detailStartY + di * detailH;
           slide.addShape(pptx.ShapeType.rect, { x: rightX, y: dy, w: rightW, h: detailH, fill: { color: di % 2 === 0 ? "FFFFFF" : "F1F5F9" } });
           slide.addText(d.icon, { x: rightX + 0.15, y: dy, w: 0.4, h: detailH, fontSize: 14, align: "center", valign: "middle" });
           slide.addText(d.label, { x: rightX + 0.6, y: dy + 0.08, w: rightW - 0.75, h: 0.25, fontSize: 8, bold: true, color: "64748B", letterSpacing: 1 });
-          slide.addText(String(d.value), { x: rightX + 0.6, y: dy + 0.32, w: rightW - 0.75, h: detailH - 0.4, fontSize: 11, bold: true, color: d.color, valign: "top" });
+          // ✅ All values in theme navy color
+          slide.addText(String(d.value), { x: rightX + 0.6, y: dy + 0.32, w: rightW - 0.75, h: detailH - 0.4, fontSize: 11, bold: true, color: THEME_COLOR, valign: "top" });
         });
 
         if(mapLink){
           const mapY = boxY + boxH - 0.55;
-          slide.addShape(pptx.ShapeType.roundRect, { x: rightX + 0.3, y: mapY, w: rightW - 0.6, h: 0.42, fill: { color: "0891B2" }, rectRadius: 0.08 });
+          slide.addShape(pptx.ShapeType.roundRect, { x: rightX + 0.3, y: mapY, w: rightW - 0.6, h: 0.42, fill: { color: THEME_COLOR }, rectRadius: 0.08 });
           slide.addText("📍 Open in Google Maps", { x: rightX + 0.3, y: mapY, w: rightW - 0.6, h: 0.42, fontSize: 11, bold: true, color: "FFFFFF", align: "center", valign: "middle", hyperlink: { url: mapLink } });
         }
 
@@ -2318,18 +2198,18 @@ async function generateSelectedSitesPPT(){
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
         const colW = 13.33 / 4;
         const fields = [
-          { label: "AREA", value: x.area || "Unassigned", color: "1E40AF" },
-          { label: "COMPANY", value: x.customer || "—", color: "059669" },
-          { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", color: "D97706" },
-          { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " to " + (x.toDate || "—") + (days > 0 ? " (" + days + "d)" : "") : "—", color: "7C3AED" }
+          { label: "AREA", value: x.area || "Unassigned" },
+          { label: "COMPANY", value: x.customer || "—" },
+          { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—" },
+          { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " to " + (x.toDate || "—") + (days > 0 ? " (" + days + "d)" : "") : "—" }
         ];
         fields.forEach((f, idx) => {
           const cx = idx * colW;
           slide.addText(f.label, { x: cx + 0.1, y: infoY + 0.08, w: colW - 0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
-          slide.addText(String(f.value), { x: cx + 0.1, y: infoY + 0.33, w: colW - 0.2, h: 0.4, fontSize: 11, bold: true, color: f.color, valign: "middle" });
+          slide.addText(String(f.value), { x: cx + 0.1, y: infoY + 0.33, w: colW - 0.2, h: 0.4, fontSize: 11, bold: true, color: THEME_COLOR, valign: "middle" });
         });
         if(mapLink){
-          slide.addShape(pptx.ShapeType.roundRect, { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fill: { color: "0891B2" }, rectRadius: 0.08 });
+          slide.addShape(pptx.ShapeType.roundRect, { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fill: { color: THEME_COLOR }, rectRadius: 0.08 });
           slide.addText("📍 Map", { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle", hyperlink: { url: mapLink } });
         }
 
@@ -2357,30 +2237,37 @@ async function generateSelectedSitesPPT(){
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
         const colW = 13.33 / 4;
         const fields = [
-          { label: "AREA", value: x.area || "Unassigned", color: "1E40AF" },
-          { label: "COMPANY", value: x.customer || "—", color: "059669" },
-          { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", color: "D97706" },
-          { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " to " + (x.toDate || "—") + (days > 0 ? " (" + days + "d)" : "") : "—", color: "7C3AED" }
+          { label: "AREA", value: x.area || "Unassigned" },
+          { label: "COMPANY", value: x.customer || "—" },
+          { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—" },
+          { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " to " + (x.toDate || "—") + (days > 0 ? " (" + days + "d)" : "") : "—" }
         ];
         fields.forEach((f, idx) => {
           const cx = idx * colW;
           slide.addText(f.label, { x: cx + 0.1, y: infoY + 0.08, w: colW - 0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
-          slide.addText(String(f.value), { x: cx + 0.1, y: infoY + 0.33, w: colW - 0.2, h: 0.4, fontSize: 11, bold: true, color: f.color, valign: "middle" });
+          slide.addText(String(f.value), { x: cx + 0.1, y: infoY + 0.33, w: colW - 0.2, h: 0.4, fontSize: 11, bold: true, color: THEME_COLOR, valign: "middle" });
         });
         if(mapLink){
-          slide.addShape(pptx.ShapeType.roundRect, { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fill: { color: "0891B2" }, rectRadius: 0.08 });
+          slide.addShape(pptx.ShapeType.roundRect, { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fill: { color: THEME_COLOR }, rectRadius: 0.08 });
           slide.addText("📍 Map", { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle", hyperlink: { url: mapLink } });
         }
 
       } else {
+        // ✅ THEME BACKGROUND (replaces Contain)
         const imgBoxY = 0.65, imgBoxH = 5.4;
-        slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "0F172A" } });
+        // Navy theme background
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: THEME_COLOR } });
+        
         let imageAdded = false;
         if(imgData){
-          try { slide.addImage({ data: imgData, x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, sizing: { type: "contain", w: 13.33, h: imgBoxH } }); imageAdded = true; } catch(e){ console.warn(e); }
+          try {
+            // Full image fit inside navy background (contain)
+            slide.addImage({ data: imgData, x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, sizing: { type: "contain", w: 13.33, h: imgBoxH } });
+            imageAdded = true;
+          } catch(e){ console.warn(e); }
         }
         if(!imageAdded){
-          slide.addShape(pptx.ShapeType.roundRect, { x: 4.5, y: imgBoxY + 1.8, w: 4.33, h: 1.8, fill: { color: "1E293B" }, line: { color: "334155", width: 2, dashType: "dash" }, rectRadius: 0.15 });
+          slide.addShape(pptx.ShapeType.roundRect, { x: 4.5, y: imgBoxY + 1.8, w: 4.33, h: 1.8, fill: { color: "0F172A" }, line: { color: "3B82F6", width: 2, dashType: "dash" }, rectRadius: 0.15 });
           slide.addText("📷", { x: 4.5, y: imgBoxY + 1.9, w: 4.33, h: 0.7, fontSize: 44, align: "center", valign: "middle" });
           slide.addText("No Image Available", { x: 4.5, y: imgBoxY + 2.7, w: 4.33, h: 0.4, fontSize: 14, color: "94A3B8", align: "center", italic: true });
         }
@@ -2388,18 +2275,18 @@ async function generateSelectedSitesPPT(){
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
         const colW = 13.33 / 4;
         const fields = [
-          { label: "AREA", value: x.area || "Unassigned", color: "1E40AF" },
-          { label: "COMPANY", value: x.customer || "—", color: "059669" },
-          { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", color: "D97706" },
-          { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " to " + (x.toDate || "—") + (days > 0 ? " (" + days + "d)" : "") : "—", color: "7C3AED" }
+          { label: "AREA", value: x.area || "Unassigned" },
+          { label: "COMPANY", value: x.customer || "—" },
+          { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—" },
+          { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " to " + (x.toDate || "—") + (days > 0 ? " (" + days + "d)" : "") : "—" }
         ];
         fields.forEach((f, idx) => {
           const cx = idx * colW;
           slide.addText(f.label, { x: cx + 0.1, y: infoY + 0.08, w: colW - 0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
-          slide.addText(String(f.value), { x: cx + 0.1, y: infoY + 0.33, w: colW - 0.2, h: 0.4, fontSize: 11, bold: true, color: f.color, valign: "middle" });
+          slide.addText(String(f.value), { x: cx + 0.1, y: infoY + 0.33, w: colW - 0.2, h: 0.4, fontSize: 11, bold: true, color: THEME_COLOR, valign: "middle" });
         });
         if(mapLink){
-          slide.addShape(pptx.ShapeType.roundRect, { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fill: { color: "0891B2" }, rectRadius: 0.08 });
+          slide.addShape(pptx.ShapeType.roundRect, { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fill: { color: THEME_COLOR }, rectRadius: 0.08 });
           slide.addText("📍 Map", { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle", hyperlink: { url: mapLink } });
         }
       }
