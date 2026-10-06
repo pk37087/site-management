@@ -500,7 +500,7 @@ const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing
 const MAX_PPT_SIZE = 100 * 1024 * 1024;
 const COMPANY_NAME = "Site Management System";
 const COMPANY_TAGLINE = "Professional Site Booking & Management";
-const LOGO_URL = "logo.png";
+const LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 
 let currentUser = null;
 let sites = [];
@@ -1652,37 +1652,44 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-/* ============ PPT GENERATOR (UPDATED: Logo + No Title + Side Code) ============ */
+/* ============ PPT GENERATOR (Logo + Dynamic Area + Site Code) ============ */
 async function generateSelectedSitesPPT(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   const list = sites.filter(s => selectedSites.has(s.id));
   if(list.length === 0){ alert("Koi site nahi"); return; }
   const uniqueAreas = [...new Set(list.map(s => s.area || "Unassigned"))];
   const singleArea = uniqueAreas.length === 1 ? uniqueAreas[0] : null;
+  // DYNAMIC AREA DISPLAY NAME
+  const areaDisplayName = uniqueAreas.length === 1 
+    ? uniqueAreas[0] 
+    : uniqueAreas.length <= 3 
+      ? uniqueAreas.join(", ") 
+      : uniqueAreas.slice(0, 3).join(", ") + " + " + (uniqueAreas.length - 3) + " more";
   showProgress("Generating PPT...", "Preparing");
   try {
     const pptx = new PptxGenJS();
     pptx.layout = "LAYOUT_WIDE";
     pptx.author = COMPANY_NAME;
+    pptx.title = uniqueAreas.length === 1 ? "Site Report - " + uniqueAreas[0] : "Site Report - Multiple Areas";
 
-    // COVER SLIDE
+    // COVER SLIDE WITH LOGO
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
     
-    // Logo on cover
-    const coverLogoUrl = "https://pk37087.github.io/site-management/logo.png";
+    // WHITE BACKGROUND BOX FOR LOGO
+    slide.addShape(pptx.ShapeType.roundRect, { x: 0.5, y: 0.5, w: 2.7, h: 1.1, fill: { color: "FFFFFF" }, rectRadius: 0.08 });
     try {
-      slide.addImage({ path: coverLogoUrl, x: 0.7, y: 0.7, w: 0.7, h: 0.7 });
+      slide.addImage({ path: LOGO_URL, x: 0.6, y: 0.6, w: 2.5, h: 0.9, sizing: { type: "contain", w: 2.5, h: 0.9 } });
     } catch(e) {
-      slide.addShape(pptx.ShapeType.roundRect, { x: 0.7, y: 0.7, w: 0.7, h: 0.7, fill: { color: "FFFFFF" }, rectRadius: 0.1 });
-      slide.addText("S", { x: 0.7, y: 0.7, w: 0.7, h: 0.7, fontSize: 26, bold: true, color: "1E40AF", align: "center", valign: "middle" });
+      slide.addText(COMPANY_NAME, { x: 0.6, y: 0.6, w: 2.5, h: 0.9, fontSize: 10, bold: true, color: "1E40AF", align: "center", valign: "middle" });
     }
-    slide.addText(COMPANY_NAME.toUpperCase(), { x: 1.6, y: 0.75, w: 8, h: 0.4, fontSize: 13, bold: true, color: "FFFFFF", charSpacing: 3 });
-    slide.addText(COMPANY_TAGLINE, { x: 1.6, y: 1.15, w: 8, h: 0.35, fontSize: 10, color: "CBD5E1" });
     
-    // NO "Selected Sites Report" text — only area name big
-    slide.addText(singleArea || "Multiple Areas", { x: 0.7, y: 3.0, w: 12, h: 1.5, fontSize: 54, bold: true, color: "FFFFFF" });
+    slide.addText(COMPANY_TAGLINE, { x: 3.4, y: 0.8, w: 8, h: 0.35, fontSize: 11, color: "CBD5E1", italic: true });
+    
+    // DYNAMIC AREA NAME
+    const coverAreaFontSize = areaDisplayName.length > 40 ? 28 : areaDisplayName.length > 25 ? 36 : 48;
+    slide.addText(areaDisplayName, { x: 0.7, y: 3.0, w: 12, h: 1.5, fontSize: coverAreaFontSize, bold: true, color: "FFFFFF" });
     
     slide.addShape(pptx.ShapeType.line, { x: 0.7, y: 5.2, w: 11.9, h: 0, line: { color: "60A5FA", width: 1 } });
     slide.addText("Report Date", { x: 0.7, y: 5.4, w: 2, h: 0.3, fontSize: 9, bold: true, color: "93C5FD" });
@@ -1704,7 +1711,7 @@ async function generateSelectedSitesPPT(){
       if(x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
       const mapLink = getGoogleMapsUrl(x);
       
-      // Extract site code (first part before underscore)
+      // SITE CODE EXTRACT (first part before underscore)
       const siteCode = (x.site || "").split("_")[0].trim() || "";
       
       slide = pptx.addSlide();
@@ -1714,7 +1721,7 @@ async function generateSelectedSitesPPT(){
       slide.addText(String(i+1), { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fontSize: 16, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
       slide.addText(x.site, { x: 0.78, y: 0.05, w: 8.0, h: 0.55, fontSize: 14, bold: true, color: "FFFFFF", valign: "middle" });
       
-      // SIDE CODE (top-right area, before status)
+      // SITE CODE BADGE (top-right area, before status)
       if(siteCode){
         slide.addShape(pptx.ShapeType.roundRect, { 
           x: 8.9, y: 0.12, w: 1.4, h: 0.42, 
@@ -1776,7 +1783,7 @@ async function generateSelectedSitesPPT(){
     slide.addText(COMPANY_NAME, { x: 0, y: 4.2, w: 13.33, h: 0.5, fontSize: 16, color: "BAE6FD", align: "center", charSpacing: 3 });
     slide.addText(COMPANY_TAGLINE, { x: 0, y: 4.7, w: 13.33, h: 0.4, fontSize: 11, color: "93C5FD", align: "center" });
 
-    const fileName = (singleArea ? "PPT_" + singleArea.replace(/[^a-z0-9]/gi, "_") : "PPT_Selected_Sites") + "_" + new Date().toISOString().slice(0,10) + ".pptx";
+    const fileName = (singleArea ? "PPT_" + singleArea.replace(/[^a-z0-9]/gi, "_") : "PPT_MultiArea") + "_" + new Date().toISOString().slice(0,10) + ".pptx";
     showProgress("Finalizing...", "Writing file");
     await pptx.writeFile({ fileName: fileName });
     hideProgress();
