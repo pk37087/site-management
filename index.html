@@ -308,8 +308,10 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div class="card maintenance" id="cardMaintenance" onclick="filterByCard('Under Maintenance')"><span class="card-icon">⚠</span><span class="card-label">Under Maintenance</span><b id="maintenance">0</b></div>
 </div>
 
+<!-- ✅ Toolbar with Refresh moved up next to search -->
 <div class="toolbar">
   <input id="search" type="text" placeholder="Search sites..." oninput="debouncedRender()">
+  <button class="refresh-btn" onclick="refreshPage(event)" title="Refresh data">🔄 Refresh</button>
   <div class="multi-status-wrap" id="multiStatusWrap">
     <button type="button" class="multi-status-btn" onclick="toggleMultiStatusPanel(event)">
       <span id="multiStatusLabel">Status: All</span>
@@ -339,7 +341,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <button onclick="openAdd()">+ Add Site</button>
   <button onclick="openHistorySearch()">History</button>
   <button onclick="exportCSV()">Export</button>
-  <button class="refresh-btn" onclick="refreshPage(event)">Refresh</button>
 </div>
 
 <div class="select-bar" id="selectBar">
@@ -614,7 +615,7 @@ const COMPANY_NAME = "DS Outdoor Media";
 const COMPANY_TAGLINE = "Professional Site Booking & Management";
 const MAX_FILTER_YEAR = 2050;
 const ALL_STATUSES = ["Available", "Not Available", "Under Maintenance"];
-const THEME_COLOR = "1E40AF"; // ✅ Navy blue theme color for all details
+const THEME_COLOR = "1E40AF"; // Navy theme color
 let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 let newLogoData = "";
 
@@ -662,7 +663,6 @@ function onStatusCheckChange(){
   updateMultiStatusLabel();
   render();
   updateFilterBadge();
-  // ✅ Auto-select sites matching selected statuses
   autoSelectByStatus();
 }
 function autoSelectByStatus(){
@@ -702,7 +702,7 @@ function updatePPTFormatUI(){
       split: "💡 <b>Split View:</b> Image left me (actual size preserve), details right side me. Best professional look.",
       cover: "💡 <b>Full Cover:</b> Image pura box fill karegi (crop hoke). Modern look.",
       blur: "💡 <b>Blur Background:</b> Puri image center + blurred background. Premium look.",
-      contain: "💡 <b>Theme Background:</b> Puri image dikhegi, navy blue theme background ke saath. Professional look."
+      contain: "💡 <b>Theme Background:</b> Puri image center + navy blue theme background. Clean professional look."
     };
     note.innerHTML = notes[pptFormat] || "";
   }
@@ -1082,7 +1082,6 @@ function applyFilters(){
   areaFilters = {};
   render();
   updateFilterBadge();
-  // ✅ No auto-select on date filter
 }
 function clearAllFilters(){
   activeStatuses.clear();
@@ -1169,7 +1168,7 @@ function debouncedRender(){ if(renderDebounceTimer) clearTimeout(renderDebounceT
 /* ============ REFRESH ============ */
 async function refreshPage(e){
   if(e){ e.stopPropagation(); if(e.preventDefault) e.preventDefault(); }
-  const btn = document.querySelector(".refresh-btn");
+  const btn = e.target.closest(".refresh-btn") || document.querySelector(".refresh-btn");
   if(btn){ btn.disabled = true; btn.textContent = "Refreshing..."; }
   try {
     imageFailed.clear(); imageCache = {}; pptCache = {}; selectedSites.clear();
@@ -1177,8 +1176,8 @@ async function refreshPage(e){
     await loadCloudData(); await refreshPptCache(); await loadLogoFromCloud();
     collapsedAreas = new Set(areas);
     render(); updateFilterBadge();
-    if(btn){ btn.textContent = "✓ Refreshed"; setTimeout(() => { btn.textContent = "Refresh"; btn.disabled = false; }, 800); }
-  } catch(err){ console.error(err); if(btn){ btn.textContent = "Refresh"; btn.disabled = false; } }
+    if(btn){ btn.textContent = "✓ Refreshed"; setTimeout(() => { btn.textContent = "🔄 Refresh"; btn.disabled = false; }, 800); }
+  } catch(err){ console.error(err); if(btn){ btn.textContent = "🔄 Refresh"; btn.disabled = false; } }
 }
 
 /* ============ MULTI AREA ============ */
@@ -2033,7 +2032,7 @@ function makeBlurBG(dataUrl, boxRatio){
   });
 }
 
-/* ============ ✅ PPT GENERATOR (THEME COLORS UNIFIED) ============ */
+/* ============ PPT GENERATOR ============ */
 async function generateSelectedSitesPPT(){
   closePPTFormatModal();
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
@@ -2100,42 +2099,23 @@ async function generateSelectedSitesPPT(){
       slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
-      // ===== LAYOUT =====
       if(pptFormat === "split"){
         const boxY = 0.65, boxH = 6.6;
         const leftW = 6.6, leftX = 0;
-        // Left panel - navy blue theme BG
         slide.addShape(pptx.ShapeType.rect, { x: leftX, y: boxY, w: leftW, h: boxH, fill: { color: THEME_COLOR } });
         
         let imageAdded = false;
         if(imgData){
           try {
-            // ✅ Full image inside navy background (contain fit)
             const imgRatio = await getImageRatio(imgData);
             const panelRatio = leftW / boxH;
             let drawW, drawH, drawX, drawY;
-            
             if(imgRatio > panelRatio){
-              // Wider → fit by width
-              drawW = leftW;
-              drawH = leftW / imgRatio;
-              drawX = leftX;
-              drawY = boxY + (boxH - drawH) / 2;
+              drawW = leftW; drawH = leftW / imgRatio; drawX = leftX; drawY = boxY + (boxH - drawH) / 2;
             } else {
-              // Taller → fit by height
-              drawH = boxH;
-              drawW = boxH * imgRatio;
-              drawX = leftX + (leftW - drawW) / 2;
-              drawY = boxY;
+              drawH = boxH; drawW = boxH * imgRatio; drawX = leftX + (leftW - drawW) / 2; drawY = boxY;
             }
-            
-            // ✅ Subtle border frame around the image (white)
-            slide.addShape(pptx.ShapeType.rect, { 
-              x: drawX, y: drawY, w: drawW, h: drawH, 
-              fill: { type: 'solid', color: 'FFFFFF' },
-              line: { color: 'FFFFFF', width: 2 }
-            });
-            // Add image on top
+            slide.addShape(pptx.ShapeType.rect, { x: drawX, y: drawY, w: drawW, h: drawH, fill: { type: 'solid', color: 'FFFFFF' }, line: { color: 'FFFFFF', width: 2 } });
             slide.addImage({ data: imgData, x: drawX, y: drawY, w: drawW, h: drawH });
             imageAdded = true;
           } catch(e){ console.warn(e); }
@@ -2146,16 +2126,13 @@ async function generateSelectedSitesPPT(){
           slide.addText("No Image", { x: leftX + 1.5, y: boxY + boxH/2, w: 3.6, h: 0.3, fontSize: 12, color: "94A3B8", align: "center", italic: true });
         }
 
-        // Right panel - details
         const rightX = leftW, rightW = 13.33 - leftW;
         slide.addShape(pptx.ShapeType.rect, { x: rightX, y: boxY, w: rightW, h: boxH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 1 } });
         
-        // Header (theme color)
         slide.addShape(pptx.ShapeType.rect, { x: rightX, y: boxY, w: rightW, h: 0.9, fill: { color: THEME_COLOR } });
         slide.addText("SITE DETAILS", { x: rightX + 0.3, y: boxY + 0.15, w: rightW - 0.6, h: 0.25, fontSize: 9, bold: true, color: "93C5FD", letterSpacing: 2 });
         slide.addText(x.site.substring(0, 40), { x: rightX + 0.3, y: boxY + 0.4, w: rightW - 0.6, h: 0.45, fontSize: 15, bold: true, color: "FFFFFF", valign: "middle" });
 
-        // ✅ ALL DETAILS in THEME COLOR
         const detailStartY = boxY + 1.15;
         const detailH = 0.85;
         const details = [
@@ -2170,7 +2147,6 @@ async function generateSelectedSitesPPT(){
           slide.addShape(pptx.ShapeType.rect, { x: rightX, y: dy, w: rightW, h: detailH, fill: { color: di % 2 === 0 ? "FFFFFF" : "F1F5F9" } });
           slide.addText(d.icon, { x: rightX + 0.15, y: dy, w: 0.4, h: detailH, fontSize: 14, align: "center", valign: "middle" });
           slide.addText(d.label, { x: rightX + 0.6, y: dy + 0.08, w: rightW - 0.75, h: 0.25, fontSize: 8, bold: true, color: "64748B", letterSpacing: 1 });
-          // ✅ All values in theme navy color
           slide.addText(String(d.value), { x: rightX + 0.6, y: dy + 0.32, w: rightW - 0.75, h: detailH - 0.4, fontSize: 11, bold: true, color: THEME_COLOR, valign: "top" });
         });
 
@@ -2253,16 +2229,21 @@ async function generateSelectedSitesPPT(){
         }
 
       } else {
-        // ✅ THEME BACKGROUND (replaces Contain)
+        // ✅ THEME BACKGROUND - now like blur but with solid theme color instead of blur
         const imgBoxY = 0.65, imgBoxH = 5.4;
-        // Navy theme background
+        const boxRatio = 13.33 / imgBoxH;
+        // Solid navy theme background
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: THEME_COLOR } });
         
         let imageAdded = false;
         if(imgData){
           try {
-            // Full image fit inside navy background (contain)
-            slide.addImage({ data: imgData, x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, sizing: { type: "contain", w: 13.33, h: imgBoxH } });
+            // Full image centered (actual size preserved)
+            const imgRatio = await getImageRatio(imgData);
+            let mDrawW, mDrawH, mDrawX, mDrawY;
+            if(imgRatio > boxRatio){ mDrawW = 13.33; mDrawH = 13.33 / imgRatio; mDrawX = 0; mDrawY = imgBoxY + (imgBoxH - mDrawH) / 2; }
+            else { mDrawH = imgBoxH; mDrawW = imgBoxH * imgRatio; mDrawX = (13.33 - mDrawW) / 2; mDrawY = imgBoxY; }
+            slide.addImage({ data: imgData, x: mDrawX, y: mDrawY, w: mDrawW, h: mDrawH });
             imageAdded = true;
           } catch(e){ console.warn(e); }
         }
