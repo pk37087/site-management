@@ -1348,6 +1348,7 @@ function getShareFileName(){
   if(shareContext.mode === "area") return "Area_" + shareContext.areaName.replace(/[^a-z0-9]/gi, "_") + "_" + d;
   return "Site_Report_" + d;
 }
+
 function buildProfessionalReport(siteList, reportTitle, areaName){
   const total = siteList.length;
   const avail = siteList.filter(s => s.status === "Available").length;
@@ -1397,7 +1398,6 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#eef2f7;color:#0f17
 .detail-row .val.loc{color:#1e40af}
 .detail-row .val.map a{color:#0891b2;text-decoration:none;word-break:break-all;font-size:12px}
 .days-chip{display:inline-block;background:#eef2ff;color:#4338ca;font-weight:700;font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid #c7d2fe;margin-left:8px}
-.ppt-note{background:linear-gradient(135deg,#ecfdf5 0%,#f0fdf4 100%);border:1px solid #86efac;border-radius:12px;padding:16px 18px;margin-bottom:20px;color:#065f46;font-size:14px;font-weight:600}
 .report-footer{background:#0f172a;color:#94a3b8;padding:36px 60px;text-align:center}
 .report-footer .fbrand{font-size:14px;font-weight:800;color:#fff;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
 .report-footer .fline{font-size:10px;opacity:0.5;margin-top:20px}
@@ -1442,34 +1442,73 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#eef2f7;color:#0f17
   html += `</div></div><div class="report-footer"><div class="fbrand">${COMPANY_NAME}</div><div>${COMPANY_TAGLINE}</div><div class="fline">© ${new Date().getFullYear()} ${COMPANY_NAME}</div></div></div></body></html>`;
   return html;
 }
+
 async function buildShareZip(){
   const list = getShareSites();
   if(list.length === 0){ alert("Koi site nahi mili"); return null; }
   const zip = new JSZip();
   const reportTitle = getShareTitle();
-  const areaName = shareContext.mode === "area" ? shareContext.areaName : null;
+  let areaName = shareContext.mode === "area" ? shareContext.areaName : null;
+
+  // SMART: Agar selected sites sab ek hi area ki hain, to us area ki PPT bhi include karo
+  let autoDetectedArea = null;
+  if(!areaName && list.length > 0){
+    const uniqueAreas = [...new Set(list.map(s => s.area || "Unassigned"))];
+    if(uniqueAreas.length === 1){
+      autoDetectedArea = uniqueAreas[0];
+    }
+  }
+  const pptArea = areaName || autoDetectedArea;
+
   showProgress("Loading images...", "");
   for(const x of list){
     if(x.hasImage && !imageCache[x.id]){ const d = await getImage(x.id); if(d) imageCache[x.id] = d; }
   }
+
   showProgress("Building report...", "");
   const reportHtml = buildProfessionalReport(list, reportTitle, areaName);
   zip.file("Report.html", reportHtml);
+
   let pptIncluded = false;
-  if(areaName){
-    const ppt = await getPpt(areaName);
-    if(ppt && ppt.data && ppt.data.indexOf(",") > -1){
-      const base64 = ppt.data.split(",")[1];
-      const ext = (ppt.name && ppt.name.split(".").pop()) || "pptx";
-      zip.file("Presentation." + ext, base64, { base64: true });
-      pptIncluded = true;
-    }
+  let pptFileName = "";
+  if(pptArea){
+    showProgress("Loading PPT...", pptArea);
+    try {
+      const ppt = await getPpt(pptArea);
+      if(ppt && ppt.data && ppt.data.indexOf(",") > -1){
+        const base64 = ppt.data.split(",")[1];
+        const ext = (ppt.name && ppt.name.split(".").pop()) || "pptx";
+        pptFileName = "Presentation." + ext;
+        zip.file(pptFileName, base64, { base64: true });
+        pptIncluded = true;
+      }
+    } catch(e){ console.warn("PPT load fail:", e); }
   }
-  const readme = `Professional Site Report\nGenerated: ${new Date().toLocaleString('en-GB')}\nReport: ${reportTitle}\nTotal Sites: ${list.length}\nPPT included: ${pptIncluded ? "YES - Presentation file bhi hai isme" : "NO"}\n\nOpen "Report.html" in browser to view the full report.\n${pptIncluded ? "Open Presentation file with PowerPoint." : ""}\n\n${COMPANY_NAME}\n`;
+
+  const readme = `Professional Site Report
+========================================
+Generated: ${new Date().toLocaleString('en-GB')}
+Report Type: ${reportTitle}
+Total Sites: ${list.length}
+PPT Area: ${pptArea || "N/A"}
+PPT Included: ${pptIncluded ? "YES" : "NO"}
+
+FILES IN THIS ZIP:
+------------------
+1. Report.html - Full site report with images (open in browser)
+${pptIncluded ? "2. " + pptFileName + " - Presentation file (open in PowerPoint/Google Slides)" : "2. (No PPT - is report ke liye koi PPT upload nahi hai)"}
+3. README.txt - This file
+
+${pptIncluded ? "PPT dekhne ke liye " + pptFileName + " file ko PowerPoint me kholein." : "PPT nahi hai - agar area share karo (Area header me Share button) to PPT milegi."}
+
+${COMPANY_NAME}
+${COMPANY_TAGLINE}
+`;
   zip.file("README.txt", readme);
   const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
-  return { blob, fileName: getShareFileName() + ".zip", pptIncluded };
+  return { blob, fileName: getShareFileName() + ".zip", pptIncluded, pptArea };
 }
+
 async function shareAsZip(){
   closeShareModal();
   try {
@@ -1482,9 +1521,23 @@ async function shareAsZip(){
     a.href = url; a.download = result.fileName;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 5000);
-    alert("Report download ho gayi: " + result.fileName + (result.pptIncluded ? "\n\nIsme Report.html aur PPT dono hain." : ""));
+    let msg = "✅ Report download ho gayi:\n" + result.fileName + "\n\n";
+    if(result.pptIncluded){
+      msg += "📦 Isme 3 files hain:\n";
+      msg += "• Report.html (sites with images)\n";
+      msg += "• Presentation.pptx (PPT - " + result.pptArea + ")\n";
+      msg += "• README.txt";
+    } else {
+      msg += "📄 Isme 2 files hain:\n";
+      msg += "• Report.html (sites with images)\n";
+      msg += "• README.txt\n\n";
+      msg += "⚠️ PPT nahi hai — kyunki is report me kisi ek area ki PPT nahi mili.\n\n";
+      msg += "PPT ke liye: Area header me Share button click karein.";
+    }
+    alert(msg);
   } catch(e){ hideProgress(); alert("Error: " + e.message); }
 }
+
 async function shareNative(){
   closeShareModal();
   try {
@@ -1504,6 +1557,7 @@ async function shareNative(){
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   } catch(e){ hideProgress(); alert("Error: " + e.message); }
 }
+
 function buildShareText(){
   const list = getShareSites();
   const title = getShareTitle();
@@ -1560,7 +1614,6 @@ function shareViaEmailText(){
 async function generatePDF(list, title){
   if(list.length === 0){ alert("No sites"); return; }
   showProgress("Preparing images...", "0 / " + list.length);
-  // PRELOAD images
   for(let i = 0; i < list.length; i++){
     const x = list[i];
     if(x.hasImage && !imageCache[x.id]){
