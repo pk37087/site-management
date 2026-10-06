@@ -48,19 +48,18 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card.notavailable::before{background:#ef4444}.card.notavailable b{color:#b91c1c}
 .card.maintenance::before{background:#f59e0b}.card.maintenance b{color:#b45309}
 .toolbar{background:#fff;padding:12px;border-radius:12px;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;border:1px solid #e2e8f0;align-items:center}
-.toolbar input[type="text"]{padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;background:#fff;outline:none;color:#0f172a}
-.toolbar #search{min-width:200px;flex:1}
+.toolbar #search{padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;background:#fff;outline:none;color:#0f172a;min-width:200px;flex:1}
 .toolbar button{padding:11px 16px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px}
 .toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
 .toolbar button.multi-area-btn{background:#7c3aed;color:#fff;border-color:#6d28d9}
-.status-date-group{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#f8fafc;padding:6px 10px;border-radius:8px;border:1px solid #e2e8f0}
-.status-date-group select{padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;font-size:13px;background:#fff;outline:none;color:#0f172a;min-width:130px;cursor:pointer}
-.status-date-group select:focus{border-color:#3b82f6;box-shadow:0 0 0 2px rgba(59,130,246,0.1)}
-.status-date-group .date-input{padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;font-size:13px;width:110px;background:#fff;color:#0f172a}
-.status-date-group .date-input:focus{border-color:#3b82f6;outline:none;box-shadow:0 0 0 2px rgba(59,130,246,0.1)}
-.status-date-group .date-label{font-size:12px;font-weight:600;color:#475569;white-space:nowrap}
-.status-date-group .date-clear{padding:6px 10px;font-size:12px;border-radius:6px;background:#fff;color:#334155;border:1px solid #cbd5e1;cursor:pointer;font-family:inherit;font-weight:600;min-height:32px}
-.status-date-group .date-clear:hover{background:#f1f5f9}
+.status-filter-box{display:flex;gap:0;align-items:center;background:#f8fafc;border-radius:8px;border:1px solid #cbd5e1;overflow:hidden;flex-wrap:nowrap}
+.status-filter-box select{padding:11px 14px;border:0;border-right:1px solid #cbd5e1;font-family:inherit;font-size:13px;background:#fff;outline:none;color:#0f172a;cursor:pointer;min-width:140px}
+.status-filter-box select:focus{background:#eff6ff;box-shadow:inset 0 0 0 2px rgba(59,130,246,0.2)}
+.status-filter-box .date-sep{padding:0 8px;font-size:11px;font-weight:700;color:#94a3b8;background:#f8fafc;white-space:nowrap;height:44px;display:flex;align-items:center;border-right:1px solid #cbd5e1}
+.status-filter-box .date-input{padding:11px 10px;border:0;border-right:1px solid #cbd5e1;font-family:inherit;font-size:13px;width:118px;background:#fff;color:#0f172a;outline:none}
+.status-filter-box .date-input:focus{background:#eff6ff;box-shadow:inset 0 0 0 2px rgba(59,130,246,0.2)}
+.status-filter-box .date-clear{padding:11px 12px;border:0;background:#fff;color:#dc2626;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;min-height:44px}
+.status-filter-box .date-clear:hover{background:#fef2f2}
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:10px 14px;border-radius:10px;margin-bottom:14px;display:none;gap:8px;flex-wrap:wrap;align-items:stretch}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 16px;border-radius:6px;font-weight:700;font-size:13px;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:110px}
@@ -179,8 +178,11 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .toolbar{padding:10px;gap:8px}
   .toolbar #search{min-width:100%;flex:1 1 100%}
   .toolbar button{flex:1;min-width:calc(50% - 4px);padding:11px 8px;font-size:12px;justify-content:center}
-  .status-date-group{width:100%;flex:1 1 100%}
-  .status-date-group select,.status-date-group .date-input{flex:1;min-width:0}
+  .status-filter-box{width:100%;flex:1 1 100%;flex-wrap:wrap}
+  .status-filter-box select{flex:1;min-width:120px;border-right:0;border-bottom:1px solid #cbd5e1}
+  .status-filter-box .date-sep{border-right:0;border-bottom:1px solid #cbd5e1;padding:6px 8px}
+  .status-filter-box .date-input{flex:1;min-width:100px;border-right:0;border-bottom:1px solid #cbd5e1}
+  .status-filter-box .date-clear{width:100%;border-top:1px solid #cbd5e1}
   .select-bar button{flex:1;min-width:calc(50% - 4px)}
   .site-card{padding:10px;flex-wrap:wrap;position:relative}
   .site-card-img{width:88px;height:88px}
@@ -242,18 +244,18 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 <div class="toolbar">
 <input id="search" type="text" placeholder="Search sites..." oninput="render()">
-<div class="status-date-group">
+<div class="status-filter-box">
   <select id="filter" onchange="onMainFilterChange()">
     <option value="ALL">All Status</option>
     <option>Available</option>
     <option>Not Available</option>
     <option>Under Maintenance</option>
   </select>
-  <span class="date-label">📅</span>
+  <span class="date-sep">📅</span>
   <input type="text" class="date-input" id="dateFilterFrom" placeholder="dd/mm/yyyy" maxlength="10" oninput="formatDateInput(this)" onchange="render()">
-  <span class="date-label">to</span>
+  <span class="date-sep">→</span>
   <input type="text" class="date-input" id="dateFilterTo" placeholder="dd/mm/yyyy" maxlength="10" oninput="formatDateInput(this)" onchange="render()">
-  <button type="button" class="date-clear" onclick="clearDateFilter()" title="Clear date filter">✕</button>
+  <button type="button" class="date-clear" onclick="clearDateFilter()" title="Clear date">✕</button>
 </div>
 <button class="admin-only" onclick="openAreaManager()">Manage Areas</button>
 <button class="admin-only multi-area-btn" onclick="openMultiAreaSelect()">☑ Select Areas</button>
@@ -927,7 +929,7 @@ function siteMatchesDateFilter(site){
   return true;
 }
 
-/* ============ REFRESH PAGE (FIXED) ============ */
+/* ============ REFRESH PAGE ============ */
 async function refreshPage(e){
   if(e){ e.stopPropagation(); if(e.preventDefault) e.preventDefault(); }
   const btn = document.querySelector(".refresh-btn");
@@ -1948,148 +1950,4 @@ async function generateSelectedSitesPPT(){
       const imgBoxY = 0.65, imgBoxH = 5.4;
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "0F172A" } });
       let imageAdded = false;
-      if(imgData && typeof imgData === "string" && imgData.length > 100){
-        try {
-          slide.addImage({ data: imgData.trim(), x: 0.5, y: imgBoxY + 0.15, w: 12.33, h: imgBoxH - 0.3, sizing: { type: "contain", w: 12.33, h: imgBoxH - 0.3 } });
-          imageAdded = true;
-        } catch(e){ imageAdded = false; }
-      }
-      if(!imageAdded){
-        slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "F1F5F9" } });
-        slide.addText("No Image", { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fontSize: 24, color: "94A3B8", align: "center", valign: "middle" });
-      }
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 6.05, w: 13.33, h: 1.1, fill: { color: "F8FAFC" } });
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 6.05, w: 13.33, h: 0.05, fill: { color: "1E40AF" } });
-      const colW = 13.33 / 4;
-      slide.addText("AREA", { x: 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
-      slide.addText(x.area || "Unassigned", { x: 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 14, bold: true, color: "0F172A", valign: "middle" });
-      slide.addText("LOCATION (Click for Map)", { x: colW + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
-      if(mapLink && x.location){
-        slide.addText(x.location, { x: colW + 0.15, y: 6.38, w: colW - 0.3, h: 0.35, fontSize: 11, bold: true, color: "1E40AF", valign: "middle", underline: true, hyperlink: { url: mapLink } });
-      } else {
-        slide.addText(x.location || "—", { x: colW + 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 12, bold: true, color: "0F172A", valign: "middle" });
-      }
-      slide.addText("COMPANY", { x: colW*2 + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
-      slide.addText(x.customer || "—", { x: colW*2 + 0.15, y: 6.38, w: colW - 0.3, h: 0.3, fontSize: 12, bold: true, color: "059669", valign: "middle" });
-      if(x.rate){
-        slide.addText(formatINR(x.rate) + " / month", { x: colW*2 + 0.15, y: 6.72, w: colW - 0.3, h: 0.28, fontSize: 10, bold: true, color: "059669", valign: "middle" });
-      }
-      slide.addText("BOOKING", { x: colW*3 + 0.15, y: 6.15, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF" });
-      if(x.status === "Available"){
-        slide.addText("—", { x: colW*3 + 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 14, bold: true, color: "94A3B8", valign: "middle" });
-      } else {
-        slide.addText((x.fromDate || "") + " → " + (x.toDate || "") + (days > 0 ? " (" + days + "d)" : ""), { x: colW*3 + 0.15, y: 6.41, w: colW - 0.3, h: 0.35, fontSize: 11, bold: true, color: "0F172A", valign: "middle" });
-      }
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 7.15, w: 13.33, h: 0.35, fill: { color: "0F172A" } });
-      slide.addText(COMPANY_NAME + "  •  Page " + (i + 2), { x: 0.5, y: 7.18, w: 12.33, h: 0.28, fontSize: 8, color: "94A3B8", align: "center", valign: "middle" });
-    }
-
-    slide = pptx.addSlide();
-    slide.background = { color: "0F172A" };
-    slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
-    try {
-      slide.addImage({ path: currentLogoUrl, x: 5.4, y: 2.0, w: 2.5, h: 0.9, sizing: { type: "contain", w: 2.5, h: 0.9 } });
-    } catch(e){}
-    slide.addText("THANK YOU", { x: 0, y: 3.3, w: 13.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center", charSpacing: 8 });
-    slide.addText("Professional Site Booking & Management", { x: 0, y: 4.5, w: 13.33, h: 0.4, fontSize: 12, color: "BAE6FD", align: "center", italic: true });
-
-    const fileName = (singleArea ? "PPT_" + singleArea.replace(/[^a-z0-9]/gi, "_") : "PPT_MultiArea") + "_" + new Date().toISOString().slice(0,10) + ".pptx";
-    showProgress("Finalizing...", "Writing file");
-    await pptx.writeFile({ fileName: fileName });
-    hideProgress();
-    alert("✅ PPT ban gayi!\n\n" + fileName);
-  } catch(e){
-    hideProgress();
-    alert("PPT Error: " + e.message);
-  }
-}
-
-/* ============ HISTORY ============ */
-function showHistory(siteIndex){
-  const siteName = sites[siteIndex].site;
-  const hist = bookingHistory.filter(h => h.site === siteName);
-  document.getElementById("historyTitle").textContent = "History - " + siteName;
-  const c = document.getElementById("historyContent");
-  if(hist.length === 0){ c.innerHTML = '<div class="empty-history">No history</div>'; }
-  else { c.innerHTML = hist.map(h => '<div class="history-item"><b>'+esc(h.customer)+'</b><div>'+esc(h.fromDate)+' - '+esc(h.toDate)+' ('+h.days+' days)</div><div style="color:#94a3b8;font-size:11px">Ended: '+esc(h.endedOn)+'</div></div>').join(""); }
-  document.getElementById("historyModal").classList.add("show");
-}
-function openHistorySearch(){
-  document.getElementById("historyTitle").textContent = "All History (" + bookingHistory.length + ")";
-  const c = document.getElementById("historyContent");
-  if(bookingHistory.length === 0){ c.innerHTML = '<div class="empty-history">No history</div>'; }
-  else { c.innerHTML = bookingHistory.map(h => '<div class="history-item"><b>'+esc(h.site)+'</b><div>'+esc(h.customer)+'</div><div>'+esc(h.fromDate)+' - '+esc(h.toDate)+' ('+h.days+' days)</div></div>').join(""); }
-  document.getElementById("historyModal").classList.add("show");
-}
-function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
-function downloadHistoryCSV(){
-  if(bookingHistory.length === 0){ alert("Empty"); return; }
-  const headers = ["#","Site","Company","Location","From Date","To Date","Days","Status","Ended On"];
-  const rows = [headers.join(",")];
-  bookingHistory.forEach((h, i) => {
-    rows.push([i+1, h.site||"", h.customer||"", h.location||"", h.fromDate||"", h.toDate||"", h.days||"", h.status||"", h.endedOn||""].map(v => '"'+String(v).replace(/"/g,'""')+'"').join(","));
-  });
-  const csv = "\ufeff" + rows.join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "history_"+new Date().toISOString().slice(0,10)+".csv";
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-}
-
-/* ============ EXPORT / BACKUP / IMPORT / DELETE ============ */
-function exportCSV(){
-  if(sites.length === 0){ alert("No sites"); return; }
-  const headers = ["Area","Site","Location","Company","Rate","Status","From","To"];
-  const rows = [headers.join(",")];
-  sites.forEach(x => {
-    rows.push([x.area||"", x.site||"", x.location||"", x.customer||"", x.rate||"", x.status||"", x.fromDate||"", x.toDate||""].map(v => '"'+String(v).replace(/"/g,'""')+'"').join(","));
-  });
-  const csv = "\ufeff" + rows.join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sites_"+new Date().toISOString().slice(0,10)+".csv";
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-}
-function downloadBackup(){
-  const data = { sites, areas, bookingHistory, exportedOn: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "backup_"+new Date().toISOString().slice(0,10)+".json";
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-}
-function triggerImport(){ document.getElementById("importFile").click(); }
-function handleImportFile(e){
-  const file = e.target.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async (ev) => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      if(!data.sites) throw new Error("Invalid");
-      if(!confirm("Import? Current data replace ho jayega.")) return;
-      sites = data.sites || [];
-      areas = data.areas || [...DEFAULT_AREAS];
-      bookingHistory = data.bookingHistory || [];
-      await persistNow();
-      populateAreaDropdowns(); render();
-      alert("Imported");
-    } catch(err){ alert("Failed: " + err.message); }
-  };
-  reader.readAsText(file); e.target.value = "";
-}
-async function bulkDeleteSelected(){
-  if(selectedSites.size === 0){ alert("No selection"); return; }
-  if(!confirm(selectedSites.size + " sites delete?")) return;
-  const ids = new Set([...selectedSites].map(String));
-  for(const id of ids){ if(imageCache[id]) await deleteImage(id); }
-  sites = sites.filter(s => !ids.has(String(s.id)));
-  selectedSites.clear();
-  await persistNow();
-  render();
-}
-
-document.addEventListener("DOMContentLoaded", async () => {
-  initDateDropdowns();
-  initBulkDateDropdowns();
-  await loadLogoFromCloud();
-  checkSession();
-});
-</script>
-</body>
-</html>
+      if(imgData && typeof imgData === "string"
