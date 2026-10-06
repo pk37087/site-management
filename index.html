@@ -204,6 +204,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
+    <div style="text-align:center;margin-bottom:20px">
+      <img id="loginLogoImg" src="" alt="" style="max-width:200px;max-height:60px;object-fit:contain" onerror="this.style.display='none'" />
+    </div>
     <h1>Site Management</h1>
     <p class="subtitle">Sign in to continue</p>
     <label for="loginUser">Username</label>
@@ -284,13 +287,14 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 </div></div>
 
-<!-- BULK MODAL with 3 TABS -->
+<!-- BULK MODAL with 4 TABS -->
 <div class="modal" id="bulkModal"><div class="box" style="width:min(900px,100%)">
 <h2>📦 Bulk Upload</h2>
 <div class="bulk-tab-bar">
   <button class="bulk-tab active" onclick="switchBulkTab('sites')" id="tabSites">📋 Sites (CSV)</button>
   <button class="bulk-tab" onclick="switchBulkTab('images')" id="tabImages">🖼️ Images</button>
   <button class="bulk-tab" onclick="switchBulkTab('ppts')" id="tabPpts">📊 PPTs (Area-wise)</button>
+  <button class="bulk-tab" onclick="switchBulkTab('logo')" id="tabLogo">🎨 Logo Settings</button>
 </div>
 
 <div class="bulk-tab-content active" id="tabContentSites">
@@ -345,6 +349,43 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div id="bulkPptPreviewWrap" style="display:none">
     <div class="bulk-summary" id="bulkPptSummary"></div>
     <div class="bulk-preview" id="bulkPptPreview" style="max-height:260px"></div>
+  </div>
+</div>
+
+<div class="bulk-tab-content" id="tabContentLogo">
+  <div class="bulk-info" style="font-size:12px">
+    <b>Logo Change Karein</b><br>
+    Yahan se naya logo upload karein. Yeh logo:<br>
+    • Website login page par dikhega<br>
+    • PPT cover slide par dikhega<br>
+    • Thank You slide par dikhega<br>
+    <b>Recommended:</b> 800x300px PNG (transparent background)
+  </div>
+  
+  <div style="text-align:center;margin-bottom:16px;padding:16px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0">
+    <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Current Logo</div>
+    <img id="currentLogoPreview" src="" alt="Current Logo" style="max-width:300px;max-height:100px;border-radius:8px;background:#fff;padding:8px;border:1px solid #e2e8f0" />
+  </div>
+  
+  <div class="drop-zone" id="logoDropZone" onclick="document.getElementById('logoFile').click()" style="border-color:#fde68a;background:#fffbeb">
+    <div class="dz-icon">🎨</div>
+    <div style="font-size:14px;font-weight:700">Click to upload new logo</div>
+    <div style="font-size:11px;color:#64748b">PNG, JPG, SVG — Max 2 MB</div>
+  </div>
+  <input type="file" id="logoFile" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
+  
+  <div id="newLogoPreviewWrap" style="display:none;text-align:center;margin-top:12px">
+    <div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">New Logo (Preview)</div>
+    <img id="newLogoPreview" src="" alt="New Logo" style="max-width:300px;max-height:100px;border-radius:8px;background:#fff;padding:8px;border:2px solid #059669" />
+  </div>
+  
+  <div id="logoUploadActions" style="display:none;margin-top:16px;gap:10px;flex-wrap:wrap">
+    <button onclick="saveNewLogo()" style="flex:1;background:#059669;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;border:0;cursor:pointer;min-height:44px">✓ Save & Apply Logo</button>
+    <button onclick="cancelLogoUpload()" style="background:#fff;color:#334155;border:1px solid #cbd5e1;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;min-height:44px">Cancel</button>
+  </div>
+  
+  <div style="margin-top:16px;padding:12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:11px;color:#991b1b">
+    ⚠️ <b>Note:</b> Logo change karne ke baad, purani PPTs mein purana hi logo rahega. Nayi PPT mein naya logo aayega.
   </div>
 </div>
 
@@ -500,7 +541,8 @@ const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing
 const MAX_PPT_SIZE = 100 * 1024 * 1024;
 const COMPANY_NAME = "DS Outdoor Media";
 const COMPANY_TAGLINE = "Professional Site Booking & Management";
-const LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
+let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
+let newLogoData = "";
 
 let currentUser = null;
 let sites = [];
@@ -627,6 +669,136 @@ async function refreshPptCache(){
   }
 }
 
+/* ============ LOGO MANAGEMENT ============ */
+async function loadLogoFromCloud(){
+  try {
+    const result = await apiGet("/logo");
+    if(result && result.success && result.data){
+      LOGO_URL = result.data;
+      const logoImg = document.getElementById("currentLogoPreview");
+      if(logoImg) logoImg.src = result.data;
+      const loginLogo = document.getElementById("loginLogoImg");
+      if(loginLogo){ loginLogo.src = result.data; loginLogo.style.display = "inline-block"; }
+      const headerLogo = document.getElementById("headerLogoImg");
+      if(headerLogo) headerLogo.src = result.data;
+      return true;
+    }
+  } catch(e){ console.warn("Logo load fail:", e); }
+  const logoImg = document.getElementById("currentLogoPreview");
+  if(logoImg) logoImg.src = LOGO_URL;
+  const loginLogo = document.getElementById("loginLogoImg");
+  if(loginLogo){ loginLogo.src = LOGO_URL; }
+  return false;
+}
+
+(function setupLogoDropZone(){
+  const dz = document.getElementById("logoDropZone");
+  if(!dz) return;
+  dz.addEventListener("dragover", e => { e.preventDefault(); dz.style.background = "#fef3c7"; });
+  dz.addEventListener("dragleave", () => dz.style.background = "#fffbeb");
+  dz.addEventListener("drop", e => { 
+    e.preventDefault(); 
+    dz.style.background = "#fffbeb"; 
+    const files = e.dataTransfer.files; 
+    if(files && files.length > 0) processLogoFile(files[0]);
+  });
+})();
+
+function handleLogoUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  processLogoFile(file);
+  e.target.value = "";
+}
+
+function processLogoFile(file){
+  if(!file.type.startsWith("image/")){ alert("Only image files allowed"); return; }
+  if(file.size > 2*1024*1024){ alert("Max 2 MB allowed. Aapki file: " + (file.size/1024/1024).toFixed(2) + " MB"); return; }
+  
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    let dataUrl = ev.target.result;
+    if(file.type === "image/svg+xml"){
+      newLogoData = dataUrl;
+      showNewLogoPreview(dataUrl);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      const MAX_W = 800, MAX_H = 300;
+      let w = img.width, h = img.height;
+      if(w > MAX_W || h > MAX_H){
+        const r = Math.min(MAX_W / w, MAX_H / h);
+        w = Math.round(w * r);
+        h = Math.round(h * r);
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingQuality = "high";
+      if(file.type === "image/png"){
+        ctx.clearRect(0, 0, w, h);
+      } else {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, w, h);
+      }
+      ctx.drawImage(img, 0, 0, w, h);
+      const mimeType = file.type === "image/png" ? "image/png" : "image/jpeg";
+      let quality = 0.9;
+      let result = canvas.toDataURL(mimeType, quality);
+      let attempts = 0;
+      while(result.length > 1.5 * 1024 * 1024 && quality > 0.6 && attempts < 8){
+        quality -= 0.05;
+        result = canvas.toDataURL(mimeType, quality);
+        attempts++;
+      }
+      newLogoData = result;
+      showNewLogoPreview(result);
+    };
+    img.onerror = () => { alert("Image load fail"); };
+    img.src = dataUrl;
+  };
+  reader.readAsDataURL(file);
+}
+
+function showNewLogoPreview(dataUrl){
+  document.getElementById("newLogoPreview").src = dataUrl;
+  document.getElementById("newLogoPreviewWrap").style.display = "block";
+  document.getElementById("logoUploadActions").style.display = "flex";
+}
+
+function cancelLogoUpload(){
+  newLogoData = "";
+  document.getElementById("newLogoPreviewWrap").style.display = "none";
+  document.getElementById("logoUploadActions").style.display = "none";
+}
+
+async function saveNewLogo(){
+  if(!newLogoData){ alert("Pehle logo select karein"); return; }
+  showProgress("Saving logo...", "Uploading to cloud");
+  try {
+    const result = await apiPost("/logo", { data: newLogoData });
+    if(result && result.success){
+      LOGO_URL = newLogoData;
+      document.getElementById("currentLogoPreview").src = newLogoData;
+      const loginLogo = document.getElementById("loginLogoImg");
+      if(loginLogo){ loginLogo.src = newLogoData; loginLogo.style.display = "inline-block"; }
+      const headerLogo = document.getElementById("headerLogoImg");
+      if(headerLogo) headerLogo.src = newLogoData;
+      cancelLogoUpload();
+      hideProgress();
+      alert("✅ Logo successfully update ho gaya!\n\nAb PPT generate karne par naya logo aayega.");
+    } else {
+      hideProgress();
+      alert("Failed: " + (result.error || "Unknown error"));
+    }
+  } catch(e){
+    hideProgress();
+    alert("Error: " + e.message);
+  }
+}
+
 async function doLogin(){
   const username = document.getElementById("loginUser").value.trim();
   const password = document.getElementById("loginPass").value;
@@ -663,6 +835,7 @@ async function showApp(){
   await refreshPptCache();
   hideProgress();
   populateAreaDropdowns();
+  await loadLogoFromCloud();
   await autoReleaseExpiredSites();
   render();
   startAutoRefresh();
@@ -808,6 +981,10 @@ function switchBulkTab(tab){
   } else if(tab === "ppts"){
     document.getElementById("tabPpts").classList.add("active");
     document.getElementById("tabContentPpts").classList.add("active");
+  } else if(tab === "logo"){
+    document.getElementById("tabLogo").classList.add("active");
+    document.getElementById("tabContentLogo").classList.add("active");
+    loadLogoFromCloud();
   }
   updateBulkUploadBtn();
 }
@@ -817,12 +994,16 @@ function openBulkUpload(){
   bulkParsedSites = [];
   bulkParsedImages = [];
   bulkPptParsed = [];
+  newLogoData = "";
   document.getElementById("bulkPreviewWrap").style.display = "none";
   document.getElementById("bulkImagePreviewWrap").style.display = "none";
   document.getElementById("bulkPptPreviewWrap").style.display = "none";
+  document.getElementById("newLogoPreviewWrap").style.display = "none";
+  document.getElementById("logoUploadActions").style.display = "none";
   document.getElementById("bulkFile").value = "";
   document.getElementById("bulkImageFiles").value = "";
   document.getElementById("bulkPptFiles").value = "";
+  document.getElementById("logoFile").value = "";
   switchBulkTab("sites");
   document.getElementById("bulkModal").classList.add("show");
 }
@@ -830,6 +1011,11 @@ function closeBulkModal(){ document.getElementById("bulkModal").classList.remove
 function updateBulkUploadBtn(){
   const activeTab = document.querySelector(".bulk-tab.active").id;
   const btn = document.getElementById("bulkUploadBtn");
+  if(activeTab === "tabLogo"){
+    btn.style.display = "none";
+    return;
+  }
+  btn.style.display = "inline-flex";
   if(activeTab === "tabSites"){
     btn.disabled = bulkParsedSites.length === 0;
     btn.textContent = "Upload " + bulkParsedSites.length + " Site(s)";
@@ -918,7 +1104,6 @@ function parseCSV(text){
   updateBulkUploadBtn();
 }
 
-/* IMAGES */
 (function setupBulkImageDropZone(){
   const dz = document.getElementById("bulkImageDropZone"); if(!dz) return;
   dz.addEventListener("dragover", e => { e.preventDefault(); dz.style.background = "#dbeafe"; });
@@ -999,7 +1184,6 @@ function renderBulkImagePreview(invalidList){
   updateBulkUploadBtn();
 }
 
-/* PPTs */
 (function setupBulkPptDropZone(){
   const dz = document.getElementById("bulkPptDropZone"); if(!dz) return;
   dz.addEventListener("dragover", e => { e.preventDefault(); dz.style.background = "#fbcfe8"; });
@@ -1652,7 +1836,7 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-/* ============ PPT GENERATOR (Professional Logo + Tagline) ============ */
+/* ============ PPT GENERATOR (Logo from KV + Dynamic Area + Site Code) ============ */
 async function generateSelectedSitesPPT(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   const list = sites.filter(s => selectedSites.has(s.id));
@@ -1671,7 +1855,14 @@ async function generateSelectedSitesPPT(){
     pptx.author = COMPANY_NAME;
     pptx.title = uniqueAreas.length === 1 ? "Site Report - " + uniqueAreas[0] : "Site Report - Multiple Areas";
 
-    // COVER SLIDE WITH PROFESSIONAL LOGO + TAGLINE
+    // Try to fetch latest logo from KV
+    let currentLogoUrl = LOGO_URL;
+    try {
+      const logoResult = await apiGet("/logo");
+      if(logoResult && logoResult.success && logoResult.data){ currentLogoUrl = logoResult.data; }
+    } catch(e){}
+
+    // COVER SLIDE
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
@@ -1683,7 +1874,7 @@ async function generateSelectedSitesPPT(){
     });
     try {
       slide.addImage({ 
-        path: LOGO_URL, 
+        path: currentLogoUrl, 
         x: 0.9, y: 0.75, w: 3.6, h: 0.85, 
         sizing: { type: "contain", w: 3.6, h: 0.85 } 
       });
@@ -1696,7 +1887,6 @@ async function generateSelectedSitesPPT(){
       slide.addText("Professional Site Booking & Management", { x: 0.9, y: 1.75, w: 3.6, h: 0.4, fontSize: 9, color: "1E40AF", align: "center", valign: "middle", italic: true });
     }
     
-    // DYNAMIC AREA NAME
     const coverAreaFontSize = areaDisplayName.length > 40 ? 28 : areaDisplayName.length > 25 ? 36 : 48;
     slide.addText(areaDisplayName, { x: 0.7, y: 3.0, w: 12, h: 1.5, fontSize: coverAreaFontSize, bold: true, color: "FFFFFF" });
     
@@ -1719,7 +1909,6 @@ async function generateSelectedSitesPPT(){
       let imgData = null;
       if(x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
       const mapLink = getGoogleMapsUrl(x);
-      
       const siteCode = (x.site || "").split("_")[0].trim() || "";
       
       slide = pptx.addSlide();
@@ -1782,12 +1971,12 @@ async function generateSelectedSitesPPT(){
       slide.addText(COMPANY_NAME + "  •  Page " + (i + 2), { x: 0.5, y: 7.18, w: 12.33, h: 0.28, fontSize: 8, color: "94A3B8", align: "center", valign: "middle" });
     }
 
-    // THANK YOU SLIDE WITH LOGO
+    // THANK YOU SLIDE
     slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
     try {
-      slide.addImage({ path: LOGO_URL, x: 5.4, y: 2.0, w: 2.5, h: 0.9, sizing: { type: "contain", w: 2.5, h: 0.9 } });
+      slide.addImage({ path: currentLogoUrl, x: 5.4, y: 2.0, w: 2.5, h: 0.9, sizing: { type: "contain", w: 2.5, h: 0.9 } });
     } catch(e){}
     slide.addText("THANK YOU", { x: 0, y: 3.3, w: 13.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center", charSpacing: 8 });
     slide.addText("Professional Site Booking & Management", { x: 0, y: 4.5, w: 13.33, h: 0.4, fontSize: 12, color: "BAE6FD", align: "center", italic: true });
@@ -2093,9 +2282,10 @@ async function bulkDeleteSelected(){
   render();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   initDateDropdowns();
   initBulkDateDropdowns();
+  await loadLogoFromCloud();
   checkSession();
 });
 </script>
