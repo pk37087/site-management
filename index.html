@@ -80,6 +80,21 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .filter-box .clear-btn:hover{background:#fef2f2}
 .filter-active-badge{background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;border:1px solid #93c5fd;display:none;align-items:center;gap:3px;white-space:nowrap;height:24px}
 .filter-active-badge.show{display:inline-flex}
+
+/* Multi-status checkbox dropdown */
+.multi-status-wrap{position:relative;height:36px;display:flex}
+.multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;white-space:nowrap;border-radius:6px;min-width:130px}
+.multi-status-btn:hover{background:#eff6ff}
+.multi-status-btn .ms-arrow{font-size:10px;color:#64748b}
+.multi-status-btn .ms-count{background:#3b82f6;color:#fff;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700}
+.multi-status-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,0.15);z-index:100;min-width:220px;padding:6px}
+.multi-status-panel.show{display:block}
+.multi-status-panel label{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
+.multi-status-panel label:hover{background:#f1f5f9}
+.multi-status-panel label input{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6}
+.multi-status-panel .ms-divider{height:1px;background:#e2e8f0;margin:6px 4px}
+.multi-status-panel .ms-all{color:#3b82f6}
+
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:8px 10px;border-radius:8px;margin-bottom:12px;display:none;gap:6px;flex-wrap:wrap;align-items:stretch}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 12px;border-radius:5px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;min-height:36px;min-width:90px}
@@ -196,7 +211,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toast .toast-close{background:transparent;border:0;color:#fff;cursor:pointer;font-size:16px;opacity:0.6;padding:0;flex-shrink:0}
 .toast .toast-close:hover{opacity:1}
 
-/* ============ PPT OPTIONS MODAL ============ */
+/* PPT OPTIONS MODAL */
 .ppt-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
 .ppt-option{background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:14px;cursor:pointer;transition:all 0.2s ease;text-align:center;position:relative}
 .ppt-option:hover{border-color:#93c5fd;background:#eff6ff;transform:translateY(-2px)}
@@ -219,8 +234,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .cards{grid-template-columns:1fr 1fr;gap:10px}
   .card{padding:14px;min-height:90px}
   .card b{font-size:28px}
-  .card .card-label{font-size:9px;margin-bottom:4px}
-  .card .card-icon{font-size:16px;top:10px;right:12px}
   .toolbar{padding:8px;gap:6px}
   .toolbar #search{min-width:100%;flex:1 1 100%}
   .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center;height:36px;min-height:36px}
@@ -230,6 +243,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .filter-box .date-input{flex:1;min-width:90px}
   .filter-box .apply-btn{flex:1;min-width:100%;height:36px;justify-content:center}
   .filter-box .clear-btn{width:100%;border-left:0;border-top:1px solid #cbd5e1;justify-content:center;height:32px}
+  .multi-status-wrap{width:100%;height:36px}
+  .multi-status-btn{width:100%}
+  .multi-status-panel{width:100%}
   .select-bar button{flex:1;min-width:calc(50% - 3px)}
   .site-card{padding:10px;flex-wrap:wrap;position:relative}
   .site-card-img{width:88px;height:88px}
@@ -312,13 +328,24 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div class="toolbar">
   <input id="search" type="text" placeholder="Search sites..." oninput="debouncedRender()">
+
+  <!-- Multi-Status Selection -->
+  <div class="multi-status-wrap" id="multiStatusWrap">
+    <button type="button" class="multi-status-btn" onclick="toggleMultiStatusPanel(event)">
+      <span id="multiStatusLabel">Status: All</span>
+      <span class="ms-count" id="multiStatusCount" style="display:none">0</span>
+      <span class="ms-arrow">▼</span>
+    </button>
+    <div class="multi-status-panel" id="multiStatusPanel">
+      <label class="ms-all"><input type="checkbox" id="msAll" onchange="toggleAllStatuses(this.checked)"> Select All Statuses</label>
+      <div class="ms-divider"></div>
+      <label><input type="checkbox" class="ms-cb" value="Available" onchange="onStatusCheckChange()"> ✅ Available</label>
+      <label><input type="checkbox" class="ms-cb" value="Not Available" onchange="onStatusCheckChange()"> ❌ Not Available</label>
+      <label><input type="checkbox" class="ms-cb" value="Under Maintenance" onchange="onStatusCheckChange()"> ⚠️ Under Maintenance</label>
+    </div>
+  </div>
+
   <div class="filter-box">
-    <select id="filter" onchange="onFilterChange()">
-      <option value="ALL">All Status</option>
-      <option>Available</option>
-      <option>Not Available</option>
-      <option>Under Maintenance</option>
-    </select>
     <div class="date-group">
       <input type="text" class="date-input" id="dateFilterFrom" placeholder="dd/mm/yyyy" maxlength="10" 
              oninput="handleDateInput(this,'from')" 
@@ -357,20 +384,20 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div id="progressSub" style="font-size:13px;opacity:0.7">Please wait</div>
 </div>
 
-<!-- ============ PPT FORMAT OPTIONS MODAL ============ -->
+<!-- PPT FORMAT OPTIONS MODAL -->
 <div class="modal" id="pptFormatModal"><div class="box" style="width:min(750px,100%)">
 <h2>📊 PPT Image Style</h2>
-<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Site image kaise dikhe PPT me — apni pasand ka style choose karo. Yeh setting yaad rakh lega.</p>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Site image kaise dikhe PPT me — style choose karo. Actual image size preserve hoga, koi stretch nahi.</p>
 
 <div class="ppt-options">
   <!-- Option 1: Split View -->
   <div class="ppt-option" id="pptOpt1" onclick="selectPPTOption('split')">
     <div class="ppt-preview">
       <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
-        <rect x="5" y="5" width="90" height="80" fill="#1e40af" rx="3"/>
-        <text x="50" y="50" fill="white" font-size="11" text-anchor="middle" font-weight="bold">IMAGE</text>
+        <rect x="5" y="5" width="95" height="80" fill="#1e40af" rx="3"/>
+        <text x="52" y="50" fill="white" font-size="11" text-anchor="middle" font-weight="bold">IMAGE</text>
         <rect x="105" y="5" width="90" height="80" fill="#f1f5f9" rx="3"/>
-        <text x="150" y="25" fill="#1e40af" font-size="8" text-anchor="middle" font-weight="bold">SITE NAME</text>
+        <text x="150" y="25" fill="#1e40af" font-size="8" text-anchor="middle" font-weight="bold">SITE DETAILS</text>
         <line x1="115" y1="35" x2="185" y2="35" stroke="#cbd5e1" stroke-width="1"/>
         <text x="150" y="48" fill="#334155" font-size="7" text-anchor="middle">Area / Company</text>
         <text x="150" y="60" fill="#059669" font-size="7" text-anchor="middle">₹ Rate</text>
@@ -386,7 +413,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <div class="ppt-preview">
       <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
         <rect x="5" y="5" width="190" height="60" fill="#0f172a" rx="3"/>
-        <text x="100" y="40" fill="white" font-size="12" text-anchor="middle" font-weight="bold">IMAGE (Full Crop)</text>
+        <text x="100" y="40" fill="white" font-size="12" text-anchor="middle" font-weight="bold">IMAGE (Full)</text>
         <rect x="5" y="68" width="190" height="17" fill="#f1f5f9" rx="3"/>
         <text x="50" y="79" fill="#1e40af" font-size="7" text-anchor="middle">Area</text>
         <text x="100" y="79" fill="#059669" font-size="7" text-anchor="middle">Company</text>
@@ -394,20 +421,14 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
       </svg>
     </div>
     <div class="ppt-title">Full Cover</div>
-    <div class="ppt-desc">Full image fills, no bars</div>
+    <div class="ppt-desc">Full image fills box</div>
   </div>
 
   <!-- Option 3: Blur Background -->
   <div class="ppt-option" id="pptOpt3" onclick="selectPPTOption('blur')">
     <div class="ppt-preview">
       <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <linearGradient id="blurGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#334155"/>
-            <stop offset="50%" stop-color="#475569"/>
-            <stop offset="100%" stop-color="#334155"/>
-          </linearGradient>
-        </defs>
+        <defs><linearGradient id="blurGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#334155"/><stop offset="50%" stop-color="#475569"/><stop offset="100%" stop-color="#334155"/></linearGradient></defs>
         <rect x="5" y="5" width="190" height="60" fill="url(#blurGrad)" rx="3"/>
         <rect x="55" y="8" width="90" height="54" fill="#1e40af" rx="3"/>
         <text x="100" y="40" fill="white" font-size="10" text-anchor="middle" font-weight="bold">IMAGE</text>
@@ -433,9 +454,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
 </div>
 
-<div id="pptFormatNote" style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:10px;border-radius:8px;font-size:12px;margin-bottom:12px">
-  💡 <b>Recommended:</b> Split View — best professional look with all info visible side-by-side.
-</div>
+<div id="pptFormatNote" style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:10px;border-radius:8px;font-size:12px;margin-bottom:12px"></div>
 
 <div class="modal-actions">
   <button class="secondary" onclick="closePPTFormatModal()">Cancel</button>
@@ -505,60 +524,30 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <button class="bulk-tab" onclick="switchBulkTab('logo')" id="tabLogo">🎨 Logo Settings</button>
 </div>
 <div class="bulk-tab-content active" id="tabContentSites">
-  <div class="bulk-info">
-    <b>CSV Format:</b> <code>area, site, location, company, rate, status, from, to</code>
-  </div>
+  <div class="bulk-info"><b>CSV Format:</b> <code>area, site, location, company, rate, status, from, to</code></div>
   <button class="secondary" onclick="downloadSampleCSV()" style="margin-bottom:12px;padding:11px 16px;border-radius:8px;font-weight:600;border:1px solid #e2e8f0;background:#fff;color:#334155;cursor:pointer;width:100%;min-height:44px">Download Sample CSV</button>
-  <div class="drop-zone" id="dropZone" onclick="document.getElementById('bulkFile').click()">
-    <div class="dz-icon">📁</div>
-    <div style="font-size:15px;font-weight:700">Click or drag CSV here</div>
-  </div>
+  <div class="drop-zone" id="dropZone" onclick="document.getElementById('bulkFile').click()"><div class="dz-icon">📁</div><div style="font-size:15px;font-weight:700">Click or drag CSV here</div></div>
   <input type="file" id="bulkFile" accept=".csv" style="display:none" onchange="handleBulkFile(event)">
-  <div id="bulkPreviewWrap" style="display:none">
-    <div class="bulk-summary" id="bulkSummary"></div>
-    <div class="bulk-preview" id="bulkPreview"></div>
-  </div>
+  <div id="bulkPreviewWrap" style="display:none"><div class="bulk-summary" id="bulkSummary"></div><div class="bulk-preview" id="bulkPreview"></div></div>
 </div>
 <div class="bulk-tab-content" id="tabContentImages">
-  <div class="bulk-info" style="font-size:11px">File ka naam <b>site ke naam ya code</b> se match hona chahiye.<br>Example: <code>CG01.jpg</code> → Site Code CG01<br><b>Limit:</b> 400 images tak</div>
-  <div class="drop-zone" id="bulkImageDropZone" onclick="document.getElementById('bulkImageFiles').click()" style="border-color:#bfdbfe;background:#eff6ff">
-    <div class="dz-icon">🖼️</div>
-    <div style="font-size:14px;font-weight:700">Click or drag images here</div>
-  </div>
+  <div class="bulk-info" style="font-size:11px">File ka naam <b>site ke naam ya code</b> se match hona chahiye.<br>Example: <code>CG01.jpg</code> → Site Code CG01</div>
+  <div class="drop-zone" id="bulkImageDropZone" onclick="document.getElementById('bulkImageFiles').click()" style="border-color:#bfdbfe;background:#eff6ff"><div class="dz-icon">🖼️</div><div style="font-size:14px;font-weight:700">Click or drag images here</div></div>
   <input type="file" id="bulkImageFiles" accept="image/*" multiple style="display:none" onchange="handleBulkImageFiles(event)">
-  <div id="bulkImagePreviewWrap" style="display:none">
-    <div class="bulk-summary" id="bulkImageSummary"></div>
-    <div class="bulk-preview" id="bulkImagePreview" style="max-height:220px"></div>
-  </div>
+  <div id="bulkImagePreviewWrap" style="display:none"><div class="bulk-summary" id="bulkImageSummary"></div><div class="bulk-preview" id="bulkImagePreview" style="max-height:220px"></div></div>
 </div>
 <div class="bulk-tab-content" id="tabContentPpts">
   <div class="bulk-info" style="font-size:11px">PPT file ka naam <b>area ke naam</b> se match hona chahiye.<br>Example: <code>Chandigarh.pptx</code></div>
-  <div class="drop-zone" id="bulkPptDropZone" onclick="document.getElementById('bulkPptFiles').click()" style="border-color:#f9a8d4;background:#fdf2f8">
-    <div class="dz-icon">📊</div>
-    <div style="font-size:14px;font-weight:700">Click or drag PPT files here</div>
-  </div>
+  <div class="drop-zone" id="bulkPptDropZone" onclick="document.getElementById('bulkPptFiles').click()" style="border-color:#f9a8d4;background:#fdf2f8"><div class="dz-icon">📊</div><div style="font-size:14px;font-weight:700">Click or drag PPT files here</div></div>
   <input type="file" id="bulkPptFiles" accept=".ppt,.pptx" multiple style="display:none" onchange="handleBulkPptFiles(event)">
-  <div id="bulkPptPreviewWrap" style="display:none">
-    <div class="bulk-summary" id="bulkPptSummary"></div>
-    <div class="bulk-preview" id="bulkPptPreview" style="max-height:260px"></div>
-  </div>
+  <div id="bulkPptPreviewWrap" style="display:none"><div class="bulk-summary" id="bulkPptSummary"></div><div class="bulk-preview" id="bulkPptPreview" style="max-height:260px"></div></div>
 </div>
 <div class="bulk-tab-content" id="tabContentLogo">
   <div class="bulk-info" style="font-size:12px"><b>Logo Change Karein</b><br>Login page, PPT cover, Thank You slide par dikhega<br><b>Recommended:</b> 800x300px PNG</div>
-  <div style="text-align:center;margin-bottom:16px;padding:16px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0">
-    <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Current Logo</div>
-    <img id="currentLogoPreview" src="" alt="Current Logo" style="max-width:300px;max-height:100px;border-radius:8px;background:#fff;padding:8px;border:1px solid #e2e8f0" />
-  </div>
-  <div class="drop-zone" id="logoDropZone" onclick="document.getElementById('logoFile').click()" style="border-color:#fde68a;background:#fffbeb">
-    <div class="dz-icon">🎨</div>
-    <div style="font-size:14px;font-weight:700">Click to upload new logo</div>
-    <div style="font-size:11px;color:#64748b">PNG, JPG, SVG — Max 2 MB</div>
-  </div>
+  <div style="text-align:center;margin-bottom:16px;padding:16px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0"><div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Current Logo</div><img id="currentLogoPreview" src="" alt="Current Logo" style="max-width:300px;max-height:100px;border-radius:8px;background:#fff;padding:8px;border:1px solid #e2e8f0" /></div>
+  <div class="drop-zone" id="logoDropZone" onclick="document.getElementById('logoFile').click()" style="border-color:#fde68a;background:#fffbeb"><div class="dz-icon">🎨</div><div style="font-size:14px;font-weight:700">Click to upload new logo</div></div>
   <input type="file" id="logoFile" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
-  <div id="newLogoPreviewWrap" style="display:none;text-align:center;margin-top:12px">
-    <div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">New Logo (Preview)</div>
-    <img id="newLogoPreview" src="" alt="New Logo" style="max-width:300px;max-height:100px;border-radius:8px;background:#fff;padding:8px;border:2px solid #059669" />
-  </div>
+  <div id="newLogoPreviewWrap" style="display:none;text-align:center;margin-top:12px"><div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">New Logo (Preview)</div><img id="newLogoPreview" src="" alt="New Logo" style="max-width:300px;max-height:100px;border-radius:8px;background:#fff;padding:8px;border:2px solid #059669" /></div>
   <div id="logoUploadActions" style="display:none;margin-top:16px;gap:10px;flex-wrap:wrap">
     <button onclick="saveNewLogo()" style="flex:1;background:#059669;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;border:0;cursor:pointer;min-height:44px">✓ Save & Apply Logo</button>
     <button onclick="cancelLogoUpload()" style="background:#fff;color:#334155;border:1px solid #cbd5e1;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;min-height:44px">Cancel</button>
@@ -590,17 +579,10 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </label>
 <label class="full-width">Site Image (optional)
   <div class="image-upload-box" id="imageUploadBox" onclick="document.getElementById('fimage').click()">
-    <div class="iu-icon">📷</div>
-    <div class="iu-title">Click to upload image</div>
-    <div class="iu-sub">JPG, PNG - Max 8 MB</div>
+    <div class="iu-icon">📷</div><div class="iu-title">Click to upload image</div><div class="iu-sub">JPG, PNG - Max 8 MB</div>
   </div>
   <input type="file" id="fimage" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
-  <div id="imagePreviewWrap" style="display:none;text-align:center">
-    <div class="image-preview-wrap">
-      <img id="imagePreview" src="" alt="preview">
-      <button type="button" class="remove-img" onclick="removeImage()">×</button>
-    </div>
-  </div>
+  <div id="imagePreviewWrap" style="display:none;text-align:center"><div class="image-preview-wrap"><img id="imagePreview" src="" alt="preview"><button type="button" class="remove-img" onclick="removeImage()">×</button></div></div>
 </label>
 <label>Company<div><input id="fcustomer"></div></label>
 <label>Monthly Rate (₹)<div><input id="frate" type="number" min="0"></div></label>
@@ -678,6 +660,7 @@ const MAX_PPT_SIZE = 100 * 1024 * 1024;
 const COMPANY_NAME = "DS Outdoor Media";
 const COMPANY_TAGLINE = "Professional Site Booking & Management";
 const MAX_FILTER_YEAR = 2050;
+const ALL_STATUSES = ["Available", "Not Available", "Under Maintenance"];
 let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 let newLogoData = "";
 
@@ -707,12 +690,50 @@ let dateFilterTo = "";
 let renderDebounceTimer = null;
 let lastKnownStatuses = {};
 
-// ✅ PPT format preference (saved in localStorage)
-let pptFormat = "split"; // "split", "cover", "blur", "contain"
+// ✅ Multi-status selection (empty = all statuses)
+let activeStatuses = new Set();
 
+let pptFormat = "split"; // "split", "cover", "blur", "contain"
 let telegramConfig = { botToken: "", chatId: "", enabled: false, onlyNotAvailMaint: true };
 
-/* ============ PPT FORMAT MODAL ============ */
+/* ============ MULTI STATUS SELECTION ============ */
+function toggleMultiStatusPanel(e){
+  if(e) e.stopPropagation();
+  const panel = document.getElementById("multiStatusPanel");
+  panel.classList.toggle("show");
+}
+document.addEventListener("click", (e) => {
+  const wrap = document.getElementById("multiStatusWrap");
+  if(wrap && !wrap.contains(e.target)){
+    document.getElementById("multiStatusPanel").classList.remove("show");
+  }
+});
+function toggleAllStatuses(checked){
+  document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = checked; });
+  onStatusCheckChange();
+}
+function onStatusCheckChange(){
+  activeStatuses.clear();
+  document.querySelectorAll(".ms-cb:checked").forEach(cb => activeStatuses.add(cb.value));
+  const allCb = document.getElementById("msAll");
+  if(allCb) allCb.checked = activeStatuses.size === ALL_STATUSES.length;
+  updateMultiStatusLabel();
+  render();
+  updateFilterBadge();
+}
+function updateMultiStatusLabel(){
+  const label = document.getElementById("multiStatusLabel");
+  const countBadge = document.getElementById("multiStatusCount");
+  if(activeStatuses.size === 0){ label.textContent = "Status: All"; countBadge.style.display = "none"; }
+  else if(activeStatuses.size === 1){ label.textContent = "Status: " + Array.from(activeStatuses)[0]; countBadge.style.display = "none"; }
+  else { label.textContent = "Status:"; countBadge.textContent = activeStatuses.size; countBadge.style.display = "inline-block"; }
+}
+function statusMatchesFilter(status){
+  if(activeStatuses.size === 0) return true; // All
+  return activeStatuses.has(status);
+}
+
+/* ============ PPT FORMAT ============ */
 function loadPPTFormat(){
   try {
     const saved = localStorage.getItem("sms_ppt_format");
@@ -720,9 +741,7 @@ function loadPPTFormat(){
   } catch(e){}
   updatePPTFormatUI();
 }
-function savePPTFormat(){
-  localStorage.setItem("sms_ppt_format", pptFormat);
-}
+function savePPTFormat(){ localStorage.setItem("sms_ppt_format", pptFormat); }
 function updatePPTFormatUI(){
   ["pptOpt1","pptOpt2","pptOpt3","pptOpt4"].forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove("selected"); });
   const map = { split: "pptOpt1", cover: "pptOpt2", blur: "pptOpt3", contain: "pptOpt4" };
@@ -730,7 +749,7 @@ function updatePPTFormatUI(){
   const note = document.getElementById("pptFormatNote");
   if(note){
     const notes = {
-      split: "💡 <b>Split View:</b> Image left me, details right side me. Best for detailed info.",
+      split: "💡 <b>Split View:</b> Image left me (actual size preserve), details right side me. Best professional look.",
       cover: "💡 <b>Full Cover:</b> Image pura box fill karegi (crop hoke). Modern look.",
       blur: "💡 <b>Blur Background:</b> Puri image center + blurred background. Premium look.",
       contain: "💡 <b>Contain:</b> Puri image dikhegi, dark borders ke saath. Safe option."
@@ -738,11 +757,7 @@ function updatePPTFormatUI(){
     note.innerHTML = notes[pptFormat] || "";
   }
 }
-function selectPPTOption(opt){
-  pptFormat = opt;
-  savePPTFormat();
-  updatePPTFormatUI();
-}
+function selectPPTOption(opt){ pptFormat = opt; savePPTFormat(); updatePPTFormatUI(); }
 function openPPTFormatModal(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   updatePPTFormatUI();
@@ -1020,6 +1035,7 @@ async function showApp(){
   populateAreaDropdowns();
   await loadLogoFromCloud();
   await autoReleaseExpiredSites();
+  updateMultiStatusLabel();
   render();
   startAutoRefresh();
 }
@@ -1073,18 +1089,36 @@ function hideProgress(){ document.getElementById("progressOverlay").classList.re
 /* ============ FILTER ============ */
 function onFilterChange(){ areaFilters = {}; render(); updateFilterBadge(); }
 function filterByCard(status){
-  document.getElementById("filter").value = status;
-  document.getElementById("search").value = ""; 
+  // Clicking a card toggles that single status in multi-select
+  if(status === "ALL"){
+    activeStatuses.clear();
+    document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
+    document.getElementById("msAll").checked = false;
+  } else {
+    if(activeStatuses.has(status)){
+      activeStatuses.delete(status);
+    } else {
+      activeStatuses.add(status);
+    }
+    document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = activeStatuses.has(cb.value); });
+    document.getElementById("msAll").checked = activeStatuses.size === ALL_STATUSES.length;
+  }
+  document.getElementById("search").value = "";
+  updateMultiStatusLabel();
   areaFilters = {};
   render(); syncCardHighlight(); updateFilterBadge();
 }
 function syncCardHighlight(){
-  const f = document.getElementById("filter").value;
   const hasDate = document.getElementById("dateFilterFrom").value || document.getElementById("dateFilterTo").value;
-  const map = { "ALL":"cardTotal","Available":"cardAvailable","Not Available":"cardNotAvailable","Under Maintenance":"cardMaintenance" };
   document.querySelectorAll(".card").forEach(c => c.classList.remove("active-filter"));
-  const el = document.getElementById(map[f]); 
-  if(el && !hasDate) el.classList.add("active-filter");
+  if(hasDate) return;
+  if(activeStatuses.size === 1){
+    const status = Array.from(activeStatuses)[0];
+    const map = { "Available":"cardAvailable","Not Available":"cardNotAvailable","Under Maintenance":"cardMaintenance" };
+    const el = document.getElementById(map[status]); if(el) el.classList.add("active-filter");
+  } else if(activeStatuses.size === 0){
+    document.getElementById("cardTotal").classList.add("active-filter");
+  }
 }
 function populateAreaDropdowns(){
   const formSel = document.getElementById("farea"); if(!formSel) return;
@@ -1142,53 +1176,33 @@ function applyFilters(){
   areaFilters = {};
   render();
   updateFilterBadge();
-  // ✅ Auto-select only sites matching current filter (status + date)
-  autoSelectFilteredSites();
-}
-function autoSelectFilteredSites(){
-  const fromInput = document.getElementById("dateFilterFrom").value.trim();
-  const toInput = document.getElementById("dateFilterTo").value.trim();
-  const q = (document.getElementById("search").value || "").toLowerCase().trim();
-  const f = document.getElementById("filter").value;
-  // Only auto-select if there's at least a date filter
-  const hasDateFilter = fromInput || toInput;
-  if(!hasDateFilter && !q) return;
-  let count = 0;
-  sites.forEach(s => {
-    // ✅ Apply status filter (from "All Status" dropdown)
-    if(f !== "ALL" && s.status !== f) return;
-    // ✅ Apply date filter
-    if(!siteMatchesDateFilter(s)) return;
-    // ✅ Apply search
-    const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
-    if(q && !hay.includes(q)) return;
-    if(!selectedSites.has(s.id)){ selectedSites.add(s.id); count++; }
-  });
-  if(count > 0){ updateSelectBar(); showToast("Auto-selected", count + " site(s) select ho gayi", "success"); }
+  // ✅ NO auto-select on date filter
 }
 function clearAllFilters(){
-  document.getElementById("filter").value = "ALL";
+  activeStatuses.clear();
+  document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
+  const allCb = document.getElementById("msAll"); if(allCb) allCb.checked = false;
   document.getElementById("search").value = "";
   document.getElementById("dateFilterFrom").value = "";
   document.getElementById("dateFilterTo").value = "";
   document.getElementById("dateFilterFrom").dataset.lastLength = "0";
   document.getElementById("dateFilterTo").dataset.lastLength = "0";
   dateFilterFrom = ""; dateFilterTo = ""; areaFilters = {};
+  updateMultiStatusLabel();
   render(); syncCardHighlight(); updateFilterBadge();
 }
 function clearDateFilter(){ clearAllFilters(); }
 function updateFilterBadge(){
   const badge = document.getElementById("filterBadge");
   const clearBtn = document.getElementById("clearFilterBtn");
-  const f = document.getElementById("filter").value;
   const from = document.getElementById("dateFilterFrom").value.trim();
   const to = document.getElementById("dateFilterTo").value.trim();
   const q = document.getElementById("search").value.trim();
   const parts = [];
-  if(f !== "ALL") parts.push("Status: " + f);
+  if(activeStatuses.size > 0) parts.push("Status: " + Array.from(activeStatuses).join(", "));
   if(from || to) parts.push("Date: " + (from || "—") + " → " + (to || "—"));
   if(q) parts.push("Search: " + q);
-  if(f !== "ALL" || from || to){ clearBtn.classList.add("show"); } else { clearBtn.classList.remove("show"); }
+  if(activeStatuses.size > 0 || from || to){ clearBtn.classList.add("show"); } else { clearBtn.classList.remove("show"); }
   if(parts.length > 0){ badge.textContent = "🔎 " + parts.join(" | "); badge.classList.add("show"); }
   else { badge.classList.remove("show"); }
 }
@@ -1209,7 +1223,6 @@ function siteMatchesDateFilter(site){
   if(toInput && !filterTo) return true;
   const siteFrom = site.fromDate ? ddmmyyyyToISO(site.fromDate) : "";
   const siteTo = site.toDate ? ddmmyyyyToISO(site.toDate) : "";
-  // Available sites with no date range → always included in date filter
   if(!siteFrom && !siteTo) return true;
   if(filterFrom && filterTo){
     if(siteFrom && siteTo){ if(siteFrom > filterTo) return false; if(siteTo < filterFrom) return false; return true; }
@@ -1265,11 +1278,7 @@ async function refreshPage(e){
   if(btn){ btn.disabled = true; btn.textContent = "Refreshing..."; }
   try {
     imageFailed.clear(); imageCache = {}; pptCache = {}; selectedSites.clear();
-    document.getElementById("filter").value = "ALL";
-    document.getElementById("search").value = "";
-    document.getElementById("dateFilterFrom").value = "";
-    document.getElementById("dateFilterTo").value = "";
-    dateFilterFrom = ""; dateFilterTo = ""; areaFilters = {};
+    clearAllFilters();
     await loadCloudData(); await refreshPptCache(); await loadLogoFromCloud();
     collapsedAreas = new Set(areas);
     render(); updateFilterBadge();
@@ -1764,10 +1773,9 @@ async function render(){
   dateFilterFrom = ddmmyyyyToISOForFilter(document.getElementById("dateFilterFrom").value.trim());
   dateFilterTo = ddmmyyyyToISOForFilter(document.getElementById("dateFilterTo").value.trim());
   const q = (document.getElementById("search").value || "").toLowerCase().trim();
-  const f = document.getElementById("filter").value;
   updateCardsWithFilteredCounts();
   if(collapsedAreas === null) collapsedAreas = new Set(areas);
-  const isFiltering = (f !== "ALL") || (q && q.length > 0) || dateFilterFrom || dateFilterTo;
+  const isFiltering = (activeStatuses.size > 0) || (q && q.length > 0) || dateFilterFrom || dateFilterTo;
   if(isFiltering) collapsedAreas.clear();
   const container = document.getElementById("areaContainer");
   container.innerHTML = "";
@@ -1781,7 +1789,8 @@ async function render(){
     const areaSites = sites.filter(s => {
       const sArea = s.area || "Unassigned";
       if(sArea !== areaName) return false;
-      if(f !== "ALL" && s.status !== f) return false;
+      // ✅ Multi-status filter
+      if(!statusMatchesFilter(s.status)) return false;
       if(areaFilter !== "ALL" && s.status !== areaFilter) return false;
       if(!siteMatchesDateFilter(s)) return false;
       const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
@@ -2083,7 +2092,16 @@ function getGoogleMapsUrl(site){
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
 /* ============ IMAGE PROCESSING FOR PPT ============ */
-// Crop to exact ratio (like object-fit: cover)
+// Get image aspect ratio
+function getImageRatio(dataUrl){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(img.width / img.height);
+    img.onerror = () => resolve(1);
+    img.src = dataUrl;
+  });
+}
+// Crop image to exact ratio (like object-fit: cover)
 function cropImageToRatio(dataUrl, targetRatio){
   return new Promise((resolve) => {
     const img = new Image();
@@ -2097,7 +2115,7 @@ function cropImageToRatio(dataUrl, targetRatio){
       const canvas = document.createElement("canvas"); canvas.width = outW; canvas.height = outH;
       const ctx = canvas.getContext("2d"); ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, sx, sy, sw, sh, 0, 0, outW, outH);
-      let quality = 0.85; let result = canvas.toDataURL("image/jpeg", quality); let attempts = 0;
+      let quality = 0.88; let result = canvas.toDataURL("image/jpeg", quality); let attempts = 0;
       while(result.length > 900 * 1024 && quality > 0.55 && attempts < 8){ quality -= 0.05; result = canvas.toDataURL("image/jpeg", quality); attempts++; }
       resolve(result);
     };
@@ -2134,7 +2152,7 @@ function makeBlurBG(dataUrl, boxRatio){
   });
 }
 
-/* ============ ✅ PPT GENERATOR (4 STYLES SUPPORTED) ============ */
+/* ============ ✅ PPT GENERATOR (ACTUAL SIZE PRESERVE) ============ */
 async function generateSelectedSitesPPT(){
   closePPTFormatModal();
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
@@ -2163,7 +2181,7 @@ async function generateSelectedSitesPPT(){
       slide.addText("Professional Site Booking & Management", { x: 0.9, y: 1.75, w: 3.6, h: 0.4, fontSize: 9, color: "1E40AF", align: "center", valign: "middle", italic: true, bold: true });
     } catch(e) {
       slide.addText(COMPANY_NAME, { x: 0.9, y: 0.75, w: 3.6, h: 0.85, fontSize: 16, bold: true, color: "1E40AF", align: "center", valign: "middle" });
-      slide.addText("Professional Site Booking & Management", { x: 0.9, y: 1.75, w: 3.6, h: 0.4, fontSize: 9, color: "1E40AF", align: "center", valign: "middle", italic: true });
+      slide.addText("Professional Site Booking & Management", { x: 0.9, y: 1.75, w: 3.6, h: 0.4, fontSize: 9, color: "1E40AF", align: "center", italic: true });
     }
     const coverAreaFontSize = areaDisplayName.length > 40 ? 28 : areaDisplayName.length > 25 ? 36 : 48;
     slide.addText(areaDisplayName, { x: 0.7, y: 3.0, w: 12, h: 1.5, fontSize: coverAreaFontSize, bold: true, color: "FFFFFF" });
@@ -2201,33 +2219,59 @@ async function generateSelectedSitesPPT(){
       slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
-      // ===== ✅ LAYOUT-SPECIFIC RENDERING =====
+      // ===== LAYOUT: SPLIT VIEW (DEFAULT) =====
       if(pptFormat === "split"){
-        // ===== SPLIT VIEW: Image left, details right =====
         const boxY = 0.65, boxH = 6.6;
-        // Left panel - image (crop to fill)
         const leftW = 6.6, leftX = 0;
         slide.addShape(pptx.ShapeType.rect, { x: leftX, y: boxY, w: leftW, h: boxH, fill: { color: "0F172A" } });
+        
         let imageAdded = false;
         if(imgData){
           try {
-            const imgRatio = await new Promise(resolve => { const im = new Image(); im.onload = () => resolve(im.width / im.height); im.onerror = () => resolve(1); im.src = imgData; });
-            const targetRatio = leftW / boxH;
-            const cropped = await cropImageToRatio(imgData, targetRatio);
-            if(cropped){ slide.addImage({ data: cropped, x: leftX, y: boxY, w: leftW, h: boxH }); imageAdded = true; }
+            // ✅ ACTUAL SIZE: Fit image by its natural aspect ratio (contain) inside left panel
+            const imgRatio = await getImageRatio(imgData);
+            const panelRatio = leftW / boxH;
+            let drawW, drawH, drawX, drawY;
+            
+            if(imgRatio > panelRatio){
+              // Image wider → fit by width, letterbox top/bottom (dark bg fills)
+              drawW = leftW;
+              drawH = leftW / imgRatio;
+              drawX = leftX;
+              drawY = boxY + (boxH - drawH) / 2;
+            } else {
+              // Image taller → fit by height, letterbox left/right
+              drawH = boxH;
+              drawW = boxH * imgRatio;
+              drawX = leftX + (leftW - drawW) / 2;
+              drawY = boxY;
+            }
+            
+            // ✅ Add a slightly lighter inner frame for letterbox areas
+            if(imgRatio > panelRatio){
+              slide.addShape(pptx.ShapeType.rect, { x: leftX, y: boxY, w: leftW, h: (boxH - drawH) / 2, fill: { color: "1E293B" } });
+              slide.addShape(pptx.ShapeType.rect, { x: leftX, y: drawY + drawH, w: leftW, h: (boxH - drawH) / 2, fill: { color: "1E293B" } });
+            } else {
+              slide.addShape(pptx.ShapeType.rect, { x: leftX, y: boxY, w: (leftW - drawW) / 2, h: boxH, fill: { color: "1E293B" } });
+              slide.addShape(pptx.ShapeType.rect, { x: drawX + drawW, y: boxY, w: (leftW - drawW) / 2, h: boxH, fill: { color: "1E293B" } });
+            }
+            
+            // Add image at actual aspect ratio (no stretch, no crop)
+            slide.addImage({ data: imgData, x: drawX, y: drawY, w: drawW, h: drawH });
+            imageAdded = true;
           } catch(e){ console.warn(e); }
         }
         if(!imageAdded){
           slide.addShape(pptx.ShapeType.roundRect, { x: leftX + 1.5, y: boxY + boxH/2 - 0.7, w: 3.6, h: 1.4, fill: { color: "1E293B" }, line: { color: "334155", width: 1.5, dashType: "dash" }, rectRadius: 0.1 });
           slide.addText("📷", { x: leftX + 1.5, y: boxY + boxH/2 - 0.6, w: 3.6, h: 0.6, fontSize: 36, align: "center", valign: "middle" });
-          slide.addText("No Image", { x: leftX + 1.5, y: boxY + boxH/2, w: 3.6, h: 0.3, fontSize: 12, color: "94A3B8", align: "center", valign: "middle", italic: true });
+          slide.addText("No Image", { x: leftX + 1.5, y: boxY + boxH/2, w: 3.6, h: 0.3, fontSize: 12, color: "94A3B8", align: "center", italic: true });
         }
 
         // Right panel - details
         const rightX = leftW, rightW = 13.33 - leftW;
         slide.addShape(pptx.ShapeType.rect, { x: rightX, y: boxY, w: rightW, h: boxH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 1 } });
         
-        // Site name header
+        // Header
         slide.addShape(pptx.ShapeType.rect, { x: rightX, y: boxY, w: rightW, h: 0.9, fill: { color: "1E40AF" } });
         slide.addText("SITE DETAILS", { x: rightX + 0.3, y: boxY + 0.15, w: rightW - 0.6, h: 0.25, fontSize: 9, bold: true, color: "93C5FD", letterSpacing: 2 });
         slide.addText(x.site.substring(0, 40), { x: rightX + 0.3, y: boxY + 0.4, w: rightW - 0.6, h: 0.45, fontSize: 15, bold: true, color: "FFFFFF", valign: "middle" });
@@ -2239,7 +2283,7 @@ async function generateSelectedSitesPPT(){
           { icon: "📍", label: "AREA", value: x.area || "Unassigned", color: "1E40AF" },
           { icon: "🏢", label: "COMPANY", value: x.customer || "—", color: "059669" },
           { icon: "💰", label: "MONTHLY RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", color: "D97706" },
-          { icon: "📅", label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + "\n→ " + (x.toDate || "—") + (days > 0 ? " (" + days + " days)" : "") : "—", color: "7C3AED" },
+          { icon: "📅", label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " → " + (x.toDate || "—") + (days > 0 ? " (" + days + " days)" : "") : "—", color: "7C3AED" },
           { icon: "🗺️", label: "LOCATION", value: x.location || "—", color: "0891B2" }
         ];
         details.forEach((d, di) => {
@@ -2250,7 +2294,6 @@ async function generateSelectedSitesPPT(){
           slide.addText(String(d.value), { x: rightX + 0.6, y: dy + 0.32, w: rightW - 0.75, h: detailH - 0.4, fontSize: 11, bold: true, color: d.color, valign: "top" });
         });
 
-        // Map button at bottom
         if(mapLink){
           const mapY = boxY + boxH - 0.55;
           slide.addShape(pptx.ShapeType.roundRect, { x: rightX + 0.3, y: mapY, w: rightW - 0.6, h: 0.42, fill: { color: "0891B2" }, rectRadius: 0.08 });
@@ -2258,7 +2301,6 @@ async function generateSelectedSitesPPT(){
         }
 
       } else if(pptFormat === "cover"){
-        // ===== FULL COVER: Image fills entire box, crop =====
         const imgBoxY = 0.65, imgBoxH = 5.4;
         const boxRatio = 13.33 / imgBoxH;
         let imageAdded = false;
@@ -2272,7 +2314,6 @@ async function generateSelectedSitesPPT(){
           slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "0F172A" } });
           slide.addText("📷 No Image", { x: 0, y: imgBoxY + imgBoxH/2 - 0.3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
         }
-        // Info bar
         const infoY = 6.15, infoH = 1.25;
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
         const colW = 13.33 / 4;
@@ -2293,7 +2334,6 @@ async function generateSelectedSitesPPT(){
         }
 
       } else if(pptFormat === "blur"){
-        // ===== BLUR BACKGROUND: contain + blur =====
         const imgBoxY = 0.65, imgBoxH = 5.4;
         const boxRatio = 13.33 / imgBoxH;
         let imageAdded = false;
@@ -2301,7 +2341,7 @@ async function generateSelectedSitesPPT(){
           try {
             const blurBG = await makeBlurBG(imgData, boxRatio);
             if(blurBG) slide.addImage({ data: blurBG, x: 0, y: imgBoxY, w: 13.33, h: imgBoxH });
-            const imgRatio = await new Promise(resolve => { const im = new Image(); im.onload = () => resolve(im.width / im.height); im.onerror = () => resolve(1); im.src = imgData; });
+            const imgRatio = await getImageRatio(imgData);
             let mDrawW, mDrawH, mDrawX, mDrawY;
             if(imgRatio > boxRatio){ mDrawW = 13.33; mDrawH = 13.33 / imgRatio; mDrawX = 0; mDrawY = imgBoxY + (imgBoxH - mDrawH) / 2; }
             else { mDrawH = imgBoxH; mDrawW = imgBoxH * imgRatio; mDrawX = (13.33 - mDrawW) / 2; mDrawY = imgBoxY; }
@@ -2333,7 +2373,6 @@ async function generateSelectedSitesPPT(){
         }
 
       } else {
-        // ===== CONTAIN (Default): fit with dark bg =====
         const imgBoxY = 0.65, imgBoxH = 5.4;
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "0F172A" } });
         let imageAdded = false;
