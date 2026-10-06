@@ -195,6 +195,18 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toast .toast-msg{font-size:12px;opacity:0.85;word-break:break-word}
 .toast .toast-close{background:transparent;border:0;color:#fff;cursor:pointer;font-size:16px;opacity:0.6;padding:0;flex-shrink:0}
 .toast .toast-close:hover{opacity:1}
+
+/* ============ PPT OPTIONS MODAL ============ */
+.ppt-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.ppt-option{background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:14px;cursor:pointer;transition:all 0.2s ease;text-align:center;position:relative}
+.ppt-option:hover{border-color:#93c5fd;background:#eff6ff;transform:translateY(-2px)}
+.ppt-option.selected{border-color:#3b82f6;background:#dbeafe;box-shadow:0 0 0 3px rgba(59,130,246,0.2)}
+.ppt-option.selected::after{content:'✓';position:absolute;top:6px;right:8px;background:#3b82f6;color:#fff;width:22px;height:22px;border-radius:50%;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+.ppt-option .ppt-preview{background:#fff;border-radius:8px;padding:8px;margin-bottom:10px;height:90px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #e2e8f0}
+.ppt-option .ppt-preview svg{max-width:100%;max-height:100%}
+.ppt-option .ppt-title{font-size:13px;font-weight:700;color:#0f172a;margin-bottom:3px}
+.ppt-option .ppt-desc{font-size:10px;color:#64748b;line-height:1.3}
+
 @media (max-width:1024px){#areaContainer{grid-template-columns:1fr}}
 @media (max-width:768px){
   header{padding:10px 12px}
@@ -231,6 +243,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions button{width:100%}
   .bulk-tab{font-size:11px;padding:10px 12px;min-width:110px}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
+  .ppt-options{grid-template-columns:1fr}
 }
 @media (max-width:380px){
   .cards{grid-template-columns:1fr}
@@ -329,7 +342,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div class="select-bar" id="selectBar">
   <span class="count-badge" id="selCount">0 selected</span>
-  <button class="ppt-sel" onclick="generateSelectedSitesPPT()">📊 Generate PPT</button>
+  <button class="ppt-sel" onclick="openPPTFormatModal()">📊 Generate PPT</button>
   <button class="bulk-status-sel" onclick="openBulkStatusModal()">Bulk Status</button>
   <button class="clear-sel" onclick="clearSelection()">Clear</button>
   <button class="delete-sel" id="deleteBtn" onclick="bulkDeleteSelected()" style="display:none">Delete</button>
@@ -344,18 +357,103 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div id="progressSub" style="font-size:13px;opacity:0.7">Please wait</div>
 </div>
 
+<!-- ============ PPT FORMAT OPTIONS MODAL ============ -->
+<div class="modal" id="pptFormatModal"><div class="box" style="width:min(750px,100%)">
+<h2>📊 PPT Image Style</h2>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Site image kaise dikhe PPT me — apni pasand ka style choose karo. Yeh setting yaad rakh lega.</p>
+
+<div class="ppt-options">
+  <!-- Option 1: Split View -->
+  <div class="ppt-option" id="pptOpt1" onclick="selectPPTOption('split')">
+    <div class="ppt-preview">
+      <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
+        <rect x="5" y="5" width="90" height="80" fill="#1e40af" rx="3"/>
+        <text x="50" y="50" fill="white" font-size="11" text-anchor="middle" font-weight="bold">IMAGE</text>
+        <rect x="105" y="5" width="90" height="80" fill="#f1f5f9" rx="3"/>
+        <text x="150" y="25" fill="#1e40af" font-size="8" text-anchor="middle" font-weight="bold">SITE NAME</text>
+        <line x1="115" y1="35" x2="185" y2="35" stroke="#cbd5e1" stroke-width="1"/>
+        <text x="150" y="48" fill="#334155" font-size="7" text-anchor="middle">Area / Company</text>
+        <text x="150" y="60" fill="#059669" font-size="7" text-anchor="middle">₹ Rate</text>
+        <text x="150" y="72" fill="#64748b" font-size="7" text-anchor="middle">Duration</text>
+      </svg>
+    </div>
+    <div class="ppt-title">Split View ⭐</div>
+    <div class="ppt-desc">Image left, details right</div>
+  </div>
+
+  <!-- Option 2: Full Cover -->
+  <div class="ppt-option" id="pptOpt2" onclick="selectPPTOption('cover')">
+    <div class="ppt-preview">
+      <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
+        <rect x="5" y="5" width="190" height="60" fill="#0f172a" rx="3"/>
+        <text x="100" y="40" fill="white" font-size="12" text-anchor="middle" font-weight="bold">IMAGE (Full Crop)</text>
+        <rect x="5" y="68" width="190" height="17" fill="#f1f5f9" rx="3"/>
+        <text x="50" y="79" fill="#1e40af" font-size="7" text-anchor="middle">Area</text>
+        <text x="100" y="79" fill="#059669" font-size="7" text-anchor="middle">Company</text>
+        <text x="150" y="79" fill="#d97706" font-size="7" text-anchor="middle">Rate</text>
+      </svg>
+    </div>
+    <div class="ppt-title">Full Cover</div>
+    <div class="ppt-desc">Full image fills, no bars</div>
+  </div>
+
+  <!-- Option 3: Blur Background -->
+  <div class="ppt-option" id="pptOpt3" onclick="selectPPTOption('blur')">
+    <div class="ppt-preview">
+      <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="blurGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#334155"/>
+            <stop offset="50%" stop-color="#475569"/>
+            <stop offset="100%" stop-color="#334155"/>
+          </linearGradient>
+        </defs>
+        <rect x="5" y="5" width="190" height="60" fill="url(#blurGrad)" rx="3"/>
+        <rect x="55" y="8" width="90" height="54" fill="#1e40af" rx="3"/>
+        <text x="100" y="40" fill="white" font-size="10" text-anchor="middle" font-weight="bold">IMAGE</text>
+        <rect x="5" y="68" width="190" height="17" fill="#f1f5f9" rx="3"/>
+      </svg>
+    </div>
+    <div class="ppt-title">Blur Background</div>
+    <div class="ppt-desc">Netflix style, full image + blur</div>
+  </div>
+
+  <!-- Option 4: Contain -->
+  <div class="ppt-option" id="pptOpt4" onclick="selectPPTOption('contain')">
+    <div class="ppt-preview">
+      <svg viewBox="0 0 200 90" preserveAspectRatio="xMidYMid meet">
+        <rect x="5" y="5" width="190" height="60" fill="#0f172a" rx="3"/>
+        <rect x="55" y="8" width="90" height="54" fill="#1e40af" rx="3"/>
+        <text x="100" y="40" fill="white" font-size="10" text-anchor="middle" font-weight="bold">IMAGE</text>
+        <rect x="5" y="68" width="190" height="17" fill="#f1f5f9" rx="3"/>
+      </svg>
+    </div>
+    <div class="ppt-title">Contain (Fit)</div>
+    <div class="ppt-desc">Puri image, dark borders</div>
+  </div>
+</div>
+
+<div id="pptFormatNote" style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:10px;border-radius:8px;font-size:12px;margin-bottom:12px">
+  💡 <b>Recommended:</b> Split View — best professional look with all info visible side-by-side.
+</div>
+
+<div class="modal-actions">
+  <button class="secondary" onclick="closePPTFormatModal()">Cancel</button>
+  <button onclick="generateSelectedSitesPPT()" style="background:#7c3aed;color:#fff">📊 Generate PPT</button>
+</div>
+</div></div>
+
 <!-- TELEGRAM SETTINGS MODAL -->
 <div class="modal" id="telegramModal"><div class="box" style="width:min(600px,100%)">
 <h2>📱 Telegram Notifications</h2>
 <div class="bulk-info" style="font-size:12px">
-  <b>Setup Guide (1 baar karna hai):</b><br>
-  <b>Step 1:</b> Telegram app install karo → <code>@BotFather</code> ko message karo → <code>/newbot</code> bhejo<br>
-  <b>Step 2:</b> Bot ka naam do → username do (e.g. <code>ds_sites_bot</code>)<br>
-  <b>Step 3:</b> BotFather tumhe <b>Token</b> dega (jaise <code>123456:ABC-XYZ...</code>)<br>
-  <b>Step 4:</b> Apne naye bot ko Telegram me khol ke <code>/start</code> bhejo<br>
+  <b>Setup Guide:</b><br>
+  <b>Step 1:</b> Telegram me <code>@BotFather</code> → <code>/newbot</code><br>
+  <b>Step 2:</b> Bot ka naam + username do<br>
+  <b>Step 3:</b> BotFather tumhe <b>Token</b> dega<br>
+  <b>Step 4:</b> Apne bot ko Telegram me khol ke <code>/start</code> bhejo<br>
   <b>Step 5:</b> Browser me kholo: <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code><br>
-  <b>Step 6:</b> Wahan <code>"chat":{"id":123456789}</code> milega — wahi <b>Chat ID</b> hai<br>
-  <b>Step 7:</b> Neeche dono values paste karo aur Save dabao 🎉
+  <b>Step 6:</b> Wahan <code>"chat":{"id":123456789}</code> milega — wahi <b>Chat ID</b> hai
 </div>
 <div class="formgrid" style="grid-template-columns:1fr">
   <label>Bot Token
@@ -370,7 +468,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </label>
   <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:4px;font-size:13px">
     <input type="checkbox" id="tgOnlyNotAvail" checked style="width:20px;height:20px;cursor:pointer;accent-color:#0088cc">
-    <span style="font-weight:600;color:#0f172a">Sirf "Not Available" aur "Under Maintenance" ke liye bhejo</span>
+    <span style="font-weight:600;color:#0f172a">Sirf "Not Available" aur "Under Maintenance" ke liye</span>
   </label>
 </div>
 <div id="telegramStatus" style="margin-top:12px;padding:10px;border-radius:8px;font-size:12px;display:none"></div>
@@ -408,15 +506,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 <div class="bulk-tab-content active" id="tabContentSites">
   <div class="bulk-info">
-    <b>CSV Format:</b><br>
-    Column order: <code>area, site, location, company, rate, status, from, to</code><br>
-    <b>Example:</b> <code>Chandigarh,CG01,Sector 17,ABC Media,50000,Available,,</code>
+    <b>CSV Format:</b> <code>area, site, location, company, rate, status, from, to</code>
   </div>
   <button class="secondary" onclick="downloadSampleCSV()" style="margin-bottom:12px;padding:11px 16px;border-radius:8px;font-weight:600;border:1px solid #e2e8f0;background:#fff;color:#334155;cursor:pointer;width:100%;min-height:44px">Download Sample CSV</button>
   <div class="drop-zone" id="dropZone" onclick="document.getElementById('bulkFile').click()">
     <div class="dz-icon">📁</div>
     <div style="font-size:15px;font-weight:700">Click or drag CSV here</div>
-    <div style="font-size:12px;color:#64748b">Only .csv files</div>
   </div>
   <input type="file" id="bulkFile" accept=".csv" style="display:none" onchange="handleBulkFile(event)">
   <div id="bulkPreviewWrap" style="display:none">
@@ -425,15 +520,10 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
 </div>
 <div class="bulk-tab-content" id="tabContentImages">
-  <div class="bulk-info" style="font-size:11px">
-    File ka naam <b>site ke naam</b> se match hona chahiye.<br>
-    Example: site <code>CG01</code> → image <code>CG01.jpg</code><br>
-    <b>Limit:</b> Ek baar mein 400 images tak (2 sec gap per image)
-  </div>
+  <div class="bulk-info" style="font-size:11px">File ka naam <b>site ke naam ya code</b> se match hona chahiye.<br>Example: <code>CG01.jpg</code> → Site Code CG01<br><b>Limit:</b> 400 images tak</div>
   <div class="drop-zone" id="bulkImageDropZone" onclick="document.getElementById('bulkImageFiles').click()" style="border-color:#bfdbfe;background:#eff6ff">
     <div class="dz-icon">🖼️</div>
     <div style="font-size:14px;font-weight:700">Click or drag images here</div>
-    <div style="font-size:11px;color:#64748b">Multiple files - JPG, PNG (Max 400 at once)</div>
   </div>
   <input type="file" id="bulkImageFiles" accept="image/*" multiple style="display:none" onchange="handleBulkImageFiles(event)">
   <div id="bulkImagePreviewWrap" style="display:none">
@@ -442,31 +532,19 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
 </div>
 <div class="bulk-tab-content" id="tabContentPpts">
-  <div class="bulk-info" style="font-size:11px">
-    PPT file ka naam <b>area ke naam</b> se match hona chahiye.<br>
-    Example: area <code>Chandigarh</code> → PPT <code>Chandigarh.pptx</code><br>
-    Max 100 MB per file
-  </div>
+  <div class="bulk-info" style="font-size:11px">PPT file ka naam <b>area ke naam</b> se match hona chahiye.<br>Example: <code>Chandigarh.pptx</code></div>
   <div class="drop-zone" id="bulkPptDropZone" onclick="document.getElementById('bulkPptFiles').click()" style="border-color:#f9a8d4;background:#fdf2f8">
     <div class="dz-icon">📊</div>
     <div style="font-size:14px;font-weight:700">Click or drag PPT files here</div>
-    <div style="font-size:11px;color:#64748b">Multiple files - .ppt, .pptx</div>
   </div>
-  <input type="file" id="bulkPptFiles" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" multiple style="display:none" onchange="handleBulkPptFiles(event)">
+  <input type="file" id="bulkPptFiles" accept=".ppt,.pptx" multiple style="display:none" onchange="handleBulkPptFiles(event)">
   <div id="bulkPptPreviewWrap" style="display:none">
     <div class="bulk-summary" id="bulkPptSummary"></div>
     <div class="bulk-preview" id="bulkPptPreview" style="max-height:260px"></div>
   </div>
 </div>
 <div class="bulk-tab-content" id="tabContentLogo">
-  <div class="bulk-info" style="font-size:12px">
-    <b>Logo Change Karein</b><br>
-    Yahan se naya logo upload karein. Yeh logo:<br>
-    • Website login page par dikhega<br>
-    • PPT cover slide par dikhega<br>
-    • Thank You slide par dikhega<br>
-    <b>Recommended:</b> 800x300px PNG (transparent background)
-  </div>
+  <div class="bulk-info" style="font-size:12px"><b>Logo Change Karein</b><br>Login page, PPT cover, Thank You slide par dikhega<br><b>Recommended:</b> 800x300px PNG</div>
   <div style="text-align:center;margin-bottom:16px;padding:16px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0">
     <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Current Logo</div>
     <img id="currentLogoPreview" src="" alt="Current Logo" style="max-width:300px;max-height:100px;border-radius:8px;background:#fff;padding:8px;border:1px solid #e2e8f0" />
@@ -484,9 +562,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div id="logoUploadActions" style="display:none;margin-top:16px;gap:10px;flex-wrap:wrap">
     <button onclick="saveNewLogo()" style="flex:1;background:#059669;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;border:0;cursor:pointer;min-height:44px">✓ Save & Apply Logo</button>
     <button onclick="cancelLogoUpload()" style="background:#fff;color:#334155;border:1px solid #cbd5e1;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;min-height:44px">Cancel</button>
-  </div>
-  <div style="margin-top:16px;padding:12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:11px;color:#991b1b">
-    ⚠️ <b>Note:</b> Logo change karne ke baad, purani PPTs mein purana hi logo rahega. Nayi PPT mein naya logo aayega.
   </div>
 </div>
 <div class="modal-actions">
@@ -632,7 +707,48 @@ let dateFilterTo = "";
 let renderDebounceTimer = null;
 let lastKnownStatuses = {};
 
+// ✅ PPT format preference (saved in localStorage)
+let pptFormat = "split"; // "split", "cover", "blur", "contain"
+
 let telegramConfig = { botToken: "", chatId: "", enabled: false, onlyNotAvailMaint: true };
+
+/* ============ PPT FORMAT MODAL ============ */
+function loadPPTFormat(){
+  try {
+    const saved = localStorage.getItem("sms_ppt_format");
+    if(saved && ["split","cover","blur","contain"].includes(saved)) pptFormat = saved;
+  } catch(e){}
+  updatePPTFormatUI();
+}
+function savePPTFormat(){
+  localStorage.setItem("sms_ppt_format", pptFormat);
+}
+function updatePPTFormatUI(){
+  ["pptOpt1","pptOpt2","pptOpt3","pptOpt4"].forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove("selected"); });
+  const map = { split: "pptOpt1", cover: "pptOpt2", blur: "pptOpt3", contain: "pptOpt4" };
+  const el = document.getElementById(map[pptFormat]); if(el) el.classList.add("selected");
+  const note = document.getElementById("pptFormatNote");
+  if(note){
+    const notes = {
+      split: "💡 <b>Split View:</b> Image left me, details right side me. Best for detailed info.",
+      cover: "💡 <b>Full Cover:</b> Image pura box fill karegi (crop hoke). Modern look.",
+      blur: "💡 <b>Blur Background:</b> Puri image center + blurred background. Premium look.",
+      contain: "💡 <b>Contain:</b> Puri image dikhegi, dark borders ke saath. Safe option."
+    };
+    note.innerHTML = notes[pptFormat] || "";
+  }
+}
+function selectPPTOption(opt){
+  pptFormat = opt;
+  savePPTFormat();
+  updatePPTFormatUI();
+}
+function openPPTFormatModal(){
+  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
+  updatePPTFormatUI();
+  document.getElementById("pptFormatModal").classList.add("show");
+}
+function closePPTFormatModal(){ document.getElementById("pptFormatModal").classList.remove("show"); }
 
 /* ============ TOAST ============ */
 function showToast(title, message, type){
@@ -663,20 +779,11 @@ function loadTelegramConfig(){
   } catch(e){}
   updateTelegramBtn();
 }
-function saveTelegramConfig(){
-  localStorage.setItem("sms_telegram_config", JSON.stringify(telegramConfig));
-  updateTelegramBtn();
-}
+function saveTelegramConfig(){ localStorage.setItem("sms_telegram_config", JSON.stringify(telegramConfig)); updateTelegramBtn(); }
 function updateTelegramBtn(){
-  const btn = document.getElementById("telegramBtn");
-  if(!btn) return;
-  if(telegramConfig.enabled && telegramConfig.botToken && telegramConfig.chatId){
-    btn.textContent = "📱 Telegram ON";
-    btn.style.background = "#0088cc";
-  } else {
-    btn.textContent = "📱 Telegram";
-    btn.style.background = "#6b7280";
-  }
+  const btn = document.getElementById("telegramBtn"); if(!btn) return;
+  if(telegramConfig.enabled && telegramConfig.botToken && telegramConfig.chatId){ btn.textContent = "📱 Telegram ON"; btn.style.background = "#0088cc"; }
+  else { btn.textContent = "📱 Telegram"; btn.style.background = "#6b7280"; }
 }
 function openTelegramSettings(){
   document.getElementById("tgBotToken").value = telegramConfig.botToken || "";
@@ -692,14 +799,11 @@ function saveTelegramSettings(){
   const chatId = document.getElementById("tgChatId").value.trim();
   const enabled = document.getElementById("tgEnabled").checked;
   const onlyNot = document.getElementById("tgOnlyNotAvail").checked;
-  if(enabled && (!token || !chatId)){ showTelegramStatus("❌ Bot Token aur Chat ID dono required", "error"); return; }
-  telegramConfig.botToken = token;
-  telegramConfig.chatId = chatId;
-  telegramConfig.enabled = enabled;
-  telegramConfig.onlyNotAvailMaint = onlyNot;
+  if(enabled && (!token || !chatId)){ showTelegramStatus("❌ Bot Token aur Chat ID required", "error"); return; }
+  telegramConfig.botToken = token; telegramConfig.chatId = chatId; telegramConfig.enabled = enabled; telegramConfig.onlyNotAvailMaint = onlyNot;
   saveTelegramConfig();
-  if(enabled){ showTelegramStatus("✅ Settings save ho gayi!", "success"); showToast("Telegram Saved", "Notifications enable ho gayi", "success"); }
-  else { showTelegramStatus("ℹ️ Notifications disabled", "info"); showToast("Telegram Saved", "Notifications disabled", "info"); }
+  if(enabled){ showTelegramStatus("✅ Settings save!", "success"); showToast("Telegram Saved", "Notifications enabled", "success"); }
+  else { showTelegramStatus("ℹ️ Disabled", "info"); showToast("Telegram Saved", "Notifications disabled", "info"); }
 }
 function showTelegramStatus(msg, type){
   const el = document.getElementById("telegramStatus");
@@ -721,30 +825,23 @@ async function sendTelegramMessage(text){
 async function testTelegram(){
   const token = document.getElementById("tgBotToken").value.trim();
   const chatId = document.getElementById("tgChatId").value.trim();
-  if(!token || !chatId){ showTelegramStatus("❌ Pehle Bot Token aur Chat ID daalo", "error"); return; }
-  showTelegramStatus("⏳ Test message bhej rahe hain...", "info");
+  if(!token || !chatId){ showTelegramStatus("❌ Bot Token aur Chat ID daalo", "error"); return; }
+  showTelegramStatus("⏳ Test bhej rahe hain...", "info");
   const savedEnabled = telegramConfig.enabled;
   telegramConfig.enabled = true; telegramConfig.botToken = token; telegramConfig.chatId = chatId;
   const testMsg = "🧪 <b>Test Message</b>\n\nDS Outdoor Media - Site Management\nNotifications kaam kar rahe hain! ✅\n\n🕐 " + new Date().toLocaleString('en-GB');
   const ok = await sendTelegramMessage(testMsg);
-  if(!ok){ telegramConfig.enabled = savedEnabled; showTelegramStatus("❌ Test fail! Check:\n• Token sahi?\n• Chat ID sahi?\n• Telegram me /start bheja?", "error"); }
-  else { showTelegramStatus("✅ Test message bhej diya! Telegram check karo.", "success"); }
+  if(!ok){ telegramConfig.enabled = savedEnabled; showTelegramStatus("❌ Fail! Token, Chat ID aur /start check karo", "error"); }
+  else { showTelegramStatus("✅ Test bhej diya! Telegram check karo.", "success"); }
 }
 async function notifyTelegram(site, oldStatus, newStatus){
   if(!telegramConfig.enabled) return;
   if(!telegramConfig.botToken || !telegramConfig.chatId) return;
-  if(telegramConfig.onlyNotAvailMaint){
-    if(newStatus !== "Not Available" && newStatus !== "Under Maintenance") return;
-  }
-  let emoji = "🔔", statusText = newStatus, extraInfo = "";
-  if(newStatus === "Not Available"){
-    emoji = "🚨";
-    extraInfo = "\n👤 <b>Customer:</b> " + (site.customer || "—") + "\n💰 <b>Rate:</b> " + (site.rate ? "₹" + Number(site.rate).toLocaleString('en-IN') + "/mo" : "—") + "\n📅 <b>From:</b> " + (site.fromDate || "—") + "\n📅 <b>To:</b> " + (site.toDate || "—");
-  } else if(newStatus === "Under Maintenance"){
-    emoji = "⚠️";
-    extraInfo = "\n📅 <b>From:</b> " + (site.fromDate || "—") + "\n📅 <b>To:</b> " + (site.toDate || "—");
-  }
-  const msg = emoji + " <b>SITE " + statusText.toUpperCase() + "</b>\n\n" +
+  if(telegramConfig.onlyNotAvailMaint){ if(newStatus !== "Not Available" && newStatus !== "Under Maintenance") return; }
+  let emoji = "🔔", extraInfo = "";
+  if(newStatus === "Not Available"){ emoji = "🚨"; extraInfo = "\n👤 <b>Customer:</b> " + (site.customer || "—") + "\n💰 <b>Rate:</b> " + (site.rate ? "₹" + Number(site.rate).toLocaleString('en-IN') + "/mo" : "—") + "\n📅 <b>From:</b> " + (site.fromDate || "—") + "\n📅 <b>To:</b> " + (site.toDate || "—"); }
+  else if(newStatus === "Under Maintenance"){ emoji = "⚠️"; extraInfo = "\n📅 <b>From:</b> " + (site.fromDate || "—") + "\n📅 <b>To:</b> " + (site.toDate || "—"); }
+  const msg = emoji + " <b>SITE " + newStatus.toUpperCase() + "</b>\n\n" +
     "🏷️ <b>Site:</b> " + (site.site || "—") + "\n" +
     (site.siteCode ? "🔢 <b>Code:</b> " + site.siteCode + "\n" : "") +
     "📍 <b>Area:</b> " + (site.area || "Unassigned") + "\n" +
@@ -757,9 +854,9 @@ function notifyStatusChange(site, oldStatus, newStatus){
   const isMaint = (newStatus === "Under Maintenance") && (oldStatus !== "Under Maintenance");
   const isReleased = (newStatus === "Available") && (oldStatus === "Not Available" || oldStatus === "Under Maintenance");
   let title, body, toastType;
-  if(isBooked){ title = "🚨 Site Booked!"; body = site.site + " (" + (site.area||"") + ") — " + (site.customer||"Customer") + " ne book kiya"; toastType = "danger"; }
-  else if(isMaint){ title = "⚠️ Maintenance Alert"; body = site.site + " (" + (site.area||"") + ") ab maintenance me hai"; toastType = "warning"; }
-  else if(isReleased){ title = "✅ Site Available"; body = site.site + " (" + (site.area||"") + ") ab available hai"; toastType = "success"; }
+  if(isBooked){ title = "🚨 Site Booked!"; body = site.site + " — " + (site.customer||"Customer") + " ne book kiya"; toastType = "danger"; }
+  else if(isMaint){ title = "⚠️ Maintenance Alert"; body = site.site + " ab maintenance me hai"; toastType = "warning"; }
+  else if(isReleased){ title = "✅ Site Available"; body = site.site + " ab available hai"; toastType = "success"; }
   else return;
   showToast(title, body, toastType);
   notifyTelegram(site, oldStatus, newStatus).catch(e => console.warn("TG fail:", e));
@@ -778,11 +875,7 @@ async function loadCloudData(){
     bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
     sites.forEach((s, i) => {
       if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
-      // Ensure siteCode exists (from site name if missing)
-      if(!s.siteCode){
-        const m = (s.site||"").match(/^([A-Z]{2,5}\d{1,4})/i);
-        s.siteCode = m ? m[1].toUpperCase() : "";
-      }
+      if(!s.siteCode){ const m = (s.site||"").match(/^([A-Z]{2,5}\d{1,4})/i); s.siteCode = m ? m[1].toUpperCase() : ""; }
     });
     lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
     sites.forEach(s => { lastKnownStatuses[s.id] = s.status; });
@@ -810,16 +903,11 @@ async function savePpt(areaName, obj){
   const CHUNK_SIZE = 20000000;
   const data = obj.data || "";
   const totalChunks = Math.ceil(data.length / CHUNK_SIZE) || 1;
-  if(totalChunks === 1){
-    const result = await apiPost("/ppt/" + encodeURIComponent(areaName), { name: obj.name, size: obj.size, type: obj.type, data: data });
-    if(result && result.success) pptCache[areaName] = true;
-    return result;
-  }
+  if(totalChunks === 1){ const result = await apiPost("/ppt/" + encodeURIComponent(areaName), { name: obj.name, size: obj.size, type: obj.type, data: data }); if(result && result.success) pptCache[areaName] = true; return result; }
   const initResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/init", { name: obj.name, size: obj.size, type: obj.type });
   if(!initResult || !initResult.success) return initResult;
   for(let i = 0; i < totalChunks; i++){
-    const start = i * CHUNK_SIZE;
-    const chunk = data.substring(start, start + CHUNK_SIZE);
+    const start = i * CHUNK_SIZE; const chunk = data.substring(start, start + CHUNK_SIZE);
     const chunkResult = await apiPost("/ppt/" + encodeURIComponent(areaName) + "/chunk/" + i, { data: chunk });
     if(!chunkResult || !chunkResult.success) return { success: false, error: "Chunk failed" };
     const ps = document.getElementById("progressSub"); if(ps) ps.textContent = "Chunk " + (i+1) + " / " + totalChunks;
@@ -859,8 +947,8 @@ async function loadLogoFromCloud(){
 })();
 function handleLogoUpload(e){ const file = e.target.files[0]; if(!file) return; processLogoFile(file); e.target.value = ""; }
 function processLogoFile(file){
-  if(!file.type.startsWith("image/")){ alert("Only image files allowed"); return; }
-  if(file.size > 2*1024*1024){ alert("Max 2 MB allowed"); return; }
+  if(!file.type.startsWith("image/")){ alert("Only image files"); return; }
+  if(file.size > 2*1024*1024){ alert("Max 2 MB"); return; }
   const reader = new FileReader();
   reader.onload = (ev) => {
     let dataUrl = ev.target.result;
@@ -875,9 +963,7 @@ function processLogoFile(file){
       if(file.type === "image/png"){ ctx.clearRect(0, 0, w, h); } else { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h); }
       ctx.drawImage(img, 0, 0, w, h);
       const mimeType = file.type === "image/png" ? "image/png" : "image/jpeg";
-      let quality = 0.9;
-      let result = canvas.toDataURL(mimeType, quality);
-      let attempts = 0;
+      let quality = 0.9; let result = canvas.toDataURL(mimeType, quality); let attempts = 0;
       while(result.length > 1.5 * 1024 * 1024 && quality > 0.6 && attempts < 8){ quality -= 0.05; result = canvas.toDataURL(mimeType, quality); attempts++; }
       newLogoData = result; showNewLogoPreview(result);
     };
@@ -886,15 +972,11 @@ function processLogoFile(file){
   };
   reader.readAsDataURL(file);
 }
-function showNewLogoPreview(dataUrl){
-  document.getElementById("newLogoPreview").src = dataUrl;
-  document.getElementById("newLogoPreviewWrap").style.display = "block";
-  document.getElementById("logoUploadActions").style.display = "flex";
-}
+function showNewLogoPreview(dataUrl){ document.getElementById("newLogoPreview").src = dataUrl; document.getElementById("newLogoPreviewWrap").style.display = "block"; document.getElementById("logoUploadActions").style.display = "flex"; }
 function cancelLogoUpload(){ newLogoData = ""; document.getElementById("newLogoPreviewWrap").style.display = "none"; document.getElementById("logoUploadActions").style.display = "none"; }
 async function saveNewLogo(){
   if(!newLogoData){ alert("Pehle logo select karein"); return; }
-  showProgress("Saving logo...", "Uploading to cloud");
+  showProgress("Saving logo...", "Uploading");
   try {
     const result = await apiPost("/logo", { data: newLogoData });
     if(result && result.success){
@@ -931,6 +1013,7 @@ async function showApp(){
   if(currentUser.role !== "Admin"){ document.querySelectorAll(".admin-only").forEach(el => { el.style.display = "none"; }); }
   showProgress("Loading...", "");
   loadTelegramConfig();
+  loadPPTFormat();
   await loadCloudData();
   await refreshPptCache();
   hideProgress();
@@ -1009,26 +1092,14 @@ function populateAreaDropdowns(){
   areas.forEach(a => { formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
 }
 
-/* ============ ✅ DATE INPUT (FIXED BACKSPACE) ============ */
+/* ============ DATE INPUT (FIXED BACKSPACE) ============ */
 function handleDateInput(input, which){
-  // Store cursor position
   const oldVal = input.value;
   const oldLen = parseInt(input.dataset.lastLength || "0");
   const isDeleting = oldVal.length < oldLen;
-  
-  // Update length for next comparison
   input.dataset.lastLength = oldVal.length;
-  
-  // ✅ If user is deleting (backspace/delete), don't auto-format
-  // Just allow them to delete freely. Only strip garbage characters.
-  if(isDeleting){
-    input.value = oldVal.replace(/[^\d\/]/g, "");
-    return;
-  }
-  
-  // ✅ Auto-format when typing
+  if(isDeleting){ input.value = oldVal.replace(/[^\d\/]/g, ""); return; }
   let val = oldVal.replace(/\D/g, "");
-  
   if(val.length >= 2){
     let dd = val.substring(0, 2);
     if(parseInt(dd) > 31) dd = "31";
@@ -1044,28 +1115,24 @@ function handleDateInput(input, which){
   }
   input.value = val.substring(0, 10);
 }
-function handleDateKeyDown(event){
-  if(event.key === "Enter"){ event.preventDefault(); applyFilters(); }
-}
+function handleDateKeyDown(event){ if(event.key === "Enter"){ event.preventDefault(); applyFilters(); } }
 function validateFilterDate(dateStr, fieldName){
   if(!dateStr) return { ok: true };
   const p = String(dateStr).trim().split("/");
-  if(p.length !== 3) return { ok: false, msg: fieldName + " format galat hai (dd/mm/yyyy)" };
+  if(p.length !== 3) return { ok: false, msg: fieldName + " format galat (dd/mm/yyyy)" };
   const dd = parseInt(p[0]), mm = parseInt(p[1]), yyyy = parseInt(p[2]);
-  if(isNaN(dd) || isNaN(mm) || isNaN(yyyy)) return { ok: false, msg: fieldName + " date valid nahi hai" };
-  if(yyyy < 1900 || yyyy > MAX_FILTER_YEAR) return { ok: false, msg: fieldName + " year 1900-" + MAX_FILTER_YEAR + " ke beech" };
+  if(isNaN(dd) || isNaN(mm) || isNaN(yyyy)) return { ok: false, msg: fieldName + " date valid nahi" };
+  if(yyyy < 1900 || yyyy > MAX_FILTER_YEAR) return { ok: false, msg: fieldName + " year 1900-" + MAX_FILTER_YEAR };
   const testDate = new Date(yyyy, mm - 1, dd);
-  if(testDate.getFullYear() !== yyyy || testDate.getMonth() !== (mm - 1) || testDate.getDate() !== dd){
-    return { ok: false, msg: fieldName + " date exist nahi karti" };
-  }
+  if(testDate.getFullYear() !== yyyy || testDate.getMonth() !== (mm - 1) || testDate.getDate() !== dd) return { ok: false, msg: fieldName + " date exist nahi karti" };
   return { ok: true };
 }
 function applyFilters(){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
   const validPattern = /^\d{2}\/\d{2}\/\d{4}$/;
-  if(fromInput && !validPattern.test(fromInput)){ showToast("Invalid Date", "From date complete karein (dd/mm/yyyy)", "warning"); document.getElementById("dateFilterFrom").focus(); return; }
-  if(toInput && !validPattern.test(toInput)){ showToast("Invalid Date", "To date complete karein (dd/mm/yyyy)", "warning"); document.getElementById("dateFilterTo").focus(); return; }
+  if(fromInput && !validPattern.test(fromInput)){ showToast("Invalid Date", "From date complete karein", "warning"); document.getElementById("dateFilterFrom").focus(); return; }
+  if(toInput && !validPattern.test(toInput)){ showToast("Invalid Date", "To date complete karein", "warning"); document.getElementById("dateFilterTo").focus(); return; }
   const fromCheck = validateFilterDate(fromInput, "From"); if(!fromCheck.ok){ showToast("Invalid Date", fromCheck.msg, "warning"); return; }
   const toCheck = validateFilterDate(toInput, "To"); if(!toCheck.ok){ showToast("Invalid Date", toCheck.msg, "warning"); return; }
   if(fromInput && toInput){
@@ -1075,6 +1142,7 @@ function applyFilters(){
   areaFilters = {};
   render();
   updateFilterBadge();
+  // ✅ Auto-select only sites matching current filter (status + date)
   autoSelectFilteredSites();
 }
 function autoSelectFilteredSites(){
@@ -1082,12 +1150,16 @@ function autoSelectFilteredSites(){
   const toInput = document.getElementById("dateFilterTo").value.trim();
   const q = (document.getElementById("search").value || "").toLowerCase().trim();
   const f = document.getElementById("filter").value;
-  const hasFilter = fromInput || toInput || f !== "ALL" || q;
-  if(!hasFilter) return;
+  // Only auto-select if there's at least a date filter
+  const hasDateFilter = fromInput || toInput;
+  if(!hasDateFilter && !q) return;
   let count = 0;
   sites.forEach(s => {
+    // ✅ Apply status filter (from "All Status" dropdown)
     if(f !== "ALL" && s.status !== f) return;
+    // ✅ Apply date filter
     if(!siteMatchesDateFilter(s)) return;
+    // ✅ Apply search
     const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
     if(q && !hay.includes(q)) return;
     if(!selectedSites.has(s.id)){ selectedSites.add(s.id); count++; }
@@ -1127,7 +1199,6 @@ function ddmmyyyyToISOForFilter(s){
   if(p[2].length !== 4) return "";
   return p[2] + "-" + p[1].padStart(2,"0") + "-" + p[0].padStart(2,"0");
 }
-/* ✅ CHECK: Is site's date range overlapping with filter range? */
 function siteMatchesDateFilter(site){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
@@ -1138,17 +1209,10 @@ function siteMatchesDateFilter(site){
   if(toInput && !filterTo) return true;
   const siteFrom = site.fromDate ? ddmmyyyyToISO(site.fromDate) : "";
   const siteTo = site.toDate ? ddmmyyyyToISO(site.toDate) : "";
-  // ✅ If site has no dates, and filter has dates → include it (available sites often have no dates)
-  if(!siteFrom && !siteTo){
-    // Include "Available" sites with no date range in any filter
-    return true;
-  }
+  // Available sites with no date range → always included in date filter
+  if(!siteFrom && !siteTo) return true;
   if(filterFrom && filterTo){
-    if(siteFrom && siteTo){
-      if(siteFrom > filterTo) return false;
-      if(siteTo < filterFrom) return false;
-      return true;
-    }
+    if(siteFrom && siteTo){ if(siteFrom > filterTo) return false; if(siteTo < filterFrom) return false; return true; }
     if(siteFrom && !siteTo) return siteFrom <= filterTo;
     if(!siteFrom && siteTo) return siteTo >= filterFrom;
   }
@@ -1164,7 +1228,6 @@ function siteMatchesDateFilter(site){
   }
   return true;
 }
-/* ✅ Get filtered sites (for cards AND for area display) */
 function getFilteredSites(){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
@@ -1603,10 +1666,8 @@ async function renameArea(index){
 async function deleteArea(index){
   const areaName = areas[index];
   const count = sites.filter(s => s.area === areaName).length;
-  if(count > 0){
-    if(!confirm(areaName + " mein " + count + " sites. Continue?")) return;
-    sites.forEach(s => { if(s.area === areaName) s.area = "Unassigned"; });
-  } else { if(!confirm("Delete '" + areaName + "'?")) return; }
+  if(count > 0){ if(!confirm(areaName + " mein " + count + " sites. Continue?")) return; sites.forEach(s => { if(s.area === areaName) s.area = "Unassigned"; }); }
+  else { if(!confirm("Delete '" + areaName + "'?")) return; }
   await deletePptFromDB(areaName);
   areas.splice(index, 1);
   await persistNow();
@@ -1696,7 +1757,7 @@ async function autoReleaseExpiredSites(){
   return changed;
 }
 
-/* ============ ✅ RENDER (FIXED: date filter shows all matching statuses) ============ */
+/* ============ RENDER ============ */
 async function render(){
   await autoReleaseExpiredSites();
   syncCardHighlight();
@@ -1704,10 +1765,7 @@ async function render(){
   dateFilterTo = ddmmyyyyToISOForFilter(document.getElementById("dateFilterTo").value.trim());
   const q = (document.getElementById("search").value || "").toLowerCase().trim();
   const f = document.getElementById("filter").value;
-  
-  // ✅ Cards counts reflect date filter
   updateCardsWithFilteredCounts();
-  
   if(collapsedAreas === null) collapsedAreas = new Set(areas);
   const isFiltering = (f !== "ALL") || (q && q.length > 0) || dateFilterFrom || dateFilterTo;
   if(isFiltering) collapsedAreas.clear();
@@ -1723,13 +1781,9 @@ async function render(){
     const areaSites = sites.filter(s => {
       const sArea = s.area || "Unassigned";
       if(sArea !== areaName) return false;
-      // ✅ Status filter (from main dropdown) applies
       if(f !== "ALL" && s.status !== f) return false;
-      // ✅ Area-specific filter
       if(areaFilter !== "ALL" && s.status !== areaFilter) return false;
-      // ✅ Date filter
       if(!siteMatchesDateFilter(s)) return false;
-      // ✅ Search
       const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
       if(q && !hay.includes(q)) return false;
       return true;
@@ -1786,11 +1840,8 @@ async function render(){
         const histBtn = histCount > 0 ? '<button class="history-btn" onclick="showHistory(' + globalIdx + ')">' + histCount + '</button>' : '';
         const mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
         let imgHTML;
-        if(x.hasImage && !imageFailed.has(x.id)){
-          imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site" onerror="handleImgError(this, ' + globalIdx + ')">';
-        } else {
-          imgHTML = '<div class="site-card-img no-img" onclick="editSite(' + globalIdx + ')">📷</div>';
-        }
+        if(x.hasImage && !imageFailed.has(x.id)){ imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site" onerror="handleImgError(this, ' + globalIdx + ')">'; }
+        else { imgHTML = '<div class="site-card-img no-img" onclick="editSite(' + globalIdx + ')">📷</div>'; }
         const actionBtns = (currentUser.role === "Admin" || currentUser.role === "Viewer") ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' + mapBtn + histBtn : mapBtn + histBtn;
         cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
         cardsHTML += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' onchange="toggleSelect(\'' + x.id + '\')"><span class="site-card-num">#' + (idx + 1) + '</span>' + imgHTML + '</div>';
@@ -1810,9 +1861,7 @@ async function render(){
     block.appendChild(content);
     container.appendChild(block);
   }
-  if(totalShown === 0 && isFiltering){
-    container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match your filters.</div>';
-  }
+  if(totalShown === 0 && isFiltering){ container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match your filters.</div>'; }
   loadVisibleImages();
   updateSelectBar();
 }
@@ -1935,11 +1984,8 @@ async function editSite(i){
   setDateDropdowns("ffrom", x.fromDate || ""); setDateDropdowns("fto", x.toDate || "");
   if(x.lat && x.lng){ document.getElementById("gpsStatus").textContent = "GPS: " + x.lat + ", " + x.lng; document.getElementById("gpsStatus").className = "gps-status ok"; }
   else { document.getElementById("gpsStatus").textContent = "GPS not captured"; document.getElementById("gpsStatus").className = "gps-status"; }
-  if(x.hasImage){
-    let data = await getImage(x.id);
-    if(data){ currentImageData = data; showImagePreview(data); }
-    else { currentImageData = ""; removeImage(); }
-  } else { currentImageData = ""; removeImage(); }
+  if(x.hasImage){ let data = await getImage(x.id); if(data){ currentImageData = data; showImagePreview(data); } else { currentImageData = ""; removeImage(); } }
+  else { currentImageData = ""; removeImage(); }
   updateCalcPreview();
   document.getElementById("modal").classList.add("show");
 }
@@ -2036,53 +2082,51 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-/* ============ ✅ NEW: IMAGE PROCESSING FOR PPT (CROP TO FIT, NO BLUR) ============ */
-/* Fit image to exact box ratio by cropping (like CSS object-fit: cover)
-   - No blur, no black bars
-   - Just center-crop to fill the entire box
-*/
-function processImageForPPT(dataUrl, boxRatio){
+/* ============ IMAGE PROCESSING FOR PPT ============ */
+// Crop to exact ratio (like object-fit: cover)
+function cropImageToRatio(dataUrl, targetRatio){
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
       const imgRatio = img.width / img.height;
       let sx, sy, sw, sh;
-      
-      // ✅ COVER MODE: Crop to fill entire box
-      if(imgRatio > boxRatio){
-        // Image is wider → crop left/right
-        sh = img.height;
-        sw = img.height * boxRatio;
-        sx = (img.width - sw) / 2;
-        sy = 0;
-      } else {
-        // Image is taller → crop top/bottom
-        sw = img.width;
-        sh = img.width / boxRatio;
-        sx = 0;
-        sy = (img.height - sh) / 2;
-      }
-      
-      // Output at high resolution (1600px wide)
-      const outW = 1600;
-      const outH = Math.round(outW / boxRatio);
-      const canvas = document.createElement("canvas");
-      canvas.width = outW;
-      canvas.height = outH;
-      const ctx = canvas.getContext("2d");
-      ctx.imageSmoothingQuality = "high";
+      if(imgRatio > targetRatio){ sh = img.height; sw = img.height * targetRatio; sx = (img.width - sw) / 2; sy = 0; }
+      else { sw = img.width; sh = img.width / targetRatio; sx = 0; sy = (img.height - sh) / 2; }
+      const outW = 1400;
+      const outH = Math.round(outW / targetRatio);
+      const canvas = document.createElement("canvas"); canvas.width = outW; canvas.height = outH;
+      const ctx = canvas.getContext("2d"); ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, sx, sy, sw, sh, 0, 0, outW, outH);
-      
-      // Compress
-      let quality = 0.88;
-      let result = canvas.toDataURL("image/jpeg", quality);
-      let attempts = 0;
-      while(result.length > 1200 * 1024 && quality > 0.55 && attempts < 8){
-        quality -= 0.05;
-        result = canvas.toDataURL("image/jpeg", quality);
-        attempts++;
-      }
-      
+      let quality = 0.85; let result = canvas.toDataURL("image/jpeg", quality); let attempts = 0;
+      while(result.length > 900 * 1024 && quality > 0.55 && attempts < 8){ quality -= 0.05; result = canvas.toDataURL("image/jpeg", quality); attempts++; }
+      resolve(result);
+    };
+    img.onerror = () => resolve(null);
+    img.src = dataUrl;
+  });
+}
+// Blur background + contain main image
+function makeBlurBG(dataUrl, boxRatio){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const imgRatio = img.width / img.height;
+      let sx, sy, sw, sh;
+      if(imgRatio > boxRatio){ sh = img.height; sw = img.height * boxRatio; sx = (img.width - sw) / 2; sy = 0; }
+      else { sw = img.width; sh = img.width / boxRatio; sx = 0; sy = (img.height - sh) / 2; }
+      const bgW = 1400;
+      const bgH = Math.round(bgW / boxRatio);
+      const blurW = 50;
+      const blurH = Math.round(blurW / boxRatio);
+      const blurCanvas = document.createElement("canvas"); blurCanvas.width = blurW; blurCanvas.height = blurH;
+      const blurCtx = blurCanvas.getContext("2d"); blurCtx.imageSmoothingQuality = "low";
+      blurCtx.drawImage(img, sx, sy, sw, sh, 0, 0, blurW, blurH);
+      blurCtx.fillStyle = "rgba(15, 23, 42, 0.6)"; blurCtx.fillRect(0, 0, blurW, blurH);
+      const finalBgCanvas = document.createElement("canvas"); finalBgCanvas.width = bgW; finalBgCanvas.height = bgH;
+      const finalBgCtx = finalBgCanvas.getContext("2d"); finalBgCtx.imageSmoothingQuality = "high";
+      finalBgCtx.drawImage(blurCanvas, 0, 0, bgW, bgH);
+      let quality = 0.85; let result = finalBgCanvas.toDataURL("image/jpeg", quality); let attempts = 0;
+      while(result.length > 400 * 1024 && quality > 0.5 && attempts < 8){ quality -= 0.05; result = finalBgCanvas.toDataURL("image/jpeg", quality); attempts++; }
       resolve(result);
     };
     img.onerror = () => resolve(null);
@@ -2090,19 +2134,16 @@ function processImageForPPT(dataUrl, boxRatio){
   });
 }
 
-/* ============ ✅ PPT GENERATOR (CLEAN CROP, NO BLUR) ============ */
+/* ============ ✅ PPT GENERATOR (4 STYLES SUPPORTED) ============ */
 async function generateSelectedSitesPPT(){
+  closePPTFormatModal();
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   const list = sites.filter(s => selectedSites.has(s.id));
   if(list.length === 0){ alert("Koi site nahi"); return; }
   const uniqueAreas = [...new Set(list.map(s => s.area || "Unassigned"))];
   const singleArea = uniqueAreas.length === 1 ? uniqueAreas[0] : null;
-  const areaDisplayName = uniqueAreas.length === 1 
-    ? uniqueAreas[0] 
-    : uniqueAreas.length <= 3 
-      ? uniqueAreas.join(", ") 
-      : uniqueAreas.slice(0, 3).join(", ") + " + " + (uniqueAreas.length - 3) + " more";
-  showProgress("Generating PPT...", "Preparing");
+  const areaDisplayName = uniqueAreas.length === 1 ? uniqueAreas[0] : uniqueAreas.length <= 3 ? uniqueAreas.join(", ") : uniqueAreas.slice(0, 3).join(", ") + " + " + (uniqueAreas.length - 3) + " more";
+  showProgress("Generating PPT...", "Style: " + pptFormat);
   try {
     const pptx = new PptxGenJS();
     pptx.layout = "LAYOUT_WIDE";
@@ -2110,16 +2151,12 @@ async function generateSelectedSitesPPT(){
     pptx.title = uniqueAreas.length === 1 ? "Site Report - " + uniqueAreas[0] : "Site Report - Multiple Areas";
 
     let currentLogoUrl = LOGO_URL;
-    try {
-      const logoResult = await apiGet("/logo");
-      if(logoResult && logoResult.success && logoResult.data){ currentLogoUrl = logoResult.data; }
-    } catch(e){}
+    try { const logoResult = await apiGet("/logo"); if(logoResult && logoResult.success && logoResult.data){ currentLogoUrl = logoResult.data; } } catch(e){}
 
     // ===== COVER SLIDE =====
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
-    
     slide.addShape(pptx.ShapeType.roundRect, { x: 0.7, y: 0.6, w: 4.0, h: 1.7, fill: { color: "FFFFFF" }, line: { color: "1D4ED8", width: 1.5 }, rectRadius: 0.1 });
     try {
       slide.addImage({ path: currentLogoUrl, x: 0.9, y: 0.75, w: 3.6, h: 0.85, sizing: { type: "contain", w: 3.6, h: 0.85 } });
@@ -2128,10 +2165,8 @@ async function generateSelectedSitesPPT(){
       slide.addText(COMPANY_NAME, { x: 0.9, y: 0.75, w: 3.6, h: 0.85, fontSize: 16, bold: true, color: "1E40AF", align: "center", valign: "middle" });
       slide.addText("Professional Site Booking & Management", { x: 0.9, y: 1.75, w: 3.6, h: 0.4, fontSize: 9, color: "1E40AF", align: "center", valign: "middle", italic: true });
     }
-    
     const coverAreaFontSize = areaDisplayName.length > 40 ? 28 : areaDisplayName.length > 25 ? 36 : 48;
     slide.addText(areaDisplayName, { x: 0.7, y: 3.0, w: 12, h: 1.5, fontSize: coverAreaFontSize, bold: true, color: "FFFFFF" });
-    
     slide.addShape(pptx.ShapeType.line, { x: 0.7, y: 5.2, w: 11.9, h: 0, line: { color: "60A5FA", width: 1 } });
     slide.addText("Report Date", { x: 0.7, y: 5.4, w: 2, h: 0.3, fontSize: 9, bold: true, color: "93C5FD" });
     slide.addText(new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' }), { x: 0.7, y: 5.7, w: 3, h: 0.4, fontSize: 15, bold: true, color: "FFFFFF" });
@@ -2152,82 +2187,182 @@ async function generateSelectedSitesPPT(){
       if(x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
       const mapLink = getGoogleMapsUrl(x);
       const siteCode = x.siteCode || ((x.site || "").split("_")[0].trim()) || "";
-      
+
       slide = pptx.addSlide();
       slide.background = { color: "FFFFFF" };
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.65, fill: { color: "1E3A8A" } });
       slide.addShape(pptx.ShapeType.roundRect, { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fill: { color: "3B82F6" }, rectRadius: 0.08 });
       slide.addText(String(i+1), { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fontSize: 16, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
       slide.addText(x.site, { x: 0.78, y: 0.05, w: 8.0, h: 0.55, fontSize: 14, bold: true, color: "FFFFFF", valign: "middle" });
-      
       if(siteCode){
         slide.addShape(pptx.ShapeType.roundRect, { x: 8.9, y: 0.12, w: 1.4, h: 0.42, fill: { color: "1D4ED8" }, line: { color: "FFFFFF", width: 1 }, rectRadius: 0.08 });
         slide.addText(siteCode, { x: 8.9, y: 0.12, w: 1.4, h: 0.42, fontSize: 11, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
       }
-      
       slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
-      // ===== ✅ IMAGE AREA - CLEAN CROP (NO BLUR) =====
-      const imgBoxX = 0, imgBoxY = 0.65, imgBoxW = 13.33, imgBoxH = 5.4;
-      const boxRatio = imgBoxW / imgBoxH;
-      
-      let imageAdded = false;
-      if(imgData && typeof imgData === "string"){
-        try {
-          // Process image: crop to fit box exactly
-          const processed = await processImageForPPT(imgData, boxRatio);
-          if(processed){
-            // Draw cropped image filling entire box - NO blur, NO bars
-            slide.addImage({ data: processed, x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH });
-            imageAdded = true;
-          }
-        } catch(e){ console.warn("Image crop failed:", e); }
-        
-        // Fallback: contain (with dark bg)
-        if(!imageAdded){
+      // ===== ✅ LAYOUT-SPECIFIC RENDERING =====
+      if(pptFormat === "split"){
+        // ===== SPLIT VIEW: Image left, details right =====
+        const boxY = 0.65, boxH = 6.6;
+        // Left panel - image (crop to fill)
+        const leftW = 6.6, leftX = 0;
+        slide.addShape(pptx.ShapeType.rect, { x: leftX, y: boxY, w: leftW, h: boxH, fill: { color: "0F172A" } });
+        let imageAdded = false;
+        if(imgData){
           try {
-            slide.addShape(pptx.ShapeType.rect, { x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH, fill: { color: "0F172A" } });
-            slide.addImage({ data: imgData, x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH, sizing: { type: "contain", w: imgBoxW, h: imgBoxH } });
-            imageAdded = true;
-          } catch(e2){ console.warn("Fallback failed:", e2); }
+            const imgRatio = await new Promise(resolve => { const im = new Image(); im.onload = () => resolve(im.width / im.height); im.onerror = () => resolve(1); im.src = imgData; });
+            const targetRatio = leftW / boxH;
+            const cropped = await cropImageToRatio(imgData, targetRatio);
+            if(cropped){ slide.addImage({ data: cropped, x: leftX, y: boxY, w: leftW, h: boxH }); imageAdded = true; }
+          } catch(e){ console.warn(e); }
         }
-      }
-      
-      if(!imageAdded){
-        slide.addShape(pptx.ShapeType.rect, { x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH, fill: { color: "0F172A" } });
-        slide.addShape(pptx.ShapeType.roundRect, { x: 4.5, y: imgBoxY + 1.8, w: 4.33, h: 1.8, fill: { color: "1E293B" }, line: { color: "334155", width: 2, dashType: "dash" }, rectRadius: 0.15 });
-        slide.addText("📷", { x: 4.5, y: imgBoxY + 1.9, w: 4.33, h: 0.7, fontSize: 44, align: "center", valign: "middle" });
-        slide.addText("No Image Available", { x: 4.5, y: imgBoxY + 2.7, w: 4.33, h: 0.4, fontSize: 14, color: "94A3B8", align: "center", valign: "middle", italic: true });
-      }
+        if(!imageAdded){
+          slide.addShape(pptx.ShapeType.roundRect, { x: leftX + 1.5, y: boxY + boxH/2 - 0.7, w: 3.6, h: 1.4, fill: { color: "1E293B" }, line: { color: "334155", width: 1.5, dashType: "dash" }, rectRadius: 0.1 });
+          slide.addText("📷", { x: leftX + 1.5, y: boxY + boxH/2 - 0.6, w: 3.6, h: 0.6, fontSize: 36, align: "center", valign: "middle" });
+          slide.addText("No Image", { x: leftX + 1.5, y: boxY + boxH/2, w: 3.6, h: 0.3, fontSize: 12, color: "94A3B8", align: "center", valign: "middle", italic: true });
+        }
 
-      // ===== INFO BAR =====
-      const infoY = 6.15, infoH = 1.25;
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
-      
-      const colW = 13.33 / 4;
-      const fields = [
-        { label: "AREA", value: x.area || "Unassigned", color: "1E40AF" },
-        { label: "COMPANY", value: x.customer || "—", color: "059669" },
-        { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", color: "D97706" },
-        { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " to " + (x.toDate || "—") + (days > 0 ? " (" + days + "d)" : "") : "—", color: "7C3AED" }
-      ];
-      
-      fields.forEach((f, idx) => {
-        const cx = idx * colW;
-        slide.addText(f.label, { x: cx + 0.1, y: infoY + 0.08, w: colW - 0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
-        slide.addText(String(f.value), { x: cx + 0.1, y: infoY + 0.33, w: colW - 0.2, h: 0.4, fontSize: 11, bold: true, color: f.color, valign: "middle" });
-        if(x.location && idx === 0){
-          slide.addText(x.location, { x: cx + 0.1, y: infoY + 0.75, w: colW - 0.2, h: 0.35, fontSize: 8, color: "64748B", valign: "middle" });
+        // Right panel - details
+        const rightX = leftW, rightW = 13.33 - leftW;
+        slide.addShape(pptx.ShapeType.rect, { x: rightX, y: boxY, w: rightW, h: boxH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 1 } });
+        
+        // Site name header
+        slide.addShape(pptx.ShapeType.rect, { x: rightX, y: boxY, w: rightW, h: 0.9, fill: { color: "1E40AF" } });
+        slide.addText("SITE DETAILS", { x: rightX + 0.3, y: boxY + 0.15, w: rightW - 0.6, h: 0.25, fontSize: 9, bold: true, color: "93C5FD", letterSpacing: 2 });
+        slide.addText(x.site.substring(0, 40), { x: rightX + 0.3, y: boxY + 0.4, w: rightW - 0.6, h: 0.45, fontSize: 15, bold: true, color: "FFFFFF", valign: "middle" });
+
+        // Detail rows
+        const detailStartY = boxY + 1.15;
+        const detailH = 0.85;
+        const details = [
+          { icon: "📍", label: "AREA", value: x.area || "Unassigned", color: "1E40AF" },
+          { icon: "🏢", label: "COMPANY", value: x.customer || "—", color: "059669" },
+          { icon: "💰", label: "MONTHLY RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", color: "D97706" },
+          { icon: "📅", label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + "\n→ " + (x.toDate || "—") + (days > 0 ? " (" + days + " days)" : "") : "—", color: "7C3AED" },
+          { icon: "🗺️", label: "LOCATION", value: x.location || "—", color: "0891B2" }
+        ];
+        details.forEach((d, di) => {
+          const dy = detailStartY + di * detailH;
+          slide.addShape(pptx.ShapeType.rect, { x: rightX, y: dy, w: rightW, h: detailH, fill: { color: di % 2 === 0 ? "FFFFFF" : "F1F5F9" } });
+          slide.addText(d.icon, { x: rightX + 0.15, y: dy, w: 0.4, h: detailH, fontSize: 14, align: "center", valign: "middle" });
+          slide.addText(d.label, { x: rightX + 0.6, y: dy + 0.08, w: rightW - 0.75, h: 0.25, fontSize: 8, bold: true, color: "64748B", letterSpacing: 1 });
+          slide.addText(String(d.value), { x: rightX + 0.6, y: dy + 0.32, w: rightW - 0.75, h: detailH - 0.4, fontSize: 11, bold: true, color: d.color, valign: "top" });
+        });
+
+        // Map button at bottom
+        if(mapLink){
+          const mapY = boxY + boxH - 0.55;
+          slide.addShape(pptx.ShapeType.roundRect, { x: rightX + 0.3, y: mapY, w: rightW - 0.6, h: 0.42, fill: { color: "0891B2" }, rectRadius: 0.08 });
+          slide.addText("📍 Open in Google Maps", { x: rightX + 0.3, y: mapY, w: rightW - 0.6, h: 0.42, fontSize: 11, bold: true, color: "FFFFFF", align: "center", valign: "middle", hyperlink: { url: mapLink } });
         }
-        if(idx === 3 && x.location){
-          slide.addText("📍 " + x.location, { x: cx + 0.1, y: infoY + 0.75, w: colW - 0.2, h: 0.35, fontSize: 8, color: "0891B2", valign: "middle" });
+
+      } else if(pptFormat === "cover"){
+        // ===== FULL COVER: Image fills entire box, crop =====
+        const imgBoxY = 0.65, imgBoxH = 5.4;
+        const boxRatio = 13.33 / imgBoxH;
+        let imageAdded = false;
+        if(imgData){
+          try {
+            const cropped = await cropImageToRatio(imgData, boxRatio);
+            if(cropped){ slide.addImage({ data: cropped, x: 0, y: imgBoxY, w: 13.33, h: imgBoxH }); imageAdded = true; }
+          } catch(e){ console.warn(e); }
         }
-      });
-      
-      if(mapLink){
-        slide.addShape(pptx.ShapeType.roundRect, { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fill: { color: "0891B2" }, rectRadius: 0.08 });
-        slide.addText("📍 Map", { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle", hyperlink: { url: mapLink } });
+        if(!imageAdded){
+          slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "0F172A" } });
+          slide.addText("📷 No Image", { x: 0, y: imgBoxY + imgBoxH/2 - 0.3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+        }
+        // Info bar
+        const infoY = 6.15, infoH = 1.25;
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
+        const colW = 13.33 / 4;
+        const fields = [
+          { label: "AREA", value: x.area || "Unassigned", color: "1E40AF" },
+          { label: "COMPANY", value: x.customer || "—", color: "059669" },
+          { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", color: "D97706" },
+          { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " to " + (x.toDate || "—") + (days > 0 ? " (" + days + "d)" : "") : "—", color: "7C3AED" }
+        ];
+        fields.forEach((f, idx) => {
+          const cx = idx * colW;
+          slide.addText(f.label, { x: cx + 0.1, y: infoY + 0.08, w: colW - 0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
+          slide.addText(String(f.value), { x: cx + 0.1, y: infoY + 0.33, w: colW - 0.2, h: 0.4, fontSize: 11, bold: true, color: f.color, valign: "middle" });
+        });
+        if(mapLink){
+          slide.addShape(pptx.ShapeType.roundRect, { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fill: { color: "0891B2" }, rectRadius: 0.08 });
+          slide.addText("📍 Map", { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle", hyperlink: { url: mapLink } });
+        }
+
+      } else if(pptFormat === "blur"){
+        // ===== BLUR BACKGROUND: contain + blur =====
+        const imgBoxY = 0.65, imgBoxH = 5.4;
+        const boxRatio = 13.33 / imgBoxH;
+        let imageAdded = false;
+        if(imgData){
+          try {
+            const blurBG = await makeBlurBG(imgData, boxRatio);
+            if(blurBG) slide.addImage({ data: blurBG, x: 0, y: imgBoxY, w: 13.33, h: imgBoxH });
+            const imgRatio = await new Promise(resolve => { const im = new Image(); im.onload = () => resolve(im.width / im.height); im.onerror = () => resolve(1); im.src = imgData; });
+            let mDrawW, mDrawH, mDrawX, mDrawY;
+            if(imgRatio > boxRatio){ mDrawW = 13.33; mDrawH = 13.33 / imgRatio; mDrawX = 0; mDrawY = imgBoxY + (imgBoxH - mDrawH) / 2; }
+            else { mDrawH = imgBoxH; mDrawW = imgBoxH * imgRatio; mDrawX = (13.33 - mDrawW) / 2; mDrawY = imgBoxY; }
+            slide.addImage({ data: imgData, x: mDrawX, y: mDrawY, w: mDrawW, h: mDrawH });
+            imageAdded = true;
+          } catch(e){ console.warn(e); }
+        }
+        if(!imageAdded){
+          slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "0F172A" } });
+          slide.addText("📷 No Image", { x: 0, y: imgBoxY + imgBoxH/2 - 0.3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+        }
+        const infoY = 6.15, infoH = 1.25;
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
+        const colW = 13.33 / 4;
+        const fields = [
+          { label: "AREA", value: x.area || "Unassigned", color: "1E40AF" },
+          { label: "COMPANY", value: x.customer || "—", color: "059669" },
+          { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", color: "D97706" },
+          { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " to " + (x.toDate || "—") + (days > 0 ? " (" + days + "d)" : "") : "—", color: "7C3AED" }
+        ];
+        fields.forEach((f, idx) => {
+          const cx = idx * colW;
+          slide.addText(f.label, { x: cx + 0.1, y: infoY + 0.08, w: colW - 0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
+          slide.addText(String(f.value), { x: cx + 0.1, y: infoY + 0.33, w: colW - 0.2, h: 0.4, fontSize: 11, bold: true, color: f.color, valign: "middle" });
+        });
+        if(mapLink){
+          slide.addShape(pptx.ShapeType.roundRect, { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fill: { color: "0891B2" }, rectRadius: 0.08 });
+          slide.addText("📍 Map", { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle", hyperlink: { url: mapLink } });
+        }
+
+      } else {
+        // ===== CONTAIN (Default): fit with dark bg =====
+        const imgBoxY = 0.65, imgBoxH = 5.4;
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "0F172A" } });
+        let imageAdded = false;
+        if(imgData){
+          try { slide.addImage({ data: imgData, x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, sizing: { type: "contain", w: 13.33, h: imgBoxH } }); imageAdded = true; } catch(e){ console.warn(e); }
+        }
+        if(!imageAdded){
+          slide.addShape(pptx.ShapeType.roundRect, { x: 4.5, y: imgBoxY + 1.8, w: 4.33, h: 1.8, fill: { color: "1E293B" }, line: { color: "334155", width: 2, dashType: "dash" }, rectRadius: 0.15 });
+          slide.addText("📷", { x: 4.5, y: imgBoxY + 1.9, w: 4.33, h: 0.7, fontSize: 44, align: "center", valign: "middle" });
+          slide.addText("No Image Available", { x: 4.5, y: imgBoxY + 2.7, w: 4.33, h: 0.4, fontSize: 14, color: "94A3B8", align: "center", italic: true });
+        }
+        const infoY = 6.15, infoH = 1.25;
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
+        const colW = 13.33 / 4;
+        const fields = [
+          { label: "AREA", value: x.area || "Unassigned", color: "1E40AF" },
+          { label: "COMPANY", value: x.customer || "—", color: "059669" },
+          { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", color: "D97706" },
+          { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate || "—") + " to " + (x.toDate || "—") + (days > 0 ? " (" + days + "d)" : "") : "—", color: "7C3AED" }
+        ];
+        fields.forEach((f, idx) => {
+          const cx = idx * colW;
+          slide.addText(f.label, { x: cx + 0.1, y: infoY + 0.08, w: colW - 0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
+          slide.addText(String(f.value), { x: cx + 0.1, y: infoY + 0.33, w: colW - 0.2, h: 0.4, fontSize: 11, bold: true, color: f.color, valign: "middle" });
+        });
+        if(mapLink){
+          slide.addShape(pptx.ShapeType.roundRect, { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fill: { color: "0891B2" }, rectRadius: 0.08 });
+          slide.addText("📍 Map", { x: 12.0, y: infoY + 0.75, w: 1.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle", hyperlink: { url: mapLink } });
+        }
       }
     }
 
@@ -2236,28 +2371,24 @@ async function generateSelectedSitesPPT(){
     slide = pptx.addSlide();
     slide.background = { color: "1E3A8A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
-    
     slide.addShape(pptx.ShapeType.roundRect, { x: 4.67, y: 1.2, w: 4.0, h: 1.7, fill: { color: "FFFFFF" }, line: { color: "1D4ED8", width: 1.5 }, rectRadius: 0.1 });
     try {
       slide.addImage({ path: currentLogoUrl, x: 4.87, y: 1.35, w: 3.6, h: 0.85, sizing: { type: "contain", w: 3.6, h: 0.85 } });
-      slide.addText("Professional Site Booking & Management", { x: 4.87, y: 2.35, w: 3.6, h: 0.4, fontSize: 9, color: "1E40AF", align: "center", valign: "middle", italic: true, bold: true });
+      slide.addText("Professional Site Booking & Management", { x: 4.87, y: 2.35, w: 3.6, h: 0.4, fontSize: 9, color: "1E40AF", align: "center", italic: true, bold: true });
     } catch(e) {
       slide.addText(COMPANY_NAME, { x: 4.87, y: 1.35, w: 3.6, h: 0.85, fontSize: 16, bold: true, color: "1E40AF", align: "center", valign: "middle" });
-      slide.addText("Professional Site Booking & Management", { x: 4.87, y: 2.35, w: 3.6, h: 0.4, fontSize: 9, color: "1E40AF", align: "center", valign: "middle", italic: true });
+      slide.addText("Professional Site Booking & Management", { x: 4.87, y: 2.35, w: 3.6, h: 0.4, fontSize: 9, color: "1E40AF", align: "center", italic: true });
     }
-    
     slide.addText("Thank You", { x: 0, y: 3.5, w: 13.33, h: 1.2, fontSize: 54, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-    slide.addText("For more information, please contact us", { x: 0, y: 4.8, w: 13.33, h: 0.5, fontSize: 16, color: "93C5FD", align: "center", valign: "middle", italic: true });
-    
+    slide.addText("For more information, please contact us", { x: 0, y: 4.8, w: 13.33, h: 0.5, fontSize: 16, color: "93C5FD", align: "center", italic: true });
     slide.addShape(pptx.ShapeType.line, { x: 4.5, y: 5.5, w: 4.33, h: 0, line: { color: "60A5FA", width: 1 } });
     slide.addText(COMPANY_NAME, { x: 0, y: 5.7, w: 13.33, h: 0.4, fontSize: 14, bold: true, color: "FFFFFF", align: "center" });
     slide.addText(new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' }), { x: 0, y: 6.1, w: 13.33, h: 0.35, fontSize: 11, color: "93C5FD", align: "center" });
 
     const fileName = "Site_Report_" + (singleArea ? singleArea.replace(/[^a-zA-Z0-9]/g, "_") : "Multiple_Areas") + "_" + new Date().toISOString().slice(0,10) + ".pptx";
     await pptx.writeFile({ fileName: fileName });
-    
     hideProgress();
-    alert("✅ PPT generated successfully!\n\nFile: " + fileName + "\nTotal slides: " + (list.length + 2));
+    alert("✅ PPT generated!\n\nStyle: " + pptFormat + "\nFile: " + fileName + "\nSlides: " + (list.length + 2));
   } catch(e){
     hideProgress();
     console.error("PPT generation error:", e);
@@ -2354,7 +2485,7 @@ async function downloadBackup(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
   showProgress("Creating backup...", "Collecting data");
   try {
-    const backup = { version: "1.0", exportedAt: new Date().toISOString(), exportedBy: currentUser.username, sites: sites, areas: areas, bookingHistory: bookingHistory, logo: LOGO_URL, telegram: telegramConfig };
+    const backup = { version: "1.0", exportedAt: new Date().toISOString(), exportedBy: currentUser.username, sites: sites, areas: areas, bookingHistory: bookingHistory, logo: LOGO_URL, telegram: telegramConfig, pptFormat: pptFormat };
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sms_backup_" + new Date().toISOString().slice(0,19).replace(/[:T]/g, "-") + ".json"; a.click();
     hideProgress(); alert("✅ Backup downloaded!");
@@ -2377,6 +2508,7 @@ function handleImportFile(e){
       sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
       if(backup.logo){ LOGO_URL = backup.logo; }
       if(backup.telegram){ telegramConfig = { ...telegramConfig, ...backup.telegram }; saveTelegramConfig(); }
+      if(backup.pptFormat){ pptFormat = backup.pptFormat; savePPTFormat(); updatePPTFormatUI(); }
       await persistNow();
       populateAreaDropdowns(); render(); hideProgress();
       alert("✅ Import successful!\n\nSites: " + sites.length + "\nAreas: " + areas.length);
@@ -2398,6 +2530,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("dateFilterFrom").dataset.lastLength = "0";
   document.getElementById("dateFilterTo").dataset.lastLength = "0";
   loadTelegramConfig();
+  loadPPTFormat();
   checkSession();
 });
 </script>
