@@ -36,10 +36,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .btn-gray{background:#6b7280;color:#fff}
 .btn-red{background:#dc2626;color:#fff}
 .btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
+.btn-notify{background:#10b981;color:#fff}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
-
-/* ============ COMPACT CARDS ============ */
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;position:relative;overflow:hidden;cursor:pointer;min-height:70px;display:flex;flex-direction:column;justify-content:center}
 .card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:#94a3b8}
@@ -49,15 +48,11 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card.available::before{background:#10b981}.card.available b{color:#047857}
 .card.notavailable::before{background:#ef4444}.card.notavailable b{color:#b91c1c}
 .card.maintenance::before{background:#f59e0b}.card.maintenance b{color:#b45309}
-
-/* ============ COMPACT TOOLBAR ============ */
 .toolbar{background:#fff;padding:8px;border-radius:10px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;border:1px solid #e2e8f0;align-items:center}
 .toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-family:inherit;background:#fff;outline:none;color:#0f172a;min-width:160px;flex:1;font-size:13px !important;height:36px}
 .toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;height:36px;white-space:nowrap}
 .toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
 .toolbar button.multi-area-btn{background:#7c3aed;color:#fff;border-color:#6d28d9}
-
-/* Compact unified filter box */
 .filter-box{display:flex;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;flex-wrap:nowrap;height:36px}
 .filter-box select{padding:0 10px;border:0;border-right:1px solid #cbd5e1;font-family:inherit;font-size:12px !important;background:#fff;outline:none;color:#0f172a;cursor:pointer;min-width:120px;height:100%;font-weight:600}
 .filter-box select:focus{background:#eff6ff}
@@ -68,13 +63,11 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700;display:flex;align-items:center}
 .filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-family:inherit;font-weight:700;font-size:11px;height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
 .filter-box .apply-btn:hover{background:#2563eb}
-.filter-box .apply-btn:active{transform:scale(0.97)}
 .filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none;align-items:center}
 .filter-box .clear-btn.show{display:flex}
 .filter-box .clear-btn:hover{background:#fef2f2}
 .filter-active-badge{background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;border:1px solid #93c5fd;display:none;align-items:center;gap:3px;white-space:nowrap;height:24px}
 .filter-active-badge.show{display:inline-flex}
-
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:8px 10px;border-radius:8px;margin-bottom:12px;display:none;gap:6px;flex-wrap:wrap;align-items:stretch}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 12px;border-radius:5px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;min-height:36px;min-width:90px}
@@ -83,7 +76,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .select-bar .bulk-status-sel{background:#0ea5e9}
 .select-bar .clear-sel{background:#fff;color:#334155;border:1px solid #cbd5e1}
 .select-bar .delete-sel{background:#dc2626}
-
 #areaContainer{display:grid;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:12px;align-items:start}
 .area-block{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;height:fit-content}
 .area-header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:8px;border-radius:14px 14px 0 0}
@@ -179,6 +171,18 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .bulk-tab:hover{background:#f8fafc}
 .bulk-tab-content{display:none}
 .bulk-tab-content.active{display:block}
+.toast{position:fixed;top:80px;right:20px;background:#0f172a;color:#fff;padding:14px 18px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:5000;display:flex;gap:10px;align-items:flex-start;max-width:380px;transform:translateX(450px);transition:transform 0.3s ease;font-size:13px}
+.toast.show{transform:translateX(0)}
+.toast.success{border-left:4px solid #10b981}
+.toast.info{border-left:4px solid #3b82f6}
+.toast.warning{border-left:4px solid #f59e0b}
+.toast.danger{border-left:4px solid #dc2626}
+.toast .toast-icon{font-size:20px;flex-shrink:0}
+.toast .toast-body{flex:1;min-width:0}
+.toast .toast-title{font-weight:700;margin-bottom:2px;font-size:13px}
+.toast .toast-msg{font-size:12px;opacity:0.85;word-break:break-word}
+.toast .toast-close{background:transparent;border:0;color:#fff;cursor:pointer;font-size:16px;opacity:0.6;padding:0;flex-shrink:0}
+.toast .toast-close:hover{opacity:1}
 @media (max-width:1024px){#areaContainer{grid-template-columns:1fr}}
 @media (max-width:768px){
   header{padding:10px 12px}
@@ -212,6 +216,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions{flex-direction:column-reverse}
   .modal-actions button{width:100%}
   .bulk-tab{font-size:11px;padding:10px 12px;min-width:110px}
+  .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
 }
 @media (max-width:380px){
   .cards{grid-template-columns:1fr 1fr}
@@ -245,6 +250,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;width:auto;flex:1;justify-content:flex-end">
     <span class="header-user" id="userInfo">Loading...</span>
     <div class="header-actions">
+      <button class="btn-notify" id="notifyBtn" onclick="toggleNotifications()" title="Enable/Disable notifications">🔔 Notify</button>
       <button class="btn-yellow admin-only" onclick="openBulkUpload()">Bulk</button>
       <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
       <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
@@ -260,7 +266,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="card maintenance" id="cardMaintenance" onclick="filterByCard('Under Maintenance')"><span>Under Maintenance</span><b id="maintenance">0</b></div>
 </div>
 
-<!-- COMPACT TOOLBAR -->
 <div class="toolbar">
   <input id="search" type="text" placeholder="Search sites..." oninput="debouncedRender()">
 
@@ -530,6 +535,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
 
+<!-- Toast container -->
+<div id="toastContainer"></div>
+
 <script>
 const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
@@ -563,7 +571,115 @@ let lastDataHash = "";
 let dateFilterFrom = "";
 let dateFilterTo = "";
 let renderDebounceTimer = null;
+let notificationsEnabled = false;
+let lastKnownStatuses = {}; // site id -> status (for detecting changes)
 
+/* ============ TOAST NOTIFICATIONS ============ */
+function showToast(title, message, type){
+  const container = document.getElementById("toastContainer");
+  const toast = document.createElement("div");
+  toast.className = "toast " + (type || "info");
+  const icons = { success: "✅", info: "ℹ️", warning: "⚠️", danger: "🚨" };
+  toast.innerHTML = '<div class="toast-icon">' + (icons[type] || "ℹ️") + '</div>' +
+    '<div class="toast-body"><div class="toast-title">' + esc(title) + '</div>' +
+    '<div class="toast-msg">' + esc(message) + '</div></div>' +
+    '<button class="toast-close" onclick="this.parentElement.remove()">×</button>';
+  container.appendChild(toast);
+  setTimeout(() => toast.classList.add("show"), 10);
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 6000);
+}
+
+/* ============ BROWSER NOTIFICATIONS ============ */
+async function initNotifications(){
+  if(!("Notification" in window)) {
+    document.getElementById("notifyBtn").style.display = "none";
+    return;
+  }
+  if(Notification.permission === "granted"){
+    notificationsEnabled = true;
+    updateNotifyBtn();
+  } else if(Notification.permission === "denied"){
+    document.getElementById("notifyBtn").style.display = "none";
+  } else {
+    updateNotifyBtn();
+  }
+}
+function updateNotifyBtn(){
+  const btn = document.getElementById("notifyBtn");
+  if(!btn) return;
+  if(notificationsEnabled){
+    btn.textContent = "🔔 ON";
+    btn.style.background = "#10b981";
+  } else {
+    btn.textContent = "🔕 OFF";
+    btn.style.background = "#6b7280";
+  }
+}
+async function toggleNotifications(){
+  if(!("Notification" in window)){ alert("Browser notifications support nahi karta"); return; }
+  if(notificationsEnabled){
+    notificationsEnabled = false;
+    updateNotifyBtn();
+    showToast("Notifications OFF", "Aapko ab alerts nahi milenge", "info");
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  if(perm === "granted"){
+    notificationsEnabled = true;
+    updateNotifyBtn();
+    showToast("Notifications ON", "Ab site bookings & maintenance ke alerts milenge", "success");
+    sendBrowserNotification("🔔 Notifications Enabled", "Ab aapko site updates ke alerts milenge", "info");
+  } else {
+    showToast("Permission Denied", "Browser settings me notification allow karein", "warning");
+  }
+}
+function sendBrowserNotification(title, body, type){
+  if(!notificationsEnabled) return;
+  if(Notification.permission !== "granted") return;
+  try {
+    const n = new Notification(title, {
+      body: body,
+      icon: LOGO_URL,
+      badge: LOGO_URL,
+      tag: "sms-" + Date.now(),
+      requireInteraction: type === "danger"
+    });
+    setTimeout(() => n.close(), 8000);
+  } catch(e){ console.warn("Notification error:", e); }
+}
+function notifyStatusChange(site, oldStatus, newStatus){
+  const isBooked = (newStatus === "Not Available") && (oldStatus === "Available" || !oldStatus);
+  const isMaint = (newStatus === "Under Maintenance") && (oldStatus !== "Under Maintenance");
+  const isReleased = (newStatus === "Available") && (oldStatus === "Not Available" || oldStatus === "Under Maintenance");
+  
+  let title, body, type, toastType;
+  if(isBooked){
+    title = "🚨 Site Booked!";
+    body = site.site + " (" + (site.area||"") + ") — " + (site.customer||"Customer") + " ne book kiya";
+    type = "danger"; toastType = "danger";
+  } else if(isMaint){
+    title = "⚠️ Maintenance Alert";
+    body = site.site + " (" + (site.area||"") + ") ab maintenance me hai";
+    type = "warning"; toastType = "warning";
+  } else if(isReleased){
+    title = "✅ Site Available";
+    body = site.site + " (" + (site.area||"") + ") ab available hai";
+    type = "success"; toastType = "success";
+  } else {
+    return;
+  }
+  
+  // Browser notification
+  sendBrowserNotification(title, body, type);
+  
+  // In-app toast
+  showToast(title, body, toastType);
+}
+
+/* ============ API ============ */
 async function apiGet(path){
   try { const r = await fetch(API_URL + path, { method: "GET" }); return await r.json(); }
   catch(e){ return { success: false, error: e.message }; }
@@ -586,6 +702,8 @@ async function loadCloudData(){
     bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
     sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
     lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
+    // Save current statuses for change detection
+    sites.forEach(s => { lastKnownStatuses[s.id] = s.status; });
     return true;
   }
   return false;
@@ -665,7 +783,7 @@ async function refreshPptCache(){
   }
 }
 
-/* ============ LOGO MANAGEMENT ============ */
+/* ============ LOGO ============ */
 async function loadLogoFromCloud(){
   try {
     const result = await apiGet("/logo");
@@ -780,7 +898,7 @@ async function saveNewLogo(){
       if(loginLogo){ loginLogo.src = newLogoData; loginLogo.style.display = "inline-block"; }
       cancelLogoUpload();
       hideProgress();
-      alert("✅ Logo successfully update ho gaya!\n\nAb PPT generate karne par naya logo aayega.");
+      alert("✅ Logo successfully update ho gaya!");
     } else {
       hideProgress();
       alert("Failed: " + (result.error || "Unknown error"));
@@ -791,6 +909,7 @@ async function saveNewLogo(){
   }
 }
 
+/* ============ LOGIN ============ */
 async function doLogin(){
   const username = document.getElementById("loginUser").value.trim();
   const password = document.getElementById("loginPass").value;
@@ -831,6 +950,7 @@ async function showApp(){
   await autoReleaseExpiredSites();
   render();
   startAutoRefresh();
+  initNotifications();
 }
 function doLogout(){
   if(!confirm("Logout?")) return;
@@ -843,6 +963,8 @@ function checkSession(){
   const saved = sessionStorage.getItem("sms_user");
   if(saved){ try { currentUser = JSON.parse(saved); showApp(); } catch(e){ sessionStorage.removeItem("sms_user"); } }
 }
+
+/* ============ AUTO REFRESH WITH NOTIFICATIONS ============ */
 function startAutoRefresh(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
   autoRefreshTimer = setInterval(async () => {
@@ -853,10 +975,22 @@ function startAutoRefresh(){
       if(newHash !== lastDataHash){
         const modal = document.getElementById("modal");
         if(modal && modal.classList.contains("show")) return;
-        sites = result.sites || [];
+        
+        const newSites = result.sites || [];
+        // Detect status changes for notifications
+        newSites.forEach(s => {
+          if(!s.id) return;
+          const oldStatus = lastKnownStatuses[s.id];
+          if(oldStatus && oldStatus !== s.status){
+            notifyStatusChange(s, oldStatus, s.status);
+          }
+        });
+        
+        sites = newSites;
         areas = (result.areas && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
         bookingHistory = result.bookingHistory || [];
         sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
+        sites.forEach(s => { lastKnownStatuses[s.id] = s.status; });
         lastDataHash = newHash;
         await refreshPptCache();
         render();
@@ -864,6 +998,7 @@ function startAutoRefresh(){
     }
   }, 20000);
 }
+
 function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function normalizeStatus(s){
   s = String(s||"Available").trim().toLowerCase();
@@ -889,7 +1024,7 @@ function showProgress(t, s){
 }
 function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
 
-/* ============ FILTER HANDLING ============ */
+/* ============ FILTER ============ */
 function onFilterChange(){ 
   areaFilters = {}; 
   render(); 
@@ -917,8 +1052,21 @@ function populateAreaDropdowns(){
   areas.forEach(a => { formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
 }
 
-/* ============ DATE FILTER (DD/MM/YYYY) ============ */
+/* ============ DATE INPUT HANDLING (FIX BACKSPACE) ============ */
 function formatDateInput(input){
+  const oldVal = input.value;
+  const selectionStart = input.selectionStart;
+  const isDeleting = input.dataset.lastLength && oldVal.length < parseInt(input.dataset.lastLength);
+  input.dataset.lastLength = oldVal.length;
+  
+  // If user is deleting, don't auto-format (let them delete freely)
+  if(isDeleting){
+    // Clean up only if there are weird characters
+    const cleaned = oldVal.replace(/[^\d\/]/g, "");
+    if(cleaned !== oldVal){ input.value = cleaned; }
+    return;
+  }
+  
   let val = input.value.replace(/\D/g, "");
   if(val.length >= 2){
     let dd = val.substring(0, 2);
@@ -971,11 +1119,11 @@ function applyFilters(){
   }
   
   if(fromInput && !isValidDate(fromInput)){
-    alert("From date valid nahi hai (dd/mm/yyyy)");
+    alert("From date valid nahi hai");
     return;
   }
   if(toInput && !isValidDate(toInput)){
-    alert("To date valid nahi hai (dd/mm/yyyy)");
+    alert("To date valid nahi hai");
     return;
   }
   
@@ -991,6 +1139,41 @@ function applyFilters(){
   areaFilters = {};
   render();
   updateFilterBadge();
+  
+  // ✅ AUTO-SELECT all sites matching the filter
+  autoSelectFilteredSites();
+}
+
+/* ============ AUTO SELECT FILTERED SITES ============ */
+function autoSelectFilteredSites(){
+  const fromInput = document.getElementById("dateFilterFrom").value.trim();
+  const toInput = document.getElementById("dateFilterTo").value.trim();
+  const q = (document.getElementById("search").value || "").toLowerCase().trim();
+  const f = document.getElementById("filter").value;
+  
+  // Only auto-select if there's an active filter (date or status)
+  const hasFilter = fromInput || toInput || f !== "ALL" || q;
+  if(!hasFilter) return;
+  
+  let count = 0;
+  sites.forEach(s => {
+    const sArea = s.area || "Unassigned";
+    // Apply same filters as render
+    if(f !== "ALL" && s.status !== f) return;
+    if(!siteMatchesDateFilter(s)) return;
+    const hay = (s.site + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
+    if(q && !hay.includes(q)) return;
+    
+    if(!selectedSites.has(s.id)){
+      selectedSites.add(s.id);
+      count++;
+    }
+  });
+  
+  if(count > 0){
+    updateSelectBar();
+    showToast("Auto-selected", count + " site(s) filter ke according select ho gayi", "success");
+  }
 }
 
 function isValidDate(s){
@@ -1010,6 +1193,8 @@ function clearAllFilters(){
   document.getElementById("search").value = "";
   document.getElementById("dateFilterFrom").value = "";
   document.getElementById("dateFilterTo").value = "";
+  document.getElementById("dateFilterFrom").dataset.lastLength = "0";
+  document.getElementById("dateFilterTo").dataset.lastLength = "0";
   dateFilterFrom = "";
   dateFilterTo = "";
   areaFilters = {};
@@ -1017,7 +1202,6 @@ function clearAllFilters(){
   syncCardHighlight();
   updateFilterBadge();
 }
-
 function clearDateFilter(){ clearAllFilters(); }
 
 function updateFilterBadge(){
@@ -1033,7 +1217,6 @@ function updateFilterBadge(){
   if(from || to) parts.push("Date: " + (from || "—") + " → " + (to || "—"));
   if(q) parts.push("Search: " + q);
   
-  // Show/hide clear button
   if(f !== "ALL" || from || to){
     clearBtn.classList.add("show");
   } else {
@@ -1079,12 +1262,8 @@ function siteMatchesDateFilter(site){
       if(siteTo < filterFrom) return false;
       return true;
     }
-    if(siteFrom && !siteTo){
-      return siteFrom <= filterTo;
-    }
-    if(!siteFrom && siteTo){
-      return siteTo >= filterFrom;
-    }
+    if(siteFrom && !siteTo) return siteFrom <= filterTo;
+    if(!siteFrom && siteTo) return siteTo >= filterFrom;
   }
   if(filterFrom && !filterTo){
     if(siteTo) return siteTo >= filterFrom;
@@ -1099,7 +1278,6 @@ function siteMatchesDateFilter(site){
   return true;
 }
 
-/* ============ STATUS COUNTS WITH DATE FILTER ============ */
 function getFilteredSitesForCounts(){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
@@ -1108,7 +1286,6 @@ function getFilteredSitesForCounts(){
   const hasDateFilter = fromInput || toInput;
   const hasSearch = q && q.length > 0;
   
-  // If no date/search filter → count all
   if(!hasDateFilter && !hasSearch) return sites;
   
   return sites.filter(s => {
@@ -1136,7 +1313,7 @@ function debouncedRender(){
   renderDebounceTimer = setTimeout(() => { render(); updateFilterBadge(); }, 200);
 }
 
-/* ============ REFRESH PAGE ============ */
+/* ============ REFRESH ============ */
 async function refreshPage(e){
   if(e){ e.stopPropagation(); if(e.preventDefault) e.preventDefault(); }
   const btn = document.querySelector(".refresh-btn");
@@ -1220,7 +1397,7 @@ function applyMultiAreaSelection(){
   alert("✅ " + totalSites + " sites selected from " + multiAreaSelected.size + " area(s)");
 }
 
-/* ============ BULK TABS ============ */
+/* ============ BULK ============ */
 function switchBulkTab(tab){
   document.querySelectorAll(".bulk-tab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".bulk-tab-content").forEach(t => t.classList.remove("active"));
@@ -1240,7 +1417,6 @@ function switchBulkTab(tab){
   }
   updateBulkUploadBtn();
 }
-
 function openBulkUpload(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
   bulkParsedSites = [];
@@ -1263,10 +1439,7 @@ function closeBulkModal(){ document.getElementById("bulkModal").classList.remove
 function updateBulkUploadBtn(){
   const activeTab = document.querySelector(".bulk-tab.active").id;
   const btn = document.getElementById("bulkUploadBtn");
-  if(activeTab === "tabLogo"){
-    btn.style.display = "none";
-    return;
-  }
+  if(activeTab === "tabLogo"){ btn.style.display = "none"; return; }
   btn.style.display = "inline-flex";
   if(activeTab === "tabSites"){
     btn.disabled = bulkParsedSites.length === 0;
@@ -1283,7 +1456,6 @@ function updateBulkUploadBtn(){
   if(btn.disabled){ btn.style.background = "#cbd5e1"; btn.style.color = "#64748b"; }
   else { btn.style.background = "#3b82f6"; btn.style.color = "#fff"; btn.style.cursor = "pointer"; }
 }
-
 function downloadSampleCSV(){
   const sample = "area,site,location,company,rate,status,from,to\nChandigarh,CG01,Sector 17 Bus Stand,ABC Media,50000,Available,,\n";
   const blob = new Blob(["\ufeff"+sample], { type: "text/csv;charset=utf-8" });
@@ -1428,7 +1600,7 @@ function renderBulkImagePreview(invalidList){
   sum.innerHTML = sumHtml;
   let html = '<table><thead><tr><th>#</th><th>Image</th><th>Size</th><th>Matched Site</th><th>Status</th></tr></thead><tbody>';
   bulkParsedImages.slice(0, 50).forEach((p, i) => {
-    html += '<tr><td>' + (i+1) + '</td><td>' + esc(p.name) + '</td><td>' + formatBytes(p.size) + '</td><td>' + esc(p.siteName || "—") + '</td><td>' + (p.matched ? '<span style="color:#047857;font-weight:700">✓</span>' : '<span style="color:#b91c1c;font-weight:700">✗</span>') + '</td></tr>';
+    html += '<tr><td>' + (i+1) + '</td><td>' + esc(p.name) + '</td><td>' + formatBytes(p.size) + '</td><td>' + esc(p.siteName || "—") + '</td><td>' + (p.matched ? '✓' : '✗') + '</td></tr>';
   });
   html += '</tbody></table>';
   prev.innerHTML = html;
@@ -1495,7 +1667,7 @@ function renderBulkPptPreview(invalidList){
   sum.innerHTML = sumHtml;
   let html = '<table><thead><tr><th>#</th><th>File</th><th>Size</th><th>Matched Area</th><th>Status</th></tr></thead><tbody>';
   bulkPptParsed.forEach((p, i) => {
-    html += '<tr><td>' + (i+1) + '</td><td>' + esc(p.name) + '</td><td>' + formatBytes(p.size) + '</td><td>' + esc(p.area || "—") + '</td><td>' + (p.matched ? '<span style="color:#047857;font-weight:700">✓</span>' : '<span style="color:#b91c1c;font-weight:700">✗</span>') + '</td></tr>';
+    html += '<tr><td>' + (i+1) + '</td><td>' + esc(p.name) + '</td><td>' + formatBytes(p.size) + '</td><td>' + esc(p.area || "—") + '</td><td>' + (p.matched ? '✓' : '✗') + '</td></tr>';
   });
   html += '</tbody></table>';
   prev.innerHTML = html;
@@ -1561,6 +1733,7 @@ async function confirmBulkUpload(){
   }
 }
 
+/* ============ AREA MANAGEMENT ============ */
 function openAreaManager(){
   if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
   selectedAreas.clear(); renderAreaList(); document.getElementById("areaModal").classList.add("show");
@@ -1636,6 +1809,7 @@ async function deleteArea(index){
 function toggleAreaCollapse(areaName){ if(collapsedAreas.has(areaName)) collapsedAreas.delete(areaName); else collapsedAreas.add(areaName); render(); }
 function setAreaFilter(areaName, value){ areaFilters[areaName] = value; render(); }
 
+/* ============ DATE UTILS ============ */
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const YEARS = [];
 const CUR_YEAR = new Date().getFullYear();
@@ -1716,6 +1890,8 @@ async function autoReleaseExpiredSites(){
   if(changed) await persistNow();
   return changed;
 }
+
+/* ============ RENDER ============ */
 async function render(){
   await autoReleaseExpiredSites();
   syncCardHighlight();
@@ -1725,7 +1901,6 @@ async function render(){
   const q = (document.getElementById("search").value || "").toLowerCase().trim();
   const f = document.getElementById("filter").value;
   
-  // ✅ Cards counts update based on date filter
   updateCardsWithFilteredCounts();
   
   if(collapsedAreas === null) collapsedAreas = new Set(areas);
@@ -1900,9 +2075,11 @@ async function applyBulkStatus(){
   if(status === "Available"){ fromLabel = ""; toLabel = ""; }
   if(!confirm(targets.length + " sites par '" + status + "' apply?")) return;
   targets.forEach(s => {
+    const oldStatus = s.status;
     s.status = status;
     if(status === "Available"){ s.fromDate = ""; s.toDate = ""; s.customer = ""; }
     else { s.fromDate = fromLabel; s.toDate = toLabel; }
+    if(oldStatus !== status) notifyStatusChange(s, oldStatus, status);
   });
   await persistNow(); render(); closeBulkStatusModal(); clearSelection();
 }
@@ -1967,6 +2144,7 @@ async function saveSite(){
   let statusVal = document.getElementById("fstatus").value;
   const id = editIndex < 0 ? "id_"+Math.random().toString(36).slice(2,10) : sites[editIndex].id;
   const hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
+  const oldStatus = editIndex < 0 ? null : sites[editIndex].status;
   const loc = document.getElementById("flocation");
   const newSite = {
     id, area: areaVal,
@@ -1986,6 +2164,14 @@ async function saveSite(){
   await persistNow();
   hideProgress();
   closeModal(); render();
+  
+  // Notification for status change
+  if(oldStatus && oldStatus !== statusVal){
+    notifyStatusChange(newSite, oldStatus, statusVal);
+  } else if(editIndex < 0 && statusVal !== "Available"){
+    notifyStatusChange(newSite, "Available", statusVal);
+  }
+  lastKnownStatuses[id] = statusVal;
 }
 function handleImageUpload(e){
   const file = e.target.files[0]; if(!file) return;
@@ -2077,7 +2263,17 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-/* ============ PPT GENERATOR ============ */
+/* ============ HELPER: GET IMAGE DIMENSIONS ============ */
+function getImageDimensions(dataUrl){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve({ w: img.width, h: img.height, ratio: img.width / img.height });
+    img.onerror = () => resolve({ w: 1, h: 1, ratio: 1 });
+    img.src = dataUrl;
+  });
+}
+
+/* ============ PPT GENERATOR (FIXED IMAGE STRETCH) ============ */
 async function generateSelectedSitesPPT(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   const list = sites.filter(s => selectedSites.has(s.id));
@@ -2102,6 +2298,7 @@ async function generateSelectedSitesPPT(){
       if(logoResult && logoResult.success && logoResult.data){ currentLogoUrl = logoResult.data; }
     } catch(e){}
 
+    // ===== COVER SLIDE =====
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
@@ -2126,6 +2323,7 @@ async function generateSelectedSitesPPT(){
     slide.addText("Generated", { x: 8.7, y: 5.4, w: 4, h: 0.3, fontSize: 9, bold: true, color: "93C5FD" });
     slide.addText(new Date().toLocaleString('en-GB'), { x: 8.7, y: 5.7, w: 4, h: 0.4, fontSize: 12, bold: true, color: "FFFFFF" });
 
+    // ===== SITE SLIDES =====
     for(let i = 0; i < list.length; i++){
       const x = list[i];
       showProgress("Generating PPT...", "Slide " + (i+1) + " / " + list.length);
@@ -2153,14 +2351,55 @@ async function generateSelectedSitesPPT(){
       slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
       slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
-      const imgBoxY = 0.65, imgBoxH = 5.4;
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, fill: { color: "0F172A" } });
+      // ===== IMAGE AREA (FIXED STRETCH) =====
+      const imgBoxX = 0, imgBoxY = 0.65, imgBoxW = 13.33, imgBoxH = 5.4;
+      // Dark background (letterbox)
+      slide.addShape(pptx.ShapeType.rect, { x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH, fill: { color: "0F172A" } });
+      
       let imageAdded = false;
       if(imgData && typeof imgData === "string"){
         try {
-          slide.addImage({ data: imgData, x: 0, y: imgBoxY, w: 13.33, h: imgBoxH, sizing: { type: "contain", w: 13.33, h: imgBoxH } });
+          // Get image dimensions to calculate proper fit
+          const dims = await getImageDimensions(imgData);
+          const boxRatio = imgBoxW / imgBoxH; // 13.33/5.4 = 2.469
+          const imgRatio = dims.ratio;
+          
+          let drawW, drawH, drawX, drawY;
+          
+          if(imgRatio > boxRatio){
+            // Image is wider than box → fit by width, letterbox top/bottom
+            drawW = imgBoxW;
+            drawH = imgBoxW / imgRatio;
+            drawX = imgBoxX;
+            drawY = imgBoxY + (imgBoxH - drawH) / 2;
+          } else {
+            // Image is taller than box → fit by height, letterbox left/right
+            drawH = imgBoxH;
+            drawW = imgBoxH * imgRatio;
+            drawX = imgBoxX + (imgBoxW - drawW) / 2;
+            drawY = imgBoxY;
+          }
+          
+          slide.addImage({ 
+            data: imgData, 
+            x: drawX, 
+            y: drawY, 
+            w: drawW, 
+            h: drawH
+          });
           imageAdded = true;
-        } catch(e){ console.warn("Image add failed:", e); }
+        } catch(e){ 
+          console.warn("Image add failed:", e);
+          // Fallback: try contain sizing
+          try {
+            slide.addImage({ 
+              data: imgData, 
+              x: imgBoxX, y: imgBoxY, w: imgBoxW, h: imgBoxH,
+              sizing: { type: "contain", w: imgBoxW, h: imgBoxH }
+            });
+            imageAdded = true;
+          } catch(e2){ console.warn("Fallback also failed:", e2); }
+        }
       }
       if(!imageAdded){
         slide.addShape(pptx.ShapeType.roundRect, { x: 4.5, y: imgBoxY + 1.8, w: 4.33, h: 1.8, fill: { color: "1E293B" }, line: { color: "334155", width: 2, dashType: "dash" }, rectRadius: 0.15 });
@@ -2168,6 +2407,7 @@ async function generateSelectedSitesPPT(){
         slide.addText("No Image Available", { x: 4.5, y: imgBoxY + 2.7, w: 4.33, h: 0.4, fontSize: 14, color: "94A3B8", align: "center", valign: "middle", italic: true });
       }
 
+      // ===== INFO BAR =====
       const infoY = 6.15, infoH = 1.25;
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: infoY, w: 13.33, h: infoH, fill: { color: "F8FAFC" }, line: { color: "E2E8F0", width: 0.5 } });
       
@@ -2197,7 +2437,7 @@ async function generateSelectedSitesPPT(){
       }
     }
 
-    // Thank You Slide
+    // ===== THANK YOU SLIDE =====
     showProgress("Generating PPT...", "Final slide");
     slide = pptx.addSlide();
     slide.background = { color: "1E3A8A" };
@@ -2418,6 +2658,8 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("loginPass").addEventListener("keypress", e => {
     if(e.key === "Enter") doLogin();
   });
+  document.getElementById("dateFilterFrom").dataset.lastLength = "0";
+  document.getElementById("dateFilterTo").dataset.lastLength = "0";
   checkSession();
 });
 </script>
