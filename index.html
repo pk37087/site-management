@@ -166,8 +166,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .logo-preview-box{display:flex;align-items:center;gap:14px;padding:14px;border:2px solid #e2e8f0;border-radius:10px;background:#f8fafc;margin-top:10px}
 .logo-preview-box img{max-width:120px;max-height:60px;object-fit:contain;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:4px}
 .logo-preview-box .logo-actions{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
-
-/* ============ PROFESSIONAL PPT MODAL ============ */
 .ppt-modal-box{background:#fff;border-radius:20px;padding:0;width:min(760px,100%);max-height:90vh;box-shadow:0 20px 80px rgba(15,23,42,.4);margin:auto;display:flex;flex-direction:column;overflow:hidden}
 .ppt-header{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;padding:20px 26px;position:relative;overflow:hidden;flex-shrink:0}
 .ppt-header::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.08)}
@@ -900,7 +898,6 @@ function saveSite(){
   var areaVal = document.getElementById("farea").value;
   if(!areaVal){ alert("Please select an area"); return; }
   
-  // ✅ CHECK: If future date, force Not Available
   var autoStatus = calcStatusFromDates(fromVal, toVal);
   var userStatus = document.getElementById("fstatus").value;
   
@@ -1494,7 +1491,6 @@ function createFitBlurImage(dataUrl, targetW, targetH){
     img.src = dataUrl;
   });
 }
-
 function generatePPT(){
   if(selectedSites.size === 0){ alert("Please select sites first"); return; }
   if(typeof PptxGenJS === "undefined"){ alert("PPT library not loaded"); return; }
@@ -1512,14 +1508,14 @@ function generatePPT(){
   if(list.length === 0){ alert("No sites found"); return; }
   closePPTModal();
   showProgress("Generating PPT...", "Preparing");
-  
+
   var pptx = new PptxGenJS();
   pptx.layout = "LAYOUT_WIDE";
   pptx.author = COMPANY_NAME;
-  
+
   var now = new Date();
   var dateOnly = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
-  
+
   // ========== COVER SLIDE ==========
   var slide = pptx.addSlide();
   slide.background = { color: T.bg };
@@ -1528,28 +1524,26 @@ function generatePPT(){
   slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.15, w: 0.35, h: 7.2, fill: { color: T.accentDark } });
   slide.addShape(pptx.ShapeType.ellipse, { x: 10.5, y: -2.0, w: 4.5, h: 4.5, fill: { color: T.accentDark, transparency: 75 } });
   slide.addShape(pptx.ShapeType.ellipse, { x: -1.5, y: 6.0, w: 3, h: 3, fill: { color: T.accent, transparency: 80 } });
-  
+
   var currentY = 0.7;
   if(companyLogo){
     try { slide.addImage({ data: companyLogo, x: 4.92, y: currentY, w: 3.5, h: 1.3, sizing: { type: "contain", w: 3.5, h: 1.3 } }); currentY += 1.7; }
     catch(e){ currentY = 1.5; }
   } else currentY = 1.5;
-  
+
   slide.addText("DS OUTDOOR MEDIA", { x: 0.5, y: currentY, w: 12.33, h: 0.4, fontSize: 12, bold: true, color: T.subtitle, align: "center", charSpacing: 5 });
   currentY += 0.6;
   slide.addShape(pptx.ShapeType.rect, { x: 5.92, y: currentY, w: 1.5, h: 0.03, fill: { color: T.accent } });
   currentY += 0.5;
   slide.addText("SITE REPORT", { x: 0.5, y: currentY, w: 12.33, h: 1.1, fontSize: 56, bold: true, color: "FFFFFF", align: "center", charSpacing: 4 });
   currentY += 1.4;
-  
-  // ✅ Area names instead of date
+
   var areaNamesList = [];
   var areaSeen = {};
   list.forEach(function(s){ var a = s.area || "Unassigned"; if(!areaSeen[a]){ areaSeen[a] = true; areaNamesList.push(a); } });
   var areaText = areaNamesList.join(" • ");
   slide.addText(areaText.substring(0, 100), { x: 0.5, y: currentY, w: 12.33, h: 0.5, fontSize: 18, bold: true, color: T.accent, align: "center", charSpacing: 2 });
-  
-  // Bottom info bar
+
   var bottomY = 6.5;
   slide.addShape(pptx.ShapeType.rect, { x: 0.5, y: bottomY - 0.15, w: 12.33, h: 0.01, fill: { color: T.accent, transparency: 50 } });
   slide.addText("PREPARED BY", { x: 0.65, y: bottomY, w: 2.8, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
@@ -1560,7 +1554,7 @@ function generatePPT(){
   slide.addText(String(list.length), { x: 7.3, y: bottomY + 0.24, w: 1.5, h: 0.3, fontSize: 14, bold: true, color: T.accent });
   slide.addText("GENERATED", { x: 9.9, y: bottomY, w: 3, h: 0.25, fontSize: 8, bold: true, color: "64748B", align: "right", charSpacing: 2 });
   slide.addText(dateOnly, { x: 8.9, y: bottomY + 0.24, w: 4, h: 0.3, fontSize: 12, bold: true, color: "FFFFFF", align: "right" });
-  
+
   // ========== INDIVIDUAL SLIDES ==========
   var chain = Promise.resolve();
   list.forEach(function(x, i){
@@ -1570,58 +1564,58 @@ function generatePPT(){
       var stColor = "059669";
       if(x.status === "Not Available") stColor = "DC2626";
       else if(x.status === "Under Maintenance") stColor = "D97706";
-      
+
       var s = pptx.addSlide();
       s.background = { color: T.bg };
       s.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.55, fill: { color: T.accentDark } });
       s.addText((i+1) + ". " + x.site + (x.siteSize ? " | " + x.siteSize : ""), { x: 0.3, y: 0.1, w: 9.5, h: 0.4, fontSize: 12, bold: true, color: "FFFFFF" });
       s.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.11, w: 2.15, h: 0.33, fill: { color: stColor }, rectRadius: 0.1 });
       s.addText(x.status.toUpperCase(), { x: 11.0, y: 0.11, w: 2.15, h: 0.33, fontSize: 8, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-      
+
       var imgPromise = (includeImages && x.hasImage) ? (imageCache[x.id] ? Promise.resolve(imageCache[x.id]) : getImage(x.id)) : Promise.resolve(null);
-      
+
       return imgPromise.then(function(imgData){
-        // All layouts now include details below image
-        var imgH = 4.7;
-        if(style === "full-detail" || style === "split-detail"){
-          imgH = 3.9;
-        }
-        
+        var IMG_TOP = 0.55;
+        var IMG_H = 4.3;
+        var DET_TOP = IMG_TOP + IMG_H;
+        var DET_H = 7.5 - DET_TOP;
+
         if(style === "center-black" || style === "fit-black"){
           var fn = style === "center-black" ? createCenterBlackImage : createFitBlackImage;
           if(imgData){
             return fn(imgData, 2560, 1440).then(function(p){
-              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: imgH });
+              if(p) s.addImage({ data: p, x: 0, y: IMG_TOP, w: 13.33, h: IMG_H });
             });
           } else {
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: imgH, fill: { color: "000000" } });
-            s.addText("No Image Available", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
+            s.addShape(pptx.ShapeType.rect, { x: 0, y: IMG_TOP, w: 13.33, h: IMG_H, fill: { color: "000000" } });
+            s.addText("No Image Available", { x: 0, y: IMG_TOP + IMG_H/2 - 0.3, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           }
         } else if(style === "center-blur" || style === "fit-blur"){
           var fn2 = style === "center-blur" ? createCenterBlurImage : createFitBlurImage;
           if(imgData){
             return fn2(imgData, 2560, 1440).then(function(p){
-              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: imgH });
+              if(p) s.addImage({ data: p, x: 0, y: IMG_TOP, w: 13.33, h: IMG_H });
             });
           } else {
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: imgH, fill: { color: "1E293B" } });
-            s.addText("No Image Available", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
+            s.addShape(pptx.ShapeType.rect, { x: 0, y: IMG_TOP, w: 13.33, h: IMG_H, fill: { color: "1E293B" } });
+            s.addText("No Image Available", { x: 0, y: IMG_TOP + IMG_H/2 - 0.3, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           }
-        } else if(style === "split"){
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 6.5, h: 5.5, fill: { color: "F1F5F9" } });
-          if(imgData){ try { s.addImage({ data: imgData, x: 0.1, y: 0.65, w: 6.3, h: 5.3, sizing: { type: "contain", w: 6.3, h: 5.3 } }); } catch(e){} }
-          else s.addText("No Image", { x: 0.1, y: 3, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
         } else if(style === "cover"){
-          if(imgData){ try { s.addImage({ data: imgData, x: 0, y: 0.55, w: 13.33, h: imgH, sizing: { type: "cover", w: 13.33, h: imgH } }); } catch(e){} }
-          else s.addText("No Image", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+          if(imgData){ try { s.addImage({ data: imgData, x: 0, y: IMG_TOP, w: 13.33, h: IMG_H, sizing: { type: "cover", w: 13.33, h: IMG_H } }); } catch(e){} }
+          else s.addText("No Image", { x: 0, y: IMG_TOP + IMG_H/2 - 0.3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+        } else if(style === "split"){
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: IMG_TOP, w: 6.5, h: 6.4, fill: { color: "F1F5F9" } });
+          if(imgData){ try { s.addImage({ data: imgData, x: 0.1, y: IMG_TOP + 0.1, w: 6.3, h: 6.2, sizing: { type: "contain", w: 6.3, h: 6.2 } }); } catch(e){} }
+          else s.addText("No Image", { x: 0.1, y: IMG_TOP + 3, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
+        } else if(style === "full-detail" || style === "split-detail"){
+          if(imgData){ try { s.addImage({ data: imgData, x: 0, y: IMG_TOP, w: 13.33, h: IMG_H, sizing: { type: "cover", w: 13.33, h: IMG_H } }); } catch(e){} }
+          else s.addText("No Image", { x: 0, y: IMG_TOP + IMG_H/2 - 0.3, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
         }
-        
-        // ========== DETAILS SECTION (for all non-split layouts) ==========
+
         if(style === "split"){
-          // Split: details on right
-          var infoY = 0.8;
+          var infoY = 0.75;
           s.addText("SITE DETAILS", { x: 6.8, y: infoY, w: 6.3, h: 0.4, fontSize: 14, bold: true, color: T.accentDark, charSpacing: 2 });
-          infoY += 0.55;
+          infoY += 0.5;
           var rows = [
             { label: "Site Code", value: x.siteCode || "—" },
             { label: "Area", value: x.area || "—" },
@@ -1637,109 +1631,64 @@ function generatePPT(){
           rows.forEach(function(row){
             s.addText(row.label + ":", { x: 6.8, y: infoY, w: 1.7, h: 0.3, fontSize: 9, bold: true, color: "64748B" });
             var isLink = (row.label === "Location" && row.link);
-            s.addText(String(row.value).substring(0, 45), { 
-              x: 8.5, y: infoY, w: 4.6, h: 0.3, fontSize: 10, 
+            s.addText(String(row.value).substring(0, 45), {
+              x: 8.5, y: infoY, w: 4.6, h: 0.3, fontSize: 10,
               color: isLink ? "0891B2" : "0F172A",
               underline: isLink,
               hyperlink: isLink ? { url: row.link } : undefined
             });
-            infoY += 0.42;
+            infoY += 0.5;
           });
-        } else if(style === "full-detail" || style === "split-detail"){
-          // Full Detail: details below image
-          var detY = 0.55 + imgH;
-          var detH = 7.5 - detY;
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: detY, w: 13.33, h: detH, fill: { color: "F8FAFC" } });
-          
-          s.addText(x.site, { x: 0.3, y: detY + 0.08, w: 9.5, h: 0.35, fontSize: 14, bold: true, color: "0F172A" });
+        } else {
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: DET_TOP, w: 13.33, h: DET_H, fill: { color: "F8FAFC" } });
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: DET_TOP, w: 13.33, h: 0.06, fill: { color: T.accent } });
+
+          s.addText(x.site, { x: 0.3, y: DET_TOP + 0.12, w: 10.5, h: 0.35, fontSize: 14, bold: true, color: "0F172A" });
           if(x.siteCode){
-            s.addShape(pptx.ShapeType.roundRect, { x: 11.8, y: detY + 0.08, w: 1.3, h: 0.32, fill: { color: T.accentDark }, rectRadius: 0.06 });
-            s.addText(x.siteCode, { x: 11.8, y: detY + 0.08, w: 1.3, h: 0.32, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+            s.addShape(pptx.ShapeType.roundRect, { x: 11.8, y: DET_TOP + 0.12, w: 1.3, h: 0.32, fill: { color: T.accentDark }, rectRadius: 0.06 });
+            s.addText(x.siteCode, { x: 11.8, y: DET_TOP + 0.12, w: 1.3, h: 0.32, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
           }
-          
-          var detailRowY = detY + 0.55;
+
+          var r1Y = DET_TOP + 0.6;
           var colW = 13.33 / 4;
-          
-          // Column 1: Area
-          s.addText("AREA", { x: 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-          s.addText(x.area || "—", { x: 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark });
-          
-          // Column 2: Site Size
-          s.addText("SITE SIZE", { x: colW + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-          s.addText(x.siteSize || "—", { x: colW + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "7C3AED" });
-          
-          // Column 3: Company
-          s.addText("COMPANY", { x: colW * 2 + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-          s.addText(x.customer || "—", { x: colW * 2 + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "047857" });
-          
-          // Column 4: Rate
-          s.addText("RATE", { x: colW * 3 + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-          s.addText(x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", { x: colW * 3 + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "B45309" });
-          
-          // Row 3: Duration + Location
-          var row3Y = detailRowY + 0.65;
-          s.addText("DURATION", { x: 0.3, y: row3Y, w: 2.5, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-          var durText = (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—";
-          s.addText(durText, { x: 0.3, y: row3Y + 0.22, w: 6, h: 0.3, fontSize: 10, bold: true, color: "6D28D9" });
-          
+
+          s.addText("AREA", { x: 0.3, y: r1Y, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          s.addText(x.area || "—", { x: 0.3, y: r1Y + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark });
+
+          s.addText("SITE SIZE", { x: colW + 0.3, y: r1Y, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          s.addText(x.siteSize || "—", { x: colW + 0.3, y: r1Y + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "7C3AED" });
+
+          s.addText("COMPANY", { x: colW * 2 + 0.3, y: r1Y, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          s.addText(x.customer || "—", { x: colW * 2 + 0.3, y: r1Y + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "047857" });
+
+          s.addText("RATE", { x: colW * 3 + 0.3, y: r1Y, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          s.addText(x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", { x: colW * 3 + 0.3, y: r1Y + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "B45309" });
+
+          var r2Y = r1Y + 0.7;
+          var durText = (x.fromDate || x.toDate) ? (x.fromDate||"—") + "  to  " + (x.toDate||"—") + (days>0?"  ("+days+" days)":"") : "—";
+          s.addText("DURATION", { x: 0.3, y: r2Y, w: 2.5, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          s.addText(durText, { x: 0.3, y: r2Y + 0.22, w: 6, h: 0.3, fontSize: 10, bold: true, color: "6D28D9" });
+
           if(x.location){
-            s.addText("LOCATION", { x: 6.5, y: row3Y, w: 2, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-            var mapUrl = (x.lat && x.lng) 
-              ? "https://www.google.com/maps?q=" + x.lat + "," + x.lng 
+            s.addText("LOCATION", { x: 6.5, y: r2Y, w: 2.5, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+            var mapUrl = (x.lat && x.lng)
+              ? "https://www.google.com/maps?q=" + x.lat + "," + x.lng
               : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location);
-            s.addText(x.location.substring(0, 50), { 
-              x: 6.5, y: row3Y + 0.22, w: 6.5, h: 0.3, fontSize: 10, 
-              color: "0891B2", underline: true, 
+            s.addText(x.location.substring(0, 55), {
+              x: 6.5, y: r2Y + 0.22, w: 6.5, h: 0.3, fontSize: 10,
+              color: "0891B2", underline: true,
               hyperlink: { url: mapUrl }
             });
           }
-        } else {
-          // For all other layouts (center-black, center-blur, fit-black, fit-blur, cover) - details at bottom
-          var footerY = 5.35;
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: footerY, w: 13.33, h: 2.15, fill: { color: "F8FAFC" } });
-          
-          // Row 1: Area | Site Size | Company | Rate
-          var cols = [
-            { label: "AREA", value: x.area || "—" },
-            { label: "SITE SIZE", value: x.siteSize || "—" },
-            { label: "COMPANY", value: x.customer || "—" },
-            { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—" }
-          ];
-          var colW2 = 13.33 / 4;
-          cols.forEach(function(f, idx){
-            var cx = idx * colW2;
-            s.addText(f.label, { x: cx+0.15, y: footerY + 0.08, w: colW2-0.3, h: 0.22, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-            s.addText(String(f.value).substring(0, 30), { x: cx+0.15, y: footerY + 0.32, w: colW2-0.3, h: 0.35, fontSize: 11, bold: true, color: T.accentDark });
-          });
-          
-          // Row 2: Duration
-          var durText2 = (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—";
-          s.addText("DURATION", { x: 0.15, y: footerY + 0.8, w: 2.5, h: 0.22, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-          s.addText(durText2, { x: 0.15, y: footerY + 1.04, w: 6, h: 0.3, fontSize: 11, bold: true, color: "6D28D9" });
-          
-          // Row 3: Location (clickable)
-          if(x.location){
-            s.addText("LOCATION", { x: 6.5, y: footerY + 0.8, w: 3, h: 0.22, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-            var mapUrl2 = (x.lat && x.lng) 
-              ? "https://www.google.com/maps?q=" + x.lat + "," + x.lng 
-              : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location);
-            s.addText(x.location.substring(0, 50), { 
-              x: 6.5, y: footerY + 1.04, w: 6.7, h: 0.3, fontSize: 10, 
-              color: "0891B2", underline: true, 
-              hyperlink: { url: mapUrl2 }
-            });
-          }
-          
-          // Site code badge
-          if(x.siteCode){
-            s.addShape(pptx.ShapeType.roundRect, { x: 11.8, y: footerY + 0.08, w: 1.3, h: 0.32, fill: { color: T.accentDark }, rectRadius: 0.06 });
-            s.addText(x.siteCode, { x: 11.8, y: footerY + 0.08, w: 1.3, h: 0.32, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-          }
+
+          var r3Y = r2Y + 0.7;
+          s.addShape(pptx.ShapeType.roundRect, { x: 0.3, y: r3Y, w: 1.6, h: 0.3, fill: { color: stColor }, rectRadius: 0.08 });
+          s.addText(x.status.toUpperCase(), { x: 0.3, y: r3Y, w: 1.6, h: 0.3, fontSize: 8, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
         }
       });
     });
   });
-  
+
   chain.then(function(){
     var s2 = pptx.addSlide();
     s2.background = { color: T.bg };
@@ -1863,14 +1812,13 @@ function renameArea(index){
   if(!newName || newName.trim() === "") return;
   if(newName !== oldName && areas.indexOf(newName) !== -1){ alert("Area already exists"); return; }
   var trimmed = newName.trim();
-    areas[index] = trimmed;
+  areas[index] = trimmed;
   sites.forEach(function(s){ if(s.area === oldName) s.area = trimmed; });
   persistNow();
   renderAreaList();
   populateAreaDropdowns();
   render();
 }
-
 function deleteArea(index){
   var areaName = areas[index];
   var count = sites.filter(function(s){ return s.area === areaName; }).length;
@@ -1886,8 +1834,6 @@ function deleteArea(index){
   populateAreaDropdowns();
   render();
 }
-
-// Expose area functions globally
 window.renameArea = renameArea;
 window.deleteArea = deleteArea;
 window.editSite = editSite;
@@ -1996,9 +1942,7 @@ function manualRefresh(){
   });
 }
 
-// ============ INIT / EVENT BINDINGS ============
 function bindEvents(){
-  // Login
   var loginBtn = document.getElementById("loginBtn");
   if(loginBtn) loginBtn.onclick = doLogin;
   var loginPass = document.getElementById("loginPass");
@@ -2006,7 +1950,6 @@ function bindEvents(){
     loginPass.addEventListener("keydown", function(e){ if(e.key === "Enter") doLogin(); });
   }
 
-  // Header
   var refreshBtn = document.getElementById("refreshBtn");
   if(refreshBtn) refreshBtn.onclick = manualRefresh;
   var bulkBtn = document.getElementById("bulkBtn");
@@ -2018,7 +1961,6 @@ function bindEvents(){
   var logoutBtn = document.getElementById("logoutBtn");
   if(logoutBtn) logoutBtn.onclick = doLogout;
 
-  // Toolbar
   var searchInput = document.getElementById("search");
   if(searchInput) searchInput.addEventListener("input", debounce(function(){ render(); }, 300));
 
@@ -2036,7 +1978,6 @@ function bindEvents(){
   var exportBtn = document.getElementById("exportBtn");
   if(exportBtn) exportBtn.onclick = exportCSV;
 
-  // Select bar
   var pptBtn = document.getElementById("pptBtn");
   if(pptBtn) pptBtn.onclick = openPPTFormatModal;
   var bulkStatusBtn = document.getElementById("bulkStatusBtn");
@@ -2046,7 +1987,6 @@ function bindEvents(){
   var deleteBtn = document.getElementById("deleteBtn");
   if(deleteBtn) deleteBtn.onclick = bulkDeleteSelected;
 
-  // Status cards
   document.getElementById("cardTotal").onclick = function(){
     activeStatusFilter = null; render();
   };
@@ -2060,7 +2000,6 @@ function bindEvents(){
     activeStatusFilter = activeStatusFilter === "Under Maintenance" ? null : "Under Maintenance"; render();
   };
 
-  // Add/Edit modal
   var cancelModalBtn = document.getElementById("cancelModalBtn");
   if(cancelModalBtn) cancelModalBtn.onclick = closeModal;
   var saveSiteBtn = document.getElementById("saveSiteBtn");
@@ -2092,19 +2031,16 @@ function bindEvents(){
   var removeImgBtn = document.getElementById("removeImgBtn");
   if(removeImgBtn) removeImgBtn.onclick = removeImage;
 
-  // Date dropdowns change -> update preview
   ["ffrom_d","ffrom_m","ffrom_y","fto_d","fto_m","fto_y"].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.addEventListener("change", updateCalcPreview);
   });
 
-  // History modal
   var closeHistoryBtn = document.getElementById("closeHistoryBtn");
   if(closeHistoryBtn) closeHistoryBtn.onclick = closeHistoryModal;
   var downloadHistoryBtn = document.getElementById("downloadHistoryBtn");
   if(downloadHistoryBtn) downloadHistoryBtn.onclick = downloadHistoryCSV;
 
-  // Bulk modal tabs
   var bulkTabSite = document.getElementById("bulkTabSite");
   var bulkTabImage = document.getElementById("bulkTabImage");
   var bulkTabLogo = document.getElementById("bulkTabLogo");
@@ -2128,7 +2064,6 @@ function bindEvents(){
     updateLogoUI();
   };
 
-  // CSV upload
   var csvDropzone = document.getElementById("csvDropzone");
   if(csvDropzone) csvDropzone.onclick = function(){ document.getElementById("csvFile").click(); };
   var csvFile = document.getElementById("csvFile");
@@ -2147,7 +2082,6 @@ function bindEvents(){
   var processBulkSiteBtn = document.getElementById("processBulkSiteBtn");
   if(processBulkSiteBtn) processBulkSiteBtn.onclick = processBulkSites;
 
-  // Bulk images
   var imageDropzone = document.getElementById("imageDropzone");
   if(imageDropzone) imageDropzone.onclick = function(){ document.getElementById("imageFiles").click(); };
   var imageFiles = document.getElementById("imageFiles");
@@ -2157,7 +2091,6 @@ function bindEvents(){
   var processBulkImageBtn = document.getElementById("processBulkImageBtn");
   if(processBulkImageBtn) processBulkImageBtn.onclick = processBulkImages;
 
-  // Logo
   var logoDropzone = document.getElementById("logoDropzone");
   if(logoDropzone) logoDropzone.onclick = function(){ document.getElementById("logoFile").click(); };
   var logoFile = document.getElementById("logoFile");
@@ -2169,13 +2102,11 @@ function bindEvents(){
   var closeBulkLogoBtn = document.getElementById("closeBulkLogoBtn");
   if(closeBulkLogoBtn) closeBulkLogoBtn.onclick = closeBulkModal;
 
-  // PPT modal
   var cancelPptBtn = document.getElementById("cancelPptBtn");
   if(cancelPptBtn) cancelPptBtn.onclick = closePPTModal;
   var generatePptBtn = document.getElementById("generatePptBtn");
   if(generatePptBtn) generatePptBtn.onclick = generatePPT;
 
-  // PPT option/theme selection styling
   document.querySelectorAll(".ppt-option").forEach(function(opt){
     opt.addEventListener("click", function(){
       document.querySelectorAll(".ppt-option").forEach(function(o){ o.classList.remove("selected"); });
@@ -2193,7 +2124,6 @@ function bindEvents(){
     });
   });
 
-  // Area modal
   var addAreaBtn = document.getElementById("addAreaBtn");
   if(addAreaBtn) addAreaBtn.onclick = addNewArea;
   var closeAreaBtn = document.getElementById("closeAreaBtn");
@@ -2201,24 +2131,20 @@ function bindEvents(){
   var newAreaName = document.getElementById("newAreaName");
   if(newAreaName) newAreaName.addEventListener("keydown", function(e){ if(e.key === "Enter") addNewArea(); });
 
-  // Image viewer
   var closeViewerBtn = document.getElementById("closeViewerBtn");
   if(closeViewerBtn) closeViewerBtn.onclick = closeImageViewer;
   var imageViewer = document.getElementById("imageViewer");
   if(imageViewer) imageViewer.onclick = function(e){ if(e.target === this) closeImageViewer(); };
 
-  // Import file
   var importFile = document.getElementById("importFile");
   if(importFile) importFile.addEventListener("change", handleImportFile);
 
-  // Click on site card image to view
   document.addEventListener("click", function(e){
     if(e.target.classList && e.target.classList.contains("site-card-img") && !e.target.classList.contains("no-img")){
       if(e.target.src) openImageViewer(e.target.src);
     }
   });
 
-  // Modal backdrop close
   document.querySelectorAll(".modal").forEach(function(m){
     m.addEventListener("click", function(e){
       if(e.target === this && this.id !== "bulkModal"){
@@ -2228,7 +2154,6 @@ function bindEvents(){
   });
 }
 
-// ============ BOOTSTRAP ============
 document.addEventListener("DOMContentLoaded", function(){
   initDateDropdowns();
   initDateFilterInputs();
@@ -2236,7 +2161,6 @@ document.addEventListener("DOMContentLoaded", function(){
   checkSession();
 });
 
-// Cleanup on unload
 window.addEventListener("beforeunload", function(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
 });
