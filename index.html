@@ -258,9 +258,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
   <div class="header-actions">
     <button type="button" class="btn-refresh-header" onclick="refreshPage(event)" title="Refresh data">🔄 Refresh</button>
-    <button type="button" class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()" title="Telegram notifications">📱 Telegram</button>
+    <button type="button" class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()">📱 Telegram</button>
     <div class="bulk-menu-wrap admin-only">
-      <button type="button" class="btn-bulk-menu" onclick="toggleBulkMenu(event)" title="Bulk operations">📦 Bulk ▾</button>
+      <button type="button" class="btn-bulk-menu" onclick="toggleBulkMenu(event)">📦 Bulk ▾</button>
       <div class="bulk-menu-panel" id="bulkMenuPanel">
         <div class="bm-header">Bulk Operations</div>
         <button type="button" class="bm-item" onclick="closeBulkMenu();openBulkUpload('sites')">
@@ -378,34 +378,22 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="modal-actions"><button class="secondary" onclick="closeModal()">Cancel</button><button onclick="saveSite()">Save Site</button></div>
 </div></div>
 
-<!-- PPT FORMAT MODAL -->
+<!-- PPT FORMAT MODAL - ONLY 2 OPTIONS -->
 <div class="modal" id="pptFormatModal"><div class="box" style="width:min(750px,100%)">
 <h2>📊 Generate PPT Report</h2>
-<p style="color:#64748b;font-size:13px;margin-bottom:16px"><span id="pptSiteCount">0</span> sites selected. Choose a layout format:</p>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px"><span id="pptSiteCount">0</span> sites selected. Choose a layout:</p>
 <div id="pptFormatList" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-  <label class="ppt-format-card active" data-format="professional">
-    <input type="radio" name="pptFormat" value="professional" checked style="display:none">
-    <div style="font-size:24px;margin-bottom:8px">🎨</div>
-    <div style="font-weight:700;font-size:14px;margin-bottom:4px">Professional</div>
-    <div style="font-size:11px;color:#64748b;line-height:1.5">Cover + Summary + Per-site slides with header bar, image, and footer stats</div>
+  <label class="ppt-format-card active" data-format="blur">
+    <input type="radio" name="pptFormat" value="blur" checked style="display:none">
+    <div style="font-size:24px;margin-bottom:8px">🌫️</div>
+    <div style="font-weight:700;font-size:14px;margin-bottom:4px">Blurred Sides</div>
+    <div style="font-size:11px;color:#64748b;line-height:1.5">Original image in center with <b>blurred background</b> on left/right + site details below</div>
   </label>
-  <label class="ppt-format-card" data-format="simple">
-    <input type="radio" name="pptFormat" value="simple" style="display:none">
-    <div style="font-size:24px;margin-bottom:8px">📄</div>
-    <div style="font-weight:700;font-size:14px;margin-bottom:4px">Simple</div>
-    <div style="font-size:11px;color:#64748b;line-height:1.5">Clean layout — title on top, big image below, minimal footer</div>
-  </label>
-  <label class="ppt-format-card" data-format="grid">
-    <input type="radio" name="pptFormat" value="grid" style="display:none">
-    <div style="font-size:24px;margin-bottom:8px">🔲</div>
-    <div style="font-weight:700;font-size:14px;margin-bottom:4px">Grid (2×2)</div>
-    <div style="font-size:11px;color:#64748b;line-height:1.5">4 sites per slide in compact grid — best for overview</div>
-  </label>
-  <label class="ppt-format-card" data-format="list">
-    <input type="radio" name="pptFormat" value="list" style="display:none">
-    <div style="font-size:24px;margin-bottom:8px">📋</div>
-    <div style="font-weight:700;font-size:14px;margin-bottom:4px">List View</div>
-    <div style="font-size:11px;color:#64748b;line-height:1.5">Table of all sites with columns — data-focused report</div>
+  <label class="ppt-format-card" data-format="black">
+    <input type="radio" name="pptFormat" value="black" style="display:none">
+    <div style="font-size:24px;margin-bottom:8px">⬛</div>
+    <div style="font-weight:700;font-size:14px;margin-bottom:4px">Black Sides</div>
+    <div style="font-size:11px;color:#64748b;line-height:1.5">Original image in center with <b>black background</b> on left/right + site details below</div>
   </label>
 </div>
 <div class="modal-actions">
@@ -465,8 +453,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <h2>☑ Select Multiple Areas</h2>
 <p style="color:#64748b;font-size:13px;margin-bottom:16px;">Select areas to select all their sites at once.</p>
 <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-  <button onclick="multiAreaSelectAll()" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Select All Areas</button>
-  <button onclick="multiAreaDeselectAll()" style="padding:8px 14px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Deselect All</button>
+  <button onclick="multiAreaSelectAll()" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1;min-width:120px">Select All Areas</button>
+  <button onclick="multiAreaDeselectAll()" style="padding:8px 14px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1;min-width:120px">Deselect All</button>
   <span id="multiAreaSelCount" style="font-size:12px;color:#64748b;font-weight:600;display:flex;align-items:center">0 selected</span>
 </div>
 <div id="multiAreaList" style="margin-bottom:20px;max-height:400px;overflow-y:auto;"></div>
@@ -487,7 +475,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div id="areaList" style="margin-bottom:20px;"></div>
 <div style="display:flex;gap:10px;flex-wrap:wrap">
   <input id="newAreaName" placeholder="New area name" style="flex:1;min-width:180px;padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none">
-  <button onclick="addNewArea()" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;min-height:44px">+ Add Area</button>
+  <button onclick="addNewArea()" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;min-height:44px">+ Add Area</button>
 </div>
 <div class="modal-actions"><button class="secondary" onclick="closeAreaModal()">Close</button></div>
 </div></div>
@@ -527,7 +515,7 @@ let historySearchQuery = "";
 let bulkPreviewData = [];
 let bulkImageMatches = [];
 let newLogoData = null;
-let pptSelectedFormat = "professional";
+let pptSelectedFormat = "blur";
 
 /* ============ TOAST ============ */
 function showToast(title, message, type){
@@ -590,8 +578,6 @@ function calcDays(f, t){
   if(isNaN(fd) || isNaN(td) || td < fd) return 0;
   return Math.floor((td - fd) / 86400000) + 1;
 }
-
-/* ============ DATE INPUT HANDLER ============ */
 function handleDateInput(input, which){
   const oldVal = input.value;
   const oldLen = parseInt(input.dataset.lastLength || "0");
@@ -702,7 +688,7 @@ function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&
 function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
 
 /* ============ API ============ */
-async function apiGet(path){ try { const r = await fetch(API_URL + path, { method: "GET" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+async function apiGet(path){ try { const r = await fetch(API_URL + path, { method: "GET", cache: "no-store" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 async function apiPost(path, body){ try { const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 async function apiDelete(path){ try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 
@@ -760,7 +746,6 @@ async function loadLogoFromCloud(){
   return false;
 }
 
-/* ============ POPULATE ============ */
 function populateAreaDropdowns(){
   const formSel = document.getElementById("farea"); if(!formSel) return;
   formSel.innerHTML = '';
@@ -869,14 +854,8 @@ async function render(){
   updateCardsWithFilteredCounts();
   const multiLabel = document.getElementById("multiStatusLabel");
   const multiCount = document.getElementById("multiStatusCount");
-  if(activeStatuses.size === 0){
-    multiLabel.textContent = "Status: All";
-    multiCount.style.display = "none";
-  } else {
-    multiLabel.textContent = "Status: " + activeStatuses.size + " selected";
-    multiCount.textContent = activeStatuses.size;
-    multiCount.style.display = "inline";
-  }
+  if(activeStatuses.size === 0){ multiLabel.textContent = "Status: All"; multiCount.style.display = "none"; }
+  else { multiLabel.textContent = "Status: " + activeStatuses.size + " selected"; multiCount.textContent = activeStatuses.size; multiCount.style.display = "inline"; }
   const badge = document.getElementById("filterBadge");
   const hasDate = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
   const hasSearch = document.getElementById("search").value.trim();
@@ -884,14 +863,8 @@ async function render(){
   if(activeStatuses.size > 0) filterParts.push(activeStatuses.size + " status");
   if(hasDate) filterParts.push("date range");
   if(hasSearch) filterParts.push("search");
-  if(filterParts.length > 0){
-    badge.textContent = "Filters: " + filterParts.join(", ");
-    badge.classList.add("show");
-    document.getElementById("clearFilterBtn").classList.add("show");
-  } else {
-    badge.classList.remove("show");
-    document.getElementById("clearFilterBtn").classList.remove("show");
-  }
+  if(filterParts.length > 0){ badge.textContent = "Filters: " + filterParts.join(", "); badge.classList.add("show"); document.getElementById("clearFilterBtn").classList.add("show"); }
+  else { badge.classList.remove("show"); document.getElementById("clearFilterBtn").classList.remove("show"); }
 
   const container = document.getElementById("areaContainer");
   const filteredSites = getFilteredSites();
@@ -899,10 +872,7 @@ async function render(){
 
   const grouped = {};
   areas.forEach(a => grouped[a] = []);
-  filteredSites.forEach(s => {
-    if(!grouped[s.area]) grouped[s.area] = [];
-    grouped[s.area].push(s);
-  });
+  filteredSites.forEach(s => { if(!grouped[s.area]) grouped[s.area] = []; grouped[s.area].push(s); });
 
   if(!collapsedAreas){
     collapsedAreas = new Set();
@@ -916,17 +886,11 @@ async function render(){
     const areaSites = grouped[area] || [];
     if(areaSites.length === 0 && !document.getElementById("search").value.trim() && activeStatuses.size === 0 && !hasDate) continue;
     const isCollapsed = collapsedAreas.has(area);
-
     if(!areaFilters[area]) areaFilters[area] = "ALL";
     const areaStatusFilter = areaFilters[area];
     let displaySites = areaSites;
-    if(areaStatusFilter !== "ALL"){
-      displaySites = areaSites.filter(s => s.status === areaStatusFilter);
-    }
-    if(activeStatuses.size > 0){
-      displaySites = displaySites.filter(s => activeStatuses.has(s.status));
-    }
-
+    if(areaStatusFilter !== "ALL") displaySites = areaSites.filter(s => s.status === areaStatusFilter);
+    if(activeStatuses.size > 0) displaySites = displaySites.filter(s => activeStatuses.has(s.status));
     const areaStatusCounts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
     areaSites.forEach(s => areaStatusCounts[s.status]++);
 
@@ -934,35 +898,22 @@ async function render(){
     html += '<div class="area-header" onclick="toggleAreaCollapse(event, \'' + esc(area).replace(/'/g, "\\'") + '\')">';
     html += '<div class="area-name">';
     html += '<input type="checkbox" class="select-all-cb" onclick="event.stopPropagation();toggleSelectAllInArea(this, \'' + esc(area).replace(/'/g, "\\'") + '\')" ' + (areaSites.length > 0 && areaSites.every(s => selectedSites.has(s.id)) ? "checked" : "") + '>';
-    html += esc(area) + ' <span class="area-count">' + areaSites.length + ' sites</span>';
-    html += '</div>';
+    html += esc(area) + ' <span class="area-count">' + areaSites.length + ' sites</span></div>';
     html += '<div class="area-actions" onclick="event.stopPropagation()">';
-    html += '<button onclick="toggleAreaSelectAll(\'' + esc(area).replace(/'/g, "\\'") + '\')">' + (areaSites.every(s => selectedSites.has(s.id)) && areaSites.length > 0 ? "Deselect All" : "Select All") + '</button>';
-    html += '</div></div>';
-
-    html += '<div class="area-content">';
-    html += '<div class="area-filter-bar">';
+    html += '<button onclick="toggleAreaSelectAll(\'' + esc(area).replace(/'/g, "\\'") + '\')">' + (areaSites.every(s => selectedSites.has(s.id)) && areaSites.length > 0 ? "Deselect All" : "Select All") + '</button></div></div>';
+    html += '<div class="area-content"><div class="area-filter-bar">';
     html += '<select onchange="setAreaFilter(\'' + esc(area).replace(/'/g, "\\'") + '\', this.value)">';
     html += '<option value="ALL"' + (areaStatusFilter === "ALL" ? " selected" : "") + '>All Status (' + areaSites.length + ')</option>';
     html += '<option value="Available"' + (areaStatusFilter === "Available" ? " selected" : "") + '>Available (' + areaStatusCounts.Available + ')</option>';
     html += '<option value="Not Available"' + (areaStatusFilter === "Not Available" ? " selected" : "") + '>Not Available (' + areaStatusCounts["Not Available"] + ')</option>';
     html += '<option value="Under Maintenance"' + (areaStatusFilter === "Under Maintenance" ? " selected" : "") + '>Under Maintenance (' + areaStatusCounts["Under Maintenance"] + ')</option>';
     html += '</select></div>';
-
-    if(displaySites.length === 0){
-      html += '<div class="empty-area">No sites found</div>';
-    } else {
-      html += '<div class="site-cards-grid">';
-      displaySites.forEach((site, idx) => { html += renderSiteCard(site, idx); });
-      html += '</div>';
-    }
+    if(displaySites.length === 0){ html += '<div class="empty-area">No sites found</div>'; }
+    else { html += '<div class="site-cards-grid">'; displaySites.forEach((site, idx) => { html += renderSiteCard(site, idx); }); html += '</div>'; }
     html += '</div></div>';
   }
 
-  if(filteredSites.length === 0){
-    html = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8"><div style="font-size:48px;margin-bottom:16px">🔍</div><div style="font-size:16px;font-weight:600">No sites found</div></div>';
-  }
-
+  if(filteredSites.length === 0){ html = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8"><div style="font-size:48px;margin-bottom:16px">🔍</div><div style="font-size:16px;font-weight:600">No sites found</div></div>'; }
   container.innerHTML = html;
   updateSelectBar();
 }
@@ -980,21 +931,13 @@ function renderSiteCard(site, idx){
       '<div class="site-card-img no-img" style="display:none">📷</div>';
     if(!cached) {
       getImage(site.imageKey).then(data => {
-        if(data) {
-          const img = document.querySelector('.site-card[data-id="' + site.id + '"] .site-card-img');
-          if(img) { img.src = data; }
-        }
+        if(data) { const img = document.querySelector('.site-card[data-id="' + site.id + '"] .site-card-img'); if(img) { img.src = data; } }
       });
     }
-  } else {
-    imgHtml = '<div class="site-card-img no-img" onclick="event.stopPropagation();openEdit(\'' + site.id + '\')">📷</div>';
-  }
+  } else { imgHtml = '<div class="site-card-img no-img" onclick="event.stopPropagation();openEdit(\'' + site.id + '\')">📷</div>'; }
 
   let html = '<div class="site-card ' + cardClass + (isSelected ? ' selected-card' : '') + '" data-id="' + site.id + '">';
-  html += '<div class="site-card-top">';
-  html += '<input type="checkbox" class="site-card-cb" ' + (isSelected ? 'checked' : '') + ' onchange="toggleSiteSelect(\'' + site.id + '\', this.checked)">';
-  html += '<span class="site-card-num">#' + (idx + 1) + '</span>';
-  html += '</div>';
+  html += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSelected ? 'checked' : '') + ' onchange="toggleSiteSelect(\'' + site.id + '\', this.checked)"><span class="site-card-num">#' + (idx + 1) + '</span></div>';
   html += imgHtml;
   html += '<div class="site-card-body">';
   html += '<div class="site-card-name">' + esc(site.site || site.siteCode || "Unnamed Site");
@@ -1021,7 +964,6 @@ function renderSiteCard(site, idx){
   return html;
 }
 
-/* ============ AREA INTERACTIONS ============ */
 function toggleAreaCollapse(event, area){
   if(event.target.tagName === "INPUT" || event.target.tagName === "BUTTON") return;
   if(collapsedAreas.has(area)) collapsedAreas.delete(area);
@@ -1052,12 +994,8 @@ function toggleSiteSelect(id, checked){
 function updateSelectBar(){
   const bar = document.getElementById("selectBar");
   const count = document.getElementById("selCount");
-  if(selectedSites.size > 0){
-    bar.classList.add("show");
-    count.textContent = selectedSites.size + " selected";
-  } else {
-    bar.classList.remove("show");
-  }
+  if(selectedSites.size > 0){ bar.classList.add("show"); count.textContent = selectedSites.size + " selected"; }
+  else { bar.classList.remove("show"); }
   if(currentUser && currentUser.role === "Admin"){
     document.getElementById("deleteBtn").style.display = selectedSites.size > 0 ? "inline-flex" : "none";
   }
@@ -1071,7 +1009,6 @@ function bulkDeleteSelected(){
   persistNow().then(() => { showToast("Deleted", "Sites removed", "success"); render(); });
 }
 
-/* ============ ADD/EDIT ============ */
 function openAdd(){
   editIndex = -1;
   document.getElementById("modalTitle").textContent = "Add Site";
@@ -1102,23 +1039,13 @@ function openEdit(id){
   currentImageData = "";
   if(site.imageKey){
     const cached = imageCache[site.imageKey];
-    if(cached){
-      document.getElementById("imagePreview").src = cached;
-      document.getElementById("imagePreviewWrap").style.display = "block";
-      document.getElementById("imageUploadBox").style.display = "none";
-    } else {
+    if(cached){ document.getElementById("imagePreview").src = cached; document.getElementById("imagePreviewWrap").style.display = "block"; document.getElementById("imageUploadBox").style.display = "none"; }
+    else {
       getImage(site.imageKey).then(data => {
-        if(data){
-          document.getElementById("imagePreview").src = data;
-          document.getElementById("imagePreviewWrap").style.display = "block";
-          document.getElementById("imageUploadBox").style.display = "none";
-        }
+        if(data){ document.getElementById("imagePreview").src = data; document.getElementById("imagePreviewWrap").style.display = "block"; document.getElementById("imageUploadBox").style.display = "none"; }
       });
     }
-  } else {
-    document.getElementById("imagePreviewWrap").style.display = "none";
-    document.getElementById("imageUploadBox").style.display = "block";
-  }
+  } else { document.getElementById("imagePreviewWrap").style.display = "none"; document.getElementById("imageUploadBox").style.display = "block"; }
   populateDateDropdowns();
   setDateDropdowns("ffrom", site.fromDate || "");
   setDateDropdowns("fto", site.toDate || "");
@@ -1208,9 +1135,7 @@ function removeImage(){
 function openImageViewer(key){
   const cached = imageCache[key];
   if(cached){ document.getElementById("viewerImage").src = cached; document.getElementById("imageViewer").classList.add("show"); return; }
-  getImage(key).then(data => {
-    if(data){ document.getElementById("viewerImage").src = data; document.getElementById("imageViewer").classList.add("show"); }
-  });
+  getImage(key).then(data => { if(data){ document.getElementById("viewerImage").src = data; document.getElementById("imageViewer").classList.add("show"); } });
 }
 function closeImageViewer(){ document.getElementById("imageViewer").classList.remove("show"); }
 function openMap(location){
@@ -1281,16 +1206,12 @@ function renderHistoryList(){
     const actionText = h.action === "created" ? "🆕 Created" : "✏️ Edited";
     const date = new Date(h.changedAt);
     const dateStr = date.toLocaleDateString() + " " + date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
-    html += '<div class="history-item">';
-    html += '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">';
-    html += '<div style="flex:1">';
+    html += '<div class="history-item"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div style="flex:1">';
     html += '<div style="font-weight:700;font-size:14px;margin-bottom:4px">' + esc(h.siteName || h.siteCode) + '</div>';
     html += '<span class="status ' + statusClass + '" style="font-size:10px">' + esc(h.status) + '</span>';
     html += ' <span style="font-size:11px;color:#64748b">' + esc(h.area) + '</span>';
     html += '<div style="font-size:12px;color:#475569;margin-top:4px">📅 ' + esc(h.fromDate || "—") + ' → ' + esc(h.toDate || "—") + '</div>';
-    html += '</div>';
-    html += '<div style="text-align:right;font-size:11px;color:#94a3b8">' + actionText + '<br>' + dateStr + '</div>';
-    html += '</div></div>';
+    html += '</div><div style="text-align:right;font-size:11px;color:#94a3b8">' + actionText + '<br>' + dateStr + '</div></div></div>';
   });
   container.innerHTML = html;
 }
@@ -1304,7 +1225,6 @@ function downloadHistoryCSV(){
   const a = document.createElement("a"); a.href = url; a.download = "booking-history-" + new Date().toISOString().slice(0, 10) + ".csv"; a.click();
 }
 
-/* ============ EXPORT CSV ============ */
 function exportCSV(){
   let csv = "Area,Site Code,Site Name,Location,Company,Rate,From,To,Days,Status\n";
   visibleSites.forEach(s => {
@@ -1315,7 +1235,6 @@ function exportCSV(){
   const a = document.createElement("a"); a.href = url; a.download = "sites-export-" + new Date().toISOString().slice(0, 10) + ".csv"; a.click();
 }
 
-/* ============ AREA MGMT ============ */
 function openAreaManager(){ selectedAreas.clear(); renderAreaList(); document.getElementById("areaModal").classList.add("show"); }
 function closeAreaModal(){ document.getElementById("areaModal").classList.remove("show"); }
 function renderAreaList(){
@@ -1326,8 +1245,7 @@ function renderAreaList(){
     html += '<div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #f1f5f9">';
     html += '<input type="checkbox" ' + (selectedAreas.has(a) ? "checked" : "") + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\', this.checked)" style="width:18px;height:18px;accent-color:#3b82f6">';
     html += '<span style="flex:1;font-weight:600">' + esc(a) + ' <span style="color:#94a3b8;font-size:12px">(' + count + ' sites)</span></span>';
-    html += '<button onclick="renameArea(\'' + esc(a).replace(/'/g, "\\'") + '\')" style="padding:5px 10px;background:#f1f5f9;border:0;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600">✏️</button>';
-    html += '</div>';
+    html += '<button onclick="renameArea(\'' + esc(a).replace(/'/g, "\\'") + '\')" style="padding:5px 10px;background:#f1f5f9;border:0;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600">✏️</button></div>';
   });
   container.innerHTML = html || '<div style="text-align:center;color:#94a3b8;padding:20px">No areas</div>';
   document.getElementById("areaSelCount").textContent = selectedAreas.size + " selected";
@@ -1361,7 +1279,6 @@ function renameArea(area){
   persistNow().then(() => { showToast("Renamed", newName, "success"); populateAreaDropdowns(); renderAreaList(); render(); });
 }
 
-/* ============ MULTI AREA ============ */
 function openMultiAreaSelect(){ multiAreaSelected.clear(); renderMultiAreaList(); document.getElementById("multiAreaModal").classList.add("show"); }
 function closeMultiAreaModal(){ document.getElementById("multiAreaModal").classList.remove("show"); }
 function renderMultiAreaList(){
@@ -1386,7 +1303,6 @@ function applyMultiAreaSelection(){
   showToast("Selected", toSelect.length + " sites selected", "success");
 }
 
-/* ============ BULK STATUS ============ */
 function openBulkStatusModal(){
   if(selectedSites.size === 0) return;
   const status = prompt("Enter status (Available / Not Available / Under Maintenance):");
@@ -1421,250 +1337,181 @@ document.addEventListener("click", (e) => {
 function openPptFormatModal(){
   if(selectedSites.size === 0){ showToast("Info", "Select at least one site", "warning"); return; }
   document.getElementById("pptSiteCount").textContent = selectedSites.size;
-  pptSelectedFormat = "professional";
+  pptSelectedFormat = "blur";
   document.querySelectorAll(".ppt-format-card").forEach(c => {
     c.classList.remove("active");
-    if(c.dataset.format === "professional") c.classList.add("active");
+    if(c.dataset.format === "blur") c.classList.add("active");
   });
   document.getElementById("pptFormatModal").classList.add("show");
 }
 function closePptFormatModal(){ document.getElementById("pptFormatModal").classList.remove("show"); }
 async function confirmPptGeneration(){
   const selected = document.querySelector('input[name="pptFormat"]:checked');
-  pptSelectedFormat = selected ? selected.value : "professional";
+  pptSelectedFormat = selected ? selected.value : "blur";
   closePptFormatModal();
   await generateSelectedSitesPPT(pptSelectedFormat);
 }
 
 /* ============ MAIN PPT FUNCTION ============ */
 async function generateSelectedSitesPPT(format){
-  format = format || "professional";
+  format = format || "blur";
   if(selectedSites.size === 0){ showToast("Info", "Select at least one site", "warning"); return; }
   if(typeof PptxGenJS === "undefined"){ showToast("Error", "PPT library not loaded. Refresh page.", "danger"); return; }
-  showProgress("Generating " + format.toUpperCase() + " PPT...", "Preparing " + selectedSites.size + " sites");
+  showProgress("Generating PPT...", "Preparing " + selectedSites.size + " sites");
   try {
     const pptx = new PptxGenJS();
     pptx.layout = "LAYOUT_WIDE";
     pptx.author = "DS Outdoor Media";
     pptx.company = "DS Outdoor Media";
     const selectedList = sites.filter(s => selectedSites.has(s.id));
-    if(format === "professional") await buildProfessionalPPT(pptx, selectedList);
-    else if(format === "simple") await buildSimplePPT(pptx, selectedList);
-    else if(format === "grid") await buildGridPPT(pptx, selectedList);
-    else if(format === "list") await buildListPPT(pptx, selectedList);
-    const fileName = "Site_Report_" + format + "_" + new Date().toISOString().slice(0,10) + ".pptx";
+    
+    // Cover slide
+    const cover = pptx.addSlide();
+    cover.background = { color: "1E40AF" };
+    cover.addText("Professional Site Booking & Management", { x:0.5, y:1.8, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
+    const areasList = [...new Set(selectedList.map(s => s.area))].join(", ");
+    cover.addText(areasList || "Site Report", { x:0.5, y:2.5, w:12.33, h:1.2, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+    cover.addText("Report Date " + new Date().toLocaleDateString("en-GB", {day:"2-digit", month:"long", year:"numeric"}), { x:0.5, y:4.1, w:12.33, h:0.5, fontSize:18, color:"BFDBFE", align:"center", fontFace:"Arial" });
+    cover.addText("Total Sites " + selectedList.length, { x:0.5, y:4.8, w:12.33, h:0.5, fontSize:16, color:"93C5FD", align:"center", fontFace:"Arial" });
+    cover.addText("Generated " + new Date().toLocaleString("en-IN"), { x:0.5, y:6.8, w:12.33, h:0.4, fontSize:11, color:"60A5FA", align:"center", fontFace:"Arial" });
+    
+    // Per-site slides
+    for(let i = 0; i < selectedList.length; i++){
+      const site = selectedList[i];
+      const slide = pptx.addSlide();
+      
+      // Header bar
+      slide.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:0.9, fill:{color:"1E40AF"} });
+      // Number badge
+      slide.addShape(pptx.ShapeType.rect, { x:0.15, y:0.12, w:0.65, h:0.65, fill:{color:"3B82F6"} });
+      slide.addText(String(i+1), { x:0.15, y:0.12, w:0.65, h:0.65, fontSize:22, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
+      // Site title
+      slide.addText(site.site || site.siteCode || "Site " + (i+1), { x:0.95, y:0.08, w:8.4, h:0.75, fontSize:15, bold:true, color:"FFFFFF", valign:"middle", fontFace:"Arial" });
+      // Site code badge
+      slide.addShape(pptx.ShapeType.rect, { x:9.45, y:0.12, w:1.65, h:0.65, fill:{color:"2563EB"} });
+      slide.addText(site.siteCode || "—", { x:9.45, y:0.12, w:1.65, h:0.65, fontSize:13, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
+      // Status badge
+      const statusColor = site.status === "Available" ? "10B981" : (site.status === "Not Available" ? "DC2626" : "F59E0B");
+      slide.addShape(pptx.ShapeType.rect, { x:11.25, y:0.12, w:1.9, h:0.65, fill:{color:statusColor} });
+      slide.addText((site.status || "").toUpperCase(), { x:11.25, y:0.12, w:1.9, h:0.65, fontSize:10, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
+      
+      // ============ IMAGE WITH LETTERBOX EFFECT ============
+      const imgAreaX = 0.3;
+      const imgAreaY = 1.05;
+      const imgAreaW = 12.73;
+      const imgAreaH = 4.3;
+      
+      let imageData = null;
+      if(site.imageKey) imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
+      
+      if(imageData){
+        try {
+          if(format === "black"){
+            // === BLACK SIDES ===
+            // 1. Fill entire area with black
+            slide.addShape(pptx.ShapeType.rect, { 
+              x: imgAreaX, y: imgAreaY, w: imgAreaW, h: imgAreaH, 
+              fill: { color: "000000" } 
+            });
+            // 2. Place original image centered (contain)
+            slide.addImage({ 
+              data: imageData, 
+              x: imgAreaX, y: imgAreaY, w: imgAreaW, h: imgAreaH, 
+              sizing: { type: "contain", w: imgAreaW, h: imgAreaH } 
+            });
+          } else {
+            // === BLURRED SIDES (default) ===
+            // 1. Fill entire area with stretched image (will look like blur effect due to aspect ratio)
+            try {
+              slide.addImage({ 
+                data: imageData, 
+                x: imgAreaX, y: imgAreaY, w: imgAreaW, h: imgAreaH, 
+                sizing: { type: "cover", w: imgAreaW, h: imgAreaH } 
+              });
+            } catch(e) {
+              // Fallback to gray if cover fails
+              slide.addShape(pptx.ShapeType.rect, { 
+                x: imgAreaX, y: imgAreaY, w: imgAreaW, h: imgAreaH, 
+                fill: { color: "1F2937" } 
+              });
+            }
+            // 2. Add a translucent dark overlay (mimics blur effect)
+            slide.addShape(pptx.ShapeType.rect, { 
+              x: imgAreaX, y: imgAreaY, w: imgAreaW, h: imgAreaH, 
+              fill: { color: "000000", transparency: 40 } 
+            });
+            // 3. Place original image centered on top (contain)
+            slide.addImage({ 
+              data: imageData, 
+              x: imgAreaX, y: imgAreaY, w: imgAreaW, h: imgAreaH, 
+              sizing: { type: "contain", w: imgAreaW, h: imgAreaH } 
+            });
+          }
+        } catch(e){
+          slide.addShape(pptx.ShapeType.rect, { x: imgAreaX, y: imgAreaY, w: imgAreaW, h: imgAreaH, fill:{color:"F1F5F9"}, line:{color:"CBD5E1"} });
+          slide.addText("📷 Image error", { x: imgAreaX, y: imgAreaY + 1.8, w: imgAreaW, h:0.5, fontSize:14, color:"94A3B8", align:"center", fontFace:"Arial" });
+        }
+      } else {
+        // No image - black or gray placeholder
+        const bgColor = format === "black" ? "000000" : "F1F5F9";
+        const txtColor = format === "black" ? "64748B" : "94A3B8";
+        slide.addShape(pptx.ShapeType.rect, { 
+          x: imgAreaX, y: imgAreaY, w: imgAreaW, h: imgAreaH, 
+          fill:{color:bgColor}, line:{color:"CBD5E1", dashType:"dash"} 
+        });
+        slide.addText("📷 No Image", { x: imgAreaX, y: imgAreaY + 1.8, w: imgAreaW, h: 0.5, fontSize:18, color:txtColor, align:"center", fontFace:"Arial" });
+      }
+      
+      // ============ DETAILS FOOTER BAR ============
+      const footerY = 5.6;
+      slide.addShape(pptx.ShapeType.rect, { 
+        x: 0, y: footerY, w: 13.33, h: 0.85, 
+        fill: { color: "F8FAFC" } 
+      });
+      
+      // 4 columns
+      const cols = [
+        { label: "AREA", value: site.area || "—", x: 0.4 },
+        { label: "COMPANY", value: site.customer || "—", x: 3.7 },
+        { label: "RATE", value: site.rate ? "₹" + parseFloat(site.rate).toLocaleString("en-IN") + "/mo" : "—", x: 7.0 },
+        { label: "DURATION", value: (site.fromDate || "—") + " to " + (site.toDate || "—") + " (" + calcDays(site.fromDate, site.toDate) + "d)", x: 10.0 }
+      ];
+      
+      cols.forEach(col => {
+        slide.addText(col.label, { 
+          x: col.x, y: footerY + 0.05, w: 3.2, h: 0.25, 
+          fontSize: 9, bold: true, color: "94A3B8", fontFace: "Arial" 
+        });
+        slide.addText(col.value, { 
+          x: col.x, y: footerY + 0.28, w: 3.2, h: 0.5, 
+          fontSize: 12, bold: true, color: "1E40AF", fontFace: "Arial" 
+        });
+      });
+      
+      // Map button (bottom right)
+      if(site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/)){
+        slide.addShape(pptx.ShapeType.rect, { x:11.0, y:6.65, w:2.0, h:0.5, fill:{color:"1E40AF"}, rectRadius: 0.05 });
+        slide.addText("🗺️ Map", { x:11.0, y:6.65, w:2.0, h:0.5, fontSize:11, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
+      }
+    }
+    
+    // Thank you slide
+    const thanks = pptx.addSlide();
+    thanks.background = { color: "1E40AF" };
+    thanks.addText("Thank You", { x:0.5, y:2.5, w:12.33, h:1, fontSize:48, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+    thanks.addText("For more information, please contact us", { x:0.5, y:3.7, w:12.33, h:0.5, fontSize:18, color:"BFDBFE", align:"center", fontFace:"Arial" });
+    thanks.addText("DS Outdoor Media", { x:0.5, y:4.5, w:12.33, h:0.6, fontSize:26, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+    thanks.addText(new Date().toLocaleDateString("en-GB", {day:"2-digit", month:"long", year:"numeric"}), { x:0.5, y:5.3, w:12.33, h:0.4, fontSize:14, color:"93C5FD", align:"center", fontFace:"Arial" });
+    
+    const fileName = "Site_Report_" + (areasList.replace(/[^a-z0-9]/gi, "_").substring(0, 30) || "All") + "_" + new Date().toISOString().slice(0,10) + ".pptx";
     await pptx.writeFile({ fileName });
     hideProgress();
-    showToast("Success", "PPT downloaded: " + selectedList.length + " sites", "success");
+    showToast("Success", "PPT downloaded: " + selectedList.length + " sites (" + format + ")", "success");
   } catch(e){
     hideProgress();
     console.error("PPT Error:", e);
     showToast("Error", "Failed: " + e.message, "danger");
   }
-}
-
-/* ============ FORMAT 1: PROFESSIONAL ============ */
-async function buildProfessionalPPT(pptx, selectedList){
-  const cover = pptx.addSlide();
-  cover.background = { color: "1E40AF" };
-  cover.addText("Professional Site Booking & Management", { x:0.5, y:2.0, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
-  const areasList = [...new Set(selectedList.map(s => s.area))].join(", ");
-  cover.addText(areasList || "Site Report", { x:0.5, y:2.7, w:12.33, h:1.2, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-  cover.addText("Report Date " + new Date().toLocaleDateString("en-GB", {day:"2-digit", month:"long", year:"numeric"}), { x:0.5, y:4.3, w:12.33, h:0.5, fontSize:18, color:"BFDBFE", align:"center", fontFace:"Arial" });
-  cover.addText("Total Sites " + selectedList.length, { x:0.5, y:5.0, w:12.33, h:0.5, fontSize:16, color:"93C5FD", align:"center", fontFace:"Arial" });
-  cover.addText("Generated " + new Date().toLocaleString("en-IN"), { x:0.5, y:6.8, w:12.33, h:0.4, fontSize:11, color:"60A5FA", align:"center", fontFace:"Arial" });
-
-  const statusCounts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
-  let totalRate = 0;
-  selectedList.forEach(s => { statusCounts[s.status] = (statusCounts[s.status] || 0) + 1; totalRate += parseFloat(s.rate) || 0; });
-  const summary = pptx.addSlide();
-  summary.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:1.0, fill:{color:"1E40AF"} });
-  summary.addText("Summary", { x:0.5, y:0.15, w:12.33, h:0.7, fontSize:28, bold:true, color:"FFFFFF", valign:"middle", fontFace:"Arial" });
-  const areaCounts = {};
-  selectedList.forEach(s => { areaCounts[s.area] = (areaCounts[s.area] || 0) + 1; });
-  summary.addTable([
-    [{text:"Category",options:{bold:true,fill:"EFF6FF",color:"1E40AF"}},{text:"Value",options:{bold:true,fill:"EFF6FF",color:"1E40AF"}}],
-    ["Total Sites", String(selectedList.length)],
-    ["Total Areas", String(Object.keys(areaCounts).length)],
-    ["✅ Available", String(statusCounts.Available)],
-    ["❌ Not Available", String(statusCounts["Not Available"])],
-    ["⚠️ Under Maintenance", String(statusCounts["Under Maintenance"])],
-    ["💰 Total Monthly Rate", "₹" + totalRate.toLocaleString("en-IN")]
-  ], { x:0.5, y:1.3, w:6.0, colW:[3.0, 3.0], fontSize:14, border:{pt:1, color:"CBD5E1"}, align:"left", valign:"middle", rowH:0.55, fontFace:"Arial" });
-  summary.addText("Areas Breakdown", { x:6.7, y:1.3, w:6.2, h:0.4, fontSize:16, bold:true, color:"1E40AF", fontFace:"Arial" });
-  const areaRows = [[{text:"Area",options:{bold:true,fill:"EFF6FF",color:"1E40AF"}},{text:"Sites",options:{bold:true,fill:"EFF6FF",color:"1E40AF"}}]];
-  Object.entries(areaCounts).forEach(([a, c]) => areaRows.push([a, String(c)]));
-  summary.addTable(areaRows, { x:6.7, y:1.8, w:6.2, colW:[4.2, 2.0], fontSize:12, border:{pt:1, color:"CBD5E1"}, align:"left", valign:"middle", rowH:0.5, fontFace:"Arial" });
-
-  for(let i = 0; i < selectedList.length; i++){
-    const site = selectedList[i];
-    const slide = pptx.addSlide();
-    slide.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:1.0, fill:{color:"1E40AF"} });
-    slide.addShape(pptx.ShapeType.rect, { x:0.2, y:0.15, w:0.7, h:0.7, fill:{color:"3B82F6"} });
-    slide.addText(String(i+1), { x:0.2, y:0.15, w:0.7, h:0.7, fontSize:24, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
-    slide.addText(site.site || site.siteCode || "Site " + (i+1), { x:1.05, y:0.1, w:8.3, h:0.85, fontSize:16, bold:true, color:"FFFFFF", valign:"middle", fontFace:"Arial" });
-    slide.addShape(pptx.ShapeType.rect, { x:9.5, y:0.15, w:1.7, h:0.7, fill:{color:"2563EB"} });
-    slide.addText(site.siteCode || "—", { x:9.5, y:0.15, w:1.7, h:0.7, fontSize:14, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
-    const statusColor = site.status === "Available" ? "10B981" : (site.status === "Not Available" ? "DC2626" : "F59E0B");
-    slide.addShape(pptx.ShapeType.rect, { x:11.4, y:0.15, w:1.7, h:0.7, fill:{color:statusColor} });
-    slide.addText((site.status || "").toUpperCase(), { x:11.4, y:0.15, w:1.7, h:0.7, fontSize:11, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
-    let imageData = null;
-    if(site.imageKey) imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
-    if(imageData){
-      try { slide.addImage({ data: imageData, x:0.4, y:1.15, w:8.5, h:5.5, sizing:{type:"contain", w:8.5, h:5.5} }); }
-      catch(e){
-        slide.addShape(pptx.ShapeType.rect, { x:0.4, y:1.15, w:8.5, h:5.5, fill:{color:"F1F5F9"}, line:{color:"CBD5E1"} });
-        slide.addText("📷 Image error", { x:0.4, y:3.7, w:8.5, h:0.5, fontSize:14, color:"94A3B8", align:"center", fontFace:"Arial" });
-      }
-    } else {
-      slide.addShape(pptx.ShapeType.rect, { x:0.4, y:1.15, w:8.5, h:5.5, fill:{color:"F1F5F9"}, line:{color:"CBD5E1", dashType:"dash"} });
-      slide.addText("📷 No Image", { x:0.4, y:3.7, w:8.5, h:0.5, fontSize:18, color:"94A3B8", align:"center", fontFace:"Arial" });
-    }
-    const details = [
-      ["AREA", site.area || "—"],
-      ["COMPANY", site.customer || "—"],
-      ["RATE", site.rate ? "₹" + parseFloat(site.rate).toLocaleString("en-IN") + "/mo" : "—"],
-      ["DURATION", (site.fromDate || "—") + " to " + (site.toDate || "—") + " (" + calcDays(site.fromDate, site.toDate) + "d)"]
-    ];
-    slide.addTable(details.map(([k, v]) => [
-      { text:k, options:{bold:true, fontSize:10, color:"94A3B8", fill:{color:"F8FAFC"}} },
-      { text:String(v), options:{fontSize:12, bold:true, color:"0F172A"} }
-    ]), { x:9.1, y:1.15, w:4.0, colW:[1.2, 2.8], border:{pt:0.5, color:"E2E8F0"}, align:"left", valign:"middle", rowH:1.3, fontFace:"Arial" });
-    if(site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/)){
-      slide.addShape(pptx.ShapeType.rect, { x:10.5, y:6.6, w:2.5, h:0.4, fill:{color:"1E40AF"} });
-      slide.addText("📍 Map", { x:10.5, y:6.6, w:2.5, h:0.4, fontSize:11, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
-    }
-  }
-  const thanks = pptx.addSlide();
-  thanks.background = { color: "1E40AF" };
-  thanks.addText("Thank You", { x:0.5, y:2.5, w:12.33, h:1, fontSize:48, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-  thanks.addText("For more information, please contact us", { x:0.5, y:3.7, w:12.33, h:0.5, fontSize:18, color:"BFDBFE", align:"center", fontFace:"Arial" });
-  thanks.addText("DS Outdoor Media", { x:0.5, y:4.5, w:12.33, h:0.6, fontSize:26, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-  thanks.addText(new Date().toLocaleDateString("en-GB", {day:"2-digit", month:"long", year:"numeric"}), { x:0.5, y:5.3, w:12.33, h:0.4, fontSize:14, color:"93C5FD", align:"center", fontFace:"Arial" });
-}
-
-/* ============ FORMAT 2: SIMPLE ============ */
-async function buildSimplePPT(pptx, selectedList){
-  const cover = pptx.addSlide();
-  cover.background = { color: "1E40AF" };
-  cover.addText("Site Report", { x:0.5, y:2.8, w:12.33, h:1, fontSize:48, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-  cover.addText(selectedList.length + " Sites", { x:0.5, y:4.0, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
-  for(let i = 0; i < selectedList.length; i++){
-    const site = selectedList[i];
-    const slide = pptx.addSlide();
-    slide.addText((i+1) + ". " + (site.site || site.siteCode), { x:0.4, y:0.2, w:12.5, h:0.6, fontSize:20, bold:true, color:"1E40AF", fontFace:"Arial" });
-    const statusColor = site.status === "Available" ? "10B981" : (site.status === "Not Available" ? "DC2626" : "F59E0B");
-    slide.addShape(pptx.ShapeType.rect, { x:11.5, y:0.25, w:1.6, h:0.5, fill:{color:statusColor} });
-    slide.addText((site.status || "").toUpperCase(), { x:11.5, y:0.25, w:1.6, h:0.5, fontSize:10, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
-    let imageData = null;
-    if(site.imageKey) imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
-    if(imageData){
-      try { slide.addImage({ data: imageData, x:1.5, y:1.0, w:10.33, h:5.2, sizing:{type:"contain", w:10.33, h:5.2} }); } catch(e){}
-    } else {
-      slide.addShape(pptx.ShapeType.rect, { x:1.5, y:1.0, w:10.33, h:5.2, fill:{color:"F1F5F9"}, line:{color:"CBD5E1", dashType:"dash"} });
-      slide.addText("📷 No Image", { x:1.5, y:3.5, w:10.33, h:0.5, fontSize:16, color:"94A3B8", align:"center", fontFace:"Arial" });
-    }
-    slide.addShape(pptx.ShapeType.rect, { x:0, y:6.4, w:13.33, h:1.1, fill:{color:"F8FAFC"} });
-    const infoText = "Area: " + (site.area || "—") + "  |  Code: " + (site.siteCode || "—") + "  |  Rate: " + (site.rate ? "₹" + parseFloat(site.rate).toLocaleString("en-IN") : "—") + "/mo  |  " + (site.fromDate || "—") + " to " + (site.toDate || "—");
-    slide.addText(infoText, { x:0.5, y:6.55, w:12.33, h:0.4, fontSize:12, color:"334155", align:"center", fontFace:"Arial" });
-    slide.addText("Company: " + (site.customer || "—"), { x:0.5, y:7.0, w:12.33, h:0.4, fontSize:11, color:"64748B", align:"center", fontFace:"Arial" });
-  }
-  const thanks = pptx.addSlide();
-  thanks.background = { color: "1E40AF" };
-  thanks.addText("Thank You", { x:0.5, y:3.0, w:12.33, h:1, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-  thanks.addText("DS Outdoor Media", { x:0.5, y:4.5, w:12.33, h:0.5, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
-}
-
-/* ============ FORMAT 3: GRID 2x2 ============ */
-async function buildGridPPT(pptx, selectedList){
-  const cover = pptx.addSlide();
-  cover.background = { color: "1E40AF" };
-  cover.addText("Site Overview — Grid View", { x:0.5, y:2.8, w:12.33, h:1, fontSize:40, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-  cover.addText(selectedList.length + " Sites", { x:0.5, y:4.1, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
-  const perSlide = 4;
-  for(let batch = 0; batch < selectedList.length; batch += perSlide){
-    const slide = pptx.addSlide();
-    const batchSites = selectedList.slice(batch, batch + perSlide);
-    slide.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:0.6, fill:{color:"1E40AF"} });
-    slide.addText("Sites " + (batch+1) + " - " + (batch+batchSites.length), { x:0.3, y:0.05, w:12.7, h:0.5, fontSize:18, bold:true, color:"FFFFFF", valign:"middle", fontFace:"Arial" });
-    const positions = [
-      { x:0.2, y:0.75, w:6.4, h:3.3 },
-      { x:6.73, y:0.75, w:6.4, h:3.3 },
-      { x:0.2, y:4.2, w:6.4, h:3.3 },
-      { x:6.73, y:4.2, w:6.4, h:3.3 }
-    ];
-    for(let j = 0; j < batchSites.length; j++){
-      const site = batchSites[j];
-      const pos = positions[j];
-      slide.addShape(pptx.ShapeType.rect, { x:pos.x, y:pos.y, w:pos.w, h:pos.h, fill:{color:"F8FAFC"}, line:{color:"CBD5E1", pt:1} });
-      let imageData = null;
-      if(site.imageKey) imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
-      if(imageData){
-        try { slide.addImage({ data: imageData, x:pos.x+0.1, y:pos.y+0.1, w:pos.w-0.2, h:1.8, sizing:{type:"cover", w:pos.w-0.2, h:1.8} }); } catch(e){}
-      } else {
-        slide.addShape(pptx.ShapeType.rect, { x:pos.x+0.1, y:pos.y+0.1, w:pos.w-0.2, h:1.8, fill:{color:"E2E8F0"}, line:{color:"CBD5E1", dashType:"dash"} });
-        slide.addText("📷", { x:pos.x+0.1, y:pos.y+0.6, w:pos.w-0.2, h:0.8, fontSize:32, align:"center", color:"94A3B8", fontFace:"Arial" });
-      }
-      slide.addText(site.site || site.siteCode || "Site", { x:pos.x+0.15, y:pos.y+1.95, w:pos.w-0.3, h:0.4, fontSize:11, bold:true, color:"0F172A", fontFace:"Arial" });
-      slide.addText("Code: " + (site.siteCode || "—") + " | " + (site.area || "—"), { x:pos.x+0.15, y:pos.y+2.35, w:pos.w-0.3, h:0.3, fontSize:9, color:"64748B", fontFace:"Arial" });
-      slide.addText((site.rate ? "₹" + parseFloat(site.rate).toLocaleString("en-IN") : "—") + " | " + (site.status || "—"), { x:pos.x+0.15, y:pos.y+2.65, w:pos.w-0.3, h:0.3, fontSize:9, color: site.status === "Available" ? "059669" : (site.status === "Not Available" ? "DC2626" : "D97706"), bold:true, fontFace:"Arial" });
-      slide.addText((site.fromDate || "—") + " → " + (site.toDate || "—"), { x:pos.x+0.15, y:pos.y+2.95, w:pos.w-0.3, h:0.3, fontSize:8, color:"94A3B8", fontFace:"Arial" });
-    }
-  }
-  const thanks = pptx.addSlide();
-  thanks.background = { color: "1E40AF" };
-  thanks.addText("Thank You", { x:0.5, y:3.0, w:12.33, h:1, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-  thanks.addText("DS Outdoor Media", { x:0.5, y:4.5, w:12.33, h:0.5, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
-}
-
-/* ============ FORMAT 4: LIST VIEW ============ */
-async function buildListPPT(pptx, selectedList){
-  const cover = pptx.addSlide();
-  cover.background = { color: "1E40AF" };
-  cover.addText("Site List Report", { x:0.5, y:2.8, w:12.33, h:1, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-  cover.addText(selectedList.length + " Sites", { x:0.5, y:4.1, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
-  const rowsPerSlide = 15;
-  for(let batch = 0; batch < selectedList.length; batch += rowsPerSlide){
-    const slide = pptx.addSlide();
-    const batchSites = selectedList.slice(batch, batch + rowsPerSlide);
-    slide.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:0.7, fill:{color:"1E40AF"} });
-    slide.addText("Site List (" + (batch+1) + "-" + (batch+batchSites.length) + ")", { x:0.3, y:0.1, w:12.7, h:0.5, fontSize:18, bold:true, color:"FFFFFF", valign:"middle", fontFace:"Arial" });
-    const headerRow = [
-      { text:"#", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
-      { text:"Code", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
-      { text:"Site Name", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
-      { text:"Area", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
-      { text:"Company", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
-      { text:"Rate", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
-      { text:"From", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
-      { text:"To", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
-      { text:"Status", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} }
-    ];
-    const dataRows = [headerRow];
-    batchSites.forEach((s, i) => {
-      dataRows.push([
-        { text:String(batch+i+1), options:{fontSize:9} },
-        { text:s.siteCode || "—", options:{fontSize:9, fontFace:"Courier New"} },
-        { text:(s.site || "—").substring(0, 30), options:{fontSize:9} },
-        { text:s.area || "—", options:{fontSize:9} },
-        { text:(s.customer || "—").substring(0, 15), options:{fontSize:9} },
-        { text:s.rate ? "₹" + parseFloat(s.rate).toLocaleString("en-IN") : "—", options:{fontSize:9} },
-        { text:s.fromDate || "—", options:{fontSize:9} },
-        { text:s.toDate || "—", options:{fontSize:9} },
-        { text:s.status || "—", options:{fontSize:9, color: s.status === "Available" ? "059669" : (s.status === "Not Available" ? "DC2626" : "D97706"), bold:true} }
-      ]);
-    });
-    slide.addTable(dataRows, {
-      x: 0.3, y: 0.9, w: 12.73,
-      colW: [0.5, 1.0, 2.8, 1.3, 1.5, 1.2, 1.1, 1.1, 1.23],
-      border: { pt:0.5, color:"CBD5E1" },
-      align: "left", valign: "middle", rowH: 0.4, fontFace: "Arial"
-    });
-  }
-  const thanks = pptx.addSlide();
-  thanks.background = { color: "1E40AF" };
-  thanks.addText("Thank You", { x:0.5, y:3.0, w:12.33, h:1, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-  thanks.addText("DS Outdoor Media", { x:0.5, y:4.5, w:12.33, h:0.5, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
 }
 
 /* ============ BULK MENU ============ */
@@ -1689,8 +1536,7 @@ function openBulkUpload(tab){
     </div>
     <div id="bulkTabContent_sites">
       <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-        <b>CSV Format:</b> Area, Site Code, Site Name, Location, Company, Rate, From (dd/mm/yyyy), To (dd/mm/yyyy)<br>
-        <b>Example:</b> Chandigarh, CG01, Sector 17, 30.7123;76.7890, ABC Corp, 15000, 01/01/2025, 31/12/2025
+        <b>CSV Format:</b> Area, Site Code, Site Name, Location, Company, Rate, From (dd/mm/yyyy), To (dd/mm/yyyy)
       </div>
       <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
         <button onclick="downloadBulkTemplate()" style="padding:10px 16px;background:#6b7280;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">📥 Download CSV Template</button>
@@ -1726,7 +1572,7 @@ function openBulkUpload(tab){
     </div>
     <div id="bulkTabContent_images" style="display:none">
       <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-        <b>How it works:</b> Image file name should match the <b>Site Code</b> (e.g., <code>CG01.jpg</code> for site code <code>CG01</code>).
+        <b>How it works:</b> Image file name should match the <b>Site Code</b> (e.g., <code>CG01.jpg</code>).
       </div>
       <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
         <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
@@ -1745,7 +1591,7 @@ function openBulkUpload(tab){
     </div>
     <div id="bulkTabContent_logo" style="display:none">
       <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-        Logo will be displayed on the login screen. Recommended: <b>200x60px</b>, PNG with transparent background. Max 2 MB.
+        Logo will be displayed on the login screen. Recommended: <b>200x60px</b>, PNG. Max 2 MB.
       </div>
       <div style="text-align:center;margin-bottom:16px;padding:20px;background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px">
         <img id="logoPreviewImg" src="" style="max-width:200px;max-height:80px;object-fit:contain;display:none;margin:0 auto" onerror="this.style.display='none'">
@@ -1787,11 +1633,8 @@ function loadCurrentLogoIntoPreview(){
   if(!img || !placeholder) return;
   const localLogo = localStorage.getItem("custom_logo");
   const currentLogo = localLogo || LOGO_URL;
-  if(currentLogo && currentLogo.length > 10){
-    img.src = currentLogo; img.style.display = "block"; placeholder.style.display = "none";
-  } else {
-    img.style.display = "none"; placeholder.style.display = "block";
-  }
+  if(currentLogo && currentLogo.length > 10){ img.src = currentLogo; img.style.display = "block"; placeholder.style.display = "none"; }
+  else { img.style.display = "none"; placeholder.style.display = "block"; }
 }
 
 function closeBulkModal(){
@@ -1829,9 +1672,7 @@ function handleBulkFile(event){
         from: headers.findIndex(h => h.includes("from")),
         to: headers.findIndex(h => h.includes("to"))
       };
-      if(idx.area === -1 || (idx.siteCode === -1 && idx.siteName === -1)){
-        showToast("Error", "CSV must have Area and (Site Code or Site Name)", "danger"); return;
-      }
+      if(idx.area === -1 || (idx.siteCode === -1 && idx.siteName === -1)){ showToast("Error", "CSV must have Area and (Site Code or Site Name)", "danger"); return; }
       bulkPreviewData = [];
       for(let i = 1; i < lines.length; i++){
         const cols = parseCSVLine(lines[i]);
@@ -2033,14 +1874,16 @@ async function saveLogo(){
   closeBulkModal();
 }
 
-/* ============ REFRESH (FIXED) ============ */
+/* ============ REFRESH (FIXED - PERMANENT) ============ */
 async function refreshPage(event){
   if(event){ event.preventDefault(); event.stopPropagation(); }
   const btn = document.querySelector(".btn-refresh-header");
-  if(!btn || btn.disabled) return;
-  const originalText = "🔄 Refresh";
+  if(!btn) return;
+  if(btn.disabled) return;
+  const originalHTML = btn.innerHTML;
   btn.innerHTML = "⏳ Loading...";
   btn.disabled = true;
+  btn.style.opacity = "0.7";
   try {
     const result = await apiGet("/data?t=" + Date.now());
     if(result && result.success){
@@ -2053,15 +1896,16 @@ async function refreshPage(event){
       lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
       populateAreaDropdowns();
       render();
-      showToast("Refreshed", "Data loaded from cloud", "success");
+      showToast("Refreshed", "Data loaded from cloud (" + sites.length + " sites)", "success");
     } else {
-      showToast("Error", "Failed to refresh", "danger");
+      showToast("Error", "Failed to refresh data", "danger");
     }
   } catch(e){
     showToast("Error", "Refresh failed: " + e.message, "danger");
   }
-  btn.innerHTML = originalText;
+  btn.innerHTML = originalHTML;
   btn.disabled = false;
+  btn.style.opacity = "1";
 }
 
 /* ============ AUTO RELEASE EXPIRED ============ */
@@ -2081,7 +1925,6 @@ async function autoReleaseExpiredSites(){
   if(changed) await persistNow();
 }
 
-/* ============ BACKUP / IMPORT ============ */
 function downloadBackup(){
   const data = { sites, areas, bookingHistory, exportedAt: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -2102,10 +1945,7 @@ function handleImportFile(event){
       areas = data.areas || [...DEFAULT_AREAS];
       bookingHistory = data.bookingHistory || [];
       sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
-      if(await persistNow()){
-        showToast("Imported", data.sites.length + " sites", "success");
-        populateAreaDropdowns(); render();
-      }
+      if(await persistNow()){ showToast("Imported", data.sites.length + " sites", "success"); populateAreaDropdowns(); render(); }
     } catch(err){ showToast("Error", "Parse error", "danger"); }
   };
   reader.readAsText(file);
@@ -2161,7 +2001,6 @@ async function testTelegram(){
   } catch(e){ status.style.background = "#fef2f2"; status.style.color = "#991b1b"; status.textContent = "❌ " + e.message; }
 }
 
-/* ============ INIT ============ */
 checkSession();
 </script>
 </body>
