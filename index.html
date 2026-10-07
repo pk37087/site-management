@@ -558,6 +558,7 @@ var csvParsedSites = [];
 var bulkImagesToUpload = [];
 var companyLogo = "";
 var activeStatusFilter = null;
+var activeDateFilter = { from: null, to: null };
 
 function showToast(title, message, type){
   var c = document.getElementById("toastContainer");
@@ -584,6 +585,10 @@ function parseDDMMYYYY(s){
   if(d.getFullYear() !== yyyy || d.getMonth() !== (mm-1) || d.getDate() !== dd) return null;
   return d;
 }
+function isValidDDMMYYYY(s){
+  if(!s) return true;
+  return parseDDMMYYYY(s) !== null;
+}
 function calcStatusFromDates(fromStr, toStr){
   var fromD = parseDDMMYYYY(fromStr);
   var toD = parseDDMMYYYY(toStr);
@@ -592,12 +597,6 @@ function calcStatusFromDates(fromStr, toStr){
   var toMid = new Date(toD); toMid.setHours(0,0,0,0);
   if(toMid > today) return "Not Available";
   return "Available";
-}
-function ddmmyyyyToISO(s){
-  if(!s) return "";
-  var p = String(s).trim().split("/");
-  if(p.length !== 3) return "";
-  return p[2]+"-"+p[1].padStart(2,"0")+"-"+p[0].padStart(2,"0");
 }
 function calcDays(f, t){
   if(!f || !t) return 0;
@@ -643,13 +642,16 @@ function showApp(){
   loadCloudData().then(function(){
     return loadCompanyLogo();
   }).then(function(){
-    hideProgress();
-    populateAreaDropdowns();
     return autoReleaseExpiredSites();
   }).then(function(){
+    hideProgress();
+    populateAreaDropdowns();
     updateCards();
     render();
     startAutoRefresh();
+  }).catch(function(e){
+    hideProgress();
+    showToast("Load Failed", e && e.message ? e.message : "Could not connect to server", "danger");
   });
 }
 function doLogout(){
@@ -748,7 +750,7 @@ function startAutoRefresh(){
           render();
         }
       }
-    });
+    }).catch(function(){ /* silent fail on auto-refresh */ });
   }, 20000);
 }
 function autoReleaseExpiredSites(){
@@ -768,7 +770,10 @@ function autoReleaseExpiredSites(){
       }
     }
   });
-  if(changed) return persistNow().then(function(){ isReleasing = false; return true; });
+  if(changed){
+    return persistNow().then(function(){ isReleasing = false; return true; })
+      .catch(function(){ isReleasing = false; return false; });
+  }
   isReleasing = false;
   return Promise.resolve(false);
 }
@@ -832,7 +837,7 @@ function updateCalcPreview(){
     hint.innerHTML = "✅ <b>Available</b> — Booking has ended in past";
     hint.style.background = "#ecfdf5"; hint.style.borderColor = "#a7f3d0"; hint.style.color = "#065f46";
   } else {
-    hint.innerHTML = "💡 Status will auto-set based on booking dates";
+    hint.innerHTML = "💡 Status will be auto-set based on booking dates";
     hint.style.background = "#f0f9ff"; hint.style.borderColor = "#bae6fd"; hint.style.color = "#0c4a6e";
   }
 }
@@ -898,6 +903,27 @@ function saveSite(){
   var areaVal = document.getElementById("farea").value;
   if(!areaVal){ alert("Please select an area"); return; }
   
+  // Validate dates
+  if(!isValidDDMMYYYY(fromVal) || !isValidDDMMYYYY(toVal)){
+    alert("⚠️ Invalid date! Please check the date dropdowns.");
+    return;
+  }
+  var fromD = parseDDMMYYYY(fromVal), toD = parseDDMMYYYY(toVal);
+  if(fromD && toD && toD < fromD){
+    alert("⚠️ 'To' date cannot be before 'From' date.");
+    return;
+  }
+  
+  // Validate rate
+  var rateVal = document.getElementById("frate").value.trim();
+  if(rateVal){
+    var rNum = parseFloat(rateVal);
+    if(isNaN(rNum) || rNum < 0){
+      alert("⚠️ Monthly rate must be a positive number.");
+      return;
+    }
+  }
+  
   var autoStatus = calcStatusFromDates(fromVal, toVal);
   var userStatus = document.getElementById("fstatus").value;
   
@@ -921,7 +947,7 @@ function saveSite(){
     siteSize: siteSizeInput,
     location: loc.value.trim(), lat: loc.dataset.lat || "", lng: loc.dataset.lng || "",
     customer: document.getElementById("fcustomer").value.trim(),
-    rate: document.getElementById("frate").value.trim(),
+    rate: rateVal,
     status: statusVal, fromDate: fromVal, toDate: toVal,
     hasImage: !!currentImageData
   };
@@ -994,114 +1020,135 @@ function compressImageSmart(dataUrl, cb){
 function showImagePreview(data){ document.getElementById("imagePreview").src = data; document.getElementById("imagePreviewWrap").style.display = "block"; document.getElementById("imageUploadBox").style.display = "none"; }
 function removeImage(){ currentImageData = ""; document.getElementById("imagePreview").src = ""; document.getElementById("imagePreviewWrap").style.display = "none"; document.getElementById("imageUploadBox").style.display = "block"; }
 
+function siteMatchesDateFilter(s){
+  if(!activeDateFilter.from && !activeDateFilter.to) return true;
+  var sFrom = parseDDMMYYYY(s.fromDate);
+  var sTo = parseDDMMYYYY(s.toDate);
+  var fFrom = activeDateFilter.from ? parseDDMMYYYY(activeDateFilter.from) : null;
+  var fTo = activeDateFilter.to ? parseDDMMYYYY(activeDateFilter.to) : null;
+  if(!sFrom && !sTo) return false;
+  var sStart = sFrom || sTo;
+  var sEnd = sTo || sFrom;
+  if(fFrom && sEnd < fFrom) return false;
+  if(fTo && sStart > fTo) return false;
+  return true;
+}
+
 function render(){
   if(isRendering) return;
   isRendering = true;
   autoReleaseExpiredSites().then(function(){
-    updateCards();
-    if(collapsedAreas === null) collapsedAreas = new Set(areas);
-    var q = (document.getElementById("search").value || "").toLowerCase().trim();
-    var hasDateFilter = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
-    var isFiltering = q || hasDateFilter || activeStatusFilter;
-    if(isFiltering) collapsedAreas.clear();
-    var container = document.getElementById("areaContainer");
-    container.innerHTML = "";
-    var areasToShow = areas.slice();
-    var unassignedCount = sites.filter(function(s){ return !s.area || s.area === "Unassigned"; }).length;
-    if(unassignedCount > 0 && areasToShow.indexOf("Unassigned") === -1) areasToShow.push("Unassigned");
-    var totalShown = 0;
-    for(var ai = 0; ai < areasToShow.length; ai++){
-      var areaName = areasToShow[ai];
-      var areaSites = sites.filter(function(s){
-        var sArea = s.area || "Unassigned";
-        if(sArea !== areaName) return false;
-        if(activeStatusFilter && s.status !== activeStatusFilter) return false;
-        var hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + (s.siteSize||"") + " " + s.status).toLowerCase();
-        if(q && hay.indexOf(q) === -1) return false;
-        return true;
-      });
-      if(isFiltering && areaSites.length === 0) continue;
-      totalShown += areaSites.length;
-      var isCollapsed = collapsedAreas.has(areaName);
-      var block = document.createElement("div");
-      block.className = "area-block" + (isCollapsed ? " collapsed" : "");
-      var header = document.createElement("div");
-      header.className = "area-header";
-      var areaAvail = areaSites.filter(function(s){ return s.status === "Available"; }).length;
-      var areaNot = areaSites.filter(function(s){ return s.status === "Not Available"; }).length;
-      var areaMaint = areaSites.filter(function(s){ return s.status === "Under Maintenance"; }).length;
-      var html = '<div class="area-name">' + esc(areaName) + '</div>';
-      html += '<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">';
-      html += '<span class="area-count" style="background:#fff;color:#1f2937">' + areaSites.length + '</span>';
-      html += '<span class="area-count" style="background:#16a34a;color:#fff">' + areaAvail + '</span>';
-      html += '<span class="area-count" style="background:#dc2626;color:#fff">' + areaNot + '</span>';
-      html += '<span class="area-count" style="background:#facc15;color:#111827">' + areaMaint + '</span>';
-      html += '<span>' + (isCollapsed ? '▶' : '▼') + '</span></div>';
-      header.innerHTML = html;
-      header.onclick = (function(an){ return function(){ toggleAreaCollapse(an); }; })(areaName);
-      block.appendChild(header);
-      var content = document.createElement("div");
-      content.className = "area-content";
-      if(areaSites.length === 0){
-        content.innerHTML = '<div class="empty-area">No sites.</div>';
-      } else {
-        var cardsHTML = '<div class="site-cards-grid">';
-        areaSites.forEach(function(x, idx){
-          var globalIdx = sites.indexOf(x);
-          var isSel = selectedSites.has(x.id);
-          var days = calcDays(x.fromDate, x.toDate);
-          var sc = "s-available";
-          if(x.status === "Not Available") sc = "s-not";
-          else if(x.status === "Under Maintenance") sc = "s-maintenance";
-          var cardCls = "site-card";
-          if(x.status === "Not Available") cardCls += " not-card";
-          else if(x.status === "Under Maintenance") cardCls += " maint-card";
-          if(isSel) cardCls += " selected-card";
-          var imgHTML = '<div class="site-card-img no-img">📷</div>';
-          if(x.hasImage && !imageFailed.has(x.id)){ imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site">'; }
-          var canEdit = currentUser && currentUser.role === "Admin";
-          var editBtn = canEdit ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' : '';
-          var mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
-          cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
-          cardsHTML += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' data-id="' + x.id + '"><span class="site-card-num">#' + (idx + 1) + '</span>' + imgHTML + '</div>';
-          cardsHTML += '<div class="site-card-body"><div class="site-card-name">' + esc(x.site) + (x.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;margin-left:6px">' + esc(x.siteCode) + '</span>' : '') + '</div>';
-          cardsHTML += '<div class="site-card-meta">';
-          if(x.siteSize) cardsHTML += '<span class="site-card-size">📐 ' + esc(x.siteSize) + '</span>';
-          if(x.customer) cardsHTML += '<span class="site-card-comp">' + esc(x.customer) + '</span>';
-          if(x.rate) cardsHTML += '<span class="site-card-rate">' + formatRate(x.rate) + '</span>';
-          if(x.status !== "Available" && (x.fromDate || x.toDate)) cardsHTML += '<span class="site-card-dates">' + esc(x.fromDate || "") + ' - ' + esc(x.toDate || "") + (days > 0 ? ' <span class="days-badge">' + days + 'd</span>' : '') + '</span>';
-          cardsHTML += '</div></div>';
-          cardsHTML += '<div class="site-card-status"><span class="status ' + sc + '">' + esc(x.status) + '</span></div>';
-          cardsHTML += '<div class="site-card-actions">' + editBtn + mapBtn + '</div>';
-          cardsHTML += '</div>';
+    try {
+      updateCards();
+      if(collapsedAreas === null) collapsedAreas = new Set(areas);
+      var q = (document.getElementById("search").value || "").toLowerCase().trim();
+      var hasDateFilter = activeDateFilter.from || activeDateFilter.to;
+      var isFiltering = q || hasDateFilter || activeStatusFilter;
+      if(isFiltering) collapsedAreas.clear();
+      var container = document.getElementById("areaContainer");
+      container.innerHTML = "";
+      var areasToShow = areas.slice();
+      var unassignedCount = sites.filter(function(s){ return !s.area || s.area === "Unassigned"; }).length;
+      if(unassignedCount > 0 && areasToShow.indexOf("Unassigned") === -1) areasToShow.push("Unassigned");
+      var totalShown = 0;
+      for(var ai = 0; ai < areasToShow.length; ai++){
+        var areaName = areasToShow[ai];
+        var areaSites = sites.filter(function(s){
+          var sArea = s.area || "Unassigned";
+          if(sArea !== areaName) return false;
+          if(activeStatusFilter && s.status !== activeStatusFilter) return false;
+          if(!siteMatchesDateFilter(s)) return false;
+          var hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + (s.siteSize||"") + " " + s.status).toLowerCase();
+          if(q && hay.indexOf(q) === -1) return false;
+          return true;
         });
-        cardsHTML += '</div>';
-        content.innerHTML = cardsHTML;
+        if(isFiltering && areaSites.length === 0) continue;
+        totalShown += areaSites.length;
+        var isCollapsed = collapsedAreas.has(areaName);
+        var block = document.createElement("div");
+        block.className = "area-block" + (isCollapsed ? " collapsed" : "");
+        var header = document.createElement("div");
+        header.className = "area-header";
+        var areaAvail = areaSites.filter(function(s){ return s.status === "Available"; }).length;
+        var areaNot = areaSites.filter(function(s){ return s.status === "Not Available"; }).length;
+        var areaMaint = areaSites.filter(function(s){ return s.status === "Under Maintenance"; }).length;
+        var html = '<div class="area-name">' + esc(areaName) + '</div>';
+        html += '<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">';
+        html += '<span class="area-count" style="background:#fff;color:#1f2937">' + areaSites.length + '</span>';
+        html += '<span class="area-count" style="background:#16a34a;color:#fff">' + areaAvail + '</span>';
+        html += '<span class="area-count" style="background:#dc2626;color:#fff">' + areaNot + '</span>';
+        html += '<span class="area-count" style="background:#facc15;color:#111827">' + areaMaint + '</span>';
+        html += '<span>' + (isCollapsed ? '▶' : '▼') + '</span></div>';
+        header.innerHTML = html;
+        header.onclick = (function(an){ return function(){ toggleAreaCollapse(an); }; })(areaName);
+        block.appendChild(header);
+        var content = document.createElement("div");
+        content.className = "area-content";
+        if(areaSites.length === 0){
+          content.innerHTML = '<div class="empty-area">No sites.</div>';
+        } else {
+          var cardsHTML = '<div class="site-cards-grid">';
+          areaSites.forEach(function(x, idx){
+            var globalIdx = sites.indexOf(x);
+            var isSel = selectedSites.has(x.id);
+            var days = calcDays(x.fromDate, x.toDate);
+            var sc = "s-available";
+            if(x.status === "Not Available") sc = "s-not";
+            else if(x.status === "Under Maintenance") sc = "s-maintenance";
+            var cardCls = "site-card";
+            if(x.status === "Not Available") cardCls += " not-card";
+            else if(x.status === "Under Maintenance") cardCls += " maint-card";
+            if(isSel) cardCls += " selected-card";
+            var imgHTML = '<div class="site-card-img no-img">📷</div>';
+            if(x.hasImage && !imageFailed.has(x.id)){ imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site">'; }
+            var canEdit = currentUser && currentUser.role === "Admin";
+            var editBtn = canEdit ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' : '';
+            var mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
+            cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
+            cardsHTML += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' data-id="' + x.id + '"><span class="site-card-num">#' + (idx + 1) + '</span>' + imgHTML + '</div>';
+            cardsHTML += '<div class="site-card-body"><div class="site-card-name">' + esc(x.site) + (x.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;margin-left:6px">' + esc(x.siteCode) + '</span>' : '') + '</div>';
+            cardsHTML += '<div class="site-card-meta">';
+            if(x.siteSize) cardsHTML += '<span class="site-card-size">📐 ' + esc(x.siteSize) + '</span>';
+            if(x.customer) cardsHTML += '<span class="site-card-comp">' + esc(x.customer) + '</span>';
+            if(x.rate) cardsHTML += '<span class="site-card-rate">' + formatRate(x.rate) + '</span>';
+            if(x.status !== "Available" && (x.fromDate || x.toDate)) cardsHTML += '<span class="site-card-dates">' + esc(x.fromDate || "") + ' - ' + esc(x.toDate || "") + (days > 0 ? ' <span class="days-badge">' + days + 'd</span>' : '') + '</span>';
+            cardsHTML += '</div></div>';
+            cardsHTML += '<div class="site-card-status"><span class="status ' + sc + '">' + esc(x.status) + '</span></div>';
+            cardsHTML += '<div class="site-card-actions">' + editBtn + mapBtn + '</div>';
+            cardsHTML += '</div>';
+          });
+          cardsHTML += '</div>';
+          content.innerHTML = cardsHTML;
+        }
+        block.appendChild(content);
+        container.appendChild(block);
       }
-      block.appendChild(content);
-      container.appendChild(block);
+      if(totalShown === 0 && isFiltering) container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match your filters</div>';
+      document.querySelectorAll('.site-card-cb').forEach(function(cb){ cb.addEventListener('change', function(){ toggleSelect(this.dataset.id); }); });
+      loadVisibleImages();
+      updateSelectBar();
+    } catch(e){
+      console.error("Render error:", e);
     }
-    if(totalShown === 0 && isFiltering) container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match your filters</div>';
-    document.querySelectorAll('.site-card-cb').forEach(function(cb){ cb.addEventListener('change', function(){ toggleSelect(this.dataset.id); }); });
-    loadVisibleImages();
-    updateSelectBar();
+    isRendering = false;
+  }).catch(function(e){
+    console.error("autoRelease error:", e);
     isRendering = false;
   });
 }
 function loadVisibleImages(){
   var imgs = document.querySelectorAll("img.site-card-img[data-img-id]");
-  var chain = Promise.resolve();
+  var tasks = [];
   imgs.forEach(function(img){
-    chain = chain.then(function(){
-      var id = img.dataset.imgId;
-      if(!id) return;
-      if(imageCache[id]){ img.src = imageCache[id]; return; }
-      return getImage(id).then(function(data){
-        if(data) img.src = data;
-        else img.outerHTML = '<div class="site-card-img no-img">📷</div>';
-      });
-    });
+    var id = img.dataset.imgId;
+    if(!id) return;
+    if(imageCache[id]){ img.src = imageCache[id]; return; }
+    tasks.push(getImage(id).then(function(data){
+      if(data) img.src = data;
+      else img.outerHTML = '<div class="site-card-img no-img">📷</div>';
+    }));
   });
+  return Promise.all(tasks);
 }
 function toggleSelect(id){
   if(selectedSites.has(id)) selectedSites.delete(id);
@@ -1276,7 +1323,7 @@ function processBulkImages(){
           uploaded++;
           i++;
           next();
-        });
+        }).catch(function(){ skipped++; i++; next(); });
       });
     };
     reader.onerror = function(){ skipped++; i++; next(); };
@@ -1490,8 +1537,7 @@ function createFitBlurImage(dataUrl, targetW, targetH){
     img.onerror = function(){ resolve(null); };
     img.src = dataUrl;
   });
-}
-function generatePPT(){
+}function generatePPT(){
   if(selectedSites.size === 0){ alert("Please select sites first"); return; }
   if(typeof PptxGenJS === "undefined"){ alert("PPT library not loaded"); return; }
   var style = document.querySelector('input[name="pptStyle"]:checked').value;
@@ -1701,6 +1747,9 @@ function generatePPT(){
   }).then(function(){
     hideProgress();
     showToast("PPT Generated", "File ready!", "success");
+    selectedSites.clear();
+    updateSelectBar();
+    render();
   }).catch(function(e){
     hideProgress();
     alert("PPT failed: " + e.message);
@@ -1834,10 +1883,6 @@ function deleteArea(index){
   populateAreaDropdowns();
   render();
 }
-window.renameArea = renameArea;
-window.deleteArea = deleteArea;
-window.editSite = editSite;
-window.openMap = openMap;
 
 function openMap(index){
   var s = sites[index];
@@ -1853,6 +1898,11 @@ function openMap(index){
   }
   window.open(url, "_blank");
 }
+
+window.renameArea = renameArea;
+window.deleteArea = deleteArea;
+window.editSite = editSite;
+window.openMap = openMap;
 
 function openImageViewer(src){
   document.getElementById("viewerImage").src = src;
@@ -1917,6 +1967,13 @@ function applyDateFilter(){
   var fromStr = document.getElementById("dateFilterFrom").value.trim();
   var toStr = document.getElementById("dateFilterTo").value.trim();
   if(!fromStr && !toStr){ alert("Please enter at least one date"); return; }
+  if(fromStr && !isValidDDMMYYYY(fromStr)){ alert("Invalid 'From' date"); return; }
+  if(toStr && !isValidDDMMYYYY(toStr)){ alert("Invalid 'To' date"); return; }
+  var fD = fromStr ? parseDDMMYYYY(fromStr) : null;
+  var tD = toStr ? parseDDMMYYYY(toStr) : null;
+  if(fD && tD && tD < fD){ alert("'To' date cannot be before 'From' date"); return; }
+  activeDateFilter.from = fromStr || null;
+  activeDateFilter.to = toStr || null;
   document.getElementById("clearFilterBtn").style.display = "inline-block";
   render();
 }
@@ -1924,6 +1981,8 @@ function clearDateFilter(){
   document.getElementById("dateFilterFrom").value = "";
   document.getElementById("dateFilterTo").value = "";
   document.getElementById("clearFilterBtn").style.display = "none";
+  activeDateFilter.from = null;
+  activeDateFilter.to = null;
   render();
 }
 
@@ -1939,6 +1998,9 @@ function manualRefresh(){
     updateCards();
     render();
     showToast("Refreshed", "Data loaded from server", "info");
+  }).catch(function(e){
+    hideProgress();
+    showToast("Refresh Failed", e && e.message ? e.message : "Server error", "danger");
   });
 }
 
