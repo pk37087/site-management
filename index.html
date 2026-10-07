@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>Site Management v4</title>
+<title>Site Management v5</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
@@ -35,6 +35,20 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .btn-refresh{background:#0ea5e9;color:#fff}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;position:relative;overflow:hidden;cursor:pointer;min-height:100px;display:flex;flex-direction:column;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.08)}
+.card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
+.card .card-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px}
+.card b{font-size:34px;font-weight:800;color:#0f172a;line-height:1;display:block}
+.card.available::before{background:linear-gradient(180deg,#10b981,#059669)}
+.card.available b{color:#047857}
+.card.notavailable::before{background:linear-gradient(180deg,#ef4444,#dc2626)}
+.card.notavailable b{color:#b91c1c}
+.card.maintenance::before{background:linear-gradient(180deg,#f59e0b,#d97706)}
+.card.maintenance b{color:#b45309}
+.card.total::before{background:linear-gradient(180deg,#3b82f6,#1d4ed8)}
+.card.total b{color:#1e40af}
 .toolbar{background:#fff;padding:10px;border-radius:10px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border:1px solid #e2e8f0;align-items:center}
 .toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;outline:none;min-width:160px;flex:1;font-size:13px!important;height:36px}
 .toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;gap:5px;min-height:36px;height:36px}
@@ -44,12 +58,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700}
 .filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;font-weight:700;font-size:11px;height:100%}
 .filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none}
-.multi-status-wrap{position:relative;height:36px;display:flex}
-.multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;border-radius:6px;min-width:130px}
-.multi-status-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,.15);z-index:100;min-width:220px;padding:6px}
-.multi-status-panel.show{display:block}
-.multi-status-panel label{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
-.multi-status-panel label input{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6}
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:8px 10px;border-radius:8px;margin-bottom:12px;display:none;gap:6px;flex-wrap:wrap;align-items:stretch}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 12px;border-radius:5px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;min-height:36px;min-width:90px}
@@ -167,15 +175,14 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .header-actions button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center}
   #app{padding-top:130px}
   .container{padding:0 12px}
+  .cards{grid-template-columns:1fr 1fr;gap:10px}
+  .card b{font-size:28px}
   .toolbar #search{min-width:100%;flex:1 1 100%}
   .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px}
   .filter-box{width:100%;flex:1 1 100%;flex-wrap:wrap;height:auto}
   .filter-box .date-group{flex:1 1 100%;border-right:0;border-bottom:1px solid #cbd5e1;height:36px}
   .filter-box .date-input{flex:1;min-width:90px}
   .filter-box .apply-btn{flex:1;min-width:100%;height:36px;justify-content:center}
-  .multi-status-wrap{width:100%;height:36px}
-  .multi-status-btn{width:100%}
-  .multi-status-panel{width:100%}
   .select-bar button{flex:1;min-width:calc(50% - 3px)}
   .site-card{padding:10px;flex-wrap:wrap;position:relative}
   .site-card-body{flex:1 1 100%;order:3}
@@ -222,19 +229,15 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </header>
 <div class="container">
 
+<div class="cards">
+  <div class="card total" id="cardTotal"><span class="card-label">Total Sites</span><b id="total">0</b></div>
+  <div class="card available" id="cardAvailable"><span class="card-label">Available</span><b id="avail">0</b></div>
+  <div class="card notavailable" id="cardNotAvailable"><span class="card-label">Not Available</span><b id="notavail">0</b></div>
+  <div class="card maintenance" id="cardMaintenance"><span class="card-label">Under Maintenance</span><b id="maintenance">0</b></div>
+</div>
+
 <div class="toolbar">
   <input id="search" type="text" placeholder="Search sites...">
-  <div class="multi-status-wrap" id="multiStatusWrap">
-    <button type="button" class="multi-status-btn" id="multiStatusBtn">
-      <span id="multiStatusLabel">Status: All</span><span>▼</span>
-    </button>
-    <div class="multi-status-panel" id="multiStatusPanel">
-      <label><input type="checkbox" id="msAll"> Select All</label>
-      <label><input type="checkbox" class="ms-cb" value="Available"> ✅ Available</label>
-      <label><input type="checkbox" class="ms-cb" value="Not Available"> ❌ Not Available</label>
-      <label><input type="checkbox" class="ms-cb" value="Under Maintenance"> ⚠️ Under Maintenance</label>
-    </div>
-  </div>
   <div class="filter-box">
     <div class="date-group">
       <input type="text" class="date-input" id="dateFilterFrom" placeholder="dd/mm/yyyy" maxlength="10">
@@ -293,6 +296,14 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </label>
 <label>Company<div><input id="fcustomer"></div></label>
 <label>Monthly Rate (₹)<div><input id="frate" type="number" min="0"></div></label>
+<label class="full-width">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+    <span>Status</span>
+    <span style="font-weight:600;color:#0ea5e9;font-size:11px">⚡ Auto from dates</span>
+  </div>
+  <select id="fstatus" disabled style="margin-top:6px;background:#f1f5f9;cursor:not-allowed;font-weight:700"><option>Available</option><option>Not Available</option><option>Under Maintenance</option></select>
+  <div id="statusHint" style="font-size:12px;color:#0c4a6e;margin-top:6px;background:#f0f9ff;padding:8px 12px;border-radius:6px;border:1px solid #bae6fd;font-weight:600">💡 Status dates ke hisaab se automatically set hoga</div>
+</label>
 <label>Booking From<div class="date-row"><select id="ffrom_d"></select><select id="ffrom_m"></select><select id="ffrom_y"></select></div></label>
 <label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
 </div>
@@ -359,8 +370,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div id="pptStyleOptions">
   <label class="ppt-option selected" data-style="split"><input type="radio" name="pptStyle" value="split" checked><div><div class="ppt-label">📋 Split</div><div class="ppt-desc">Image left, details right</div></div></label>
   <label class="ppt-option" data-style="cover"><input type="radio" name="pptStyle" value="cover"><div><div class="ppt-label">🖼️ Cover</div><div class="ppt-desc">Full image</div></div></label>
-  <label class="ppt-option" data-style="center-black"><input type="radio" name="pptStyle" value="center-black"><div><div class="ppt-label">🖤 Center + Black Sides</div><div class="ppt-desc">Original image, black sides</div></div></label>
-  <label class="ppt-option" data-style="center-blur"><input type="radio" name="pptStyle" value="center-blur"><div><div class="ppt-label">🌫️ Center + Blur Sides</div><div class="ppt-desc">Original image, blur sides</div></div></label>
+  <label class="ppt-option" data-style="center-black"><input type="radio" name="pptStyle" value="center-black"><div><div class="ppt-label">🖤 Center + Black Sides</div><div class="ppt-desc">Image center, black sides</div></div></label>
+  <label class="ppt-option" data-style="center-blur"><input type="radio" name="pptStyle" value="center-blur"><div><div class="ppt-label">🌫️ Center + Blur Sides</div><div class="ppt-desc">Image center, blur sides</div></div></label>
   <label class="ppt-option" data-style="grid"><input type="radio" name="pptStyle" value="grid"><div><div class="ppt-label">▦ Grid (4/slide)</div><div class="ppt-desc">Compact</div></div></label>
 </div>
 
@@ -418,7 +429,6 @@ var currentImageData = "";
 var collapsedAreas = null;
 var autoRefreshTimer = null;
 var lastDataHash = "";
-var activeStatuses = new Set();
 var isRendering = false;
 var isReleasing = false;
 var csvParsedSites = [];
@@ -513,6 +523,7 @@ function showApp(){
     populateAreaDropdowns();
     return autoReleaseExpiredSites();
   }).then(function(){
+    updateCards();
     render();
     startAutoRefresh();
   });
@@ -546,6 +557,15 @@ function persistNow(){
     if(result && result.error) alert("⚠️ " + result.error);
     return false;
   }).catch(function(){ return false; });
+}
+
+function updateCards(){
+  var counts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
+  sites.forEach(function(s){ counts[s.status] = (counts[s.status] || 0) + 1; });
+  document.getElementById("total").textContent = sites.length;
+  document.getElementById("avail").textContent = counts.Available;
+  document.getElementById("notavail").textContent = counts["Not Available"];
+  document.getElementById("maintenance").textContent = counts["Under Maintenance"];
 }
 
 function loadCompanyLogo(){
@@ -596,6 +616,7 @@ function startAutoRefresh(){
           bookingHistory = result.bookingHistory || [];
           sites.forEach(function(s, i){ if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
           lastDataHash = newHash;
+          updateCards();
           render();
         }
       }
@@ -671,6 +692,15 @@ function updateCalcPreview(){
   var days = calcDays(from, to);
   var status = calcStatusFromDates(from, to);
   document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " | <b>To:</b> " + (to||"—") + " | <b>Days:</b> " + days + " | <b>Status:</b> " + status;
+  var hint = document.getElementById("statusHint");
+  if(!hint) return;
+  if(status === "Not Available"){
+    hint.innerHTML = "🚨 Future booking — <b>Not Available</b> me save hoga";
+    hint.style.background = "#fef2f2"; hint.style.borderColor = "#fecaca"; hint.style.color = "#991b1b";
+  } else {
+    hint.innerHTML = "✅ Booking past me hai — <b>Available</b> me save hoga";
+    hint.style.background = "#ecfdf5"; hint.style.borderColor = "#a7f3d0"; hint.style.color = "#065f46";
+  }
 }
 
 function openAdd(){
@@ -759,6 +789,7 @@ function saveSite(){
   }).then(function(){
     hideProgress();
     closeModal();
+    updateCards();
     render();
   }).catch(function(e){
     hideProgress();
@@ -811,11 +842,11 @@ function render(){
   if(isRendering) return;
   isRendering = true;
   autoReleaseExpiredSites().then(function(){
+    updateCards();
     if(collapsedAreas === null) collapsedAreas = new Set(areas);
-    var f = activeStatuses;
     var q = (document.getElementById("search").value || "").toLowerCase().trim();
     var hasDateFilter = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
-    var isFiltering = f.size > 0 || q || hasDateFilter;
+    var isFiltering = q || hasDateFilter;
     if(isFiltering) collapsedAreas.clear();
     var container = document.getElementById("areaContainer");
     container.innerHTML = "";
@@ -828,7 +859,6 @@ function render(){
       var areaSites = sites.filter(function(s){
         var sArea = s.area || "Unassigned";
         if(sArea !== areaName) return false;
-        if(f.size > 0 && !f.has(s.status)) return false;
         var hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
         if(q && hay.indexOf(q) === -1) return false;
         return true;
@@ -915,20 +945,6 @@ function loadVisibleImages(){
     });
   });
 }
-function filterByStatus(status){
-  if(activeStatuses.has(status)) activeStatuses.delete(status);
-  else activeStatuses.add(status);
-  if(activeStatuses.has(status)){
-    var count = 0;
-    sites.forEach(function(s){ if(s.status === status){ selectedSites.add(s.id); count++; } });
-    if(count > 0) showToast("Selected", count + " sites", "success");
-  } else {
-    sites.forEach(function(s){ if(s.status === status) selectedSites.delete(s.id); });
-  }
-  document.querySelectorAll(".ms-cb").forEach(function(cb){ cb.checked = activeStatuses.has(cb.value); });
-  updateMultiStatusLabel();
-  render();
-}
 function toggleSelect(id){
   if(selectedSites.has(id)) selectedSites.delete(id);
   else selectedSites.add(id);
@@ -954,20 +970,6 @@ function updateSelectBar(){
 function toggleAreaCollapse(areaName){
   if(collapsedAreas.has(areaName)) collapsedAreas.delete(areaName);
   else collapsedAreas.add(areaName);
-  render();
-}
-
-function updateMultiStatusLabel(){
-  var label = document.getElementById("multiStatusLabel");
-  if(!label) return;
-  if(activeStatuses.size === 0) label.textContent = "Status: All";
-  else if(activeStatuses.size === 1) label.textContent = "Status: " + Array.from(activeStatuses)[0];
-  else label.textContent = "Status (" + activeStatuses.size + ")";
-}
-function onStatusCheckChange(){
-  activeStatuses.clear();
-  document.querySelectorAll(".ms-cb:checked").forEach(function(cb){ activeStatuses.add(cb.value); });
-  updateMultiStatusLabel();
   render();
 }
 
@@ -1068,6 +1070,7 @@ function processBulkSites(){
   persistNow().then(function(){
     hideProgress();
     populateAreaDropdowns();
+    updateCards();
     render();
     closeBulkModal();
     showToast("Bulk Upload", "Added: " + added + ", Updated: " + updated, "success");
@@ -1185,79 +1188,74 @@ function openPPTFormatModal(){
 }
 function closePPTModal(){ document.getElementById("pptModal").classList.remove("show"); }
 
-// ✅ ORIGINAL QUALITY: No resize, no crop. Image at 1:1 pixel ratio.
-function createCenterBlackImage(dataUrl){
+// ✅ PPT: 70% image + 30% sides
+function createCenterBlackImage(dataUrl, targetW, targetH){
+  targetW = targetW || 2560; targetH = targetH || 1440;
   return new Promise(function(resolve){
     var img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = function(){
       try {
-        // Canvas = ORIGINAL image dimensions
         var canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
+        canvas.width = targetW; canvas.height = targetH;
         var ctx = canvas.getContext("2d");
-        
-        // Black background
-        ctx.fillStyle = "#000000";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // ✅ Image at EXACT original size (no scaling)
-        ctx.drawImage(img, 0, 0);
-        
-        // ✅ PNG lossless output
-        resolve(canvas.toDataURL("image/png"));
+        ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, targetW, targetH);
+        var imgRatio = img.width / img.height;
+        var canvasRatio = targetW / targetH;
+        var pad = 0.70;
+        var drawW, drawH, drawX, drawY;
+        if(imgRatio > canvasRatio){
+          drawW = targetW * pad; drawH = drawW / imgRatio;
+          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
+        } else {
+          drawH = targetH * pad; drawW = drawH * imgRatio;
+          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
+        }
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        resolve(canvas.toDataURL("image/jpeg", 0.95));
       } catch(e){ resolve(null); }
     };
     img.onerror = function(){ resolve(null); };
     img.src = dataUrl;
   });
 }
-
-function createCenterBlurImage(dataUrl){
+function createCenterBlurImage(dataUrl, targetW, targetH){
+  targetW = targetW || 2560; targetH = targetH || 1440;
   return new Promise(function(resolve){
     var img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = function(){
       try {
         var canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
+        canvas.width = targetW; canvas.height = targetH;
         var ctx = canvas.getContext("2d");
-        
-        // Step 1: Blurred background (same image, cover fill)
         var imgRatio = img.width / img.height;
-        var canvasRatio = canvas.width / canvas.height;
+        var canvasRatio = targetW / targetH;
         var bgW, bgH, bgX, bgY;
-        if(imgRatio > canvasRatio){
-          bgH = canvas.height;
-          bgW = img.width * (canvas.height / img.height);
-          bgX = (canvas.width - bgW) / 2;
-          bgY = 0;
-        } else {
-          bgW = canvas.width;
-          bgH = img.height * (canvas.width / img.width);
-          bgX = 0;
-          bgY = (canvas.height - bgH) / 2;
-        }
+        if(imgRatio > canvasRatio){ bgH = targetH; bgW = img.width * (targetH / img.height); bgX = (targetW - bgW) / 2; bgY = 0; }
+        else { bgW = targetW; bgH = img.height * (targetW / img.width); bgX = 0; bgY = (targetH - bgH) / 2; }
         var scale = 1.2;
         ctx.filter = "blur(80px)";
         ctx.drawImage(img, bgX - (bgW * (scale - 1) / 2), bgY - (bgH * (scale - 1) / 2), bgW * scale, bgH * scale);
         ctx.filter = "none";
-        
-        // Dark overlay
-        ctx.fillStyle = "rgba(0,0,0,0.55)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Step 2: ✅ Original image at EXACT size (no scaling)
-        ctx.shadowColor = "rgba(0,0,0,0.85)";
-        ctx.shadowBlur = 40;
-        ctx.drawImage(img, 0, 0);
-        ctx.shadowColor = "transparent";
-        ctx.shadowBlur = 0;
-        
-        // ✅ PNG lossless output
-        resolve(canvas.toDataURL("image/png"));
+        ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(0, 0, targetW, targetH);
+        var pad = 0.70;
+        var drawW, drawH, drawX, drawY;
+        if(imgRatio > canvasRatio){
+          drawW = targetW * pad; drawH = drawW / imgRatio;
+          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
+        } else {
+          drawH = targetH * pad; drawW = drawH * imgRatio;
+          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
+        }
+        ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 40;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        ctx.shadowColor = "transparent"; ctx.shadowBlur = 0;
+        resolve(canvas.toDataURL("image/jpeg", 0.95));
       } catch(e){ resolve(null); }
     };
     img.onerror = function(){ resolve(null); };
@@ -1394,11 +1392,8 @@ function generatePPT(){
         return imgPromise.then(function(imgData){
           if(style === "center-black"){
             if(imgData){
-              return createCenterBlackImage(imgData).then(function(p){
-                if(p){
-                  // ✅ Fit into slide area without cropping (contain mode)
-                  s.addImage({ data: p, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "contain", w: 13.33, h: 5.5 } });
-                }
+              return createCenterBlackImage(imgData, 2560, 1440).then(function(p){
+                if(p) s.addImage({ data: p, x: 0, y: 0.65, w: 13.33, h: 5.5 });
               });
             } else {
               s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
@@ -1406,11 +1401,8 @@ function generatePPT(){
             }
           } else if(style === "center-blur"){
             if(imgData){
-              return createCenterBlurImage(imgData).then(function(p){
-                if(p){
-                  // ✅ Fit into slide area without cropping (contain mode)
-                  s.addImage({ data: p, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "contain", w: 13.33, h: 5.5 } });
-                }
+              return createCenterBlurImage(imgData, 2560, 1440).then(function(p){
+                if(p) s.addImage({ data: p, x: 0, y: 0.65, w: 13.33, h: 5.5 });
               });
             } else {
               s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "F1F5F9" } });
@@ -1525,6 +1517,7 @@ function bulkDeleteSelected(){
     selectedSites.clear();
     return persistNow();
   }).then(function(){
+    updateCards();
     render();
     alert("✅ " + toDelete.length + " deleted");
   });
@@ -1540,7 +1533,9 @@ function openBulkStatusModal(){
   var targets = sites.filter(function(s){ return ids.has(String(s.id)); });
   targets.forEach(function(s){ s.status = newStatus; });
   persistNow().then(function(){
-    render(); clearSelection();
+    updateCards();
+    render();
+    clearSelection();
     alert("✅ " + targets.length + " updated");
   });
 }
@@ -1617,7 +1612,7 @@ function handleImportFile(e){
       areas = backup.areas || DEFAULT_AREAS.slice();
       bookingHistory = backup.bookingHistory || [];
       sites.forEach(function(s, i){ if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
-      persistNow(); populateAreaDropdowns(); render();
+      persistNow(); populateAreaDropdowns(); updateCards(); render();
       alert("✅ Import done!");
     } catch(err){ alert("Fail: " + err.message); }
   };
@@ -1651,6 +1646,7 @@ document.addEventListener("DOMContentLoaded", function(){
     imageFailed.clear(); imageCache = {}; selectedSites.clear();
     loadCloudData().then(function(){ return loadCompanyLogo(); }).then(function(){
       collapsedAreas = new Set(areas);
+      updateCards();
       render();
       showToast("Refreshed", "Data reloaded", "success");
     });
@@ -1659,26 +1655,13 @@ document.addEventListener("DOMContentLoaded", function(){
   document.getElementById("backupBtn").addEventListener("click", downloadBackup);
   document.getElementById("importBtn").addEventListener("click", triggerImport);
   document.getElementById("search").addEventListener("input", debounce(render, 200));
-  document.getElementById("multiStatusBtn").addEventListener("click", function(e){
-    e.stopPropagation();
-    document.getElementById("multiStatusPanel").classList.toggle("show");
-  });
-  document.addEventListener("click", function(e){
-    var w = document.getElementById("multiStatusWrap");
-    if(w && !w.contains(e.target)) document.getElementById("multiStatusPanel").classList.remove("show");
-  });
-  document.getElementById("msAll").addEventListener("change", function(){
-    var checked = this.checked;
-    document.querySelectorAll(".ms-cb").forEach(function(cb){ cb.checked = checked; });
-    onStatusCheckChange();
-  });
-  document.querySelectorAll(".ms-cb").forEach(function(cb){ cb.addEventListener("change", onStatusCheckChange); });
-  document.getElementById("applyFilterBtn").addEventListener("click", function(){ render(); });
+  document.getElementById("applyFilterBtn").addEventListener("click", function(){ updateCards(); render(); });
   document.getElementById("clearFilterBtn").addEventListener("click", function(){
     document.getElementById("dateFilterFrom").value = "";
     document.getElementById("dateFilterTo").value = "";
     document.getElementById("dateFilterFrom").dataset.lastLength = "0";
     document.getElementById("dateFilterTo").dataset.lastLength = "0";
+    updateCards();
     render();
   });
   document.getElementById("manageAreasBtn").addEventListener("click", openAreaManager);
