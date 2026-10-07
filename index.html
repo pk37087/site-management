@@ -173,7 +173,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .history-search-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:14px;display:flex;gap:8px;align-items:center}
 .history-search-box input{flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;outline:none;font-size:14px !important;height:40px}
 .history-search-box button{padding:0 16px;height:40px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-size:13px}
-/* AREA LIST ITEM STYLING - CRITICAL FIX */
 .area-list-item{display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #f1f5f9;cursor:pointer;border-radius:6px;transition:background 0.15s ease}
 .area-list-item:hover{background:#f8fafc}
 .area-list-item.sel{background:#ede9fe}
@@ -434,6 +433,7 @@ let activeStatuses = new Set();
 let telegramConfig = { botToken: "", chatId: "", enabled: false, onlyNotAvailMaint: true };
 let historySearchQuery = "", bulkPreviewData = [], bulkImageMatches = [], newLogoData = null;
 let pptSelectedFormat = "black";
+let __dataLoadedOnce = false; // ⚡ SAFETY: prevent wipe
 
 function showToast(title, message, type){
   const container = document.getElementById("toastContainer");
@@ -579,6 +579,7 @@ function startAutoRefresh(){
     try {
       const result = await apiGet("/data");
       if(result && result.success === true && Array.isArray(result.sites)){
+        // ⚡ SAFETY: Skip if empty response
         if(result.sites.length === 0 && sites.length > 0){ return; }
         const newHash = JSON.stringify({ sites: result.sites, areas: result.areas || [] });
         if(newHash !== lastDataHash){
@@ -619,12 +620,19 @@ async function apiGet(path){
 async function apiPost(path, body){ try { const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 async function apiDelete(path){ try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 
+/* ============ LOAD DATA - SAFE ============ */
 async function loadCloudData(){
   const result = await apiGet("/data");
   if(result && result.success === true && Array.isArray(result.sites)){
+    // ⚡ SAFETY: If cloud empty AND local has data, DON'T WIPE
     const cloudHasData = result.sites.length > 0 || (result.areas && result.areas.length > 0);
-    const localHasData = sites.length > 0 || areas.length > 0;
-    if(!cloudHasData && localHasData){ return false; }
+    const localHasData = sites.length > 0 || (areas && areas.length > 0 && areas.length !== DEFAULT_AREAS.length);
+    
+    if(!cloudHasData && localHasData){
+      console.warn("⚡ SAFETY: Cloud empty, keeping local data");
+      return false;
+    }
+    
     sites = result.sites;
     areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
     bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
@@ -633,10 +641,13 @@ async function loadCloudData(){
       if(!s.siteCode){ const m = (s.site||"").match(/^([A-Z]{2,5}\d{1,4})/i); s.siteCode = m ? m[1].toUpperCase() : ""; }
     });
     lastDataHash = JSON.stringify({ sites, areas });
+    __dataLoadedOnce = true;
     return true;
   }
+  console.warn("⚡ Cloud load failed, keeping local");
   return false;
 }
+
 async function persistNow(){
   try {
     const result = await apiPost("/data", { sites: sites || [], areas: areas || [], bookingHistory: bookingHistory || [] });
@@ -675,9 +686,16 @@ async function loadLogoFromCloud(){
   return false;
 }
 
+/* ============ POPULATE AREA DROPDOWN - FIXED ============ */
 function populateAreaDropdowns(){
   const formSel = document.getElementById("farea"); 
   if(!formSel) return;
+  
+  // ⚡ SAFETY: If areas empty, use defaults
+  if(!areas || areas.length === 0){
+    areas = [...DEFAULT_AREAS];
+  }
+  
   const currentVal = formSel.value;
   formSel.innerHTML = '';
   areas.forEach(a => { 
@@ -686,8 +704,12 @@ function populateAreaDropdowns(){
     opt.textContent = a;
     formSel.appendChild(opt);
   });
-  if(currentVal && areas.includes(currentVal)){ formSel.value = currentVal; }
-  else if(areas.length > 0){ formSel.value = areas[0]; }
+  
+  if(currentVal && areas.includes(currentVal)){ 
+    formSel.value = currentVal; 
+  } else if(areas.length > 0){ 
+    formSel.value = areas[0]; 
+  }
 }
 
 function toggleMultiStatusPanel(e){ if(e) e.stopPropagation(); document.getElementById("multiStatusPanel").classList.toggle("show"); }
@@ -945,11 +967,25 @@ function bulkDeleteSelected(){
   persistNow().then(() => { showToast("Deleted", "Sites removed", "success"); render(); });
 }
 
+/* ============ OPEN ADD - FIXED ============ */
 function openAdd(){
   editIndex = -1;
   document.getElementById("modalTitle").textContent = "Add Site";
+  
+  // ⚡ CRITICAL FIX: Refresh area dropdown BEFORE opening modal
   populateAreaDropdowns();
-  ["fsitecode","fsite","flocation","fcustomer","frate"].forEach(id => document.getElementById(id).value = "");
+  
+  // If areas still empty, use defaults
+  const farea = document.getElementById("farea");
+  if(!farea || farea.options.length === 0){
+    areas = [...DEFAULT_AREAS];
+    populateAreaDropdowns();
+  }
+  
+  ["fsitecode","fsite","flocation","fcustomer","frate"].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = "";
+  });
   document.getElementById("fstatus").value = "Available";
   currentImageData = "";
   document.getElementById("imagePreviewWrap").style.display = "none";
@@ -960,6 +996,7 @@ function openAdd(){
   updateCalcPreview();
   document.getElementById("modal").classList.add("show");
 }
+
 function openEdit(id){
   const site = sites.find(s => s.id === id);
   if(!site) return;
@@ -1145,7 +1182,7 @@ function exportCSV(){
   const a = document.createElement("a"); a.href = url; a.download = "sites-export-" + new Date().toISOString().slice(0, 10) + ".csv"; a.click();
 }
 
-/* ============ AREA MGMT - FIXED ============ */
+/* ============ AREA MGMT ============ */
 function openAreaManager(){ 
   selectedAreas.clear(); 
   renderAreaList(); 
@@ -1224,7 +1261,7 @@ function renameArea(area){
   persistNow().then(() => { showToast("Renamed", newName, "success"); populateAreaDropdowns(); renderAreaList(); render(); });
 }
 
-/* ============ MULTI AREA SELECT - FIXED ============ */
+/* ============ MULTI AREA ============ */
 function openMultiAreaSelect(){ 
   multiAreaSelected.clear(); 
   renderMultiAreaList(); 
@@ -1297,7 +1334,7 @@ function openBulkStatusModal(){
   persistNow().then(() => { showToast("Updated", "Status updated", "success"); render(); });
 }
 
-/* ============ REFRESH - FULL CACHE BUST ============ */
+/* ============ REFRESH - SAFE ============ */
 async function refreshPage(event){
   if(event){ event.preventDefault(); event.stopPropagation(); }
   const btn = document.querySelector(".btn-refresh-header");
@@ -1315,10 +1352,12 @@ async function refreshPage(event){
       const cloudHasData = result.sites.length > 0;
       const localHasData = sites.length > 0;
       
+      // ⚡ SAFETY: If cloud empty AND local has data, ask user
       if(!cloudHasData && localHasData){
-        const choice = confirm("⚠️ WARNING\n\nCloud returned 0 sites, but you have " + sites.length + " locally.\n\nOK = Keep local (SAFE)\nCancel = Load empty cloud (WILL WIPE)");
-        if(choice){ showToast("Safe", "Local data preserved", "warning"); }
-        else {
+        const choice = confirm("⚠️ Cloud returned 0 sites but you have " + sites.length + " locally.\n\nOK = Keep local (safe)\nCancel = Load empty cloud (WILL WIPE)");
+        if(choice){ 
+          showToast("Safe", "Local data preserved", "warning"); 
+        } else {
           sites = []; areas = [...DEFAULT_AREAS]; bookingHistory = [];
           populateAreaDropdowns(); render();
         }
@@ -1351,7 +1390,7 @@ async function refreshPage(event){
         showToast("Refreshed", sites.length + " sites, " + areas.length + " areas loaded", "success");
       }
     } else {
-      showToast("Warning", "Cloud invalid data. Local safe.", "warning");
+      showToast("Warning", "Cloud invalid. Local safe.", "warning");
     }
   } catch(e){
     showToast("Error", "Refresh failed: " + e.message, "danger");
