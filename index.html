@@ -37,7 +37,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
 .btn-telegram{background:#0088cc;color:#fff}
 .btn-refresh-header{background:#0ea5e9;color:#fff}
-.btn-bulk-menu{background:#7c3aed;color:#fff;position:relative}
+.btn-bulk-menu{background:#7c3aed;color:#fff}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
@@ -51,16 +51,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card .card-icon{position:absolute;top:14px;right:16px;font-size:20px;opacity:0.15;font-weight:900}
 .card.available::before{background:linear-gradient(180deg,#10b981,#059669)}
 .card.available b{color:#047857}
-.card.available .card-icon{color:#10b981;opacity:0.2}
 .card.notavailable::before{background:linear-gradient(180deg,#ef4444,#dc2626)}
 .card.notavailable b{color:#b91c1c}
-.card.notavailable .card-icon{color:#ef4444;opacity:0.2}
 .card.maintenance::before{background:linear-gradient(180deg,#f59e0b,#d97706)}
 .card.maintenance b{color:#b45309}
-.card.maintenance .card-icon{color:#f59e0b;opacity:0.2}
 .card.total::before{background:linear-gradient(180deg,#3b82f6,#1d4ed8)}
 .card.total b{color:#1e40af}
-.card.total .card-icon{color:#3b82f6;opacity:0.2}
 .toolbar{background:#fff;padding:10px;border-radius:10px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border:1px solid #e2e8f0;align-items:center}
 .toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-family:inherit;background:#fff;outline:none;color:#0f172a;min-width:160px;flex:1;font-size:13px !important;height:36px}
 .toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;height:36px;white-space:nowrap}
@@ -69,19 +65,15 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .filter-box{display:flex;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;flex-wrap:nowrap;height:36px}
 .filter-box .date-group{display:flex;align-items:center;background:#fff;border-right:1px solid #cbd5e1;height:100%}
 .filter-box .date-input{padding:0 8px;border:0;font-family:inherit;font-size:12px !important;width:95px;background:#fff;color:#0f172a;outline:none;height:100%}
-.filter-box .date-input:focus{background:#eff6ff}
 .filter-box .date-input::placeholder{color:#94a3b8;font-size:11px}
 .filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700;display:flex;align-items:center}
-.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-family:inherit;font-weight:700;font-size:11px;height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.filter-box .apply-btn:hover{background:#2563eb}
+.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-family:inherit;font-weight:700;font-size:11px;height:100%;display:flex;align-items:center;gap:4px}
 .filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none;align-items:center}
 .filter-box .clear-btn.show{display:flex}
-.filter-box .clear-btn:hover{background:#fef2f2}
-.filter-active-badge{background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;border:1px solid #93c5fd;display:none;align-items:center;gap:3px;white-space:nowrap;height:24px}
+.filter-active-badge{background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;border:1px solid #93c5fd;display:none;align-items:center;gap:3px;height:24px}
 .filter-active-badge.show{display:inline-flex}
 .multi-status-wrap{position:relative;height:36px;display:flex}
-.multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;white-space:nowrap;border-radius:6px;min-width:130px}
-.multi-status-btn:hover{background:#eff6ff}
+.multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;border-radius:6px;min-width:130px}
 .multi-status-btn .ms-arrow{font-size:10px;color:#64748b}
 .multi-status-btn .ms-count{background:#3b82f6;color:#fff;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700}
 .multi-status-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,0.15);z-index:100;min-width:220px;padding:6px}
@@ -104,7 +96,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .area-header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:8px;border-radius:14px 14px 0 0}
 .area-header .area-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
 .area-header .area-count{background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
-.area-header .area-actions{display:flex;gap:6px}
 .area-header .area-actions button{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;min-height:28px}
 .area-header .select-all-cb{width:18px;height:18px;cursor:pointer;accent-color:#fff;margin-right:4px}
 .area-block.collapsed .area-content{display:none}
@@ -164,8 +155,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .date-row{display:flex;gap:6px}
 .date-row select{flex:1;padding:11px 6px}
 .calc-preview{background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-top:12px;font-size:12px;color:#0c4a6e}
-.date-warning{background:#fffbeb;border:1px solid #fcd34d;color:#92400e;padding:10px;border-radius:8px;font-size:12px;margin-top:8px;display:none;font-weight:600}
-.date-warning.show{display:block}
 .history-item{background:#f8fafc;border-left:3px solid #7c3aed;padding:12px;margin-bottom:10px;border-radius:8px;font-size:13px;border:1px solid #e2e8f0}
 .empty-history{text-align:center;color:#94a3b8;padding:40px;font-style:italic}
 .image-viewer{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.95);z-index:3000;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
@@ -183,12 +172,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toast .toast-title{font-weight:700;margin-bottom:2px;font-size:13px}
 .toast .toast-msg{font-size:12px;opacity:0.85;word-break:break-word}
 .toast .toast-close{background:transparent;border:0;color:#fff;cursor:pointer;font-size:16px;opacity:0.6;padding:0;flex-shrink:0}
-.toast .toast-close:hover{opacity:1}
 .history-search-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:14px;display:flex;gap:8px;align-items:center}
 .history-search-box input{flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;outline:none;font-size:14px !important;height:40px}
 .history-search-box button{padding:0 16px;height:40px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px}
-.history-search-box button:hover{background:#2563eb}
-/* BULK MENU DROPDOWN */
 .bulk-menu-wrap{position:relative;display:inline-block}
 .bulk-menu-panel{display:none;position:absolute;top:calc(100% + 4px);right:0;background:#fff;border:1px solid #cbd5e1;border-radius:10px;box-shadow:0 10px 40px rgba(15,23,42,0.2);z-index:1100;min-width:260px;padding:6px;text-align:left}
 .bulk-menu-panel.show{display:block}
@@ -197,6 +183,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .bulk-menu-panel .bm-item:hover{background:#f1f5f9}
 .bulk-menu-panel .bm-item .bm-icon{font-size:18px;width:24px;text-align:center}
 .bulk-menu-panel .bm-item .bm-desc{font-size:10px;color:#94a3b8;font-weight:400;display:block;margin-top:1px}
+.ppt-format-card{cursor:pointer;border:2px solid #e2e8f0;border-radius:12px;padding:16px;transition:all 0.2s;background:#fff;display:block}
+.ppt-format-card:hover{border-color:#a78bfa;transform:translateY(-2px);box-shadow:0 4px 12px rgba(124,58,237,0.15)}
+.ppt-format-card.active{border-color:#7c3aed;background:#f5f3ff;box-shadow:0 0 0 3px rgba(124,58,237,0.15)}
 @media (max-width:1024px){#areaContainer{grid-template-columns:1fr}}
 @media (max-width:768px){
   header{padding:10px 12px}
@@ -211,7 +200,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .card b{font-size:28px}
   .toolbar{padding:8px;gap:6px}
   .toolbar #search{min-width:100%;flex:1 1 100%}
-  .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center;height:36px;min-height:36px}
+  .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center;height:36px}
   .filter-box{width:100%;flex:1 1 100%;flex-wrap:wrap;height:auto}
   .filter-box .date-group{flex:1 1 100%;border-right:0;border-bottom:1px solid #cbd5e1;height:36px}
   .filter-box .date-input{flex:1;min-width:90px}
@@ -233,6 +222,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions button{width:100%}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
   .bulk-menu-panel{right:auto;left:0;min-width:220px}
+  #pptFormatList{grid-template-columns:1fr !important}
 }
 @media (max-width:380px){
   .cards{grid-template-columns:1fr}
@@ -267,29 +257,29 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <span class="header-user" id="userInfo">Loading...</span>
   </div>
   <div class="header-actions">
-    <button class="btn-refresh-header" onclick="refreshPage(event)" title="Refresh data">🔄 Refresh</button>
-    <button class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()" title="Telegram notifications">📱 Telegram</button>
+    <button type="button" class="btn-refresh-header" onclick="refreshPage(event)" title="Refresh data">🔄 Refresh</button>
+    <button type="button" class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()" title="Telegram notifications">📱 Telegram</button>
     <div class="bulk-menu-wrap admin-only">
-      <button class="btn-bulk-menu" onclick="toggleBulkMenu(event)" title="Bulk operations">📦 Bulk ▾</button>
+      <button type="button" class="btn-bulk-menu" onclick="toggleBulkMenu(event)" title="Bulk operations">📦 Bulk ▾</button>
       <div class="bulk-menu-panel" id="bulkMenuPanel">
         <div class="bm-header">Bulk Operations</div>
-        <button class="bm-item" onclick="closeBulkMenu();openBulkUpload('sites')">
+        <button type="button" class="bm-item" onclick="closeBulkMenu();openBulkUpload('sites')">
           <span class="bm-icon">📄</span>
           <span>Sites (CSV)<span class="bm-desc">Upload multiple sites via CSV</span></span>
         </button>
-        <button class="bm-item" onclick="closeBulkMenu();openBulkUpload('images')">
+        <button type="button" class="bm-item" onclick="closeBulkMenu();openBulkUpload('images')">
           <span class="bm-icon">🖼️</span>
           <span>Images<span class="bm-desc">Match images to site codes</span></span>
         </button>
-        <button class="bm-item" onclick="closeBulkMenu();openBulkUpload('logo')">
+        <button type="button" class="bm-item" onclick="closeBulkMenu();openBulkUpload('logo')">
           <span class="bm-icon">🎨</span>
           <span>Logo<span class="bm-desc">Upload company logo</span></span>
         </button>
       </div>
     </div>
-    <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
-    <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
-    <button class="btn-red" onclick="doLogout()">Logout</button>
+    <button type="button" class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
+    <button type="button" class="btn-light admin-only" onclick="triggerImport()">Import</button>
+    <button type="button" class="btn-red" onclick="doLogout()">Logout</button>
   </div>
 </header>
 <div class="container">
@@ -323,8 +313,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
       <span class="date-sep">→</span>
       <input type="text" class="date-input" id="dateFilterTo" placeholder="dd/mm/yyyy" maxlength="10" oninput="handleDateInput(this,'to')" onkeydown="handleDateKeyDown(event)">
     </div>
-    <button type="button" class="apply-btn" onclick="applyFilters()" title="Apply filter (Enter)">🔍 Apply</button>
-    <button type="button" class="clear-btn" id="clearFilterBtn" onclick="clearAllFilters()" title="Clear all filters">✕</button>
+    <button type="button" class="apply-btn" onclick="applyFilters()">🔍 Apply</button>
+    <button type="button" class="clear-btn" id="clearFilterBtn" onclick="clearAllFilters()">✕</button>
   </div>
   <span class="filter-active-badge" id="filterBadge"></span>
   <button class="admin-only" onclick="openAreaManager()">Manage Areas</button>
@@ -336,7 +326,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div class="select-bar" id="selectBar">
   <span class="count-badge" id="selCount">0 selected</span>
-  <button class="ppt-sel" onclick="generateSelectedSitesPPT()">📊 Generate PPT</button>
+  <button class="ppt-sel" onclick="openPptFormatModal()">📊 Generate PPT</button>
   <button class="bulk-status-sel" onclick="openBulkStatusModal()">Bulk Status</button>
   <button class="clear-sel" onclick="clearSelection()">Clear</button>
   <button class="delete-sel" id="deleteBtn" onclick="bulkDeleteSelected()" style="display:none">Delete</button>
@@ -388,10 +378,46 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="modal-actions"><button class="secondary" onclick="closeModal()">Cancel</button><button onclick="saveSite()">Save Site</button></div>
 </div></div>
 
+<!-- PPT FORMAT MODAL -->
+<div class="modal" id="pptFormatModal"><div class="box" style="width:min(750px,100%)">
+<h2>📊 Generate PPT Report</h2>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px"><span id="pptSiteCount">0</span> sites selected. Choose a layout format:</p>
+<div id="pptFormatList" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+  <label class="ppt-format-card active" data-format="professional">
+    <input type="radio" name="pptFormat" value="professional" checked style="display:none">
+    <div style="font-size:24px;margin-bottom:8px">🎨</div>
+    <div style="font-weight:700;font-size:14px;margin-bottom:4px">Professional</div>
+    <div style="font-size:11px;color:#64748b;line-height:1.5">Cover + Summary + Per-site slides with header bar, image, and footer stats</div>
+  </label>
+  <label class="ppt-format-card" data-format="simple">
+    <input type="radio" name="pptFormat" value="simple" style="display:none">
+    <div style="font-size:24px;margin-bottom:8px">📄</div>
+    <div style="font-weight:700;font-size:14px;margin-bottom:4px">Simple</div>
+    <div style="font-size:11px;color:#64748b;line-height:1.5">Clean layout — title on top, big image below, minimal footer</div>
+  </label>
+  <label class="ppt-format-card" data-format="grid">
+    <input type="radio" name="pptFormat" value="grid" style="display:none">
+    <div style="font-size:24px;margin-bottom:8px">🔲</div>
+    <div style="font-weight:700;font-size:14px;margin-bottom:4px">Grid (2×2)</div>
+    <div style="font-size:11px;color:#64748b;line-height:1.5">4 sites per slide in compact grid — best for overview</div>
+  </label>
+  <label class="ppt-format-card" data-format="list">
+    <input type="radio" name="pptFormat" value="list" style="display:none">
+    <div style="font-size:24px;margin-bottom:8px">📋</div>
+    <div style="font-weight:700;font-size:14px;margin-bottom:4px">List View</div>
+    <div style="font-size:11px;color:#64748b;line-height:1.5">Table of all sites with columns — data-focused report</div>
+  </label>
+</div>
+<div class="modal-actions">
+  <button class="secondary" onclick="closePptFormatModal()">Cancel</button>
+  <button onclick="confirmPptGeneration()" style="background:#7c3aed;color:#fff">📊 Generate PPT</button>
+</div>
+</div></div>
+
 <!-- HISTORY MODAL -->
 <div class="modal" id="historyModal"><div class="box">
 <h2 id="historyTitle">Booking History</h2>
-<div id="historySearchWrap" class="history-search-box">
+<div class="history-search-box">
   <input id="historySearchInput" type="text" placeholder="Search by site name or code..." oninput="filterHistoryList()">
   <button onclick="clearHistorySearch()">Clear</button>
 </div>
@@ -439,7 +465,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <h2>☑ Select Multiple Areas</h2>
 <p style="color:#64748b;font-size:13px;margin-bottom:16px;">Select areas to select all their sites at once.</p>
 <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-  <button onclick="multiAreaSelectAll()" id="multiAreaSelAllBtn" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Select All Areas</button>
+  <button onclick="multiAreaSelectAll()" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Select All Areas</button>
   <button onclick="multiAreaDeselectAll()" style="padding:8px 14px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Deselect All</button>
   <span id="multiAreaSelCount" style="font-size:12px;color:#64748b;font-weight:600;display:flex;align-items:center">0 selected</span>
 </div>
@@ -454,7 +480,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="modal" id="areaModal"><div class="box">
 <h2>Manage Areas</h2>
 <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-  <button onclick="toggleAllAreas()" id="areaSelAllBtn" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1;min-width:120px">Select All</button>
+  <button onclick="toggleAllAreas()" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1;min-width:120px">Select All</button>
   <button onclick="bulkDeleteAreas()" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1;min-width:120px">Delete Selected</button>
   <span id="areaSelCount" style="font-size:12px;color:#64748b;font-weight:600">0 selected</span>
 </div>
@@ -476,8 +502,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <script>
 const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
-const COMPANY_NAME = "DS Outdoor Media";
-const THEME_COLOR = "1E40AF";
 let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
 
 let currentUser = null;
@@ -503,6 +527,7 @@ let historySearchQuery = "";
 let bulkPreviewData = [];
 let bulkImageMatches = [];
 let newLogoData = null;
+let pptSelectedFormat = "professional";
 
 /* ============ TOAST ============ */
 function showToast(title, message, type){
@@ -523,7 +548,7 @@ function showProgress(t, s){
     ov = document.createElement("div");
     ov.id = "progressOverlay";
     ov.style.cssText = "display:none;position:fixed;inset:0;background:rgba(15,23,42,0.7);z-index:9998;align-items:center;justify-content:center;padding:16px";
-    ov.innerHTML = '<div style="background:#fff;border-radius:16px;padding:28px;text-align:center;min-width:260px;box-shadow:0 20px 60px rgba(0,0,0,0.3)"><div style="width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div><div id="progressText" style="font-weight:700;font-size:15px;margin-bottom:6px">Working...</div><div id="progressSub" style="font-size:12px;color:#64748b"></div></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style>';
+    ov.innerHTML = '<div style="background:#fff;border-radius:16px;padding:28px;text-align:center;min-width:260px"><div style="width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div><div id="progressText" style="font-weight:700;font-size:15px;margin-bottom:6px">Working...</div><div id="progressSub" style="font-size:12px;color:#64748b"></div></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style>';
     document.body.appendChild(ov);
   }
   document.getElementById("progressText").textContent = t || "Working...";
@@ -532,9 +557,8 @@ function showProgress(t, s){
 }
 function hideProgress(){ const ov = document.getElementById("progressOverlay"); if(ov) ov.style.display = "none"; }
 
-/* ============ CORE DATE & STATUS LOGIC ============ */
+/* ============ DATE & STATUS ============ */
 function todayMidnight(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
-
 function parseDDMMYYYY(s){
   if(!s) return null;
   const p = String(s).trim().split("/");
@@ -545,7 +569,6 @@ function parseDDMMYYYY(s){
   if(d.getFullYear() !== yyyy || d.getMonth() !== (mm-1) || d.getDate() !== dd) return null;
   return d;
 }
-
 function calcStatusFromDates(fromStr, toStr){
   const fromD = parseDDMMYYYY(fromStr);
   const toD = parseDDMMYYYY(toStr);
@@ -555,20 +578,6 @@ function calcStatusFromDates(fromStr, toStr){
   if(toMid > today) return "Not Available";
   return "Available";
 }
-
-/* ============ DATE HELPERS ============ */
-function handleDateInput(input, which){
-  const oldVal = input.value;
-  const oldLen = parseInt(input.dataset.lastLength || "0");
-  const isDeleting = oldVal.length < oldLen;
-  input.dataset.lastLength = oldVal.length;
-  if(isDeleting){ input.value = oldVal.replace(/[^\d\/]/g, ""); return; }
-  let val = oldVal.replace(/\D/g, "");
-  if(val.length >= 2){ let dd = val.substring(0, 2); if(parseInt(dd) > 31) dd = "31"; if(parseInt(dd) === 0) dd = "01"; val = dd + "/" + val.substring(2); }
-  if(val.length >= 5){ let parts = val.split("/"); let mm = parts[1].substring(0, 2); if(parseInt(mm) > 12) mm = "12"; if(parseInt(mm) === 0) mm = "01"; val = parts[0] + "/" + mm + (parts[1].length > 2 ? "/" + parts[1].substring(2, 6) : ""); }
-  input.value = val.substring(0, 10);
-}
-function handleDateKeyDown(event){ if(event.key === "Enter"){ event.preventDefault(); applyFilters(); } }
 function ddmmyyyyToISO(s){
   if(!s) return "";
   const p = String(s).trim().split("/");
@@ -581,6 +590,20 @@ function calcDays(f, t){
   if(isNaN(fd) || isNaN(td) || td < fd) return 0;
   return Math.floor((td - fd) / 86400000) + 1;
 }
+
+/* ============ DATE INPUT HANDLER ============ */
+function handleDateInput(input, which){
+  const oldVal = input.value;
+  const oldLen = parseInt(input.dataset.lastLength || "0");
+  const isDeleting = oldVal.length < oldLen;
+  input.dataset.lastLength = oldVal.length;
+  if(isDeleting){ input.value = oldVal.replace(/[^\d\/]/g, ""); return; }
+  let val = oldVal.replace(/\D/g, "");
+  if(val.length >= 2){ let dd = val.substring(0, 2); if(parseInt(dd) > 31) dd = "31"; if(parseInt(dd) === 0) dd = "01"; val = dd + "/" + val.substring(2); }
+  if(val.length >= 5){ let parts = val.split("/"); let mm = parts[1].substring(0, 2); if(parseInt(mm) > 12) mm = "12"; if(parseInt(mm) === 0) mm = "01"; val = parts[0] + "/" + mm + (parts[1].length > 2 ? "/" + parts[1].substring(2, 6) : ""); }
+  input.value = val.substring(0, 10);
+}
+function handleDateKeyDown(event){ if(event.key === "Enter"){ event.preventDefault(); applyFilters(); } }
 function getDateFromDropdowns(prefix){
   const d = document.getElementById(prefix+"_d"), m = document.getElementById(prefix+"_m"), y = document.getElementById(prefix+"_y");
   if(!d || !m || !y) return "";
@@ -594,42 +617,20 @@ function setDateDropdowns(prefix, val){
   }
   const p = val.split("/"); d.value = p[0]; m.value = p[1]; y.value = p[2];
 }
-
-/* ============ LIVE STATUS UPDATE ============ */
 function updateCalcPreview(){
   const from = getDateFromDropdowns("ffrom");
   const to = getDateFromDropdowns("fto");
   const days = calcDays(from, to);
-  let extra = "";
-  if(from && to && days === 0) extra = " ⚠️ To date is before From date!";
-  document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " &nbsp;|&nbsp; <b>To:</b> " + (to||"—") + " &nbsp;|&nbsp; <b>Days:</b> " + days + extra;
-  
+  document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " | <b>To:</b> " + (to||"—") + " | <b>Days:</b> " + days;
   const status = calcStatusFromDates(from, to);
-  const sel = document.getElementById("fstatus");
+  document.getElementById("fstatus").value = status;
   const hint = document.getElementById("statusHint");
-  sel.value = status;
-  
   if(status === "Not Available"){
-    hint.innerHTML = "🚨 <b>Not Available</b> — Booking ends in the future (To: " + to + ")";
-    hint.style.background = "#fef2f2";
-    hint.style.borderColor = "#fecaca";
-    hint.style.color = "#991b1b";
+    hint.innerHTML = "🚨 <b>Not Available</b> — Booking ends in the future";
+    hint.style.background = "#fef2f2"; hint.style.borderColor = "#fecaca"; hint.style.color = "#991b1b";
   } else if(from && to){
-    const todayISO = ddmmyyyyToISO(new Date().toLocaleDateString('en-GB'));
-    const toISO = ddmmyyyyToISO(to);
-    if(toISO === todayISO){
-      hint.innerHTML = "✅ <b>Available</b> — Booking ends today (" + to + ")";
-    } else {
-      hint.innerHTML = "✅ <b>Available</b> — Booking ended in the past";
-    }
-    hint.style.background = "#ecfdf5";
-    hint.style.borderColor = "#a7f3d0";
-    hint.style.color = "#065f46";
-  } else {
-    hint.innerHTML = "💡 Status will be set automatically once booking dates are entered";
-    hint.style.background = "#f0f9ff";
-    hint.style.borderColor = "#bae6fd";
-    hint.style.color = "#0c4a6e";
+    hint.innerHTML = "✅ <b>Available</b> — Booking ended or ends today";
+    hint.style.background = "#ecfdf5"; hint.style.borderColor = "#a7f3d0"; hint.style.color = "#065f46";
   }
 }
 
@@ -782,8 +783,6 @@ function onStatusCheckChange(){
   if(allCb) allCb.checked = activeStatuses.size === 3;
   render();
 }
-function statusMatchesFilter(status){ if(activeStatuses.size === 0) return true; return activeStatuses.has(status); }
-
 function filterByCard(status){
   if(status === "ALL"){
     activeStatuses.clear();
@@ -858,10 +857,6 @@ function updateCardsWithFilteredCounts(){
   document.getElementById("avail").textContent = counts.Available;
   document.getElementById("notavail").textContent = counts["Not Available"];
   document.getElementById("maintenance").textContent = counts["Under Maintenance"];
-  document.getElementById("cardTotal").classList.toggle("active-filter", activeStatuses.size === 0 && !document.getElementById("search").value.trim() && !document.getElementById("dateFilterFrom").value.trim() && !document.getElementById("dateFilterTo").value.trim());
-  document.getElementById("cardAvailable").classList.toggle("active-filter", activeStatuses.has("Available"));
-  document.getElementById("cardNotAvailable").classList.toggle("active-filter", activeStatuses.has("Not Available"));
-  document.getElementById("cardMaintenance").classList.toggle("active-filter", activeStatuses.has("Under Maintenance"));
 }
 
 /* ============ RENDER ============ */
@@ -952,23 +947,20 @@ async function render(){
     html += '<option value="Available"' + (areaStatusFilter === "Available" ? " selected" : "") + '>Available (' + areaStatusCounts.Available + ')</option>';
     html += '<option value="Not Available"' + (areaStatusFilter === "Not Available" ? " selected" : "") + '>Not Available (' + areaStatusCounts["Not Available"] + ')</option>';
     html += '<option value="Under Maintenance"' + (areaStatusFilter === "Under Maintenance" ? " selected" : "") + '>Under Maintenance (' + areaStatusCounts["Under Maintenance"] + ')</option>';
-    html += '</select>';
-    html += '</div>';
+    html += '</select></div>';
 
     if(displaySites.length === 0){
-      html += '<div class="empty-area">No sites found' + (areaStatusFilter !== "ALL" ? " with this status filter" : "") + '</div>';
+      html += '<div class="empty-area">No sites found</div>';
     } else {
       html += '<div class="site-cards-grid">';
-      displaySites.forEach((site, idx) => {
-        html += renderSiteCard(site, idx);
-      });
+      displaySites.forEach((site, idx) => { html += renderSiteCard(site, idx); });
       html += '</div>';
     }
     html += '</div></div>';
   }
 
   if(filteredSites.length === 0){
-    html = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8"><div style="font-size:48px;margin-bottom:16px">🔍</div><div style="font-size:16px;font-weight:600">No sites found</div><div style="font-size:13px;margin-top:8px">Try adjusting your filters</div></div>';
+    html = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8"><div style="font-size:48px;margin-bottom:16px">🔍</div><div style="font-size:16px;font-weight:600">No sites found</div></div>';
   }
 
   container.innerHTML = html;
@@ -985,7 +977,7 @@ function renderSiteCard(site, idx){
   if(hasImage){
     const cached = imageCache[site.imageKey];
     imgHtml = '<img class="site-card-img" src="' + (cached || '') + '" alt="site" onclick="event.stopPropagation();openImageViewer(\'' + esc(site.imageKey).replace(/'/g, "\\'") + '\')" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" onload="this.nextElementSibling.style.display=\'none\'">' +
-      '<div class="site-card-img no-img" style="display:none" onclick="event.stopPropagation();openImageViewer(\'' + esc(site.imageKey).replace(/'/g, "\\'") + '\')">📷</div>';
+      '<div class="site-card-img no-img" style="display:none">📷</div>';
     if(!cached) {
       getImage(site.imageKey).then(data => {
         if(data) {
@@ -1017,11 +1009,8 @@ function renderSiteCard(site, idx){
   if(site.fromDate) html += '📅 ' + esc(site.fromDate);
   if(site.toDate) html += ' → ' + esc(site.toDate);
   if(days > 0) html += ' <span class="days-badge">' + days + ' days</span>';
-  html += '</div>';
-  html += '</div>';
-  html += '<div class="site-card-status">';
-  html += '<span class="status ' + statusClass + '">' + esc(site.status) + '</span>';
-  html += '</div>';
+  html += '</div></div>';
+  html += '<div class="site-card-status"><span class="status ' + statusClass + '">' + esc(site.status) + '</span></div>';
   html += '<div class="site-card-actions">';
   html += '<button onclick="event.stopPropagation();openEdit(\'' + site.id + '\')">✏️ Edit</button>';
   html += '<button class="history-btn" onclick="event.stopPropagation();openSiteHistory(\'' + site.id + '\')">📜 History</button>';
@@ -1039,32 +1028,19 @@ function toggleAreaCollapse(event, area){
   else collapsedAreas.add(area);
   render();
 }
-
-function setAreaFilter(area, value){
-  areaFilters[area] = value;
-  render();
-}
-
+function setAreaFilter(area, value){ areaFilters[area] = value; render(); }
 function toggleSelectAllInArea(cb, area){
   const areaSites = visibleSites.filter(s => s.area === area);
-  areaSites.forEach(s => {
-    if(cb.checked) selectedSites.add(s.id);
-    else selectedSites.delete(s.id);
-  });
+  areaSites.forEach(s => { if(cb.checked) selectedSites.add(s.id); else selectedSites.delete(s.id); });
   render();
 }
-
 function toggleAreaSelectAll(area){
   const areaSites = visibleSites.filter(s => s.area === area);
   const allSelected = areaSites.every(s => selectedSites.has(s.id));
-  if(allSelected){
-    areaSites.forEach(s => selectedSites.delete(s.id));
-  } else {
-    areaSites.forEach(s => selectedSites.add(s.id));
-  }
+  if(allSelected) areaSites.forEach(s => selectedSites.delete(s.id));
+  else areaSites.forEach(s => selectedSites.add(s.id));
   render();
 }
-
 function toggleSiteSelect(id, checked){
   if(checked) selectedSites.add(id);
   else selectedSites.delete(id);
@@ -1073,7 +1049,6 @@ function toggleSiteSelect(id, checked){
   if(card) card.classList.toggle("selected-card", checked);
   render();
 }
-
 function updateSelectBar(){
   const bar = document.getElementById("selectBar");
   const count = document.getElementById("selCount");
@@ -1087,34 +1062,21 @@ function updateSelectBar(){
     document.getElementById("deleteBtn").style.display = selectedSites.size > 0 ? "inline-flex" : "none";
   }
 }
-
-function clearSelection(){
-  selectedSites.clear();
-  updateSelectBar();
-  render();
-}
-
+function clearSelection(){ selectedSites.clear(); updateSelectBar(); render(); }
 function bulkDeleteSelected(){
   if(selectedSites.size === 0) return;
-  if(!confirm("Delete " + selectedSites.size + " selected sites? This cannot be undone.")) return;
+  if(!confirm("Delete " + selectedSites.size + " selected sites?")) return;
   sites = sites.filter(s => !selectedSites.has(s.id));
   selectedSites.clear();
-  persistNow().then(() => {
-    showToast("Deleted", "Selected sites have been removed", "success");
-    render();
-  });
+  persistNow().then(() => { showToast("Deleted", "Sites removed", "success"); render(); });
 }
 
-/* ============ ADD/EDIT SITE ============ */
+/* ============ ADD/EDIT ============ */
 function openAdd(){
   editIndex = -1;
   document.getElementById("modalTitle").textContent = "Add Site";
   document.getElementById("farea").value = areas[0] || "";
-  document.getElementById("fsitecode").value = "";
-  document.getElementById("fsite").value = "";
-  document.getElementById("flocation").value = "";
-  document.getElementById("fcustomer").value = "";
-  document.getElementById("frate").value = "";
+  ["fsitecode","fsite","flocation","fcustomer","frate"].forEach(id => document.getElementById(id).value = "");
   document.getElementById("fstatus").value = "Available";
   currentImageData = "";
   document.getElementById("imagePreviewWrap").style.display = "none";
@@ -1125,7 +1087,6 @@ function openAdd(){
   updateCalcPreview();
   document.getElementById("modal").classList.add("show");
 }
-
 function openEdit(id){
   const site = sites.find(s => s.id === id);
   if(!site) return;
@@ -1158,32 +1119,27 @@ function openEdit(id){
     document.getElementById("imagePreviewWrap").style.display = "none";
     document.getElementById("imageUploadBox").style.display = "block";
   }
-  document.getElementById("gpsStatus").textContent = site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/) ? "✅ GPS captured" : "GPS not captured";
-  document.getElementById("gpsStatus").className = "gps-status" + (site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/) ? " ok" : "");
   populateDateDropdowns();
   setDateDropdowns("ffrom", site.fromDate || "");
   setDateDropdowns("fto", site.toDate || "");
   updateCalcPreview();
   document.getElementById("modal").classList.add("show");
 }
-
 function populateDateDropdowns(){
   const days = Array.from({length: 31}, (_, i) => String(i + 1).padStart(2, "0"));
   const months = Array.from({length: 12}, (_, i) => String(i + 1).padStart(2, "0"));
   const years = Array.from({length: 11}, (_, i) => String(new Date().getFullYear() - 2 + i));
-  ["ffrom_d", "fto_d"].forEach(id => { const el = document.getElementById(id); if(el){ el.innerHTML = days.map(d => '<option value="'+d+'">'+d+'</option>').join(''); } });
-  ["ffrom_m", "fto_m"].forEach(id => { const el = document.getElementById(id); if(el){ el.innerHTML = months.map(m => '<option value="'+m+'">'+m+'</option>').join(''); } });
-  ["ffrom_y", "fto_y"].forEach(id => { const el = document.getElementById(id); if(el){ el.innerHTML = years.map(y => '<option value="'+y+'">'+y+'</option>').join(''); } });
+  ["ffrom_d", "fto_d"].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = days.map(d => '<option value="'+d+'">'+d+'</option>').join(''); });
+  ["ffrom_m", "fto_m"].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = months.map(m => '<option value="'+m+'">'+m+'</option>').join(''); });
+  ["ffrom_y", "fto_y"].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = years.map(y => '<option value="'+y+'">'+y+'</option>').join(''); });
   const t = new Date();
   ["ffrom_d", "fto_d"].forEach(id => { const el = document.getElementById(id); if(el) el.value = String(t.getDate()).padStart(2, "0"); });
   ["ffrom_m", "fto_m"].forEach(id => { const el = document.getElementById(id); if(el) el.value = String(t.getMonth() + 1).padStart(2, "0"); });
   ["ffrom_y", "fto_y"].forEach(id => { const el = document.getElementById(id); if(el) el.value = String(t.getFullYear()); });
   ["ffrom_d","ffrom_m","ffrom_y","fto_d","fto_m","fto_y"].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.onchange = updateCalcPreview;
+    const el = document.getElementById(id); if(el) el.onchange = updateCalcPreview;
   });
 }
-
 function closeModal(){ document.getElementById("modal").classList.remove("show"); }
 
 async function saveSite(){
@@ -1196,69 +1152,76 @@ async function saveSite(){
   const fromDate = getDateFromDropdowns("ffrom");
   const toDate = getDateFromDropdowns("fto");
   const status = calcStatusFromDates(fromDate, toDate);
-
-  if(!area){ showToast("Error", "Area is required", "danger"); return; }
-  if(!siteCode && !siteName){ showToast("Error", "Site code or name is required", "danger"); return; }
-
-  const siteData = {
-    area, siteCode, site: siteName || siteCode, location, customer,
-    rate, fromDate, toDate, status, imageKey: ""
-  };
-
+  if(!area){ showToast("Error", "Area required", "danger"); return; }
+  if(!siteCode && !siteName){ showToast("Error", "Site code or name required", "danger"); return; }
+  const siteData = { area, siteCode, site: siteName || siteCode, location, customer, rate, fromDate, toDate, status, imageKey: "" };
   if(currentImageData){
     const key = "img_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
     const result = await saveImage(key, currentImageData);
     if(result && result.success){ siteData.imageKey = key; }
   }
-
   if(editIndex >= 0){
     const oldSite = sites[editIndex];
-    if(oldSite.imageKey && oldSite.imageKey !== siteData.imageKey && !currentImageData){
-      await deleteImage(oldSite.imageKey);
-    }
-    if(oldSite.imageKey && currentImageData && oldSite.imageKey !== siteData.imageKey){
-      await deleteImage(oldSite.imageKey);
-    }
+    if(oldSite.imageKey && siteData.imageKey && oldSite.imageKey !== siteData.imageKey) await deleteImage(oldSite.imageKey);
     siteData.id = oldSite.id;
     sites[editIndex] = { ...oldSite, ...siteData };
-    if(oldSite.status !== status || oldSite.toDate !== toDate){
-      bookingHistory.push({
-        id: "hist_" + Date.now(), siteId: siteData.id, siteName: siteData.site,
-        siteCode: siteData.siteCode, area: siteData.area,
-        fromDate: siteData.fromDate, toDate: siteData.toDate,
-        status: siteData.status, customer: siteData.customer, rate: siteData.rate,
-        changedAt: new Date().toISOString(),
-        changedBy: currentUser ? currentUser.username : "unknown",
-        action: "edited"
-      });
-    }
+    bookingHistory.push({
+      id: "hist_" + Date.now(), siteId: siteData.id, siteName: siteData.site,
+      siteCode: siteData.siteCode, area: siteData.area, fromDate: siteData.fromDate, toDate: siteData.toDate,
+      status: siteData.status, customer: siteData.customer, rate: siteData.rate,
+      changedAt: new Date().toISOString(), changedBy: currentUser ? currentUser.username : "unknown", action: "edited"
+    });
   } else {
     siteData.id = "id_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
     sites.push(siteData);
     bookingHistory.push({
       id: "hist_" + Date.now(), siteId: siteData.id, siteName: siteData.site,
-      siteCode: siteData.siteCode, area: siteData.area,
-      fromDate: siteData.fromDate, toDate: siteData.toDate,
+      siteCode: siteData.siteCode, area: siteData.area, fromDate: siteData.fromDate, toDate: siteData.toDate,
       status: siteData.status, customer: siteData.customer, rate: siteData.rate,
-      changedAt: new Date().toISOString(),
-      changedBy: currentUser ? currentUser.username : "unknown",
-      action: "created"
+      changedAt: new Date().toISOString(), changedBy: currentUser ? currentUser.username : "unknown", action: "created"
     });
   }
-
   const ok = await persistNow();
-  if(ok){
-    showToast("Saved", "Site saved successfully", "success");
-    closeModal();
-    render();
-    if(telegramConfig.enabled){
-      sendTelegramNotification(siteData, editIndex >= 0 ? "updated" : "created");
-    }
-  } else {
-    showToast("Error", "Failed to save site", "danger");
-  }
+  if(ok){ showToast("Saved", "Site saved", "success"); closeModal(); render(); }
+  else showToast("Error", "Failed to save", "danger");
 }
 
+function handleImageUpload(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  if(file.size > 8 * 1024 * 1024){ showToast("Error", "Image under 8 MB required", "danger"); return; }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    currentImageData = e.target.result;
+    document.getElementById("imagePreview").src = currentImageData;
+    document.getElementById("imagePreviewWrap").style.display = "block";
+    document.getElementById("imageUploadBox").style.display = "none";
+  };
+  reader.readAsDataURL(file);
+}
+function removeImage(){
+  currentImageData = "";
+  document.getElementById("imagePreviewWrap").style.display = "none";
+  document.getElementById("imageUploadBox").style.display = "block";
+  document.getElementById("fimage").value = "";
+}
+function openImageViewer(key){
+  const cached = imageCache[key];
+  if(cached){ document.getElementById("viewerImage").src = cached; document.getElementById("imageViewer").classList.add("show"); return; }
+  getImage(key).then(data => {
+    if(data){ document.getElementById("viewerImage").src = data; document.getElementById("imageViewer").classList.add("show"); }
+  });
+}
+function closeImageViewer(){ document.getElementById("imageViewer").classList.remove("show"); }
+function openMap(location){
+  if(!location) return;
+  const parts = location.split(",");
+  if(parts.length === 2){
+    const lat = parseFloat(parts[0]), lng = parseFloat(parts[1]);
+    if(!isNaN(lat) && !isNaN(lng)){ window.open("https://www.google.com/maps?q=" + lat + "," + lng, "_blank"); return; }
+  }
+  window.open("https://www.google.com/maps?q=" + encodeURIComponent(location), "_blank");
+}
 function onLocationManualChange(){
   const loc = document.getElementById("flocation").value.trim();
   if(loc.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/)){
@@ -1269,81 +1232,21 @@ function onLocationManualChange(){
     document.getElementById("gpsStatus").className = "gps-status";
   }
 }
-
 function captureGPS(){
-  if(!navigator.geolocation){ showToast("Error", "Geolocation not supported", "danger"); return; }
+  if(!navigator.geolocation){ showToast("Error", "Not supported", "danger"); return; }
   const btn = document.getElementById("gpsBtn");
-  btn.disabled = true;
-  btn.textContent = "Getting...";
+  btn.disabled = true; btn.textContent = "Getting...";
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       const loc = pos.coords.latitude.toFixed(6) + ", " + pos.coords.longitude.toFixed(6);
       document.getElementById("flocation").value = loc;
-      document.getElementById("gpsStatus").textContent = "✅ GPS captured (" + loc + ")";
+      document.getElementById("gpsStatus").textContent = "✅ GPS captured";
       document.getElementById("gpsStatus").className = "gps-status ok";
-      btn.disabled = false;
-      btn.textContent = "Use GPS";
+      btn.disabled = false; btn.textContent = "Use GPS";
     },
-    (err) => {
-      showToast("Error", "GPS failed: " + err.message, "danger");
-      btn.disabled = false;
-      btn.textContent = "Use GPS";
-    },
+    (err) => { showToast("Error", err.message, "danger"); btn.disabled = false; btn.textContent = "Use GPS"; },
     { enableHighAccuracy: true, timeout: 10000 }
   );
-}
-
-function handleImageUpload(event){
-  const file = event.target.files[0];
-  if(!file) return;
-  if(file.size > 8 * 1024 * 1024){ showToast("Error", "Image must be under 8 MB", "danger"); return; }
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    currentImageData = e.target.result;
-    document.getElementById("imagePreview").src = currentImageData;
-    document.getElementById("imagePreviewWrap").style.display = "block";
-    document.getElementById("imageUploadBox").style.display = "none";
-  };
-  reader.readAsDataURL(file);
-}
-
-function removeImage(){
-  currentImageData = "";
-  document.getElementById("imagePreviewWrap").style.display = "none";
-  document.getElementById("imageUploadBox").style.display = "block";
-  document.getElementById("fimage").value = "";
-}
-
-function openImageViewer(key){
-  const cached = imageCache[key];
-  if(cached){
-    document.getElementById("viewerImage").src = cached;
-    document.getElementById("imageViewer").classList.add("show");
-    return;
-  }
-  getImage(key).then(data => {
-    if(data){
-      document.getElementById("viewerImage").src = data;
-      document.getElementById("imageViewer").classList.add("show");
-    } else {
-      showToast("Info", "Image not available", "warning");
-    }
-  });
-}
-
-function closeImageViewer(){ document.getElementById("imageViewer").classList.remove("show"); }
-
-function openMap(location){
-  if(!location) return;
-  const parts = location.split(",");
-  if(parts.length === 2){
-    const lat = parseFloat(parts[0]), lng = parseFloat(parts[1]);
-    if(!isNaN(lat) && !isNaN(lng)){
-      window.open("https://www.google.com/maps?q=" + lat + "," + lng, "_blank");
-      return;
-    }
-  }
-  window.open("https://www.google.com/maps?q=" + encodeURIComponent(location), "_blank");
 }
 
 /* ============ HISTORY ============ */
@@ -1353,7 +1256,6 @@ function openHistoryModal(){
   renderHistoryList();
   document.getElementById("historyModal").classList.add("show");
 }
-
 function openSiteHistory(siteId){
   const site = sites.find(s => s.id === siteId);
   if(!site) return;
@@ -1362,589 +1264,521 @@ function openSiteHistory(siteId){
   renderHistoryList();
   document.getElementById("historyModal").classList.add("show");
 }
-
 function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
-
-function filterHistoryList(){
-  historySearchQuery = document.getElementById("historySearchInput").value.trim().toLowerCase();
-  renderHistoryList();
-}
-
-function clearHistorySearch(){
-  historySearchQuery = "";
-  document.getElementById("historySearchInput").value = "";
-  renderHistoryList();
-}
-
+function filterHistoryList(){ historySearchQuery = document.getElementById("historySearchInput").value.trim().toLowerCase(); renderHistoryList(); }
+function clearHistorySearch(){ historySearchQuery = ""; document.getElementById("historySearchInput").value = ""; renderHistoryList(); }
 function renderHistoryList(){
   let filtered = bookingHistory.slice().reverse();
   if(historySearchQuery){
     const q = historySearchQuery.toLowerCase();
-    filtered = filtered.filter(h => {
-      const hay = ((h.siteName || "") + " " + (h.siteCode || "") + " " + (h.area || "") + " " + (h.customer || "")).toLowerCase();
-      return hay.includes(q);
-    });
+    filtered = filtered.filter(h => ((h.siteName || "") + " " + (h.siteCode || "") + " " + (h.area || "") + " " + (h.customer || "")).toLowerCase().includes(q));
   }
   const container = document.getElementById("historyContent");
-  if(filtered.length === 0){
-    container.innerHTML = '<div class="empty-history">No history records found</div>';
-    return;
-  }
+  if(filtered.length === 0){ container.innerHTML = '<div class="empty-history">No history records found</div>'; return; }
   let html = "";
   filtered.forEach(h => {
     const statusClass = h.status === "Available" ? "s-available" : (h.status === "Not Available" ? "s-not" : "s-maintenance");
-    const actionText = h.action === "created" ? "🆕 Created" : (h.action === "edited" ? "✏️ Edited" : "🔄 Updated");
+    const actionText = h.action === "created" ? "🆕 Created" : "✏️ Edited";
     const date = new Date(h.changedAt);
     const dateStr = date.toLocaleDateString() + " " + date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
     html += '<div class="history-item">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">';
+    html += '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">';
     html += '<div style="flex:1">';
-    html += '<div style="font-weight:700;font-size:14px;margin-bottom:4px">' + esc(h.siteName || h.siteCode || "Unnamed") + ' <span style="font-size:11px;color:#64748b;font-family:monospace">' + esc(h.siteCode || "") + '</span></div>';
-    html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px">';
+    html += '<div style="font-weight:700;font-size:14px;margin-bottom:4px">' + esc(h.siteName || h.siteCode) + '</div>';
     html += '<span class="status ' + statusClass + '" style="font-size:10px">' + esc(h.status) + '</span>';
-    html += '<span style="font-size:11px;color:#64748b">' + esc(h.area) + '</span>';
+    html += ' <span style="font-size:11px;color:#64748b">' + esc(h.area) + '</span>';
+    html += '<div style="font-size:12px;color:#475569;margin-top:4px">📅 ' + esc(h.fromDate || "—") + ' → ' + esc(h.toDate || "—") + '</div>';
     html += '</div>';
-    html += '<div style="font-size:12px;color:#475569">';
-    html += '📅 ' + esc(h.fromDate || "—") + ' → ' + esc(h.toDate || "—");
-    if(h.customer) html += ' &nbsp;|&nbsp; 🏢 ' + esc(h.customer);
-    if(h.rate) html += ' &nbsp;|&nbsp; 💰 ' + formatINR(h.rate);
-    html += '</div>';
-    html += '</div>';
-    html += '<div style="text-align:right;font-size:11px;color:#94a3b8;white-space:nowrap">';
-    html += actionText + '<br>' + dateStr + '<br>by ' + esc(h.changedBy || "—");
-    html += '</div>';
+    html += '<div style="text-align:right;font-size:11px;color:#94a3b8">' + actionText + '<br>' + dateStr + '</div>';
     html += '</div></div>';
   });
   container.innerHTML = html;
 }
-
 function downloadHistoryCSV(){
-  let csv = "Site Name,Site Code,Area,From,To,Status,Customer,Rate,Action,Changed At,Changed By\n";
+  let csv = "Site Name,Site Code,Area,From,To,Status,Customer,Rate,Action,Changed At\n";
   bookingHistory.forEach(h => {
-    csv += '"' + (h.siteName || "").replace(/"/g, '""') + '",';
-    csv += '"' + (h.siteCode || "").replace(/"/g, '""') + '",';
-    csv += '"' + (h.area || "").replace(/"/g, '""') + '",';
-    csv += '"' + (h.fromDate || "") + '",';
-    csv += '"' + (h.toDate || "") + '",';
-    csv += '"' + (h.status || "") + '",';
-    csv += '"' + (h.customer || "").replace(/"/g, '""') + '",';
-    csv += (h.rate || 0) + ',';
-    csv += '"' + (h.action || "") + '",';
-    csv += '"' + (h.changedAt || "") + '",';
-    csv += '"' + (h.changedBy || "") + '"\n';
+    csv += '"' + (h.siteName || "").replace(/"/g, '""') + '","' + (h.siteCode || "").replace(/"/g, '""') + '","' + (h.area || "").replace(/"/g, '""') + '","' + (h.fromDate || "") + '","' + (h.toDate || "") + '","' + (h.status || "") + '","' + (h.customer || "").replace(/"/g, '""') + '",' + (h.rate || 0) + ',"' + (h.action || "") + '","' + (h.changedAt || "") + '"\n';
   });
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "booking-history-" + new Date().toISOString().slice(0, 10) + ".csv";
-  a.click();
-  URL.revokeObjectURL(url);
+  const a = document.createElement("a"); a.href = url; a.download = "booking-history-" + new Date().toISOString().slice(0, 10) + ".csv"; a.click();
 }
 
 /* ============ EXPORT CSV ============ */
 function exportCSV(){
   let csv = "Area,Site Code,Site Name,Location,Company,Rate,From,To,Days,Status\n";
   visibleSites.forEach(s => {
-    const days = calcDays(s.fromDate, s.toDate);
-    csv += '"' + (s.area || "").replace(/"/g, '""') + '",';
-    csv += '"' + (s.siteCode || "").replace(/"/g, '""') + '",';
-    csv += '"' + (s.site || "").replace(/"/g, '""') + '",';
-    csv += '"' + (s.location || "").replace(/"/g, '""') + '",';
-    csv += '"' + (s.customer || "").replace(/"/g, '""') + '",';
-    csv += (s.rate || 0) + ',';
-    csv += '"' + (s.fromDate || "") + '",';
-    csv += '"' + (s.toDate || "") + '",';
-    csv += days + ',';
-    csv += '"' + (s.status || "") + '"\n';
+    csv += '"' + (s.area || "").replace(/"/g, '""') + '","' + (s.siteCode || "").replace(/"/g, '""') + '","' + (s.site || "").replace(/"/g, '""') + '","' + (s.location || "").replace(/"/g, '""') + '","' + (s.customer || "").replace(/"/g, '""') + '",' + (s.rate || 0) + ',"' + (s.fromDate || "") + '","' + (s.toDate || "") + '",' + calcDays(s.fromDate, s.toDate) + ',"' + (s.status || "") + '"\n';
   });
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "sites-export-" + new Date().toISOString().slice(0, 10) + ".csv";
-  a.click();
-  URL.revokeObjectURL(url);
+  const a = document.createElement("a"); a.href = url; a.download = "sites-export-" + new Date().toISOString().slice(0, 10) + ".csv"; a.click();
 }
 
-/* ============ AREA MANAGEMENT ============ */
-function openAreaManager(){
-  selectedAreas.clear();
-  renderAreaList();
-  document.getElementById("areaModal").classList.add("show");
-}
-
+/* ============ AREA MGMT ============ */
+function openAreaManager(){ selectedAreas.clear(); renderAreaList(); document.getElementById("areaModal").classList.add("show"); }
 function closeAreaModal(){ document.getElementById("areaModal").classList.remove("show"); }
-
 function renderAreaList(){
   const container = document.getElementById("areaList");
   let html = "";
-  areas.forEach((a, i) => {
+  areas.forEach((a) => {
     const count = sites.filter(s => s.area === a).length;
     html += '<div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #f1f5f9">';
-    html += '<input type="checkbox" ' + (selectedAreas.has(a) ? "checked" : "") + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\', this.checked)" style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">';
-    html += '<span style="flex:1;font-weight:600">' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + count + ' sites)</span></span>';
-    html += '<button onclick="renameArea(\'' + esc(a).replace(/'/g, "\\'") + '\')" style="padding:5px 10px;background:#f1f5f9;border:0;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit">✏️</button>';
+    html += '<input type="checkbox" ' + (selectedAreas.has(a) ? "checked" : "") + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\', this.checked)" style="width:18px;height:18px;accent-color:#3b82f6">';
+    html += '<span style="flex:1;font-weight:600">' + esc(a) + ' <span style="color:#94a3b8;font-size:12px">(' + count + ' sites)</span></span>';
+    html += '<button onclick="renameArea(\'' + esc(a).replace(/'/g, "\\'") + '\')" style="padding:5px 10px;background:#f1f5f9;border:0;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600">✏️</button>';
     html += '</div>';
   });
   container.innerHTML = html || '<div style="text-align:center;color:#94a3b8;padding:20px">No areas</div>';
   document.getElementById("areaSelCount").textContent = selectedAreas.size + " selected";
 }
-
-function toggleAreaSelect(area, checked){
-  if(checked) selectedAreas.add(area);
-  else selectedAreas.delete(area);
-  document.getElementById("areaSelCount").textContent = selectedAreas.size + " selected";
-}
-
-function toggleAllAreas(){
-  if(selectedAreas.size === areas.length) selectedAreas.clear();
-  else areas.forEach(a => selectedAreas.add(a));
-  renderAreaList();
-}
-
+function toggleAreaSelect(area, checked){ if(checked) selectedAreas.add(area); else selectedAreas.delete(area); document.getElementById("areaSelCount").textContent = selectedAreas.size + " selected"; }
+function toggleAllAreas(){ if(selectedAreas.size === areas.length) selectedAreas.clear(); else areas.forEach(a => selectedAreas.add(a)); renderAreaList(); }
 async function bulkDeleteAreas(){
   if(selectedAreas.size === 0){ showToast("Info", "No areas selected", "warning"); return; }
   const count = sites.filter(s => selectedAreas.has(s.area)).length;
-  if(!confirm("Delete " + selectedAreas.size + " areas and " + count + " sites? This cannot be undone.")) return;
+  if(!confirm("Delete " + selectedAreas.size + " areas and " + count + " sites?")) return;
   sites = sites.filter(s => !selectedAreas.has(s.area));
   areas = areas.filter(a => !selectedAreas.has(a));
   selectedAreas.clear();
-  const ok = await persistNow();
-  if(ok){
-    showToast("Deleted", "Selected areas and sites removed", "success");
-    populateAreaDropdowns();
-    renderAreaList();
-    render();
-  }
+  if(await persistNow()){ showToast("Deleted", "Areas removed", "success"); populateAreaDropdowns(); renderAreaList(); render(); }
 }
-
 async function addNewArea(){
   const name = document.getElementById("newAreaName").value.trim();
-  if(!name){ showToast("Error", "Enter area name", "danger"); return; }
-  if(areas.includes(name)){ showToast("Error", "Area already exists", "danger"); return; }
-  areas.push(name);
-  areas.sort();
+  if(!name){ showToast("Error", "Enter name", "danger"); return; }
+  if(areas.includes(name)){ showToast("Error", "Already exists", "danger"); return; }
+  areas.push(name); areas.sort();
   document.getElementById("newAreaName").value = "";
-  const ok = await persistNow();
-  if(ok){
-    showToast("Added", "Area added: " + name, "success");
-    populateAreaDropdowns();
-    renderAreaList();
-    render();
-  }
+  if(await persistNow()){ showToast("Added", name, "success"); populateAreaDropdowns(); renderAreaList(); render(); }
 }
-
 function renameArea(area){
   const newName = prompt("Rename area:", area);
   if(!newName || newName === area) return;
-  if(areas.includes(newName)){ showToast("Error", "Name already exists", "danger"); return; }
-  const idx = areas.indexOf(area);
-  if(idx === -1) return;
+  if(areas.includes(newName)){ showToast("Error", "Exists", "danger"); return; }
+  const idx = areas.indexOf(area); if(idx === -1) return;
   areas[idx] = newName;
   sites.forEach(s => { if(s.area === area) s.area = newName; });
-  persistNow().then(() => {
-    showToast("Renamed", area + " → " + newName, "success");
-    populateAreaDropdowns();
-    renderAreaList();
-    render();
-  });
+  persistNow().then(() => { showToast("Renamed", newName, "success"); populateAreaDropdowns(); renderAreaList(); render(); });
 }
 
-/* ============ MULTI AREA SELECT ============ */
-function openMultiAreaSelect(){
-  multiAreaSelected.clear();
-  renderMultiAreaList();
-  document.getElementById("multiAreaModal").classList.add("show");
-}
-
+/* ============ MULTI AREA ============ */
+function openMultiAreaSelect(){ multiAreaSelected.clear(); renderMultiAreaList(); document.getElementById("multiAreaModal").classList.add("show"); }
 function closeMultiAreaModal(){ document.getElementById("multiAreaModal").classList.remove("show"); }
-
 function renderMultiAreaList(){
   const container = document.getElementById("multiAreaList");
   let html = "";
   areas.forEach(a => {
     const count = sites.filter(s => s.area === a).length;
     html += '<label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;cursor:pointer;' + (multiAreaSelected.has(a) ? "background:#ede9fe" : "") + '">';
-    html += '<input type="checkbox" ' + (multiAreaSelected.has(a) ? "checked" : "") + ' onchange="toggleMultiArea(\'' + esc(a).replace(/'/g, "\\'") + '\', this.checked)" style="width:18px;height:18px;cursor:pointer;accent-color:#7c3aed">';
-    html += '<span style="font-weight:600">' + esc(a) + '</span>';
-    html += '<span style="color:#94a3b8;font-size:12px">(' + count + ' sites)</span>';
-    html += '</label>';
+    html += '<input type="checkbox" ' + (multiAreaSelected.has(a) ? "checked" : "") + ' onchange="toggleMultiArea(\'' + esc(a).replace(/'/g, "\\'") + '\', this.checked)" style="width:18px;height:18px;accent-color:#7c3aed">';
+    html += '<span style="font-weight:600">' + esc(a) + '</span><span style="color:#94a3b8;font-size:12px">(' + count + ')</span></label>';
   });
   container.innerHTML = html;
   document.getElementById("multiAreaSelCount").textContent = multiAreaSelected.size + " selected";
 }
-
-function toggleMultiArea(area, checked){
-  if(checked) multiAreaSelected.add(area);
-  else multiAreaSelected.delete(area);
-  renderMultiAreaList();
-}
-
+function toggleMultiArea(area, checked){ if(checked) multiAreaSelected.add(area); else multiAreaSelected.delete(area); renderMultiAreaList(); }
 function multiAreaSelectAll(){ areas.forEach(a => multiAreaSelected.add(a)); renderMultiAreaList(); }
 function multiAreaDeselectAll(){ multiAreaSelected.clear(); renderMultiAreaList(); }
-
 function applyMultiAreaSelection(){
   const toSelect = sites.filter(s => multiAreaSelected.has(s.area));
   toSelect.forEach(s => selectedSites.add(s.id));
-  closeMultiAreaModal();
-  updateSelectBar();
-  render();
-  showToast("Selected", toSelect.length + " sites selected from " + multiAreaSelected.size + " areas", "success");
+  closeMultiAreaModal(); updateSelectBar(); render();
+  showToast("Selected", toSelect.length + " sites selected", "success");
 }
 
 /* ============ BULK STATUS ============ */
 function openBulkStatusModal(){
   if(selectedSites.size === 0) return;
-  const status = prompt("Enter status for " + selectedSites.size + " selected sites:\n(Available / Not Available / Under Maintenance)");
+  const status = prompt("Enter status (Available / Not Available / Under Maintenance):");
   if(!status) return;
   const valid = ["Available", "Not Available", "Under Maintenance"];
   if(!valid.includes(status)){ showToast("Error", "Invalid status", "danger"); return; }
   selectedSites.forEach(id => {
     const site = sites.find(s => s.id === id);
-    if(site){
-      const oldStatus = site.status;
+    if(site && site.status !== status){
       site.status = status;
-      if(oldStatus !== status){
-        bookingHistory.push({
-          id: "hist_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-          siteId: site.id, siteName: site.site, siteCode: site.siteCode,
-          area: site.area, fromDate: site.fromDate, toDate: site.toDate,
-          status: status, customer: site.customer, rate: site.rate,
-          changedAt: new Date().toISOString(),
-          changedBy: currentUser ? currentUser.username : "unknown",
-          action: "bulk_status"
-        });
-      }
+      bookingHistory.push({
+        id: "hist_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+        siteId: site.id, siteName: site.site, siteCode: site.siteCode, area: site.area,
+        fromDate: site.fromDate, toDate: site.toDate, status: status,
+        customer: site.customer, rate: site.rate,
+        changedAt: new Date().toISOString(), changedBy: currentUser ? currentUser.username : "unknown", action: "bulk_status"
+      });
     }
   });
-  persistNow().then(() => {
-    showToast("Updated", "Status updated for selected sites", "success");
-    render();
-  });
+  persistNow().then(() => { showToast("Updated", "Status updated", "success"); render(); });
 }
 
-/* ============ PPT GENERATION ============ */
-async function generateSelectedSitesPPT(){
-  if(selectedSites.size === 0){
-    showToast("Info", "Please select at least one site", "warning");
-    return;
+/* ============ PPT FORMAT SELECTION ============ */
+document.addEventListener("click", (e) => {
+  const card = e.target.closest(".ppt-format-card");
+  if(card){
+    document.querySelectorAll(".ppt-format-card").forEach(c => c.classList.remove("active"));
+    card.classList.add("active");
+    card.querySelector("input[type=radio]").checked = true;
   }
-  if(typeof PptxGenJS === "undefined"){
-    showToast("Error", "PPT library not loaded. Please refresh the page.", "danger");
-    return;
-  }
-  
-  showProgress("Generating PPT...", "Creating slides, please wait");
-  
+});
+function openPptFormatModal(){
+  if(selectedSites.size === 0){ showToast("Info", "Select at least one site", "warning"); return; }
+  document.getElementById("pptSiteCount").textContent = selectedSites.size;
+  pptSelectedFormat = "professional";
+  document.querySelectorAll(".ppt-format-card").forEach(c => {
+    c.classList.remove("active");
+    if(c.dataset.format === "professional") c.classList.add("active");
+  });
+  document.getElementById("pptFormatModal").classList.add("show");
+}
+function closePptFormatModal(){ document.getElementById("pptFormatModal").classList.remove("show"); }
+async function confirmPptGeneration(){
+  const selected = document.querySelector('input[name="pptFormat"]:checked');
+  pptSelectedFormat = selected ? selected.value : "professional";
+  closePptFormatModal();
+  await generateSelectedSitesPPT(pptSelectedFormat);
+}
+
+/* ============ MAIN PPT FUNCTION ============ */
+async function generateSelectedSitesPPT(format){
+  format = format || "professional";
+  if(selectedSites.size === 0){ showToast("Info", "Select at least one site", "warning"); return; }
+  if(typeof PptxGenJS === "undefined"){ showToast("Error", "PPT library not loaded. Refresh page.", "danger"); return; }
+  showProgress("Generating " + format.toUpperCase() + " PPT...", "Preparing " + selectedSites.size + " sites");
   try {
     const pptx = new PptxGenJS();
     pptx.layout = "LAYOUT_WIDE";
-    
+    pptx.author = "DS Outdoor Media";
+    pptx.company = "DS Outdoor Media";
     const selectedList = sites.filter(s => selectedSites.has(s.id));
-    
-    // ---------- COVER SLIDE ----------
-    const coverSlide = pptx.addSlide();
-    coverSlide.background = { color: "1E40AF" };
-    coverSlide.addText("Site Management Report", {
-      x: 0.5, y: 2.3, w: 12.33, h: 1,
-      fontSize: 44, bold: true, color: "FFFFFF", align: "center", fontFace: "Arial"
-    });
-    coverSlide.addText(selectedList.length + " Sites Selected", {
-      x: 0.5, y: 3.6, w: 12.33, h: 0.6,
-      fontSize: 22, color: "BFDBFE", align: "center", fontFace: "Arial"
-    });
-    coverSlide.addText("Generated: " + new Date().toLocaleString("en-IN"), {
-      x: 0.5, y: 6.5, w: 12.33, h: 0.4,
-      fontSize: 12, color: "93C5FD", align: "center", fontFace: "Arial"
-    });
-    
-    // ---------- SUMMARY SLIDE ----------
-    const statusCounts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
-    let totalRate = 0;
-    selectedList.forEach(s => {
-      statusCounts[s.status] = (statusCounts[s.status] || 0) + 1;
-      totalRate += parseFloat(s.rate) || 0;
-    });
-    
-    const summarySlide = pptx.addSlide();
-    summarySlide.addText("Summary", {
-      x: 0.5, y: 0.3, w: 12.33, h: 0.7,
-      fontSize: 30, bold: true, color: "1E40AF", fontFace: "Arial"
-    });
-    summarySlide.addTable([
-      [{ text: "Category", options: { bold: true, fill: "1E40AF", color: "FFFFFF" } },
-       { text: "Count", options: { bold: true, fill: "1E40AF", color: "FFFFFF" } }],
-      ["Total Sites", String(selectedList.length)],
-      ["Available", String(statusCounts.Available)],
-      ["Not Available", String(statusCounts["Not Available"])],
-      ["Under Maintenance", String(statusCounts["Under Maintenance"])],
-      ["Total Monthly Rate", "₹" + totalRate.toLocaleString("en-IN")]
-    ], {
-      x: 0.5, y: 1.3, w: 12.33,
-      colW: [6.17, 6.16],
-      fontSize: 16, border: { pt: 1, color: "CBD5E1" },
-      align: "left", valign: "middle", rowH: 0.55, fontFace: "Arial"
-    });
-    
-    // ---------- INDIVIDUAL SITE SLIDES ----------
-    for(let i = 0; i < selectedList.length; i++){
-      const site = selectedList[i];
-      const slide = pptx.addSlide();
-      
-      // Header bar
-      slide.addShape(pptx.ShapeType.rect, {
-        x: 0, y: 0, w: 13.33, h: 0.9, fill: { color: "1E40AF" }
-      });
-      slide.addText((site.site || site.siteCode || "Site"), {
-        x: 0.3, y: 0.1, w: 12, h: 0.7,
-        fontSize: 22, bold: true, color: "FFFFFF", valign: "middle", fontFace: "Arial"
-      });
-      
-      // Image
-      let imageData = null;
-      if(site.imageKey){
-        imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
-      }
-      
-      if(imageData){
-        try {
-          slide.addImage({ 
-            data: imageData, 
-            x: 0.4, y: 1.1, w: 6, h: 5.6,
-            sizing: { type: "contain", w: 6, h: 5.6 }
-          });
-        } catch(e){
-          slide.addShape(pptx.ShapeType.rect, {
-            x: 0.4, y: 1.1, w: 6, h: 5.6,
-            fill: { color: "F1F5F9" }, line: { color: "CBD5E1" }
-          });
-          slide.addText("📷 Image error", {
-            x: 0.4, y: 3.5, w: 6, h: 0.6,
-            fontSize: 16, color: "94A3B8", align: "center", fontFace: "Arial"
-          });
-        }
-      } else {
-        slide.addShape(pptx.ShapeType.rect, {
-          x: 0.4, y: 1.1, w: 6, h: 5.6,
-          fill: { color: "F1F5F9" }, line: { color: "CBD5E1", dashType: "dash" }
-        });
-        slide.addText("📷 No Image", {
-          x: 0.4, y: 3.5, w: 6, h: 0.6,
-          fontSize: 18, color: "94A3B8", align: "center", fontFace: "Arial"
-        });
-      }
-      
-      // Details table
-      const details = [
-        ["Area", site.area || "—"],
-        ["Site Name", site.site || "—"],
-        ["Site Code", site.siteCode || "—"],
-        ["Location", site.location || "—"],
-        ["Company", site.customer || "—"],
-        ["Monthly Rate", site.rate ? "₹" + parseFloat(site.rate).toLocaleString("en-IN") : "—"],
-        ["From", site.fromDate || "—"],
-        ["To", site.toDate || "—"],
-        ["Days", String(calcDays(site.fromDate, site.toDate))],
-        ["Status", site.status || "—"]
-      ];
-      
-      const tableRows = details.map(([k, v]) => [
-        { text: k, options: { bold: true, fill: "EFF6FF", color: "1E40AF" } },
-        { text: String(v), options: { color: "0F172A" } }
-      ]);
-      
-      slide.addTable(tableRows, {
-        x: 6.7, y: 1.1, w: 6.2,
-        colW: [2.2, 4],
-        fontSize: 13, border: { pt: 1, color: "CBD5E1" },
-        align: "left", valign: "middle", rowH: 0.52, fontFace: "Arial"
-      });
-      
-      // Slide number
-      slide.addText("Slide " + (i + 2) + " / " + (selectedList.length + 2), {
-        x: 11, y: 7, w: 2, h: 0.3,
-        fontSize: 10, color: "94A3B8", align: "right", fontFace: "Arial"
-      });
-    }
-    
-    await pptx.writeFile({ fileName: "sites-report-" + new Date().toISOString().slice(0, 10) + ".pptx" });
-    
+    if(format === "professional") await buildProfessionalPPT(pptx, selectedList);
+    else if(format === "simple") await buildSimplePPT(pptx, selectedList);
+    else if(format === "grid") await buildGridPPT(pptx, selectedList);
+    else if(format === "list") await buildListPPT(pptx, selectedList);
+    const fileName = "Site_Report_" + format + "_" + new Date().toISOString().slice(0,10) + ".pptx";
+    await pptx.writeFile({ fileName });
     hideProgress();
     showToast("Success", "PPT downloaded: " + selectedList.length + " sites", "success");
   } catch(e){
     hideProgress();
     console.error("PPT Error:", e);
-    showToast("Error", "Failed to generate PPT: " + e.message, "danger");
+    showToast("Error", "Failed: " + e.message, "danger");
   }
 }
 
-/* ============ BULK MENU DROPDOWN ============ */
-function toggleBulkMenu(e){
-  if(e) e.stopPropagation();
-  const panel = document.getElementById("bulkMenuPanel");
-  panel.classList.toggle("show");
-}
-function closeBulkMenu(){
-  const panel = document.getElementById("bulkMenuPanel");
-  if(panel) panel.classList.remove("show");
+/* ============ FORMAT 1: PROFESSIONAL ============ */
+async function buildProfessionalPPT(pptx, selectedList){
+  const cover = pptx.addSlide();
+  cover.background = { color: "1E40AF" };
+  cover.addText("Professional Site Booking & Management", { x:0.5, y:2.0, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
+  const areasList = [...new Set(selectedList.map(s => s.area))].join(", ");
+  cover.addText(areasList || "Site Report", { x:0.5, y:2.7, w:12.33, h:1.2, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+  cover.addText("Report Date " + new Date().toLocaleDateString("en-GB", {day:"2-digit", month:"long", year:"numeric"}), { x:0.5, y:4.3, w:12.33, h:0.5, fontSize:18, color:"BFDBFE", align:"center", fontFace:"Arial" });
+  cover.addText("Total Sites " + selectedList.length, { x:0.5, y:5.0, w:12.33, h:0.5, fontSize:16, color:"93C5FD", align:"center", fontFace:"Arial" });
+  cover.addText("Generated " + new Date().toLocaleString("en-IN"), { x:0.5, y:6.8, w:12.33, h:0.4, fontSize:11, color:"60A5FA", align:"center", fontFace:"Arial" });
+
+  const statusCounts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
+  let totalRate = 0;
+  selectedList.forEach(s => { statusCounts[s.status] = (statusCounts[s.status] || 0) + 1; totalRate += parseFloat(s.rate) || 0; });
+  const summary = pptx.addSlide();
+  summary.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:1.0, fill:{color:"1E40AF"} });
+  summary.addText("Summary", { x:0.5, y:0.15, w:12.33, h:0.7, fontSize:28, bold:true, color:"FFFFFF", valign:"middle", fontFace:"Arial" });
+  const areaCounts = {};
+  selectedList.forEach(s => { areaCounts[s.area] = (areaCounts[s.area] || 0) + 1; });
+  summary.addTable([
+    [{text:"Category",options:{bold:true,fill:"EFF6FF",color:"1E40AF"}},{text:"Value",options:{bold:true,fill:"EFF6FF",color:"1E40AF"}}],
+    ["Total Sites", String(selectedList.length)],
+    ["Total Areas", String(Object.keys(areaCounts).length)],
+    ["✅ Available", String(statusCounts.Available)],
+    ["❌ Not Available", String(statusCounts["Not Available"])],
+    ["⚠️ Under Maintenance", String(statusCounts["Under Maintenance"])],
+    ["💰 Total Monthly Rate", "₹" + totalRate.toLocaleString("en-IN")]
+  ], { x:0.5, y:1.3, w:6.0, colW:[3.0, 3.0], fontSize:14, border:{pt:1, color:"CBD5E1"}, align:"left", valign:"middle", rowH:0.55, fontFace:"Arial" });
+  summary.addText("Areas Breakdown", { x:6.7, y:1.3, w:6.2, h:0.4, fontSize:16, bold:true, color:"1E40AF", fontFace:"Arial" });
+  const areaRows = [[{text:"Area",options:{bold:true,fill:"EFF6FF",color:"1E40AF"}},{text:"Sites",options:{bold:true,fill:"EFF6FF",color:"1E40AF"}}]];
+  Object.entries(areaCounts).forEach(([a, c]) => areaRows.push([a, String(c)]));
+  summary.addTable(areaRows, { x:6.7, y:1.8, w:6.2, colW:[4.2, 2.0], fontSize:12, border:{pt:1, color:"CBD5E1"}, align:"left", valign:"middle", rowH:0.5, fontFace:"Arial" });
+
+  for(let i = 0; i < selectedList.length; i++){
+    const site = selectedList[i];
+    const slide = pptx.addSlide();
+    slide.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:1.0, fill:{color:"1E40AF"} });
+    slide.addShape(pptx.ShapeType.rect, { x:0.2, y:0.15, w:0.7, h:0.7, fill:{color:"3B82F6"} });
+    slide.addText(String(i+1), { x:0.2, y:0.15, w:0.7, h:0.7, fontSize:24, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
+    slide.addText(site.site || site.siteCode || "Site " + (i+1), { x:1.05, y:0.1, w:8.3, h:0.85, fontSize:16, bold:true, color:"FFFFFF", valign:"middle", fontFace:"Arial" });
+    slide.addShape(pptx.ShapeType.rect, { x:9.5, y:0.15, w:1.7, h:0.7, fill:{color:"2563EB"} });
+    slide.addText(site.siteCode || "—", { x:9.5, y:0.15, w:1.7, h:0.7, fontSize:14, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
+    const statusColor = site.status === "Available" ? "10B981" : (site.status === "Not Available" ? "DC2626" : "F59E0B");
+    slide.addShape(pptx.ShapeType.rect, { x:11.4, y:0.15, w:1.7, h:0.7, fill:{color:statusColor} });
+    slide.addText((site.status || "").toUpperCase(), { x:11.4, y:0.15, w:1.7, h:0.7, fontSize:11, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
+    let imageData = null;
+    if(site.imageKey) imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
+    if(imageData){
+      try { slide.addImage({ data: imageData, x:0.4, y:1.15, w:8.5, h:5.5, sizing:{type:"contain", w:8.5, h:5.5} }); }
+      catch(e){
+        slide.addShape(pptx.ShapeType.rect, { x:0.4, y:1.15, w:8.5, h:5.5, fill:{color:"F1F5F9"}, line:{color:"CBD5E1"} });
+        slide.addText("📷 Image error", { x:0.4, y:3.7, w:8.5, h:0.5, fontSize:14, color:"94A3B8", align:"center", fontFace:"Arial" });
+      }
+    } else {
+      slide.addShape(pptx.ShapeType.rect, { x:0.4, y:1.15, w:8.5, h:5.5, fill:{color:"F1F5F9"}, line:{color:"CBD5E1", dashType:"dash"} });
+      slide.addText("📷 No Image", { x:0.4, y:3.7, w:8.5, h:0.5, fontSize:18, color:"94A3B8", align:"center", fontFace:"Arial" });
+    }
+    const details = [
+      ["AREA", site.area || "—"],
+      ["COMPANY", site.customer || "—"],
+      ["RATE", site.rate ? "₹" + parseFloat(site.rate).toLocaleString("en-IN") + "/mo" : "—"],
+      ["DURATION", (site.fromDate || "—") + " to " + (site.toDate || "—") + " (" + calcDays(site.fromDate, site.toDate) + "d)"]
+    ];
+    slide.addTable(details.map(([k, v]) => [
+      { text:k, options:{bold:true, fontSize:10, color:"94A3B8", fill:{color:"F8FAFC"}} },
+      { text:String(v), options:{fontSize:12, bold:true, color:"0F172A"} }
+    ]), { x:9.1, y:1.15, w:4.0, colW:[1.2, 2.8], border:{pt:0.5, color:"E2E8F0"}, align:"left", valign:"middle", rowH:1.3, fontFace:"Arial" });
+    if(site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/)){
+      slide.addShape(pptx.ShapeType.rect, { x:10.5, y:6.6, w:2.5, h:0.4, fill:{color:"1E40AF"} });
+      slide.addText("📍 Map", { x:10.5, y:6.6, w:2.5, h:0.4, fontSize:11, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
+    }
+  }
+  const thanks = pptx.addSlide();
+  thanks.background = { color: "1E40AF" };
+  thanks.addText("Thank You", { x:0.5, y:2.5, w:12.33, h:1, fontSize:48, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+  thanks.addText("For more information, please contact us", { x:0.5, y:3.7, w:12.33, h:0.5, fontSize:18, color:"BFDBFE", align:"center", fontFace:"Arial" });
+  thanks.addText("DS Outdoor Media", { x:0.5, y:4.5, w:12.33, h:0.6, fontSize:26, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+  thanks.addText(new Date().toLocaleDateString("en-GB", {day:"2-digit", month:"long", year:"numeric"}), { x:0.5, y:5.3, w:12.33, h:0.4, fontSize:14, color:"93C5FD", align:"center", fontFace:"Arial" });
 }
 
-/* ============ BULK UPLOAD MODAL (3 TABS) ============ */
+/* ============ FORMAT 2: SIMPLE ============ */
+async function buildSimplePPT(pptx, selectedList){
+  const cover = pptx.addSlide();
+  cover.background = { color: "1E40AF" };
+  cover.addText("Site Report", { x:0.5, y:2.8, w:12.33, h:1, fontSize:48, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+  cover.addText(selectedList.length + " Sites", { x:0.5, y:4.0, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
+  for(let i = 0; i < selectedList.length; i++){
+    const site = selectedList[i];
+    const slide = pptx.addSlide();
+    slide.addText((i+1) + ". " + (site.site || site.siteCode), { x:0.4, y:0.2, w:12.5, h:0.6, fontSize:20, bold:true, color:"1E40AF", fontFace:"Arial" });
+    const statusColor = site.status === "Available" ? "10B981" : (site.status === "Not Available" ? "DC2626" : "F59E0B");
+    slide.addShape(pptx.ShapeType.rect, { x:11.5, y:0.25, w:1.6, h:0.5, fill:{color:statusColor} });
+    slide.addText((site.status || "").toUpperCase(), { x:11.5, y:0.25, w:1.6, h:0.5, fontSize:10, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
+    let imageData = null;
+    if(site.imageKey) imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
+    if(imageData){
+      try { slide.addImage({ data: imageData, x:1.5, y:1.0, w:10.33, h:5.2, sizing:{type:"contain", w:10.33, h:5.2} }); } catch(e){}
+    } else {
+      slide.addShape(pptx.ShapeType.rect, { x:1.5, y:1.0, w:10.33, h:5.2, fill:{color:"F1F5F9"}, line:{color:"CBD5E1", dashType:"dash"} });
+      slide.addText("📷 No Image", { x:1.5, y:3.5, w:10.33, h:0.5, fontSize:16, color:"94A3B8", align:"center", fontFace:"Arial" });
+    }
+    slide.addShape(pptx.ShapeType.rect, { x:0, y:6.4, w:13.33, h:1.1, fill:{color:"F8FAFC"} });
+    const infoText = "Area: " + (site.area || "—") + "  |  Code: " + (site.siteCode || "—") + "  |  Rate: " + (site.rate ? "₹" + parseFloat(site.rate).toLocaleString("en-IN") : "—") + "/mo  |  " + (site.fromDate || "—") + " to " + (site.toDate || "—");
+    slide.addText(infoText, { x:0.5, y:6.55, w:12.33, h:0.4, fontSize:12, color:"334155", align:"center", fontFace:"Arial" });
+    slide.addText("Company: " + (site.customer || "—"), { x:0.5, y:7.0, w:12.33, h:0.4, fontSize:11, color:"64748B", align:"center", fontFace:"Arial" });
+  }
+  const thanks = pptx.addSlide();
+  thanks.background = { color: "1E40AF" };
+  thanks.addText("Thank You", { x:0.5, y:3.0, w:12.33, h:1, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+  thanks.addText("DS Outdoor Media", { x:0.5, y:4.5, w:12.33, h:0.5, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
+}
+
+/* ============ FORMAT 3: GRID 2x2 ============ */
+async function buildGridPPT(pptx, selectedList){
+  const cover = pptx.addSlide();
+  cover.background = { color: "1E40AF" };
+  cover.addText("Site Overview — Grid View", { x:0.5, y:2.8, w:12.33, h:1, fontSize:40, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+  cover.addText(selectedList.length + " Sites", { x:0.5, y:4.1, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
+  const perSlide = 4;
+  for(let batch = 0; batch < selectedList.length; batch += perSlide){
+    const slide = pptx.addSlide();
+    const batchSites = selectedList.slice(batch, batch + perSlide);
+    slide.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:0.6, fill:{color:"1E40AF"} });
+    slide.addText("Sites " + (batch+1) + " - " + (batch+batchSites.length), { x:0.3, y:0.05, w:12.7, h:0.5, fontSize:18, bold:true, color:"FFFFFF", valign:"middle", fontFace:"Arial" });
+    const positions = [
+      { x:0.2, y:0.75, w:6.4, h:3.3 },
+      { x:6.73, y:0.75, w:6.4, h:3.3 },
+      { x:0.2, y:4.2, w:6.4, h:3.3 },
+      { x:6.73, y:4.2, w:6.4, h:3.3 }
+    ];
+    for(let j = 0; j < batchSites.length; j++){
+      const site = batchSites[j];
+      const pos = positions[j];
+      slide.addShape(pptx.ShapeType.rect, { x:pos.x, y:pos.y, w:pos.w, h:pos.h, fill:{color:"F8FAFC"}, line:{color:"CBD5E1", pt:1} });
+      let imageData = null;
+      if(site.imageKey) imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
+      if(imageData){
+        try { slide.addImage({ data: imageData, x:pos.x+0.1, y:pos.y+0.1, w:pos.w-0.2, h:1.8, sizing:{type:"cover", w:pos.w-0.2, h:1.8} }); } catch(e){}
+      } else {
+        slide.addShape(pptx.ShapeType.rect, { x:pos.x+0.1, y:pos.y+0.1, w:pos.w-0.2, h:1.8, fill:{color:"E2E8F0"}, line:{color:"CBD5E1", dashType:"dash"} });
+        slide.addText("📷", { x:pos.x+0.1, y:pos.y+0.6, w:pos.w-0.2, h:0.8, fontSize:32, align:"center", color:"94A3B8", fontFace:"Arial" });
+      }
+      slide.addText(site.site || site.siteCode || "Site", { x:pos.x+0.15, y:pos.y+1.95, w:pos.w-0.3, h:0.4, fontSize:11, bold:true, color:"0F172A", fontFace:"Arial" });
+      slide.addText("Code: " + (site.siteCode || "—") + " | " + (site.area || "—"), { x:pos.x+0.15, y:pos.y+2.35, w:pos.w-0.3, h:0.3, fontSize:9, color:"64748B", fontFace:"Arial" });
+      slide.addText((site.rate ? "₹" + parseFloat(site.rate).toLocaleString("en-IN") : "—") + " | " + (site.status || "—"), { x:pos.x+0.15, y:pos.y+2.65, w:pos.w-0.3, h:0.3, fontSize:9, color: site.status === "Available" ? "059669" : (site.status === "Not Available" ? "DC2626" : "D97706"), bold:true, fontFace:"Arial" });
+      slide.addText((site.fromDate || "—") + " → " + (site.toDate || "—"), { x:pos.x+0.15, y:pos.y+2.95, w:pos.w-0.3, h:0.3, fontSize:8, color:"94A3B8", fontFace:"Arial" });
+    }
+  }
+  const thanks = pptx.addSlide();
+  thanks.background = { color: "1E40AF" };
+  thanks.addText("Thank You", { x:0.5, y:3.0, w:12.33, h:1, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+  thanks.addText("DS Outdoor Media", { x:0.5, y:4.5, w:12.33, h:0.5, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
+}
+
+/* ============ FORMAT 4: LIST VIEW ============ */
+async function buildListPPT(pptx, selectedList){
+  const cover = pptx.addSlide();
+  cover.background = { color: "1E40AF" };
+  cover.addText("Site List Report", { x:0.5, y:2.8, w:12.33, h:1, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+  cover.addText(selectedList.length + " Sites", { x:0.5, y:4.1, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
+  const rowsPerSlide = 15;
+  for(let batch = 0; batch < selectedList.length; batch += rowsPerSlide){
+    const slide = pptx.addSlide();
+    const batchSites = selectedList.slice(batch, batch + rowsPerSlide);
+    slide.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:0.7, fill:{color:"1E40AF"} });
+    slide.addText("Site List (" + (batch+1) + "-" + (batch+batchSites.length) + ")", { x:0.3, y:0.1, w:12.7, h:0.5, fontSize:18, bold:true, color:"FFFFFF", valign:"middle", fontFace:"Arial" });
+    const headerRow = [
+      { text:"#", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
+      { text:"Code", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
+      { text:"Site Name", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
+      { text:"Area", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
+      { text:"Company", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
+      { text:"Rate", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
+      { text:"From", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
+      { text:"To", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} },
+      { text:"Status", options:{bold:true, fill:"EFF6FF", color:"1E40AF", fontSize:10} }
+    ];
+    const dataRows = [headerRow];
+    batchSites.forEach((s, i) => {
+      dataRows.push([
+        { text:String(batch+i+1), options:{fontSize:9} },
+        { text:s.siteCode || "—", options:{fontSize:9, fontFace:"Courier New"} },
+        { text:(s.site || "—").substring(0, 30), options:{fontSize:9} },
+        { text:s.area || "—", options:{fontSize:9} },
+        { text:(s.customer || "—").substring(0, 15), options:{fontSize:9} },
+        { text:s.rate ? "₹" + parseFloat(s.rate).toLocaleString("en-IN") : "—", options:{fontSize:9} },
+        { text:s.fromDate || "—", options:{fontSize:9} },
+        { text:s.toDate || "—", options:{fontSize:9} },
+        { text:s.status || "—", options:{fontSize:9, color: s.status === "Available" ? "059669" : (s.status === "Not Available" ? "DC2626" : "D97706"), bold:true} }
+      ]);
+    });
+    slide.addTable(dataRows, {
+      x: 0.3, y: 0.9, w: 12.73,
+      colW: [0.5, 1.0, 2.8, 1.3, 1.5, 1.2, 1.1, 1.1, 1.23],
+      border: { pt:0.5, color:"CBD5E1" },
+      align: "left", valign: "middle", rowH: 0.4, fontFace: "Arial"
+    });
+  }
+  const thanks = pptx.addSlide();
+  thanks.background = { color: "1E40AF" };
+  thanks.addText("Thank You", { x:0.5, y:3.0, w:12.33, h:1, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
+  thanks.addText("DS Outdoor Media", { x:0.5, y:4.5, w:12.33, h:0.5, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
+}
+
+/* ============ BULK MENU ============ */
+function toggleBulkMenu(e){ if(e) e.stopPropagation(); document.getElementById("bulkMenuPanel").classList.toggle("show"); }
+function closeBulkMenu(){ const p = document.getElementById("bulkMenuPanel"); if(p) p.classList.remove("show"); }
+
+/* ============ BULK UPLOAD MODAL ============ */
 function openBulkUpload(tab){
   tab = tab || "sites";
   const oldModal = document.getElementById("bulkModal");
   if(oldModal) oldModal.remove();
-  
   const modalHtml = `
-  <div class="modal" id="bulkModal">
-    <div class="box" style="width:min(950px,100%)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <h2 style="margin:0">📦 Bulk Operations</h2>
-        <button onclick="closeBulkModal()" style="background:transparent;border:0;font-size:24px;cursor:pointer;color:#64748b;padding:0 8px">×</button>
+  <div class="modal" id="bulkModal"><div class="box" style="width:min(950px,100%)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="margin:0">📦 Bulk Operations</h2>
+      <button onclick="closeBulkModal()" style="background:transparent;border:0;font-size:24px;cursor:pointer;color:#64748b;padding:0 8px">×</button>
+    </div>
+    <div style="display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid #e2e8f0">
+      <button type="button" id="bulkTabBtn_sites" onclick="switchBulkTab('sites')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:-2px">📄 Sites (CSV)</button>
+      <button type="button" id="bulkTabBtn_images" onclick="switchBulkTab('images')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:-2px">🖼️ Images</button>
+      <button type="button" id="bulkTabBtn_logo" onclick="switchBulkTab('logo')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:-2px">🎨 Logo</button>
+    </div>
+    <div id="bulkTabContent_sites">
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
+        <b>CSV Format:</b> Area, Site Code, Site Name, Location, Company, Rate, From (dd/mm/yyyy), To (dd/mm/yyyy)<br>
+        <b>Example:</b> Chandigarh, CG01, Sector 17, 30.7123;76.7890, ABC Corp, 15000, 01/01/2025, 31/12/2025
       </div>
-      
-      <!-- Tabs -->
-      <div style="display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid #e2e8f0">
-        <button type="button" id="bulkTabBtn_sites" onclick="switchBulkTab('sites')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:-2px;display:flex;align-items:center;gap:6px">
-          📄 Sites (CSV)
-        </button>
-        <button type="button" id="bulkTabBtn_images" onclick="switchBulkTab('images')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:-2px;display:flex;align-items:center;gap:6px">
-          🖼️ Images
-        </button>
-        <button type="button" id="bulkTabBtn_logo" onclick="switchBulkTab('logo')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:-2px;display:flex;align-items:center;gap:6px">
-          🎨 Logo
-        </button>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <button onclick="downloadBulkTemplate()" style="padding:10px 16px;background:#6b7280;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">📥 Download CSV Template</button>
+        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
+          📁 Choose CSV File
+          <input type="file" id="bulkFileInput" accept=".csv" style="display:none" onchange="handleBulkFile(event)">
+        </label>
       </div>
-      
-      <!-- SITES TAB -->
-      <div id="bulkTabContent_sites">
-        <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-          <b>CSV Format:</b> Area, Site Code, Site Name, Location, Company, Rate, From (dd/mm/yyyy), To (dd/mm/yyyy)<br>
-          <b>Example:</b> Chandigarh, CG01, Sector 17, 30.7123;76.7890, ABC Corp, 15000, 01/01/2025, 31/12/2025
+      <div id="bulkPreview" style="display:none">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Preview (<span id="bulkCount">0</span> sites)</h3>
+        <div style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px">
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead style="background:#f8fafc;position:sticky;top:0">
+              <tr>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Area</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Code</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Name</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Location</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Company</th>
+                <th style="padding:8px;text-align:right;border-bottom:1px solid #e2e8f0">Rate</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">From</th>
+                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">To</th>
+              </tr>
+            </thead>
+            <tbody id="bulkTableBody"></tbody>
+          </table>
         </div>
-        
-        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-          <button onclick="downloadBulkTemplate()" style="padding:10px 16px;background:#6b7280;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
-            📥 Download CSV Template
-          </button>
-          <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
-            📁 Choose CSV File
-            <input type="file" id="bulkFileInput" accept=".csv" style="display:none" onchange="handleBulkFile(event)">
-          </label>
-        </div>
-        
-        <div id="bulkPreview" style="display:none">
-          <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Preview (<span id="bulkCount">0</span> sites)</h3>
-          <div style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px">
-            <table style="width:100%;border-collapse:collapse;font-size:12px">
-              <thead style="background:#f8fafc;position:sticky;top:0">
-                <tr>
-                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Area</th>
-                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Code</th>
-                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Name</th>
-                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Location</th>
-                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Company</th>
-                  <th style="padding:8px;text-align:right;border-bottom:1px solid #e2e8f0">Rate</th>
-                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">From</th>
-                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">To</th>
-                </tr>
-              </thead>
-              <tbody id="bulkTableBody"></tbody>
-            </table>
-          </div>
-          <div class="modal-actions">
-            <button class="secondary" onclick="closeBulkModal()">Cancel</button>
-            <button onclick="confirmBulkUpload()" style="background:#10b981;color:#fff">✅ Confirm & Upload All</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- IMAGES TAB -->
-      <div id="bulkTabContent_images" style="display:none">
-        <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-          <b>How it works:</b> Image file name should match the <b>Site Code</b> (e.g., <code>CG01.jpg</code> for site code <code>CG01</code>).<br>
-          You can select multiple images at once. Supported: JPG, PNG, WebP.
-        </div>
-        
-        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-          <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
-            📁 Choose Images
-            <input type="file" id="bulkImgInput" accept="image/*" multiple style="display:none" onchange="handleBulkImages(event)">
-          </label>
-        </div>
-        
-        <div id="bulkImgPreview" style="display:none">
-          <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Matched Images (<span id="bulkImgCount">0</span>)</h3>
-          <div id="bulkImgList" style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;padding:10px"></div>
-          <div class="modal-actions">
-            <button class="secondary" onclick="closeBulkModal()">Cancel</button>
-            <button onclick="confirmBulkImages()" style="background:#10b981;color:#fff">✅ Upload All Images</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- LOGO TAB -->
-      <div id="bulkTabContent_logo" style="display:none">
-        <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-          Logo will be displayed on the login screen. Recommended size: <b>200x60px</b>, PNG with transparent background. Max 2 MB.
-        </div>
-        
-        <div style="text-align:center;margin-bottom:16px;padding:20px;background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px">
-          <img id="logoPreviewImg" src="" style="max-width:200px;max-height:80px;object-fit:contain;display:none;margin:0 auto" onerror="this.style.display='none'">
-          <div id="logoPreviewPlaceholder" style="padding:20px;color:#94a3b8;font-style:italic">No logo set</div>
-        </div>
-        
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-          <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
-            📁 Choose Logo
-            <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoFile(event)">
-          </label>
-          <button onclick="removeLogo()" style="padding:10px 16px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
-            🗑️ Remove
-          </button>
-        </div>
-        
         <div class="modal-actions">
           <button class="secondary" onclick="closeBulkModal()">Cancel</button>
-          <button onclick="saveLogo()" style="background:#10b981;color:#fff">✅ Save Logo</button>
+          <button onclick="confirmBulkUpload()" style="background:#10b981;color:#fff">✅ Confirm & Upload All</button>
         </div>
       </div>
     </div>
-  </div>`;
-  
+    <div id="bulkTabContent_images" style="display:none">
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
+        <b>How it works:</b> Image file name should match the <b>Site Code</b> (e.g., <code>CG01.jpg</code> for site code <code>CG01</code>).
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
+          📁 Choose Images
+          <input type="file" id="bulkImgInput" accept="image/*" multiple style="display:none" onchange="handleBulkImages(event)">
+        </label>
+      </div>
+      <div id="bulkImgPreview" style="display:none">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Matched Images (<span id="bulkImgCount">0</span>)</h3>
+        <div id="bulkImgList" style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;padding:10px"></div>
+        <div class="modal-actions">
+          <button class="secondary" onclick="closeBulkModal()">Cancel</button>
+          <button onclick="confirmBulkImages()" style="background:#10b981;color:#fff">✅ Upload All Images</button>
+        </div>
+      </div>
+    </div>
+    <div id="bulkTabContent_logo" style="display:none">
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
+        Logo will be displayed on the login screen. Recommended: <b>200x60px</b>, PNG with transparent background. Max 2 MB.
+      </div>
+      <div style="text-align:center;margin-bottom:16px;padding:20px;background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px">
+        <img id="logoPreviewImg" src="" style="max-width:200px;max-height:80px;object-fit:contain;display:none;margin:0 auto" onerror="this.style.display='none'">
+        <div id="logoPreviewPlaceholder" style="padding:20px;color:#94a3b8;font-style:italic">No logo set</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
+          📁 Choose Logo
+          <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoFile(event)">
+        </label>
+        <button onclick="removeLogo()" style="padding:10px 16px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🗑️ Remove</button>
+      </div>
+      <div class="modal-actions">
+        <button class="secondary" onclick="closeBulkModal()">Cancel</button>
+        <button onclick="saveLogo()" style="background:#10b981;color:#fff">✅ Save Logo</button>
+      </div>
+    </div>
+  </div></div>`;
   document.body.insertAdjacentHTML("beforeend", modalHtml);
   document.getElementById("bulkModal").classList.add("show");
-  
-  // Initialize tab state
   switchBulkTab(tab);
-  
-  // If logo tab, preload current logo
   if(tab === "logo"){ newLogoData = null; loadCurrentLogoIntoPreview(); }
 }
 
 function switchBulkTab(tab){
-  const tabs = ["sites", "images", "logo"];
-  tabs.forEach(t => {
+  ["sites", "images", "logo"].forEach(t => {
     const btn = document.getElementById("bulkTabBtn_" + t);
     const content = document.getElementById("bulkTabContent_" + t);
     if(!btn || !content) return;
-    if(t === tab){
-      btn.style.borderBottomColor = "#3b82f6";
-      btn.style.color = "#1e40af";
-      btn.style.fontWeight = "700";
-      content.style.display = "block";
-    } else {
-      btn.style.borderBottomColor = "transparent";
-      btn.style.color = "#64748b";
-      btn.style.fontWeight = "600";
-      content.style.display = "none";
-    }
+    if(t === tab){ btn.style.borderBottomColor = "#3b82f6"; btn.style.color = "#1e40af"; btn.style.fontWeight = "700"; content.style.display = "block"; }
+    else { btn.style.borderBottomColor = "transparent"; btn.style.color = "#64748b"; btn.style.fontWeight = "600"; content.style.display = "none"; }
   });
-  if(tab === "logo"){
-    newLogoData = null;
-    loadCurrentLogoIntoPreview();
-  }
+  if(tab === "logo"){ newLogoData = null; loadCurrentLogoIntoPreview(); }
 }
 
 function loadCurrentLogoIntoPreview(){
@@ -1954,21 +1788,16 @@ function loadCurrentLogoIntoPreview(){
   const localLogo = localStorage.getItem("custom_logo");
   const currentLogo = localLogo || LOGO_URL;
   if(currentLogo && currentLogo.length > 10){
-    img.src = currentLogo;
-    img.style.display = "block";
-    placeholder.style.display = "none";
+    img.src = currentLogo; img.style.display = "block"; placeholder.style.display = "none";
   } else {
-    img.style.display = "none";
-    placeholder.style.display = "block";
+    img.style.display = "none"; placeholder.style.display = "block";
   }
 }
 
 function closeBulkModal(){
   const modal = document.getElementById("bulkModal");
   if(modal) modal.remove();
-  bulkPreviewData = [];
-  bulkImageMatches = [];
-  newLogoData = null;
+  bulkPreviewData = []; bulkImageMatches = []; newLogoData = null;
 }
 
 function downloadBulkTemplate(){
@@ -1977,11 +1806,7 @@ function downloadBulkTemplate(){
     "Gurgaon,GG02,Cyber Hub,28.4595;77.0266,XYZ Ltd,25000,15/03/2025,14/03/2026";
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "bulk-upload-template.csv";
-  a.click();
-  URL.revokeObjectURL(url);
+  const a = document.createElement("a"); a.href = url; a.download = "bulk-upload-template.csv"; a.click();
 }
 
 function handleBulkFile(event){
@@ -1992,7 +1817,7 @@ function handleBulkFile(event){
     try {
       const text = e.target.result;
       const lines = text.split(/\r?\n/).filter(l => l.trim());
-      if(lines.length < 2){ showToast("Error", "CSV file is empty or invalid", "danger"); return; }
+      if(lines.length < 2){ showToast("Error", "CSV empty or invalid", "danger"); return; }
       const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
       const idx = {
         area: headers.findIndex(h => h.includes("area")),
@@ -2005,7 +1830,7 @@ function handleBulkFile(event){
         to: headers.findIndex(h => h.includes("to"))
       };
       if(idx.area === -1 || (idx.siteCode === -1 && idx.siteName === -1)){
-        showToast("Error", "CSV must have Area and (Site Code or Site Name) columns", "danger"); return;
+        showToast("Error", "CSV must have Area and (Site Code or Site Name)", "danger"); return;
       }
       bulkPreviewData = [];
       for(let i = 1; i < lines.length; i++){
@@ -2022,25 +1847,18 @@ function handleBulkFile(event){
         let toDate = idx.to >= 0 ? (cols[idx.to] || "").trim() : "";
         fromDate = normalizeDate(fromDate);
         toDate = normalizeDate(toDate);
-        bulkPreviewData.push({
-          area, siteCode, site: siteName || siteCode, location, customer: company,
-          rate, fromDate, toDate
-        });
+        bulkPreviewData.push({ area, siteCode, site: siteName || siteCode, location, customer: company, rate, fromDate, toDate });
       }
-      if(bulkPreviewData.length === 0){ showToast("Error", "No valid rows found in CSV", "danger"); return; }
+      if(bulkPreviewData.length === 0){ showToast("Error", "No valid rows", "danger"); return; }
       renderBulkPreview();
-    } catch(err){
-      showToast("Error", "Failed to parse CSV: " + err.message, "danger");
-    }
+    } catch(err){ showToast("Error", "Parse error: " + err.message, "danger"); }
   };
   reader.readAsText(file);
   event.target.value = "";
 }
 
 function parseCSVLine(line){
-  const result = [];
-  let current = "";
-  let inQuotes = false;
+  const result = []; let current = ""; let inQuotes = false;
   for(let i = 0; i < line.length; i++){
     const ch = line[i];
     if(ch === '"') inQuotes = !inQuotes;
@@ -2063,8 +1881,7 @@ function normalizeDate(s){
 function renderBulkPreview(){
   const preview = document.getElementById("bulkPreview");
   const tbody = document.getElementById("bulkTableBody");
-  const count = document.getElementById("bulkCount");
-  count.textContent = bulkPreviewData.length;
+  document.getElementById("bulkCount").textContent = bulkPreviewData.length;
   let html = "";
   bulkPreviewData.forEach(d => {
     html += '<tr style="border-bottom:1px solid #f1f5f9">' +
@@ -2075,8 +1892,7 @@ function renderBulkPreview(){
       '<td style="padding:6px 8px">' + esc(d.customer) + '</td>' +
       '<td style="padding:6px 8px;text-align:right">' + (d.rate ? "₹" + d.rate.toLocaleString("en-IN") : "—") + '</td>' +
       '<td style="padding:6px 8px">' + (esc(d.fromDate) || "—") + '</td>' +
-      '<td style="padding:6px 8px">' + (esc(d.toDate) || "—") + '</td>' +
-      '</tr>';
+      '<td style="padding:6px 8px">' + (esc(d.toDate) || "—") + '</td></tr>';
   });
   tbody.innerHTML = html;
   preview.style.display = "block";
@@ -2085,7 +1901,7 @@ function renderBulkPreview(){
 async function confirmBulkUpload(){
   if(bulkPreviewData.length === 0) return;
   if(!confirm("Upload " + bulkPreviewData.length + " sites?")) return;
-  showProgress("Uploading...", "Adding sites to database");
+  showProgress("Uploading...", "");
   let added = 0;
   const now = Date.now();
   for(const d of bulkPreviewData){
@@ -2100,28 +1916,19 @@ async function confirmBulkUpload(){
     sites.push(siteData);
     bookingHistory.push({
       id: "hist_" + now + "_" + Math.random().toString(36).slice(2, 6),
-      siteId: siteData.id, siteName: siteData.site, siteCode: siteData.siteCode,
-      area: siteData.area, fromDate: siteData.fromDate, toDate: siteData.toDate,
-      status: siteData.status, customer: siteData.customer, rate: siteData.rate,
-      changedAt: new Date().toISOString(),
-      changedBy: currentUser ? currentUser.username : "unknown",
-      action: "bulk_created"
+      siteId: siteData.id, siteName: siteData.site, siteCode: siteData.siteCode, area: siteData.area,
+      fromDate: siteData.fromDate, toDate: siteData.toDate, status: siteData.status,
+      customer: siteData.customer, rate: siteData.rate,
+      changedAt: new Date().toISOString(), changedBy: currentUser ? currentUser.username : "unknown", action: "bulk_created"
     });
     added++;
   }
   const ok = await persistNow();
   hideProgress();
-  if(ok){
-    showToast("Success", added + " sites uploaded successfully", "success");
-    closeBulkModal();
-    populateAreaDropdowns();
-    render();
-  } else {
-    showToast("Error", "Upload failed. Please try again.", "danger");
-  }
+  if(ok){ showToast("Success", added + " sites uploaded", "success"); closeBulkModal(); populateAreaDropdowns(); render(); }
+  else showToast("Error", "Upload failed", "danger");
 }
 
-/* ============ BULK IMAGE UPLOAD ============ */
 function readFileAsDataURL(file){
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -2138,28 +1945,22 @@ async function handleBulkImages(event){
   const listEl = document.getElementById("bulkImgList");
   for(const file of files){
     const baseName = file.name.replace(/\.[^.]+$/, "").trim().toUpperCase();
-    const site = sites.find(s =>
-      (s.siteCode && s.siteCode.toUpperCase() === baseName) ||
-      (s.site && s.site.toUpperCase() === baseName)
-    );
+    const site = sites.find(s => (s.siteCode && s.siteCode.toUpperCase() === baseName) || (s.site && s.site.toUpperCase() === baseName));
     if(site){
       const dataUrl = await readFileAsDataURL(file);
       bulkImageMatches.push({ site, file, dataUrl });
     }
   }
   if(bulkImageMatches.length === 0){
-    listEl.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;font-style:italic">No matching sites found. Make sure image filenames match site codes.</div>';
+    listEl.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;font-style:italic">No matching sites found</div>';
   } else {
     let html = "";
     bulkImageMatches.forEach((m) => {
       html += '<div style="display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid #f1f5f9">' +
         '<img src="' + m.dataUrl + '" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid #e2e8f0">' +
-        '<div style="flex:1">' +
-        '<div style="font-weight:600;font-size:13px">' + esc(m.site.site || m.site.siteCode) + '</div>' +
-        '<div style="font-size:11px;color:#64748b">' + esc(m.site.area) + ' • ' + esc(m.file.name) + '</div>' +
-        '</div>' +
-        '<span style="color:#10b981;font-weight:700;font-size:12px">✓ Matched</span>' +
-        '</div>';
+        '<div style="flex:1"><div style="font-weight:600;font-size:13px">' + esc(m.site.site || m.site.siteCode) + '</div>' +
+        '<div style="font-size:11px;color:#64748b">' + esc(m.site.area) + ' • ' + esc(m.file.name) + '</div></div>' +
+        '<span style="color:#10b981;font-weight:700;font-size:12px">✓</span></div>';
     });
     listEl.innerHTML = html;
   }
@@ -2171,7 +1972,7 @@ async function handleBulkImages(event){
 async function confirmBulkImages(){
   if(bulkImageMatches.length === 0) return;
   if(!confirm("Upload " + bulkImageMatches.length + " images?")) return;
-  showProgress("Uploading images...", "This may take a moment");
+  showProgress("Uploading images...", "");
   let uploaded = 0;
   const now = Date.now();
   for(let i = 0; i < bulkImageMatches.length; i++){
@@ -2186,26 +1987,19 @@ async function confirmBulkImages(){
   }
   const ok = await persistNow();
   hideProgress();
-  if(ok){
-    showToast("Success", uploaded + " images uploaded", "success");
-    closeBulkModal();
-    render();
-  } else {
-    showToast("Error", "Failed to save images", "danger");
-  }
+  if(ok){ showToast("Success", uploaded + " images uploaded", "success"); closeBulkModal(); render(); }
+  else showToast("Error", "Failed to save images", "danger");
 }
 
-/* ============ LOGO UPLOAD ============ */
 function handleLogoFile(event){
   const file = event.target.files[0];
   if(!file) return;
-  if(file.size > 2 * 1024 * 1024){ showToast("Error", "Logo must be under 2 MB", "danger"); return; }
+  if(file.size > 2 * 1024 * 1024){ showToast("Error", "Logo under 2 MB required", "danger"); return; }
   const reader = new FileReader();
   reader.onload = (e) => {
     newLogoData = e.target.result;
     const img = document.getElementById("logoPreviewImg");
-    img.src = newLogoData;
-    img.style.display = "block";
+    img.src = newLogoData; img.style.display = "block";
     document.getElementById("logoPreviewPlaceholder").style.display = "none";
   };
   reader.readAsDataURL(file);
@@ -2220,16 +2014,11 @@ async function removeLogo(){
 }
 
 async function saveLogo(){
-  if(newLogoData === null){
-    showToast("Info", "No changes made", "info");
-    closeBulkModal();
-    return;
-  }
+  if(newLogoData === null){ showToast("Info", "No changes", "info"); closeBulkModal(); return; }
   showProgress("Saving logo...", "");
   if(newLogoData === ""){
     try { await apiDelete("/logo"); } catch(e){}
-    LOGO_URL = "";
-    localStorage.removeItem("custom_logo");
+    LOGO_URL = ""; localStorage.removeItem("custom_logo");
     const loginLogo = document.getElementById("loginLogoImg");
     if(loginLogo) loginLogo.style.display = "none";
   } else {
@@ -2244,26 +2033,34 @@ async function saveLogo(){
   closeBulkModal();
 }
 
-/* ============ REFRESH ============ */
+/* ============ REFRESH (FIXED) ============ */
 async function refreshPage(event){
-  if(event) event.preventDefault();
+  if(event){ event.preventDefault(); event.stopPropagation(); }
   const btn = document.querySelector(".btn-refresh-header");
-  if(!btn) return;
-  const originalHTML = btn.innerHTML;
+  if(!btn || btn.disabled) return;
+  const originalText = "🔄 Refresh";
   btn.innerHTML = "⏳ Loading...";
   btn.disabled = true;
   try {
-    const ok = await loadCloudData();
-    if(ok){
+    const result = await apiGet("/data?t=" + Date.now());
+    if(result && result.success){
+      sites = Array.isArray(result.sites) ? result.sites : [];
+      areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
+      bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
+      sites.forEach((s, i) => {
+        if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
+      });
+      lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
+      populateAreaDropdowns();
       render();
       showToast("Refreshed", "Data loaded from cloud", "success");
     } else {
-      showToast("Error", "Failed to refresh data", "danger");
+      showToast("Error", "Failed to refresh", "danger");
     }
   } catch(e){
     showToast("Error", "Refresh failed: " + e.message, "danger");
   }
-  btn.innerHTML = originalHTML;
+  btn.innerHTML = originalText;
   btn.disabled = false;
 }
 
@@ -2277,10 +2074,7 @@ async function autoReleaseExpiredSites(){
       if(toD){
         const toMid = new Date(toD); toMid.setHours(0,0,0,0);
         const newStatus = toMid > today ? "Not Available" : "Available";
-        if(s.status !== newStatus && s.status !== "Under Maintenance"){
-          s.status = newStatus;
-          changed = true;
-        }
+        if(s.status !== newStatus && s.status !== "Under Maintenance"){ s.status = newStatus; changed = true; }
       }
     }
   });
@@ -2292,15 +2086,9 @@ function downloadBackup(){
   const data = { sites, areas, bookingHistory, exportedAt: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "site-backup-" + new Date().toISOString().slice(0, 10) + ".json";
-  a.click();
-  URL.revokeObjectURL(url);
+  const a = document.createElement("a"); a.href = url; a.download = "site-backup-" + new Date().toISOString().slice(0, 10) + ".json"; a.click();
 }
-
 function triggerImport(){ document.getElementById("importFile").click(); }
-
 function handleImportFile(event){
   const file = event.target.files[0];
   if(!file) return;
@@ -2308,21 +2096,17 @@ function handleImportFile(event){
   reader.onload = async (e) => {
     try {
       const data = JSON.parse(e.target.result);
-      if(!data.sites || !Array.isArray(data.sites)){ showToast("Error", "Invalid backup file", "danger"); return; }
-      if(!confirm("Import " + data.sites.length + " sites? This will replace all current data.")) return;
+      if(!data.sites || !Array.isArray(data.sites)){ showToast("Error", "Invalid backup", "danger"); return; }
+      if(!confirm("Import " + data.sites.length + " sites? This will replace all data.")) return;
       sites = data.sites;
       areas = data.areas || [...DEFAULT_AREAS];
       bookingHistory = data.bookingHistory || [];
       sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
-      const ok = await persistNow();
-      if(ok){
-        showToast("Imported", data.sites.length + " sites imported", "success");
-        populateAreaDropdowns();
-        render();
+      if(await persistNow()){
+        showToast("Imported", data.sites.length + " sites", "success");
+        populateAreaDropdowns(); render();
       }
-    } catch(err){
-      showToast("Error", "Failed to parse file: " + err.message, "danger");
-    }
+    } catch(err){ showToast("Error", "Parse error", "danger"); }
   };
   reader.readAsText(file);
   event.target.value = "";
@@ -2332,7 +2116,7 @@ function handleImportFile(event){
 function loadTelegramConfig(){
   try {
     const saved = localStorage.getItem("telegram_config");
-    if(saved){ telegramConfig = { ...telegramConfig, ...JSON.parse(saved) }; }
+    if(saved) telegramConfig = { ...telegramConfig, ...JSON.parse(saved) };
   } catch(e){}
   const tokenEl = document.getElementById("tgBotToken");
   const chatEl = document.getElementById("tgChatId");
@@ -2343,85 +2127,38 @@ function loadTelegramConfig(){
   if(enabledEl) enabledEl.checked = !!telegramConfig.enabled;
   if(onlyEl) onlyEl.checked = telegramConfig.onlyNotAvailMaint !== false;
 }
-
 function openTelegramSettings(){
   loadTelegramConfig();
-  const status = document.getElementById("telegramStatus");
-  status.style.display = "none";
+  document.getElementById("telegramStatus").style.display = "none";
   document.getElementById("telegramModal").classList.add("show");
 }
-
 function closeTelegramSettings(){ document.getElementById("telegramModal").classList.remove("show"); }
-
 async function saveTelegramSettings(){
   const botToken = document.getElementById("tgBotToken").value.trim();
   const chatId = document.getElementById("tgChatId").value.trim();
   const enabled = document.getElementById("tgEnabled").checked;
   const onlyNotAvailMaint = document.getElementById("tgOnlyNotAvail").checked;
-  if(enabled && (!botToken || !chatId)){
-    showToast("Error", "Bot Token and Chat ID required when enabled", "danger");
-    return;
-  }
+  if(enabled && (!botToken || !chatId)){ showToast("Error", "Bot Token and Chat ID required", "danger"); return; }
   telegramConfig = { botToken, chatId, enabled, onlyNotAvailMaint };
   localStorage.setItem("telegram_config", JSON.stringify(telegramConfig));
-  showToast("Saved", "Telegram settings saved", "success");
+  showToast("Saved", "Settings saved", "success");
   closeTelegramSettings();
 }
-
-async function sendTelegramNotification(site, action){
-  if(!telegramConfig.enabled || !telegramConfig.botToken || !telegramConfig.chatId) return;
-  if(telegramConfig.onlyNotAvailMaint && site.status === "Available") return;
-  const text = "🏗️ *Site " + action + "*\n" +
-    "📍 *" + esc(site.site || site.siteCode) + "*\n" +
-    "📌 Area: " + esc(site.area) + "\n" +
-    "📊 Status: " + esc(site.status) + "\n" +
-    "📅 " + (site.fromDate || "—") + " → " + (site.toDate || "—") + "\n" +
-    "🏢 " + esc(site.customer || "—");
-  try {
-    await fetch("https://api.telegram.org/bot" + telegramConfig.botToken + "/sendMessage", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: telegramConfig.chatId, text, parse_mode: "Markdown" })
-    });
-  } catch(e){}
-}
-
 async function testTelegram(){
   const botToken = document.getElementById("tgBotToken").value.trim();
   const chatId = document.getElementById("tgChatId").value.trim();
   const status = document.getElementById("telegramStatus");
-  if(!botToken || !chatId){
-    status.style.display = "block";
-    status.style.background = "#fef2f2";
-    status.style.color = "#991b1b";
-    status.textContent = "Please enter both Bot Token and Chat ID";
-    return;
-  }
-  status.style.display = "block";
-  status.style.background = "#f0f9ff";
-  status.style.color = "#0c4a6e";
-  status.textContent = "Sending test message...";
+  if(!botToken || !chatId){ status.style.display = "block"; status.style.background = "#fef2f2"; status.style.color = "#991b1b"; status.textContent = "Enter both Bot Token and Chat ID"; return; }
+  status.style.display = "block"; status.style.background = "#f0f9ff"; status.style.color = "#0c4a6e"; status.textContent = "Sending...";
   try {
     const res = await fetch("https://api.telegram.org/bot" + botToken + "/sendMessage", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: chatId, text: "🧪 Test message from Site Management System", parse_mode: "Markdown" })
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text: "🧪 Test message from Site Management", parse_mode: "Markdown" })
     });
     const data = await res.json();
-    if(data.ok){
-      status.style.background = "#ecfdf5";
-      status.style.color = "#065f46";
-      status.textContent = "✅ Test message sent successfully!";
-    } else {
-      status.style.background = "#fef2f2";
-      status.style.color = "#991b1b";
-      status.textContent = "❌ Failed: " + (data.description || "Unknown error");
-    }
-  } catch(e){
-    status.style.background = "#fef2f2";
-    status.style.color = "#991b1b";
-    status.textContent = "❌ Network error: " + e.message;
-  }
+    if(data.ok){ status.style.background = "#ecfdf5"; status.style.color = "#065f46"; status.textContent = "✅ Sent!"; }
+    else { status.style.background = "#fef2f2"; status.style.color = "#991b1b"; status.textContent = "❌ " + (data.description || "Failed"); }
+  } catch(e){ status.style.background = "#fef2f2"; status.style.color = "#991b1b"; status.textContent = "❌ " + e.message; }
 }
 
 /* ============ INIT ============ */
