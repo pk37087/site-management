@@ -357,7 +357,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 </div></div>
 
-<!-- BULK UPLOAD MODAL (3 tabs now) -->
+<!-- BULK MODAL (3 tabs) -->
 <div class="modal" id="bulkModal"><div class="box" style="width:min(750px,100%)">
 <h2>📦 Bulk Upload</h2>
 
@@ -367,7 +367,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <button class="bulk-tab" id="bulkTabLogo" type="button">🏷️ Logo</button>
 </div>
 
-<!-- Tab 1: Bulk Site Upload -->
+<!-- Tab 1: Site Upload -->
 <div class="bulk-tab-content active" id="bulkContentSite">
   <div class="bulk-info">
     <b>CSV Format:</b><br>
@@ -390,7 +390,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
 </div>
 
-<!-- Tab 2: Bulk Image Upload -->
+<!-- Tab 2: Image Upload -->
 <div class="bulk-tab-content" id="bulkContentImage">
   <div class="bulk-info">
     <b>Bulk Image Upload Rules:</b><br>
@@ -412,16 +412,14 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
 </div>
 
-<!-- Tab 3: Logo Upload (NEW) -->
+<!-- Tab 3: Logo -->
 <div class="bulk-tab-content" id="bulkContentLogo">
   <div class="bulk-info">
     <b>Company Logo:</b><br>
-    • Yeh logo PPT ke first page pe show hoga<br>
-    • Recommended: PNG with transparent background<br>
-    • Max size: 2 MB<br>
-    • Aspect ratio: 4:1 ya 3:1 (wide logo best)
+    • PPT ke first page pe show hoga<br>
+    • PNG with transparent background recommended<br>
+    • Max size: 2 MB
   </div>
-  
   <div id="logoEmptyState">
     <div class="upload-dropzone" id="logoDropzone">
       <div class="dz-icon">🏷️</div>
@@ -430,7 +428,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     </div>
     <input type="file" id="logoFile" accept="image/*" style="display:none">
   </div>
-  
   <div id="logoPreviewState" style="display:none">
     <div class="logo-preview-box">
       <img id="logoPreviewImg" src="" alt="Logo">
@@ -444,7 +441,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
       </div>
     </div>
   </div>
-  
   <div class="modal-actions">
     <button class="secondary" id="closeBulkLogoBtn" type="button">Close</button>
   </div>
@@ -452,7 +448,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 </div></div>
 
-<!-- PPT OPTIONS MODAL -->
+<!-- PPT MODAL -->
 <div class="modal" id="pptModal"><div class="box" style="width:min(600px,100%)">
 <h2>📊 Generate PPT</h2>
 <p style="color:#64748b;font-size:13px;margin-bottom:16px"><b id="pptCount">0</b> sites selected</p>
@@ -473,7 +469,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
       <div class="ppt-desc">Full image fills box</div>
     </div>
   </label>
-  <!-- NEW OPTIONS 5.1 & 5.2 -->
   <label class="ppt-option" data-style="center-black">
     <input type="radio" name="pptStyle" value="center-black">
     <div>
@@ -579,7 +574,7 @@ let isRendering = false;
 let isReleasing = false;
 let csvParsedSites = [];
 let bulkImagesToUpload = [];
-let companyLogo = ""; // base64 of logo
+let companyLogo = "";
 
 // ==================== TOAST ====================
 function showToast(title, message, type){
@@ -633,51 +628,24 @@ function calcDays(f, t){
   return Math.floor((td - fd) / 86400000) + 1;
 }
 
-// ✅ CHANGE 1: Date filter function - fix
 function siteMatchesDateFilter(site){
   const fromInput = document.getElementById("dateFilterFrom").value.trim();
   const toInput = document.getElementById("dateFilterTo").value.trim();
-  
   if(!fromInput && !toInput) return true;
-  
   const filterFrom = fromInput ? ddmmyyyyToISO(fromInput) : "";
   const filterTo = toInput ? ddmmyyyyToISO(toInput) : "";
-  
-  // If filter is invalid, ignore it
   if(fromInput && !filterFrom) return true;
   if(toInput && !filterTo) return true;
-  
   const siteFrom = site.fromDate ? ddmmyyyyToISO(site.fromDate) : "";
   const siteTo = site.toDate ? ddmmyyyyToISO(site.toDate) : "";
-  
-  // Site without dates - show only if no filter
   if(!siteFrom && !siteTo) return true;
-  
-  // Both filters applied - check overlap
   if(filterFrom && filterTo){
-    if(siteFrom && siteTo){
-      if(siteFrom > filterTo) return false;
-      if(siteTo < filterFrom) return false;
-      return true;
-    }
+    if(siteFrom && siteTo){ if(siteFrom > filterTo) return false; if(siteTo < filterFrom) return false; return true; }
     if(siteFrom && !siteTo) return siteFrom <= filterTo;
     if(!siteFrom && siteTo) return siteTo >= filterFrom;
   }
-  
-  // Only "from" filter
-  if(filterFrom && !filterTo){
-    if(siteTo) return siteTo >= filterFrom;
-    if(siteFrom) return siteFrom >= filterFrom;
-    return true;
-  }
-  
-  // Only "to" filter
-  if(!filterFrom && filterTo){
-    if(siteFrom) return siteFrom <= filterTo;
-    if(siteTo) return siteTo <= filterTo;
-    return true;
-  }
-  
+  if(filterFrom && !filterTo){ if(siteTo) return siteTo >= filterFrom; if(siteFrom) return siteFrom >= filterFrom; return true; }
+  if(!filterFrom && filterTo){ if(siteFrom) return siteFrom <= filterTo; if(siteTo) return siteTo <= filterTo; return true; }
   return true;
 }
 
@@ -689,29 +657,9 @@ function hideProgress(){ document.getElementById("progressOverlay").classList.re
 function debounce(fn, ms){ let timer; return function(){ clearTimeout(timer); timer = setTimeout(() => fn.apply(this, arguments), ms); }; }
 
 // ==================== API ====================
-async function apiGet(path){
-  try {
-    const r = await fetch(API_URL + path, { cache: "no-store" });
-    return await r.json();
-  } catch(e){ return { success: false, error: e.message }; }
-}
-async function apiPost(path, body){
-  try {
-    const r = await fetch(API_URL + path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-      cache: "no-store"
-    });
-    return await r.json();
-  } catch(e){ return { success: false, error: e.message }; }
-}
-async function apiDelete(path){
-  try {
-    const r = await fetch(API_URL + path, { method: "DELETE", cache: "no-store" });
-    return await r.json();
-  } catch(e){ return { success: false, error: e.message }; }
-}
+async function apiGet(path){ try { const r = await fetch(API_URL + path, { cache: "no-store" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+async function apiPost(path, body){ try { const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), cache: "no-store" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+async function apiDelete(path){ try { const r = await fetch(API_URL + path, { method: "DELETE", cache: "no-store" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 
 // ==================== LOGIN ====================
 async function doLogin(){
@@ -723,12 +671,7 @@ async function doLogin(){
   if(!username || !password){ err.textContent = "Username aur password required"; err.classList.add("show"); return; }
   btn.disabled = true; btn.textContent = "Signing in...";
   try {
-    const res = await fetch(API_URL + "/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-      cache: "no-store"
-    });
+    const res = await fetch(API_URL + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }), cache: "no-store" });
     const data = await res.json();
     if(!data.success){
       err.textContent = data.error || "Login failed";
@@ -751,13 +694,11 @@ async function showApp(){
   document.getElementById("loginOverlay").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
   document.getElementById("userInfo").textContent = currentUser.username + " (" + currentUser.role + ")";
-  if(currentUser.role !== "Admin"){
-    document.querySelectorAll(".admin-only").forEach(el => { el.style.display = "none"; });
-  }
+  if(currentUser.role !== "Admin"){ document.querySelectorAll(".admin-only").forEach(el => { el.style.display = "none"; }); }
   showProgress("Loading...", "");
   loadTelegramConfig();
   await loadCloudData();
-  await loadCompanyLogo(); // NEW: Load logo
+  await loadCompanyLogo();
   hideProgress();
   populateAreaDropdowns();
   await autoReleaseExpiredSites();
@@ -776,10 +717,7 @@ function doLogout(){
 function checkSession(){
   const saved = sessionStorage.getItem("sms_user");
   if(saved){
-    try {
-      currentUser = JSON.parse(saved);
-      showApp();
-    } catch(e){ sessionStorage.removeItem("sms_user"); }
+    try { currentUser = JSON.parse(saved); showApp(); } catch(e){ sessionStorage.removeItem("sms_user"); }
   }
 }
 
@@ -800,26 +738,22 @@ async function loadCloudData(){
 async function persistNow(){
   try {
     const result = await apiPost("/data", { sites, areas, bookingHistory });
-    if(result && result.success){
-      lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
-      return true;
-    }
+    if(result && result.success){ lastDataHash = JSON.stringify({ sites, areas, bookingHistory }); return true; }
     if(result && result.error){ alert("⚠️ " + result.error); }
     return false;
   } catch(e){ console.error("persistNow error:", e); return false; }
 }
 
-// ==================== LOGO (NEW - Change 3) ====================
+// ==================== LOGO ====================
 async function loadCompanyLogo(){
   try {
     const result = await apiGet("/logo");
     if(result && result.success && result.data){
       companyLogo = result.data;
-      updateLogoUI();
     } else {
       companyLogo = "";
-      updateLogoUI();
     }
+    updateLogoUI();
   } catch(e){ companyLogo = ""; updateLogoUI(); }
 }
 
@@ -848,12 +782,13 @@ function updateLogoUI(){
   const previewState = document.getElementById("logoPreviewState");
   const img = document.getElementById("logoPreviewImg");
   const info = document.getElementById("logoInfo");
+  if(!emptyState || !previewState) return;
   
   if(companyLogo){
     emptyState.style.display = "none";
     previewState.style.display = "block";
     img.src = companyLogo;
-    if(info) info.textContent = "Active logo - PPT first page pe show hoga";
+    if(info) info.textContent = "Active — PPT first page pe show hoga";
   } else {
     emptyState.style.display = "block";
     previewState.style.display = "none";
@@ -1319,25 +1254,18 @@ async function loadVisibleImages(){
   }
 }
 
-// ✅ CHANGE 2: Status select properly works
 function filterByStatus(status){
   if(activeStatuses.has(status)) activeStatuses.delete(status);
   else activeStatuses.add(status);
   
-  // Auto-select sites with this status (across all areas)
   if(activeStatuses.has(status)){
     let count = 0;
     sites.forEach(s => {
-      if(s.status === status){
-        selectedSites.add(s.id);
-        count++;
-      }
+      if(s.status === status){ selectedSites.add(s.id); count++; }
     });
-    if(count > 0) showToast("Selected", count + " '" + status + "' sites selected (all areas)", "success");
+    if(count > 0) showToast("Selected", count + " '" + status + "' sites (all areas)", "success");
   } else {
-    sites.forEach(s => {
-      if(s.status === status) selectedSites.delete(s.id);
-    });
+    sites.forEach(s => { if(s.status === status) selectedSites.delete(s.id); });
   }
   
   document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = activeStatuses.has(cb.value); });
@@ -1407,36 +1335,28 @@ function onStatusCheckChange(){
   render();
 }
 
-// ==================== CHANGE 1: DATE INPUT BACKSPACE FIX ====================
+// ==================== DATE FILTER INPUT (Backspace fix) ====================
 function initDateFilterInputs(){
   const dFrom = document.getElementById("dateFilterFrom");
   const dTo = document.getElementById("dateFilterTo");
-  
   [dFrom, dTo].forEach(inp => {
     inp.dataset.lastLength = "0";
-    
     inp.addEventListener("input", function(e){
       const oldVal = this.value;
       const oldLen = parseInt(this.dataset.lastLength || "0");
       const isDeleting = oldVal.length < oldLen || e.inputType === "deleteContentBackward";
-      
       this.dataset.lastLength = oldVal.length;
-      
       if(isDeleting){
         this.value = oldVal.replace(/[^\d\/]/g, "");
         return;
       }
-      
       let v = oldVal.replace(/\D/g, "");
       if(v.length >= 2) v = v.slice(0,2) + "/" + v.slice(2);
       if(v.length >= 5) v = v.slice(0,5) + "/" + v.slice(5,9);
       this.value = v;
     });
-    
     inp.addEventListener("keydown", function(e){
-      if(e.key === "Backspace"){
-        this.dataset.lastLength = this.value.length - 1;
-      }
+      if(e.key === "Backspace"){ this.dataset.lastLength = this.value.length - 1; }
     });
   });
 }
@@ -1444,21 +1364,18 @@ function initDateFilterInputs(){
 // ==================== BULK UPLOAD ====================
 function openBulkUpload(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  
   document.getElementById("bulkTabSite").classList.add("active");
   document.getElementById("bulkTabImage").classList.remove("active");
   document.getElementById("bulkTabLogo").classList.remove("active");
   document.getElementById("bulkContentSite").classList.add("active");
   document.getElementById("bulkContentImage").classList.remove("active");
   document.getElementById("bulkContentLogo").classList.remove("active");
-  
   csvParsedSites = [];
   bulkImagesToUpload = [];
   document.getElementById("csvText").value = "";
   document.getElementById("csvPreview").style.display = "none";
   document.getElementById("imagePreviewList").style.display = "none";
   document.getElementById("imagePreviewList").innerHTML = "";
-  
   updateLogoUI();
   document.getElementById("bulkModal").classList.add("show");
 }
@@ -1486,15 +1403,12 @@ function parseCSV(text){
   if(lines.length < 2){ return; }
   const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().trim());
   if(!headers.includes("site")){ return; }
-  
   const idx = {};
   headers.forEach((h, i) => idx[h] = i);
-  
   csvParsedSites = [];
   for(let i=1; i<lines.length; i++){
     const cells = parseCSVLine(lines[i]);
     if(!cells[idx.site]) continue;
-    
     const siteName = cells[idx.site];
     const codeMatch = siteName.match(/^([A-Z]{2,5}\d{1,4})/i);
     const siteCode = (idx.sitecode !== undefined && cells[idx.sitecode]) ? cells[idx.sitecode].toUpperCase() : (codeMatch ? codeMatch[1].toUpperCase() : "");
@@ -1502,26 +1416,22 @@ function parseCSV(text){
     const fromD = idx.from !== undefined ? (cells[idx.from]||"") : "";
     const toD = idx.to !== undefined ? (cells[idx.to]||"") : "";
     const autoStatus = calcStatusFromDates(fromD, toD);
-    
     csvParsedSites.push({
       id: "id_" + Math.random().toString(36).slice(2,10),
       area: areaVal, site: siteName, siteCode: siteCode,
       location: idx.location !== undefined ? (cells[idx.location]||"") : "",
       customer: idx.company !== undefined ? (cells[idx.company]||"") : "",
       rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "",
-      status: autoStatus,
-      fromDate: fromD, toDate: toD,
+      status: autoStatus, fromDate: fromD, toDate: toD,
       lat: "", lng: "", hasImage: false
     });
   }
-  
   showCSVPreview();
 }
 
 function showCSVPreview(){
   const preview = document.getElementById("csvPreview");
   if(csvParsedSites.length === 0){ preview.style.display = "none"; return; }
-  
   let html = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>✅ ' + csvParsedSites.length + ' sites parsed</b></div>';
   html += '<div style="max-height:200px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px"><table style="width:100%;font-size:11px;border-collapse:collapse">';
   html += '<thead style="background:#f1f5f9;position:sticky;top:0"><tr><th style="padding:6px;text-align:left">Site</th><th style="padding:6px;text-align:left">Area</th><th style="padding:6px;text-align:left">Status</th></tr></thead><tbody>';
@@ -1530,14 +1440,12 @@ function showCSVPreview(){
   });
   html += '</tbody></table></div>';
   if(csvParsedSites.length > 20){ html += '<div style="text-align:center;font-size:11px;color:#64748b;margin-top:6px">...aur ' + (csvParsedSites.length - 20) + ' more</div>'; }
-  
   preview.innerHTML = html;
   preview.style.display = "block";
 }
 
 async function processBulkSites(){
   if(csvParsedSites.length === 0){ alert("Pehle CSV parse karo"); return; }
-  
   let added = 0, updated = 0;
   csvParsedSites.forEach(newSite => {
     if(newSite.area && newSite.area !== "Unassigned" && !areas.includes(newSite.area)) areas.push(newSite.area);
@@ -1545,12 +1453,8 @@ async function processBulkSites(){
     if(existing >= 0){
       sites[existing] = { ...sites[existing], ...newSite, id: sites[existing].id, hasImage: sites[existing].hasImage };
       updated++;
-    } else {
-      sites.push(newSite);
-      added++;
-    }
+    } else { sites.push(newSite); added++; }
   });
-  
   showProgress("Saving...", "");
   await persistNow();
   hideProgress();
@@ -1571,41 +1475,32 @@ function handleBulkImageSelect(e){
 function showBulkImagePreview(){
   const list = document.getElementById("imagePreviewList");
   if(bulkImagesToUpload.length === 0){ list.style.display = "none"; return; }
-  
   let html = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>🖼️ ' + bulkImagesToUpload.length + ' images</b></div>';
   html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px">';
-  
   bulkImagesToUpload.forEach(f => {
     const nameNoExt = f.name.replace(/\.[^.]+$/, "");
     const matchingSite = sites.find(s => s.siteCode && s.siteCode.toUpperCase() === nameNoExt.toUpperCase());
     const matchBadge = matchingSite ? '<div style="font-size:10px;color:#059669;font-weight:700;text-align:center;margin-top:2px">✅ ' + esc(matchingSite.siteCode) + '</div>' : '<div style="font-size:10px;color:#dc2626;font-weight:700;text-align:center;margin-top:2px">❌ No match</div>';
-    
     html += '<div style="border:1px solid #e2e8f0;border-radius:6px;padding:4px;background:#fff">';
     html += '<div style="font-size:10px;color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;padding:2px">' + esc(nameNoExt) + '</div>';
     html += matchBadge;
     html += '</div>';
   });
   html += '</div>';
-  
   list.innerHTML = html;
   list.style.display = "block";
 }
 
 async function processBulkImages(){
   if(bulkImagesToUpload.length === 0){ alert("Pehle images select karo"); return; }
-  
   let uploaded = 0, skipped = 0;
   showProgress("Uploading images...", "0 / " + bulkImagesToUpload.length);
-  
   for(let i = 0; i < bulkImagesToUpload.length; i++){
     const file = bulkImagesToUpload[i];
     const nameNoExt = file.name.replace(/\.[^.]+$/, "");
     const matchingSite = sites.find(s => s.siteCode && s.siteCode.toUpperCase() === nameNoExt.toUpperCase());
-    
     if(!matchingSite){ skipped++; continue; }
-    
     showProgress("Uploading images...", (i+1) + " / " + bulkImagesToUpload.length + " — " + file.name);
-    
     try {
       const dataUrl = await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -1613,20 +1508,12 @@ async function processBulkImages(){
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
-      
-      const compressed = await new Promise((resolve) => {
-        compressImageSmart(dataUrl, resolve);
-      });
-      
+      const compressed = await new Promise((resolve) => { compressImageSmart(dataUrl, resolve); });
       await saveImage(matchingSite.id, compressed);
       matchingSite.hasImage = true;
       uploaded++;
-    } catch(e){
-      console.error("Upload error:", e);
-      skipped++;
-    }
+    } catch(e){ console.error("Upload error:", e); skipped++; }
   }
-  
   await persistNow();
   hideProgress();
   render();
@@ -1634,30 +1521,22 @@ async function processBulkImages(){
   showToast("Bulk Images", "Uploaded: " + uploaded + ", Skipped: " + skipped, uploaded > 0 ? "success" : "warning");
 }
 
-// ==================== LOGO UPLOAD (Change 3) ====================
+// ==================== LOGO UPLOAD ====================
 function handleLogoUpload(e){
   const file = e.target.files[0];
   if(!file) return;
   if(!file.type.startsWith("image/")){ alert("Only images"); return; }
   if(file.size > 2*1024*1024){ alert("Max 2 MB"); return; }
-  
   showProgress("Processing logo...", "");
   const reader = new FileReader();
   reader.onload = async (ev) => {
-    // Compress logo - keep transparency for PNG
     const dataUrl = ev.target.result;
     try {
       const saved = await saveCompanyLogo(dataUrl);
       hideProgress();
-      if(saved){
-        showToast("Logo Saved", "PPT me logo show hoga", "success");
-      } else {
-        alert("Logo save fail");
-      }
-    } catch(err){
-      hideProgress();
-      alert("Logo save fail: " + err.message);
-    }
+      if(saved){ showToast("Logo Saved", "PPT me logo show hoga", "success"); }
+      else { alert("Logo save fail"); }
+    } catch(err){ hideProgress(); alert("Logo save fail: " + err.message); }
   };
   reader.readAsDataURL(file);
   e.target.value = "";
@@ -1669,7 +1548,7 @@ async function handleDeleteLogo(){
   if(ok) showToast("Deleted", "Logo removed", "success");
 }
 
-// ==================== PPT GENERATION (Updated with logo + new styles) ====================
+// ==================== PPT ====================
 function openPPTFormatModal(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   document.getElementById("pptCount").textContent = selectedSites.size;
@@ -1680,27 +1559,59 @@ function closePPTModal(){
   document.getElementById("pptModal").classList.remove("show");
 }
 
-// Helper: Generate blur background image
+// ✅ Helper: Get image dimensions
+function getImageDimensions(dataUrl){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve({ w: img.width, h: img.height });
+    img.onerror = () => resolve({ w: 1, h: 1 });
+    img.src = dataUrl;
+  });
+}
+
+// ✅ Helper: Create blurred background
 async function createBlurredImage(dataUrl){
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 1920;
-      canvas.height = 1080;
-      const ctx = canvas.getContext("2d");
-      
-      // Draw blurred fill
-      ctx.filter = "blur(40px)";
-      ctx.drawImage(img, -100, -100, canvas.width + 200, canvas.height + 200);
-      ctx.filter = "none";
-      
-      // Overlay dark
-      ctx.fillStyle = "rgba(0,0,0,0.4)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      resolve(canvas.toDataURL("image/jpeg", 0.7));
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 1920;
+        canvas.height = 1080;
+        const ctx = canvas.getContext("2d");
+        
+        // Cover-fill the canvas (maintains aspect ratio, fills entire area)
+        const imgRatio = img.width / img.height;
+        const canvasRatio = canvas.width / canvas.height;
+        let drawW, drawH, drawX, drawY;
+        
+        if(imgRatio > canvasRatio){
+          drawH = canvas.height;
+          drawW = img.width * (canvas.height / img.height);
+          drawX = (canvas.width - drawW) / 2;
+          drawY = 0;
+        } else {
+          drawW = canvas.width;
+          drawH = img.height * (canvas.width / img.width);
+          drawX = 0;
+          drawY = (canvas.height - drawH) / 2;
+        }
+        
+        // Strong blur
+        ctx.filter = "blur(60px)";
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        ctx.filter = "none";
+        
+        // Dark overlay
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        resolve(canvas.toDataURL("image/jpeg", 0.85));
+      } catch(e) {
+        console.error("Blur fail:", e);
+        resolve(null);
+      }
     };
     img.onerror = () => resolve(null);
     img.src = dataUrl;
@@ -1727,11 +1638,10 @@ async function generatePPT(){
     pptx.layout = "LAYOUT_WIDE";
     pptx.author = COMPANY_NAME;
     
-    // ========== COVER SLIDE WITH LOGO (Change 4) ==========
+    // ========== COVER SLIDE ==========
     let slide = pptx.addSlide();
     slide.background = { color: "1E3A8A" };
     
-    // Logo (only if uploaded)
     let logoTopY = 1.5;
     if(companyLogo){
       try {
@@ -1744,23 +1654,12 @@ async function generatePPT(){
       } catch(e){ console.warn("Logo add fail", e); }
     }
     
-    // Title - pushed down if logo present, centered if no logo
-    slide.addText("Site Report", {
-      x: 0.5, y: logoTopY, w: 12.33, h: 1,
-      fontSize: 48, bold: true, color: "FFFFFF", align: "center"
-    });
-    slide.addText("Total Sites: " + list.length, {
-      x: 0.5, y: logoTopY + 1.3, w: 12.33, h: 0.6,
-      fontSize: 20, color: "93C5FD", align: "center"
-    });
-    slide.addText("Generated: " + new Date().toLocaleDateString('en-GB'), {
-      x: 0.5, y: logoTopY + 2.0, w: 12.33, h: 0.5,
-      fontSize: 14, color: "FFFFFF", align: "center"
-    });
+    slide.addText("Site Report", { x: 0.5, y: logoTopY, w: 12.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center" });
+    slide.addText("Total Sites: " + list.length, { x: 0.5, y: logoTopY + 1.3, w: 12.33, h: 0.6, fontSize: 20, color: "93C5FD", align: "center" });
+    slide.addText("Generated: " + new Date().toLocaleDateString('en-GB'), { x: 0.5, y: logoTopY + 2.0, w: 12.33, h: 0.5, fontSize: 14, color: "FFFFFF", align: "center" });
     
     // ========== INDIVIDUAL SLIDES ==========
     if(style === "grid"){
-      // Grid mode - 4 sites per slide
       for(let i = 0; i < list.length; i += 4){
         showProgress("Generating PPT...", "Slide " + (Math.floor(i/4) + 1));
         slide = pptx.addSlide();
@@ -1769,10 +1668,7 @@ async function generatePPT(){
         
         const gridSites = list.slice(i, i+4);
         const cellW = 6.5, cellH = 3.1;
-        const positions = [
-          { x: 0.15, y: 0.6 }, { x: 6.85, y: 0.6 },
-          { x: 0.15, y: 3.8 }, { x: 6.85, y: 3.8 }
-        ];
+        const positions = [{ x: 0.15, y: 0.6 }, { x: 6.85, y: 0.6 }, { x: 0.15, y: 3.8 }, { x: 6.85, y: 3.8 }];
         
         for(let j = 0; j < gridSites.length; j++){
           const x = gridSites[j];
@@ -1801,7 +1697,6 @@ async function generatePPT(){
         }
       }
     } else {
-      // Individual slides
       for(let i = 0; i < list.length; i++){
         const x = list[i];
         showProgress("Generating PPT...", "Slide " + (i+1) + " / " + list.length);
@@ -1822,32 +1717,62 @@ async function generatePPT(){
         let imgData = null;
         if(includeImages && x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
         
-        // ========== NEW STYLES (Change 5) ==========
+        // ✅ FIXED: Center-Black with proper dimension calculation
         if(style === "center-black"){
-          // Image center, black fill sides, details below
           slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
           if(imgData){
             try {
-              // Center image with contain (maintains aspect ratio)
-              slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "contain", w: 13.33, h: 5.5 } });
-            } catch(e){}
+              const dims = await getImageDimensions(imgData);
+              const slideW = 13.33, slideH = 5.5;
+              const slideRatio = slideW / slideH;
+              const imgRatio = dims.w / dims.h;
+              let imgW, imgH, imgX, imgY;
+              if(imgRatio > slideRatio){
+                imgW = slideW;
+                imgH = slideW / imgRatio;
+                imgX = 0;
+                imgY = 0.65 + (slideH - imgH) / 2;
+              } else {
+                imgH = slideH;
+                imgW = slideH * imgRatio;
+                imgX = (slideW - imgW) / 2;
+                imgY = 0.65;
+              }
+              slide.addImage({ data: imgData, x: imgX, y: imgY, w: imgW, h: imgH });
+            } catch(e){ console.error(e); }
           } else {
             slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
           }
         } else if(style === "center-blur"){
-          // Image center, blurred background, details below
+          // ✅ FIXED: Center-Blur with proper blur background + centered image
           if(imgData){
             try {
-              // Create blurred background
               const blurredBg = await createBlurredImage(imgData);
               if(blurredBg){
                 slide.addImage({ data: blurredBg, x: 0, y: 0.65, w: 13.33, h: 5.5 });
               } else {
                 slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
               }
-              // Overlay original image centered with contain
-              slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "contain", w: 13.33, h: 5.5 } });
+              
+              const dims = await getImageDimensions(imgData);
+              const slideW = 13.33, slideH = 5.5;
+              const slideRatio = slideW / slideH;
+              const imgRatio = dims.w / dims.h;
+              let imgW, imgH, imgX, imgY;
+              if(imgRatio > slideRatio){
+                imgW = slideW;
+                imgH = slideW / imgRatio;
+                imgX = 0;
+                imgY = 0.65 + (slideH - imgH) / 2;
+              } else {
+                imgH = slideH;
+                imgW = slideH * imgRatio;
+                imgX = (slideW - imgW) / 2;
+                imgY = 0.65;
+              }
+              slide.addImage({ data: imgData, x: imgX, y: imgY, w: imgW, h: imgH });
             } catch(e){
+              console.error(e);
               slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
             }
           } else {
@@ -1855,7 +1780,6 @@ async function generatePPT(){
             slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
           }
         } else if(style === "split"){
-          // Split: image left, details right
           slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 6.5, h: 5.5, fill: { color: "F1F5F9" } });
           if(imgData){
             try { slide.addImage({ data: imgData, x: 0.1, y: 0.75, w: 6.3, h: 5.3, sizing: { type: "contain", w: 6.3, h: 5.3 } }); } catch(e){}
@@ -1890,7 +1814,6 @@ async function generatePPT(){
             infoY += 0.42;
           });
         } else if(style === "cover"){
-          // Cover: full image fills
           slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
           if(imgData){
             try { slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "cover", w: 13.33, h: 5.5 } }); } catch(e){}
@@ -2278,7 +2201,6 @@ window.addEventListener("DOMContentLoaded", () => {
     updateLogoUI();
   });
   
-  // Bulk CSV
   document.getElementById("csvDropzone").addEventListener("click", () => document.getElementById("csvFile").click());
   document.getElementById("csvFile").addEventListener("change", (e) => {
     const file = e.target.files[0];
@@ -2294,20 +2216,17 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("processBulkSiteBtn").addEventListener("click", processBulkSites);
   document.getElementById("cancelBulkSiteBtn").addEventListener("click", closeBulkModal);
   
-  // Bulk Images
   document.getElementById("imageDropzone").addEventListener("click", () => document.getElementById("imageFiles").click());
   document.getElementById("imageFiles").addEventListener("change", handleBulkImageSelect);
   document.getElementById("processBulkImageBtn").addEventListener("click", processBulkImages);
   document.getElementById("cancelBulkImageBtn").addEventListener("click", closeBulkModal);
 
-  // Logo
   document.getElementById("logoDropzone").addEventListener("click", () => document.getElementById("logoFile").click());
   document.getElementById("logoFile").addEventListener("change", handleLogoUpload);
   document.getElementById("changeLogoBtn").addEventListener("click", () => document.getElementById("logoFile").click());
   document.getElementById("deleteLogoBtn").addEventListener("click", handleDeleteLogo);
   document.getElementById("closeBulkLogoBtn").addEventListener("click", closeBulkModal);
 
-  // PPT modal
   document.querySelectorAll('input[name="pptStyle"]').forEach(radio => {
     radio.addEventListener("change", function(){
       document.querySelectorAll(".ppt-option").forEach(opt => opt.classList.remove("selected"));
@@ -2317,16 +2236,13 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("generatePptBtn").addEventListener("click", generatePPT);
   document.getElementById("cancelPptBtn").addEventListener("click", closePPTModal);
 
-  // Telegram
   document.getElementById("cancelTgBtn").addEventListener("click", closeTelegramSettings);
   document.getElementById("saveTgBtn").addEventListener("click", saveTelegramSettings);
   document.getElementById("testTgBtn").addEventListener("click", testTelegram);
 
-  // Area modal
   document.getElementById("closeAreaBtn").addEventListener("click", closeAreaModal);
   document.getElementById("addAreaBtn").addEventListener("click", addNewArea);
 
-  // Image viewer
   document.getElementById("closeViewerBtn").addEventListener("click", closeImageViewer);
   document.getElementById("imageViewer").addEventListener("click", (e) => {
     if(e.target.id === "imageViewer") closeImageViewer();
