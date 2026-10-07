@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>Site Management v5</title>
+<title>Site Management v6</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
@@ -159,17 +159,51 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .upload-dropzone .dz-icon{font-size:36px;margin-bottom:8px}
 .upload-dropzone .dz-title{font-size:14px;font-weight:600;color:#334155;margin-bottom:4px}
 .upload-dropzone .dz-sub{font-size:11px;color:#94a3b8}
-.ppt-option{display:flex;align-items:center;gap:10px;padding:12px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:8px;transition:all .2s}
-.ppt-option:hover{border-color:#3b82f6;background:#eff6ff}
-.ppt-option.selected{border-color:#3b82f6;background:#dbeafe}
-.ppt-option input{width:20px;height:20px;cursor:pointer;accent-color:#3b82f6}
-.ppt-option .ppt-label{font-weight:600;color:#0f172a;font-size:13px}
-.ppt-option .ppt-desc{font-size:11px;color:#64748b;margin-top:2px}
 .logo-preview-box{display:flex;align-items:center;gap:14px;padding:14px;border:2px solid #e2e8f0;border-radius:10px;background:#f8fafc;margin-top:10px}
 .logo-preview-box img{max-width:120px;max-height:60px;object-fit:contain;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:4px}
 .logo-preview-box .logo-actions{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
-.theme-preview{display:inline-block;width:36px;height:36px;border-radius:6px;vertical-align:middle;margin-right:8px;border:2px solid #fff;box-shadow:0 0 0 1px #cbd5e1}
-@media (max-width:1024px){#areaContainer{grid-template-columns:1fr}}
+
+/* ============ PROFESSIONAL PPT MODAL ============ */
+.ppt-modal-box{background:#fff;border-radius:20px;padding:0;width:min(720px,100%);max-height:92vh;overflow-y:auto;box-shadow:0 20px 80px rgba(15,23,42,.4);margin:auto;overflow:hidden}
+.ppt-header{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;padding:22px 26px;position:relative;overflow:hidden}
+.ppt-header::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.08)}
+.ppt-header::after{content:'';position:absolute;bottom:-30px;left:-30px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.06)}
+.ppt-header h2{font-size:22px;font-weight:800;margin-bottom:6px;position:relative;z-index:1;letter-spacing:-.3px}
+.ppt-header p{font-size:13px;opacity:.9;position:relative;z-index:1}
+.ppt-header .ppt-count-badge{display:inline-block;background:rgba(255,255,255,.2);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-left:8px;border:1px solid rgba(255,255,255,.3)}
+.ppt-body{padding:24px 26px}
+.ppt-section-label{font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ppt-section-label::before{content:'';width:3px;height:14px;background:linear-gradient(180deg,#7c3aed,#6366f1);border-radius:2px}
+.ppt-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ppt-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.ppt-option{display:flex;align-items:center;gap:10px;padding:14px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all .2s;background:#fff;position:relative;overflow:hidden}
+.ppt-option:hover{border-color:#a78bfa;background:#faf5ff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,.1)}
+.ppt-option.selected{border-color:#7c3aed;background:linear-gradient(135deg,#faf5ff,#f3e8ff);box-shadow:0 4px 16px rgba(124,58,237,.2)}
+.ppt-option.selected::after{content:'✓';position:absolute;top:6px;right:8px;width:20px;height:20px;background:#7c3aed;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.ppt-option input[type="radio"]{display:none}
+.ppt-option .ppt-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:#f1f5f9;color:#64748b}
+.ppt-option.selected .ppt-icon{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff}
+.ppt-option .ppt-info{flex:1;min-width:0}
+.ppt-option .ppt-label{font-weight:700;color:#0f172a;font-size:13px;line-height:1.2}
+.ppt-option .ppt-desc{font-size:11px;color:#64748b;margin-top:3px;line-height:1.3}
+.theme-card{display:flex;align-items:center;gap:10px;padding:12px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all .2s;position:relative}
+.theme-card:hover{border-color:#a78bfa;transform:translateY(-1px)}
+.theme-card.selected{border-color:#7c3aed;box-shadow:0 4px 16px rgba(124,58,237,.2)}
+.theme-card.selected::after{content:'✓';position:absolute;top:6px;right:8px;width:18px;height:18px;background:#7c3aed;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.theme-card input[type="radio"]{display:none}
+.theme-swatch{width:40px;height:40px;border-radius:10px;flex-shrink:0;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.theme-card .ppt-label{font-weight:700;color:#0f172a;font-size:13px}
+.theme-card .ppt-desc{font-size:11px;color:#64748b;margin-top:2px}
+.include-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;margin-bottom:8px;transition:all .2s}
+.include-row:hover{border-color:#a78bfa;background:#faf5ff}
+.include-row input[type="checkbox"]{width:20px;height:20px;accent-color:#7c3aed;cursor:pointer}
+.include-row span{font-weight:600;font-size:13px;color:#334155}
+.ppt-footer{padding:18px 26px 24px;background:#f8fafc;border-top:1px solid #e2e8f0;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.ppt-footer button{padding:13px 24px;font-size:14px;font-weight:700;border-radius:10px;border:0;min-height:48px;transition:all .2s}
+.ppt-footer .btn-cancel{background:#fff;color:#475569;border:2px solid #e2e8f0}
+.ppt-footer .btn-cancel:hover{background:#f1f5f9}
+.ppt-footer .btn-generate{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.35);display:inline-flex;align-items:center;gap:8px}
+.ppt-footer .btn-generate:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.45)}
 @media (max-width:768px){
   .header-actions{width:100%;justify-content:flex-start;gap:5px}
   .header-actions button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center}
@@ -195,6 +229,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions button{width:100%}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
   .bulk-tab{font-size:11px;padding:10px 12px;min-width:110px}
+  .ppt-grid-2,.ppt-grid-3{grid-template-columns:1fr}
+  .ppt-header{padding:18px 20px}
+  .ppt-header h2{font-size:18px}
+  .ppt-body{padding:18px 20px}
+  .ppt-footer{padding:16px 20px;flex-direction:column-reverse}
+  .ppt-footer button{width:100%}
 }
 </style>
 </head>
@@ -362,37 +402,108 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 </div></div>
 
-<div class="modal" id="pptModal"><div class="box" style="width:min(600px,100%)">
-<h2>📊 Generate PPT</h2>
-<p style="color:#64748b;font-size:13px;margin-bottom:16px"><b id="pptCount">0</b> sites selected</p>
-
-<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-bottom:8px">Layout:</label>
-<div id="pptStyleOptions">
-  <label class="ppt-option selected" data-style="split"><input type="radio" name="pptStyle" value="split" checked><div><div class="ppt-label">📋 Split</div><div class="ppt-desc">Image left, details right</div></div></label>
-  <label class="ppt-option" data-style="cover"><input type="radio" name="pptStyle" value="cover"><div><div class="ppt-label">🖼️ Cover</div><div class="ppt-desc">Full image</div></div></label>
-  <label class="ppt-option" data-style="center-black"><input type="radio" name="pptStyle" value="center-black"><div><div class="ppt-label">🖤 Center + Black Sides</div><div class="ppt-desc">Image center, black sides</div></div></label>
-  <label class="ppt-option" data-style="center-blur"><input type="radio" name="pptStyle" value="center-blur"><div><div class="ppt-label">🌫️ Center + Blur Sides</div><div class="ppt-desc">Image center, blur sides</div></div></label>
-  <label class="ppt-option" data-style="grid"><input type="radio" name="pptStyle" value="grid"><div><div class="ppt-label">▦ Grid (4/slide)</div><div class="ppt-desc">Compact</div></div></label>
+<!-- PROFESSIONAL PPT MODAL -->
+<div class="modal" id="pptModal"><div class="ppt-modal-box">
+<div class="ppt-header">
+  <h2>📊 Generate PPT Report <span class="ppt-count-badge" id="pptCount">0</span></h2>
+  <p>Sites selected — choose layout, theme, and options</p>
 </div>
 
-<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:16px;margin-bottom:8px">🎨 Theme:</label>
-<label class="ppt-option selected" data-theme="dark-navy">
-  <input type="radio" name="pptTheme" value="dark-navy" checked>
-  <span class="theme-preview" style="background:linear-gradient(135deg,#0F172A,#1E293B)"></span>
-  <div><div class="ppt-label">🌑 Dark Navy</div><div class="ppt-desc">Deep navy blue</div></div>
+<div class="ppt-body">
+
+<div class="ppt-section-label">Layout Style</div>
+<div class="ppt-grid-2" id="pptStyleOptions">
+  <label class="ppt-option selected" data-style="split">
+    <input type="radio" name="pptStyle" value="split" checked>
+    <div class="ppt-icon">📋</div>
+    <div class="ppt-info">
+      <div class="ppt-label">Split View</div>
+      <div class="ppt-desc">Image left, details right</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="cover">
+    <input type="radio" name="pptStyle" value="cover">
+    <div class="ppt-icon">🖼️</div>
+    <div class="ppt-info">
+      <div class="ppt-label">Full Cover</div>
+      <div class="ppt-desc">Image fills slide (may crop)</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="fit-black">
+    <input type="radio" name="pptStyle" value="fit-black">
+    <div class="ppt-icon">⬛</div>
+    <div class="ppt-info">
+      <div class="ppt-label">Fit + Black Sides</div>
+      <div class="ppt-desc">Original image + black bars</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="fit-blur">
+    <input type="radio" name="pptStyle" value="fit-blur">
+    <div class="ppt-icon">🌫️</div>
+    <div class="ppt-info">
+      <div class="ppt-label">Fit + Blur Sides</div>
+      <div class="ppt-desc">Original image + blur bars</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="center-black">
+    <input type="radio" name="pptStyle" value="center-black">
+    <div class="ppt-icon">🎯</div>
+    <div class="ppt-info">
+      <div class="ppt-label">Center + Black Sides</div>
+      <div class="ppt-desc">Image 70% center, black sides</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="center-blur">
+    <input type="radio" name="pptStyle" value="center-blur">
+    <div class="ppt-icon">✨</div>
+    <div class="ppt-info">
+      <div class="ppt-label">Center + Blur Sides</div>
+      <div class="ppt-desc">Image 70% center, blur sides</div>
+    </div>
+  </label>
+</div>
+
+<div class="ppt-section-label" style="margin-top:22px">Color Theme</div>
+<div class="ppt-grid-2">
+  <label class="theme-card selected" data-theme="dark-navy">
+    <input type="radio" name="pptTheme" value="dark-navy" checked>
+    <div class="theme-swatch" style="background:linear-gradient(135deg,#0F172A,#1E293B)"></div>
+    <div>
+      <div class="ppt-label">🌑 Dark Navy</div>
+      <div class="ppt-desc">Deep, professional blue</div>
+    </div>
+  </label>
+  <label class="theme-card" data-theme="royal-blue">
+    <input type="radio" name="pptTheme" value="royal-blue">
+    <div class="theme-swatch" style="background:linear-gradient(135deg,#1E40AF,#1D4ED8)"></div>
+    <div>
+      <div class="ppt-label">💙 Royal Blue</div>
+      <div class="ppt-desc">Bright, vibrant blue</div>
+    </div>
+  </label>
+</div>
+
+<div class="ppt-section-label" style="margin-top:22px">Include in Slides</div>
+<label class="include-row">
+  <input type="checkbox" id="pptIncludeImages" checked>
+  <span>📷 Site Images</span>
 </label>
-<label class="ppt-option" data-theme="royal-blue">
-  <input type="radio" name="pptTheme" value="royal-blue">
-  <span class="theme-preview" style="background:linear-gradient(135deg,#1E40AF,#1D4ED8)"></span>
-  <div><div class="ppt-label">💙 Royal Blue</div><div class="ppt-desc">Bright royal blue</div></div>
+<label class="include-row">
+  <input type="checkbox" id="pptIncludeCompany" checked>
+  <span>🏢 Company & Rate Details</span>
+</label>
+<label class="include-row">
+  <input type="checkbox" id="pptIncludeDates" checked>
+  <span>📅 Booking Dates & Duration</span>
 </label>
 
-<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:16px;margin-bottom:8px">Include:</label>
-<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px"><input type="checkbox" id="pptIncludeImages" checked style="width:18px;height:18px;accent-color:#3b82f6"><span style="font-weight:600;font-size:13px">Site images</span></label>
-<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px"><input type="checkbox" id="pptIncludeCompany" checked style="width:18px;height:18px;accent-color:#3b82f6"><span style="font-weight:600;font-size:13px">Company & Rate</span></label>
-<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px"><input type="checkbox" id="pptIncludeDates" checked style="width:18px;height:18px;accent-color:#3b82f6"><span style="font-weight:600;font-size:13px">Dates</span></label>
+</div>
 
-<div class="modal-actions"><button class="secondary" id="cancelPptBtn" type="button">Cancel</button><button id="generatePptBtn" type="button" style="background:#7c3aed">📊 Generate</button></div>
+<div class="ppt-footer">
+  <button class="btn-cancel" id="cancelPptBtn" type="button">Cancel</button>
+  <button class="btn-generate" id="generatePptBtn" type="button">✨ Generate PPT</button>
+</div>
+
 </div></div>
 
 <div class="modal" id="areaModal"><div class="box" style="width:min(600px,100%)">
@@ -1183,12 +1294,11 @@ function handleDeleteLogo(){
 
 function openPPTFormatModal(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
-  document.getElementById("pptCount").textContent = selectedSites.size;
+  document.getElementById("pptCount").textContent = selectedSites.size + " sites";
   document.getElementById("pptModal").classList.add("show");
 }
 function closePPTModal(){ document.getElementById("pptModal").classList.remove("show"); }
 
-// ✅ PPT: 70% image + 30% sides
 function createCenterBlackImage(dataUrl, targetW, targetH){
   targetW = targetW || 2560; targetH = targetH || 1440;
   return new Promise(function(resolve){
@@ -1249,6 +1359,77 @@ function createCenterBlurImage(dataUrl, targetW, targetH){
         } else {
           drawH = targetH * pad; drawW = drawH * imgRatio;
           drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
+        }
+        ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 40;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        ctx.shadowColor = "transparent"; ctx.shadowBlur = 0;
+        resolve(canvas.toDataURL("image/jpeg", 0.95));
+      } catch(e){ resolve(null); }
+    };
+    img.onerror = function(){ resolve(null); };
+    img.src = dataUrl;
+  });
+}
+function createFitBlackImage(dataUrl, targetW, targetH){
+  targetW = targetW || 2560; targetH = targetH || 1440;
+  return new Promise(function(resolve){
+    var img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = function(){
+      try {
+        var canvas = document.createElement("canvas");
+        canvas.width = targetW; canvas.height = targetH;
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, targetW, targetH);
+        var imgRatio = img.width / img.height;
+        var canvasRatio = targetW / targetH;
+        var drawW, drawH, drawX, drawY;
+        if(imgRatio > canvasRatio){
+          drawW = targetW; drawH = targetW / imgRatio;
+          drawX = 0; drawY = (targetH - drawH) / 2;
+        } else {
+          drawH = targetH; drawW = targetH * imgRatio;
+          drawX = (targetW - drawW) / 2; drawY = 0;
+        }
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        resolve(canvas.toDataURL("image/jpeg", 0.95));
+      } catch(e){ resolve(null); }
+    };
+    img.onerror = function(){ resolve(null); };
+    img.src = dataUrl;
+  });
+}
+function createFitBlurImage(dataUrl, targetW, targetH){
+  targetW = targetW || 2560; targetH = targetH || 1440;
+  return new Promise(function(resolve){
+    var img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = function(){
+      try {
+        var canvas = document.createElement("canvas");
+        canvas.width = targetW; canvas.height = targetH;
+        var ctx = canvas.getContext("2d");
+        var imgRatio = img.width / img.height;
+        var canvasRatio = targetW / targetH;
+        var bgW, bgH, bgX, bgY;
+        if(imgRatio > canvasRatio){ bgH = targetH; bgW = img.width * (targetH / img.height); bgX = (targetW - bgW) / 2; bgY = 0; }
+        else { bgW = targetW; bgH = img.height * (targetW / img.width); bgX = 0; bgY = (targetH - bgH) / 2; }
+        var scale = 1.2;
+        ctx.filter = "blur(80px)";
+        ctx.drawImage(img, bgX - (bgW * (scale - 1) / 2), bgY - (bgH * (scale - 1) / 2), bgW * scale, bgH * scale);
+        ctx.filter = "none";
+        ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(0, 0, targetW, targetH);
+        var drawW, drawH, drawX, drawY;
+        if(imgRatio > canvasRatio){
+          drawW = targetW; drawH = targetW / imgRatio;
+          drawX = 0; drawY = (targetH - drawH) / 2;
+        } else {
+          drawH = targetH; drawW = targetH * imgRatio;
+          drawX = (targetW - drawW) / 2; drawY = 0;
         }
         ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 40;
         ctx.imageSmoothingEnabled = true;
@@ -1390,18 +1571,20 @@ function generatePPT(){
         var imgPromise = (includeImages && x.hasImage) ? (imageCache[x.id] ? Promise.resolve(imageCache[x.id]) : getImage(x.id)) : Promise.resolve(null);
         
         return imgPromise.then(function(imgData){
-          if(style === "center-black"){
+          if(style === "center-black" || style === "fit-black"){
+            var fn = style === "center-black" ? createCenterBlackImage : createFitBlackImage;
             if(imgData){
-              return createCenterBlackImage(imgData, 2560, 1440).then(function(p){
+              return fn(imgData, 2560, 1440).then(function(p){
                 if(p) s.addImage({ data: p, x: 0, y: 0.65, w: 13.33, h: 5.5 });
               });
             } else {
               s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
               s.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
             }
-          } else if(style === "center-blur"){
+          } else if(style === "center-blur" || style === "fit-blur"){
+            var fn2 = style === "center-blur" ? createCenterBlurImage : createFitBlurImage;
             if(imgData){
-              return createCenterBlurImage(imgData, 2560, 1440).then(function(p){
+              return fn2(imgData, 2560, 1440).then(function(p){
                 if(p) s.addImage({ data: p, x: 0, y: 0.65, w: 13.33, h: 5.5 });
               });
             } else {
@@ -1750,8 +1933,8 @@ document.addEventListener("DOMContentLoaded", function(){
   });
   document.querySelectorAll('input[name="pptTheme"]').forEach(function(r){
     r.addEventListener("change", function(){
-      document.querySelectorAll('input[name="pptTheme"]').forEach(function(x){ x.closest(".ppt-option").classList.remove("selected"); });
-      this.closest(".ppt-option").classList.add("selected");
+      document.querySelectorAll('input[name="pptTheme"]').forEach(function(x){ x.closest(".theme-card").classList.remove("selected"); });
+      this.closest(".theme-card").classList.add("selected");
     });
   });
   document.getElementById("generatePptBtn").addEventListener("click", generatePPT);
