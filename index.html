@@ -3,10 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Site Management System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js?v=2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{max-width:100%}
@@ -31,12 +34,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .header-user{background:rgba(255,255,255,0.18);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap;border:1px solid rgba(255,255,255,0.2)}
 .header-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .header-actions button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;white-space:nowrap;min-height:36px}
+.btn-yellow{background:#f59e0b;color:#fff}
 .btn-gray{background:#6b7280;color:#fff}
 .btn-red{background:#dc2626;color:#fff}
 .btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
 .btn-telegram{background:#0088cc;color:#fff}
 .btn-refresh-header{background:#0ea5e9;color:#fff}
-.btn-bulk-menu{background:#7c3aed;color:#fff}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
@@ -44,6 +47,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,0.08);border-color:#cbd5e1}
 .card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
 .card::after{content:'';position:absolute;top:-30px;right:-30px;width:90px;height:90px;border-radius:50%;background:rgba(148,163,184,0.06);pointer-events:none}
+.card.active-filter{box-shadow:0 0 0 3px rgba(59,130,246,0.25),0 8px 20px rgba(15,23,42,0.08);border-color:#3b82f6;transform:translateY(-2px)}
 .card .card-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.7px;display:block;margin-bottom:6px}
 .card b{font-size:34px;font-weight:800;color:#0f172a;line-height:1;display:block;letter-spacing:-0.5px}
 .card .card-icon{position:absolute;top:14px;right:16px;font-size:20px;opacity:0.15;font-weight:900}
@@ -64,13 +68,13 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .filter-box .date-input{padding:0 8px;border:0;font-family:inherit;font-size:12px !important;width:95px;background:#fff;color:#0f172a;outline:none;height:100%}
 .filter-box .date-input::placeholder{color:#94a3b8;font-size:11px}
 .filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700;display:flex;align-items:center}
-.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-family:inherit;font-weight:700;font-size:11px;height:100%;display:flex;align-items:center;gap:4px}
+.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-weight:700;font-size:11px;height:100%;display:flex;align-items:center;gap:4px}
 .filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;cursor:pointer;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none;align-items:center}
 .filter-box .clear-btn.show{display:flex}
 .filter-active-badge{background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;border:1px solid #93c5fd;display:none;align-items:center;gap:3px;height:24px}
 .filter-active-badge.show{display:inline-flex}
 .multi-status-wrap{position:relative;height:36px;display:flex}
-.multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;border-radius:6px;min-width:130px}
+.multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;cursor:pointer;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;border-radius:6px;min-width:130px}
 .multi-status-btn .ms-arrow{font-size:10px;color:#64748b}
 .multi-status-btn .ms-count{background:#3b82f6;color:#fff;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700}
 .multi-status-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,0.15);z-index:100;min-width:220px;padding:6px}
@@ -109,7 +113,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .site-card-img{width:80px;height:80px;border-radius:8px;object-fit:cover;border:1px solid #e2e8f0;cursor:pointer;flex-shrink:0}
 .site-card-img.no-img{display:flex;align-items:center;justify-content:center;font-size:26px;color:#94a3b8;background:#f8fafc;border:2px dashed #cbd5e1;cursor:pointer}
 .site-card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
-.site-card-name{font-size:14px;font-weight:700;color:#0f172a;line-height:1.4}
+.site-card-name{font-size:14px;font-weight:700;color:#0f172a;line-height:1.4;word-break:break-word}
 .site-card-loc-inline{font-size:11px;color:#0891b2;background:#f0f9ff;padding:3px 8px;border-radius:4px;border:1px solid #bae6fd;margin-left:6px}
 .site-card-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:#64748b}
 .site-card-comp{color:#334155;font-weight:500}
@@ -170,17 +174,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .history-search-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:14px;display:flex;gap:8px;align-items:center}
 .history-search-box input{flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;outline:none;font-size:14px !important;height:40px}
 .history-search-box button{padding:0 16px;height:40px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-size:13px}
-.bulk-menu-wrap{position:relative;display:inline-block}
-.bulk-menu-panel{display:none;position:absolute;top:calc(100% + 4px);right:0;background:#fff;border:1px solid #cbd5e1;border-radius:10px;box-shadow:0 10px 40px rgba(15,23,42,0.2);z-index:1100;min-width:260px;padding:6px;text-align:left}
-.bulk-menu-panel.show{display:block}
-.bulk-menu-panel .bm-header{padding:8px 12px;font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #f1f5f9;margin-bottom:4px}
-.bulk-menu-panel .bm-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:#334155;width:100%;background:transparent;border:0;text-align:left}
-.bulk-menu-panel .bm-item:hover{background:#f1f5f9}
-.bulk-menu-panel .bm-item .bm-icon{font-size:18px;width:24px;text-align:center}
-.bulk-menu-panel .bm-item .bm-desc{font-size:10px;color:#94a3b8;font-weight:400;display:block;margin-top:1px}
-.ppt-format-card{cursor:pointer;border:2px solid #e2e8f0;border-radius:12px;padding:16px;transition:all 0.2s;background:#fff;display:block}
-.ppt-format-card:hover{border-color:#a78bfa;transform:translateY(-2px);box-shadow:0 4px 12px rgba(124,58,237,0.15)}
-.ppt-format-card.active{border-color:#7c3aed;background:#f5f3ff;box-shadow:0 0 0 3px rgba(124,58,237,0.15)}
 @media (max-width:1024px){#areaContainer{grid-template-columns:1fr}}
 @media (max-width:768px){
   header{padding:10px 12px}
@@ -216,8 +209,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions{flex-direction:column-reverse}
   .modal-actions button{width:100%}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
-  .bulk-menu-panel{right:auto;left:0;min-width:220px}
-  #pptFormatList{grid-template-columns:1fr !important}
 }
 </style>
 </head>
@@ -246,29 +237,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <span class="header-user" id="userInfo">Loading...</span>
   </div>
   <div class="header-actions">
-    <button type="button" class="btn-refresh-header" onclick="refreshPage(event)">🔄 Refresh</button>
-    <button type="button" class="btn-telegram" onclick="openTelegramSettings()">📱 Telegram</button>
-    <div class="bulk-menu-wrap admin-only">
-      <button type="button" class="btn-bulk-menu" onclick="toggleBulkMenu(event)">📦 Bulk ▾</button>
-      <div class="bulk-menu-panel" id="bulkMenuPanel">
-        <div class="bm-header">Bulk Operations</div>
-        <button type="button" class="bm-item" onclick="closeBulkMenu();openBulkUpload('sites')">
-          <span class="bm-icon">📄</span>
-          <span>Sites (CSV)<span class="bm-desc">Upload multiple sites via CSV</span></span>
-        </button>
-        <button type="button" class="bm-item" onclick="closeBulkMenu();openBulkUpload('images')">
-          <span class="bm-icon">🖼️</span>
-          <span>Images<span class="bm-desc">Match images to site codes</span></span>
-        </button>
-        <button type="button" class="bm-item" onclick="closeBulkMenu();openBulkUpload('logo')">
-          <span class="bm-icon">🎨</span>
-          <span>Logo<span class="bm-desc">Upload company logo</span></span>
-        </button>
-      </div>
-    </div>
-    <button type="button" class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
-    <button type="button" class="btn-light admin-only" onclick="triggerImport()">Import</button>
-    <button type="button" class="btn-red" onclick="doLogout()">Logout</button>
+    <button class="btn-refresh-header" onclick="refreshPage(event)">🔄 Refresh</button>
+    <button class="btn-telegram" onclick="openTelegramSettings()">📱 Telegram</button>
+    <button class="btn-yellow admin-only" onclick="openBulkUpload()">Bulk</button>
+    <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
+    <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
+    <button class="btn-red" onclick="doLogout()">Logout</button>
   </div>
 </header>
 <div class="container">
@@ -315,7 +289,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div class="select-bar" id="selectBar">
   <span class="count-badge" id="selCount">0 selected</span>
-  <button class="ppt-sel" onclick="openPptFormatModal()">📊 Generate PPT</button>
+  <button class="ppt-sel" onclick="generateSelectedSitesPPT()">📊 Generate PPT</button>
   <button class="bulk-status-sel" onclick="openBulkStatusModal()">Bulk Status</button>
   <button class="clear-sel" onclick="clearSelection()">Clear</button>
   <button class="delete-sel" id="deleteBtn" onclick="bulkDeleteSelected()" style="display:none">Delete</button>
@@ -365,30 +339,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 <div class="calc-preview" id="calcPreview">Enter dates to see auto-calculation</div>
 <div class="modal-actions"><button class="secondary" onclick="closeModal()">Cancel</button><button onclick="saveSite()">Save Site</button></div>
-</div></div>
-
-<!-- PPT FORMAT MODAL -->
-<div class="modal" id="pptFormatModal"><div class="box" style="width:min(750px,100%)">
-<h2>📊 Generate PPT Report</h2>
-<p style="color:#64748b;font-size:13px;margin-bottom:16px"><span id="pptSiteCount">0</span> sites selected. Choose layout:</p>
-<div id="pptFormatList" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-  <label class="ppt-format-card active" data-format="black">
-    <input type="radio" name="pptFormat" value="black" checked style="display:none">
-    <div style="font-size:24px;margin-bottom:8px">⬛</div>
-    <div style="font-weight:700;font-size:14px;margin-bottom:4px">Black Sides</div>
-    <div style="font-size:11px;color:#64748b;line-height:1.5">Original image (no stretch) center mein + side mein <b>black bars</b> + niche details</div>
-  </label>
-  <label class="ppt-format-card" data-format="blur">
-    <input type="radio" name="pptFormat" value="blur" style="display:none">
-    <div style="font-size:24px;margin-bottom:8px">🌫️</div>
-    <div style="font-weight:700;font-size:14px;margin-bottom:4px">Blurred Sides</div>
-    <div style="font-size:11px;color:#64748b;line-height:1.5">Original image (no stretch) center mein + side mein <b>blurred background</b> + niche details</div>
-  </label>
-</div>
-<div class="modal-actions">
-  <button class="secondary" onclick="closePptFormatModal()">Cancel</button>
-  <button onclick="confirmPptGeneration()" style="background:#7c3aed;color:#fff">📊 Generate PPT</button>
-</div>
 </div></div>
 
 <!-- HISTORY MODAL -->
@@ -645,6 +595,7 @@ function startAutoRefresh(){
 function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
 
+/* ============ API WITH CACHE BUST ============ */
 async function apiGet(path){ 
   try { 
     const separator = path.includes("?") ? "&" : "?";
@@ -654,7 +605,8 @@ async function apiGet(path){
       cache: "no-store",
       headers: { 
         "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache"
+        "Pragma": "no-cache",
+        "Expires": "0"
       } 
     }); 
     return await r.json(); 
@@ -753,8 +705,6 @@ function toggleMultiStatusPanel(e){ if(e) e.stopPropagation(); document.getEleme
 document.addEventListener("click", (e) => {
   const wrap = document.getElementById("multiStatusWrap");
   if(wrap && !wrap.contains(e.target)){ document.getElementById("multiStatusPanel").classList.remove("show"); }
-  const bmWrap = document.querySelector(".bulk-menu-wrap");
-  if(bmWrap && !bmWrap.contains(e.target)){ closeBulkMenu(); }
 });
 function toggleAllStatuses(checked){ document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = checked; }); onStatusCheckChange(); }
 function onStatusCheckChange(){
@@ -845,7 +795,7 @@ function debouncedRender(){
   renderDebounceTimer = setTimeout(render, 200);
 }
 
-/* ============ RENDER - FIXED: Site ke area ko automatically include karega ============ */
+/* ============ RENDER - FIXED ============ */
 async function render(){
   updateCardsWithFilteredCounts();
   const multiLabel = document.getElementById("multiStatusLabel");
@@ -867,12 +817,10 @@ async function render(){
   const filteredSites = getFilteredSites();
   visibleSites = filteredSites;
 
-  // CRITICAL FIX: Build area set from BOTH areas array AND sites array
   const areaSet = new Set(areas);
   filteredSites.forEach(s => { if(s.area) areaSet.add(s.area); });
   const allAreaNames = Array.from(areaSet).sort((a,b) => a.localeCompare(b));
   
-  // Build grouped sites
   const grouped = {};
   allAreaNames.forEach(a => grouped[a] = []);
   filteredSites.forEach(s => {
@@ -885,8 +833,6 @@ async function render(){
 
   for(const area of allAreaNames){
     const areaSites = grouped[area] || [];
-    
-    // Skip empty areas (unless searching)
     if(areaSites.length === 0 && !document.getElementById("search").value.trim() && activeStatuses.size === 0 && !hasDate) continue;
     
     const isCollapsed = collapsedAreas.has(area);
@@ -1297,472 +1243,7 @@ function openBulkStatusModal(){
   persistNow().then(() => { showToast("Updated", "Status updated", "success"); render(); });
 }
 
-document.addEventListener("click", (e) => {
-  const card = e.target.closest(".ppt-format-card");
-  if(card){
-    document.querySelectorAll(".ppt-format-card").forEach(c => c.classList.remove("active"));
-    card.classList.add("active");
-    card.querySelector("input[type=radio]").checked = true;
-  }
-});
-function openPptFormatModal(){
-  if(selectedSites.size === 0){ showToast("Info", "Select at least one site", "warning"); return; }
-  document.getElementById("pptSiteCount").textContent = selectedSites.size;
-  pptSelectedFormat = "black";
-  document.querySelectorAll(".ppt-format-card").forEach(c => {
-    c.classList.remove("active");
-    if(c.dataset.format === "black") c.classList.add("active");
-  });
-  document.getElementById("pptFormatModal").classList.add("show");
-}
-function closePptFormatModal(){ document.getElementById("pptFormatModal").classList.remove("show"); }
-async function confirmPptGeneration(){
-  const selected = document.querySelector('input[name="pptFormat"]:checked');
-  pptSelectedFormat = selected ? selected.value : "black";
-  closePptFormatModal();
-  await generateSelectedSitesPPT(pptSelectedFormat);
-}
-
-async function generateSelectedSitesPPT(format){
-  format = format || "black";
-  if(selectedSites.size === 0){ showToast("Info", "Select at least one site", "warning"); return; }
-  if(typeof PptxGenJS === "undefined"){ showToast("Error", "PPT library not loaded. Refresh page.", "danger"); return; }
-  showProgress("Generating " + format + " PPT...", selectedSites.size + " sites");
-  try {
-    const pptx = new PptxGenJS();
-    pptx.layout = "LAYOUT_WIDE";
-    pptx.author = "DS Outdoor Media";
-    pptx.company = "DS Outdoor Media";
-    const selectedList = sites.filter(s => selectedSites.has(s.id));
-    
-    const cover = pptx.addSlide();
-    cover.background = { color: "1E40AF" };
-    cover.addText("Professional Site Booking & Management", { x:0.5, y:1.8, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
-    const areasList = [...new Set(selectedList.map(s => s.area))].join(", ");
-    cover.addText(areasList || "Site Report", { x:0.5, y:2.5, w:12.33, h:1.2, fontSize:44, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-    cover.addText("Report Date " + new Date().toLocaleDateString("en-GB", {day:"2-digit", month:"long", year:"numeric"}), { x:0.5, y:4.1, w:12.33, h:0.5, fontSize:18, color:"BFDBFE", align:"center", fontFace:"Arial" });
-    cover.addText("Total Sites " + selectedList.length, { x:0.5, y:4.8, w:12.33, h:0.5, fontSize:16, color:"93C5FD", align:"center", fontFace:"Arial" });
-    cover.addText("Generated " + new Date().toLocaleString("en-IN"), { x:0.5, y:6.8, w:12.33, h:0.4, fontSize:11, color:"60A5FA", align:"center", fontFace:"Arial" });
-    
-    for(let i = 0; i < selectedList.length; i++){
-      const site = selectedList[i];
-      const slide = pptx.addSlide();
-      
-      slide.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:0.9, fill:{color:"1E40AF"} });
-      slide.addShape(pptx.ShapeType.rect, { x:0.15, y:0.12, w:0.65, h:0.65, fill:{color:"2563EB"} });
-      slide.addText(String(i+1), { x:0.15, y:0.12, w:0.65, h:0.65, fontSize:22, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
-      slide.addText(site.site || site.siteCode || "Site " + (i+1), { x:0.95, y:0.08, w:8.4, h:0.75, fontSize:15, bold:true, color:"FFFFFF", valign:"middle", fontFace:"Arial" });
-      slide.addShape(pptx.ShapeType.rect, { x:9.45, y:0.12, w:1.65, h:0.65, fill:{color:"2563EB"} });
-      slide.addText(site.siteCode || "—", { x:9.45, y:0.12, w:1.65, h:0.65, fontSize:13, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
-      const statusColor = site.status === "Available" ? "10B981" : (site.status === "Not Available" ? "DC2626" : "F59E0B");
-      slide.addShape(pptx.ShapeType.rect, { x:11.25, y:0.12, w:1.9, h:0.65, fill:{color:statusColor} });
-      slide.addText((site.status || "").toUpperCase(), { x:11.25, y:0.12, w:1.9, h:0.65, fontSize:10, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
-      
-      const imgX = 0, imgY = 0.9, imgW = 13.33, imgH = 5.5;
-      let imageData = null;
-      if(site.imageKey) imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
-      
-      if(imageData){
-        try {
-          if(format === "blur"){
-            try { slide.addImage({ data: imageData, x: imgX, y: imgY, w: imgW, h: imgH, sizing: { type: "cover", w: imgW, h: imgH } }); }
-            catch(e) { slide.addShape(pptx.ShapeType.rect, { x: imgX, y: imgY, w: imgW, h: imgH, fill: { color: "1F2937" } }); }
-            slide.addShape(pptx.ShapeType.rect, { x: imgX, y: imgY, w: imgW, h: imgH, fill: { color: "000000", transparency: 50 } });
-            slide.addImage({ data: imageData, x: imgX, y: imgY, w: imgW, h: imgH, sizing: { type: "contain", w: imgW, h: imgH } });
-          } else {
-            slide.addShape(pptx.ShapeType.rect, { x: imgX, y: imgY, w: imgW, h: imgH, fill: { color: "000000" } });
-            slide.addImage({ data: imageData, x: imgX, y: imgY, w: imgW, h: imgH, sizing: { type: "contain", w: imgW, h: imgH } });
-          }
-        } catch(e){
-          slide.addShape(pptx.ShapeType.rect, { x: imgX, y: imgY, w: imgW, h: imgH, fill:{color:"F1F5F9"} });
-          slide.addText("Image error", { x: imgX, y: imgY + 2.5, w: imgW, h: 0.5, fontSize:14, color:"94A3B8", align:"center", fontFace:"Arial" });
-        }
-      } else {
-        const bgColor = format === "black" ? "000000" : "F1F5F9";
-        const txtColor = format === "black" ? "64748B" : "94A3B8";
-        slide.addShape(pptx.ShapeType.rect, { x: imgX, y: imgY, w: imgW, h: imgH, fill:{color:bgColor} });
-        slide.addText("No Image", { x: imgX, y: imgY + 2.5, w: imgW, h: 0.5, fontSize:18, color:txtColor, align:"center", fontFace:"Arial" });
-      }
-      
-      const footerY = 6.4;
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: footerY, w: 13.33, h: 0.75, fill: { color: "F8FAFC" } });
-      const cols = [
-        { label: "AREA",     value: site.area || "—", x: 0.4 },
-        { label: "COMPANY",  value: site.customer || "—", x: 3.7 },
-        { label: "RATE",     value: site.rate ? "₹" + parseFloat(site.rate).toLocaleString("en-IN") + "/mo" : "—", x: 7.0 },
-        { label: "DURATION", value: (site.fromDate || "—") + " to " + (site.toDate || "—") + " (" + calcDays(site.fromDate, site.toDate) + "d)", x: 10.0 }
-      ];
-      cols.forEach(col => {
-        slide.addText(col.label, { x: col.x, y: footerY + 0.05, w: 3.2, h: 0.25, fontSize: 9, bold: true, color: "94A3B8", fontFace: "Arial" });
-        slide.addText(col.value, { x: col.x, y: footerY + 0.28, w: 3.2, h: 0.42, fontSize: 12, bold: true, color: "1E40AF", fontFace: "Arial" });
-      });
-      
-      if(site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/)){
-        slide.addShape(pptx.ShapeType.rect, { x:11.0, y:7.2, w:2.0, h:0.5, fill:{color:"1E40AF"} });
-        slide.addText("🗺️ Map", { x:11.0, y:7.2, w:2.0, h:0.5, fontSize:11, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
-      }
-    }
-    
-    const thanks = pptx.addSlide();
-    thanks.background = { color: "1E40AF" };
-    thanks.addText("Thank You", { x:0.5, y:2.5, w:12.33, h:1, fontSize:48, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-    thanks.addText("For more information, please contact us", { x:0.5, y:3.7, w:12.33, h:0.5, fontSize:18, color:"BFDBFE", align:"center", fontFace:"Arial" });
-    thanks.addText("DS Outdoor Media", { x:0.5, y:4.5, w:12.33, h:0.6, fontSize:26, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
-    thanks.addText(new Date().toLocaleDateString("en-GB", {day:"2-digit", month:"long", year:"numeric"}), { x:0.5, y:5.3, w:12.33, h:0.4, fontSize:14, color:"93C5FD", align:"center", fontFace:"Arial" });
-    
-    const fileName = "Site_Report_" + (areasList.replace(/[^a-z0-9]/gi, "_").substring(0, 30) || "All") + "_" + format + "_" + new Date().toISOString().slice(0,10) + ".pptx";
-    await pptx.writeFile({ fileName });
-    hideProgress();
-    showToast("Success", "PPT downloaded (" + format + ", " + selectedList.length + " sites)", "success");
-  } catch(e){
-    hideProgress();
-    console.error("PPT Error:", e);
-    showToast("Error", "Failed: " + e.message, "danger");
-  }
-}
-
-function toggleBulkMenu(e){ if(e) e.stopPropagation(); document.getElementById("bulkMenuPanel").classList.toggle("show"); }
-function closeBulkMenu(){ const p = document.getElementById("bulkMenuPanel"); if(p) p.classList.remove("show"); }
-
-function openBulkUpload(tab){
-  tab = tab || "sites";
-  const oldModal = document.getElementById("bulkModal");
-  if(oldModal) oldModal.remove();
-  const modalHtml = `
-  <div class="modal" id="bulkModal"><div class="box" style="width:min(950px,100%)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h2 style="margin:0">📦 Bulk Operations</h2>
-      <button onclick="closeBulkModal()" style="background:transparent;border:0;font-size:24px;cursor:pointer;color:#64748b;padding:0 8px">×</button>
-    </div>
-    <div style="display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid #e2e8f0">
-      <button type="button" id="bulkTabBtn_sites" onclick="switchBulkTab('sites')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;margin-bottom:-2px">📄 Sites (CSV)</button>
-      <button type="button" id="bulkTabBtn_images" onclick="switchBulkTab('images')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;margin-bottom:-2px">🖼️ Images</button>
-      <button type="button" id="bulkTabBtn_logo" onclick="switchBulkTab('logo')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;margin-bottom:-2px">🎨 Logo</button>
-    </div>
-    <div id="bulkTabContent_sites">
-      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-        <b>CSV Format:</b> Area, Site Code, Site Name, Location, Company, Rate, From (dd/mm/yyyy), To (dd/mm/yyyy)
-      </div>
-      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-        <button onclick="downloadBulkTemplate()" style="padding:10px 16px;background:#6b7280;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer">📥 Template</button>
-        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px">
-          📁 Choose CSV
-          <input type="file" id="bulkFileInput" accept=".csv" style="display:none" onchange="handleBulkFile(event)">
-        </label>
-      </div>
-      <div id="bulkPreview" style="display:none">
-        <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Preview (<span id="bulkCount">0</span>)</h3>
-        <div style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px">
-          <table style="width:100%;border-collapse:collapse;font-size:12px">
-            <thead style="background:#f8fafc;position:sticky;top:0">
-              <tr>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Area</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Code</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Name</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Rate</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">From</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">To</th>
-              </tr>
-            </thead>
-            <tbody id="bulkTableBody"></tbody>
-          </table>
-        </div>
-        <div class="modal-actions">
-          <button class="secondary" onclick="closeBulkModal()">Cancel</button>
-          <button onclick="confirmBulkUpload()" style="background:#10b981;color:#fff">✅ Upload All</button>
-        </div>
-      </div>
-    </div>
-    <div id="bulkTabContent_images" style="display:none">
-      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-        <b>How it works:</b> Image file name should match the <b>Site Code</b> (e.g., <code>CG01.jpg</code>).
-      </div>
-      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px">
-          📁 Choose Images
-          <input type="file" id="bulkImgInput" accept="image/*" multiple style="display:none" onchange="handleBulkImages(event)">
-        </label>
-      </div>
-      <div id="bulkImgPreview" style="display:none">
-        <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Matched (<span id="bulkImgCount">0</span>)</h3>
-        <div id="bulkImgList" style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;padding:10px"></div>
-        <div class="modal-actions">
-          <button class="secondary" onclick="closeBulkModal()">Cancel</button>
-          <button onclick="confirmBulkImages()" style="background:#10b981;color:#fff">✅ Upload All</button>
-        </div>
-      </div>
-    </div>
-    <div id="bulkTabContent_logo" style="display:none">
-      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-        Logo for login screen. <b>200x60px</b>, PNG. Max 2 MB.
-      </div>
-      <div style="text-align:center;margin-bottom:16px;padding:20px;background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px">
-        <img id="logoPreviewImg" src="" style="max-width:200px;max-height:80px;object-fit:contain;display:none;margin:0 auto" onerror="this.style.display='none'">
-        <div id="logoPreviewPlaceholder" style="padding:20px;color:#94a3b8;font-style:italic">No logo set</div>
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px">
-          📁 Choose Logo
-          <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoFile(event)">
-        </label>
-        <button onclick="removeLogo()" style="padding:10px 16px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer">🗑️ Remove</button>
-      </div>
-      <div class="modal-actions">
-        <button class="secondary" onclick="closeBulkModal()">Cancel</button>
-        <button onclick="saveLogo()" style="background:#10b981;color:#fff">✅ Save</button>
-      </div>
-    </div>
-  </div></div>`;
-  document.body.insertAdjacentHTML("beforeend", modalHtml);
-  document.getElementById("bulkModal").classList.add("show");
-  switchBulkTab(tab);
-  if(tab === "logo"){ newLogoData = null; loadCurrentLogoIntoPreview(); }
-}
-
-function switchBulkTab(tab){
-  ["sites", "images", "logo"].forEach(t => {
-    const btn = document.getElementById("bulkTabBtn_" + t);
-    const content = document.getElementById("bulkTabContent_" + t);
-    if(!btn || !content) return;
-    if(t === tab){ btn.style.borderBottomColor = "#3b82f6"; btn.style.color = "#1e40af"; btn.style.fontWeight = "700"; content.style.display = "block"; }
-    else { btn.style.borderBottomColor = "transparent"; btn.style.color = "#64748b"; btn.style.fontWeight = "600"; content.style.display = "none"; }
-  });
-  if(tab === "logo"){ newLogoData = null; loadCurrentLogoIntoPreview(); }
-}
-
-function loadCurrentLogoIntoPreview(){
-  const img = document.getElementById("logoPreviewImg");
-  const placeholder = document.getElementById("logoPreviewPlaceholder");
-  if(!img || !placeholder) return;
-  const localLogo = localStorage.getItem("custom_logo");
-  const currentLogo = localLogo || LOGO_URL;
-  if(currentLogo && currentLogo.length > 10){ img.src = currentLogo; img.style.display = "block"; placeholder.style.display = "none"; }
-  else { img.style.display = "none"; placeholder.style.display = "block"; }
-}
-
-function closeBulkModal(){
-  const modal = document.getElementById("bulkModal");
-  if(modal) modal.remove();
-  bulkPreviewData = []; bulkImageMatches = []; newLogoData = null;
-}
-
-function downloadBulkTemplate(){
-  const csv = "Area,Site Code,Site Name,Location,Company,Rate,From,To\n" +
-    "Chandigarh,CG01,Sector 17,30.7123;76.7890,ABC Corp,15000,01/01/2025,31/12/2025\n" +
-    "Gurgaon,GG02,Cyber Hub,28.4595;77.0266,XYZ Ltd,25000,15/03/2025,14/03/2026";
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href = url; a.download = "bulk-upload-template.csv"; a.click();
-}
-
-function handleBulkFile(event){
-  const file = event.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const text = e.target.result;
-      const lines = text.split(/\r?\n/).filter(l => l.trim());
-      if(lines.length < 2){ showToast("Error", "CSV empty", "danger"); return; }
-      const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
-      const idx = {
-        area: headers.findIndex(h => h.includes("area")),
-        siteCode: headers.findIndex(h => h.includes("code")),
-        siteName: headers.findIndex(h => h.includes("name")),
-        location: headers.findIndex(h => h.includes("location") || h.includes("address")),
-        company: headers.findIndex(h => h.includes("company") || h.includes("customer")),
-        rate: headers.findIndex(h => h.includes("rate") || h.includes("price")),
-        from: headers.findIndex(h => h.includes("from")),
-        to: headers.findIndex(h => h.includes("to"))
-      };
-      if(idx.area === -1 || (idx.siteCode === -1 && idx.siteName === -1)){ showToast("Error", "CSV needs Area + Site Code or Name", "danger"); return; }
-      bulkPreviewData = [];
-      for(let i = 1; i < lines.length; i++){
-        const cols = parseCSVLine(lines[i]);
-        if(cols.length < 2) continue;
-        const area = idx.area >= 0 ? (cols[idx.area] || "").trim() : "";
-        if(!area) continue;
-        const siteCode = idx.siteCode >= 0 ? (cols[idx.siteCode] || "").trim().toUpperCase() : "";
-        const siteName = idx.siteName >= 0 ? (cols[idx.siteName] || "").trim() : "";
-        const location = idx.location >= 0 ? (cols[idx.location] || "").trim() : "";
-        const company = idx.company >= 0 ? (cols[idx.company] || "").trim() : "";
-        const rate = idx.rate >= 0 ? parseFloat(cols[idx.rate]) || 0 : 0;
-        let fromDate = idx.from >= 0 ? (cols[idx.from] || "").trim() : "";
-        let toDate = idx.to >= 0 ? (cols[idx.to] || "").trim() : "";
-        fromDate = normalizeDate(fromDate);
-        toDate = normalizeDate(toDate);
-        bulkPreviewData.push({ area, siteCode, site: siteName || siteCode, location, customer: company, rate, fromDate, toDate });
-      }
-      if(bulkPreviewData.length === 0){ showToast("Error", "No rows", "danger"); return; }
-      renderBulkPreview();
-    } catch(err){ showToast("Error", "Parse: " + err.message, "danger"); }
-  };
-  reader.readAsText(file);
-  event.target.value = "";
-}
-
-function parseCSVLine(line){
-  const result = []; let current = ""; let inQuotes = false;
-  for(let i = 0; i < line.length; i++){
-    const ch = line[i];
-    if(ch === '"') inQuotes = !inQuotes;
-    else if(ch === ',' && !inQuotes){ result.push(current); current = ""; }
-    else current += ch;
-  }
-  result.push(current);
-  return result;
-}
-
-function normalizeDate(s){
-  if(!s) return "";
-  s = s.trim();
-  if(/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
-  if(/^\d{4}-\d{2}-\d{2}$/.test(s)){ const p = s.split("-"); return p[2] + "/" + p[1] + "/" + p[0]; }
-  if(/^\d{2}-\d{2}-\d{4}$/.test(s)){ const p = s.split("-"); return p[0] + "/" + p[1] + "/" + p[2]; }
-  return s;
-}
-
-function renderBulkPreview(){
-  const preview = document.getElementById("bulkPreview");
-  const tbody = document.getElementById("bulkTableBody");
-  document.getElementById("bulkCount").textContent = bulkPreviewData.length;
-  let html = "";
-  bulkPreviewData.forEach(d => {
-    html += '<tr style="border-bottom:1px solid #f1f5f9">' +
-      '<td style="padding:6px 8px">' + esc(d.area) + '</td>' +
-      '<td style="padding:6px 8px;font-family:monospace">' + esc(d.siteCode) + '</td>' +
-      '<td style="padding:6px 8px">' + esc(d.site) + '</td>' +
-      '<td style="padding:6px 8px;text-align:right">' + (d.rate ? "₹" + d.rate.toLocaleString("en-IN") : "—") + '</td>' +
-      '<td style="padding:6px 8px">' + (esc(d.fromDate) || "—") + '</td>' +
-      '<td style="padding:6px 8px">' + (esc(d.toDate) || "—") + '</td></tr>';
-  });
-  tbody.innerHTML = html;
-  preview.style.display = "block";
-}
-
-async function confirmBulkUpload(){
-  if(bulkPreviewData.length === 0) return;
-  if(!confirm("Upload " + bulkPreviewData.length + " sites?")) return;
-  showProgress("Uploading...", "");
-  let added = 0;
-  const now = Date.now();
-  for(const d of bulkPreviewData){
-    if(!areas.includes(d.area)) areas.push(d.area);
-    const status = calcStatusFromDates(d.fromDate, d.toDate);
-    const siteData = { id: "id_" + now + "_" + Math.random().toString(36).slice(2, 8), area: d.area, siteCode: d.siteCode, site: d.site || d.siteCode, location: d.location, customer: d.customer, rate: d.rate, fromDate: d.fromDate, toDate: d.toDate, status: status, imageKey: "" };
-    sites.push(siteData);
-    bookingHistory.push({ id: "hist_" + now + "_" + Math.random().toString(36).slice(2, 6), siteId: siteData.id, siteName: siteData.site, siteCode: siteData.siteCode, area: siteData.area, fromDate: siteData.fromDate, toDate: siteData.toDate, status: siteData.status, customer: siteData.customer, rate: siteData.rate, changedAt: new Date().toISOString(), changedBy: currentUser ? currentUser.username : "unknown", action: "bulk_created" });
-    added++;
-  }
-  const ok = await persistNow();
-  hideProgress();
-  if(ok){ showToast("Success", added + " sites uploaded", "success"); closeBulkModal(); populateAreaDropdowns(); render(); }
-  else showToast("Error", "Upload failed", "danger");
-}
-
-function readFileAsDataURL(file){
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-async function handleBulkImages(event){
-  const files = Array.from(event.target.files);
-  if(files.length === 0) return;
-  bulkImageMatches = [];
-  const listEl = document.getElementById("bulkImgList");
-  for(const file of files){
-    const baseName = file.name.replace(/\.[^.]+$/, "").trim().toUpperCase();
-    const site = sites.find(s => (s.siteCode && s.siteCode.toUpperCase() === baseName) || (s.site && s.site.toUpperCase() === baseName));
-    if(site){
-      const dataUrl = await readFileAsDataURL(file);
-      bulkImageMatches.push({ site, file, dataUrl });
-    }
-  }
-  if(bulkImageMatches.length === 0){ listEl.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;font-style:italic">No matches</div>'; }
-  else {
-    let html = "";
-    bulkImageMatches.forEach((m) => {
-      html += '<div style="display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid #f1f5f9">' +
-        '<img src="' + m.dataUrl + '" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid #e2e8f0">' +
-        '<div style="flex:1"><div style="font-weight:600;font-size:13px">' + esc(m.site.site || m.site.siteCode) + '</div>' +
-        '<div style="font-size:11px;color:#64748b">' + esc(m.site.area) + ' • ' + esc(m.file.name) + '</div></div>' +
-        '<span style="color:#10b981;font-weight:700;font-size:12px">✓</span></div>';
-    });
-    listEl.innerHTML = html;
-  }
-  document.getElementById("bulkImgCount").textContent = bulkImageMatches.length;
-  document.getElementById("bulkImgPreview").style.display = "block";
-  event.target.value = "";
-}
-
-async function confirmBulkImages(){
-  if(bulkImageMatches.length === 0) return;
-  if(!confirm("Upload " + bulkImageMatches.length + " images?")) return;
-  showProgress("Uploading...", "");
-  let uploaded = 0;
-  const now = Date.now();
-  for(let i = 0; i < bulkImageMatches.length; i++){
-    const m = bulkImageMatches[i];
-    const key = "img_" + now + "_" + i + "_" + Math.random().toString(36).slice(2, 6);
-    const result = await saveImage(key, m.dataUrl);
-    if(result && result.success){
-      if(m.site.imageKey) await deleteImage(m.site.imageKey);
-      m.site.imageKey = key;
-      uploaded++;
-    }
-  }
-  const ok = await persistNow();
-  hideProgress();
-  if(ok){ showToast("Success", uploaded + " images uploaded", "success"); closeBulkModal(); render(); }
-  else showToast("Error", "Failed", "danger");
-}
-
-function handleLogoFile(event){
-  const file = event.target.files[0];
-  if(!file) return;
-  if(file.size > 2 * 1024 * 1024){ showToast("Error", "Under 2 MB", "danger"); return; }
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    newLogoData = e.target.result;
-    const img = document.getElementById("logoPreviewImg");
-    img.src = newLogoData; img.style.display = "block";
-    document.getElementById("logoPreviewPlaceholder").style.display = "none";
-  };
-  reader.readAsDataURL(file);
-  event.target.value = "";
-}
-
-async function removeLogo(){
-  if(!confirm("Remove logo?")) return;
-  newLogoData = "";
-  document.getElementById("logoPreviewImg").style.display = "none";
-  document.getElementById("logoPreviewPlaceholder").style.display = "block";
-}
-
-async function saveLogo(){
-  if(newLogoData === null){ showToast("Info", "No changes", "info"); closeBulkModal(); return; }
-  showProgress("Saving logo...", "");
-  if(newLogoData === ""){
-    try { await apiDelete("/logo"); } catch(e){}
-    LOGO_URL = ""; localStorage.removeItem("custom_logo");
-    const loginLogo = document.getElementById("loginLogoImg");
-    if(loginLogo) loginLogo.style.display = "none";
-  } else {
-    LOGO_URL = newLogoData;
-    localStorage.setItem("custom_logo", newLogoData);
-    const loginLogo = document.getElementById("loginLogoImg");
-    if(loginLogo){ loginLogo.src = newLogoData; loginLogo.style.display = "inline-block"; }
-    try { await apiPost("/logo", { data: newLogoData }); } catch(e){}
-  }
-  hideProgress();
-  showToast("Success", "Logo updated", "success");
-  closeBulkModal();
-}
-
+/* ============ REFRESH - FULL CACHE BUST + EXPAND ALL ============ */
 async function refreshPage(event){
   if(event){ event.preventDefault(); event.stopPropagation(); }
   const btn = document.querySelector(".btn-refresh-header");
@@ -1782,23 +1263,14 @@ async function refreshPage(event){
       
       if(!cloudHasData && localHasData){
         const choice = confirm(
-          "⚠️ WARNING\n\n" +
-          "Cloud returned 0 sites, but you have " + sites.length + " sites locally.\n\n" +
-          "This usually means:\n" +
-          "• Worker KV binding is missing\n" +
-          "• Data was never saved\n\n" +
-          "Click OK = Keep local data (SAFE)\n" +
-          "Click Cancel = Load empty cloud data (WILL WIPE LOCAL)"
+          "⚠️ WARNING\n\nCloud returned 0 sites, but you have " + sites.length + " sites locally.\n\n" +
+          "Click OK = Keep local data (SAFE)\nClick Cancel = Load empty cloud (WILL WIPE)"
         );
-        
         if(choice){
-          showToast("Safe", "Local data preserved (" + sites.length + " sites)", "warning");
+          showToast("Safe", "Local data preserved", "warning");
         } else {
-          sites = [];
-          areas = Array.isArray(result.areas) && result.areas.length > 0 ? result.areas : [...DEFAULT_AREAS];
-          bookingHistory = [];
-          populateAreaDropdowns();
-          render();
+          sites = []; areas = [...DEFAULT_AREAS]; bookingHistory = [];
+          populateAreaDropdowns(); render();
         }
       } else {
         sites = result.sites;
@@ -1810,8 +1282,9 @@ async function refreshPage(event){
         });
         lastDataHash = JSON.stringify({ sites, areas });
         
+        // CRITICAL: Reset UI state
         areaFilters = {};
-        collapsedAreas = new Set();
+        collapsedAreas = new Set(); // ← Empty set = ALL AREAS EXPANDED
         selectedSites.clear();
         activeStatuses.clear();
         document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
@@ -1819,6 +1292,8 @@ async function refreshPage(event){
         document.getElementById("search").value = "";
         document.getElementById("dateFilterFrom").value = "";
         document.getElementById("dateFilterTo").value = "";
+        imageCache = {};
+        imageFailed.clear();
         
         populateAreaDropdowns();
         render();
