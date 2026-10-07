@@ -6,6 +6,7 @@
 <title>Site Management System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{max-width:100%}
@@ -36,6 +37,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
 .btn-telegram{background:#0088cc;color:#fff}
 .btn-refresh-header{background:#0ea5e9;color:#fff}
+.btn-bulk-menu{background:#7c3aed;color:#fff;position:relative}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
@@ -186,6 +188,15 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .history-search-box input{flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;outline:none;font-size:14px !important;height:40px}
 .history-search-box button{padding:0 16px;height:40px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px}
 .history-search-box button:hover{background:#2563eb}
+/* BULK MENU DROPDOWN */
+.bulk-menu-wrap{position:relative;display:inline-block}
+.bulk-menu-panel{display:none;position:absolute;top:calc(100% + 4px);right:0;background:#fff;border:1px solid #cbd5e1;border-radius:10px;box-shadow:0 10px 40px rgba(15,23,42,0.2);z-index:1100;min-width:260px;padding:6px;text-align:left}
+.bulk-menu-panel.show{display:block}
+.bulk-menu-panel .bm-header{padding:8px 12px;font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #f1f5f9;margin-bottom:4px}
+.bulk-menu-panel .bm-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:#334155;width:100%;background:transparent;border:0;font-family:inherit;text-align:left}
+.bulk-menu-panel .bm-item:hover{background:#f1f5f9}
+.bulk-menu-panel .bm-item .bm-icon{font-size:18px;width:24px;text-align:center}
+.bulk-menu-panel .bm-item .bm-desc{font-size:10px;color:#94a3b8;font-weight:400;display:block;margin-top:1px}
 @media (max-width:1024px){#areaContainer{grid-template-columns:1fr}}
 @media (max-width:768px){
   header{padding:10px 12px}
@@ -221,6 +232,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions{flex-direction:column-reverse}
   .modal-actions button{width:100%}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
+  .bulk-menu-panel{right:auto;left:0;min-width:220px}
 }
 @media (max-width:380px){
   .cards{grid-template-columns:1fr}
@@ -257,9 +269,24 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div class="header-actions">
     <button class="btn-refresh-header" onclick="refreshPage(event)" title="Refresh data">🔄 Refresh</button>
     <button class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()" title="Telegram notifications">📱 Telegram</button>
-    <button class="btn-yellow admin-only" onclick="openBulkUpload()">Bulk</button>
-    <button class="btn-yellow admin-only" onclick="openBulkImageUpload()">Bulk Images</button>
-    <button class="btn-light admin-only" onclick="openLogoUpload()" title="Upload logo">🖼️ Logo</button>
+    <div class="bulk-menu-wrap admin-only">
+      <button class="btn-bulk-menu" onclick="toggleBulkMenu(event)" title="Bulk operations">📦 Bulk ▾</button>
+      <div class="bulk-menu-panel" id="bulkMenuPanel">
+        <div class="bm-header">Bulk Operations</div>
+        <button class="bm-item" onclick="closeBulkMenu();openBulkUpload('sites')">
+          <span class="bm-icon">📄</span>
+          <span>Sites (CSV)<span class="bm-desc">Upload multiple sites via CSV</span></span>
+        </button>
+        <button class="bm-item" onclick="closeBulkMenu();openBulkUpload('images')">
+          <span class="bm-icon">🖼️</span>
+          <span>Images<span class="bm-desc">Match images to site codes</span></span>
+        </button>
+        <button class="bm-item" onclick="closeBulkMenu();openBulkUpload('logo')">
+          <span class="bm-icon">🎨</span>
+          <span>Logo<span class="bm-desc">Upload company logo</span></span>
+        </button>
+      </div>
+    </div>
     <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
     <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
     <button class="btn-red" onclick="doLogout()">Logout</button>
@@ -744,6 +771,8 @@ function toggleMultiStatusPanel(e){ if(e) e.stopPropagation(); document.getEleme
 document.addEventListener("click", (e) => {
   const wrap = document.getElementById("multiStatusWrap");
   if(wrap && !wrap.contains(e.target)){ document.getElementById("multiStatusPanel").classList.remove("show"); }
+  const bmWrap = document.querySelector(".bulk-menu-wrap");
+  if(bmWrap && !bmWrap.contains(e.target)){ closeBulkMenu(); }
 });
 function toggleAllStatuses(checked){ document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = checked; }); onStatusCheckChange(); }
 function onStatusCheckChange(){
@@ -1595,112 +1624,351 @@ function openBulkStatusModal(){
   });
 }
 
-/* ============ PPT (placeholder) ============ */
-function generateSelectedSitesPPT(){
-  showToast("Info", "PPT generation feature coming soon!", "info");
-}
-
-/* ============ BACKUP / IMPORT ============ */
-function downloadBackup(){
-  const data = { sites, areas, bookingHistory, exportedAt: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "site-backup-" + new Date().toISOString().slice(0, 10) + ".json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function triggerImport(){ document.getElementById("importFile").click(); }
-
-function handleImportFile(event){
-  const file = event.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    try {
-      const data = JSON.parse(e.target.result);
-      if(!data.sites || !Array.isArray(data.sites)){ showToast("Error", "Invalid backup file", "danger"); return; }
-      if(!confirm("Import " + data.sites.length + " sites? This will replace all current data.")) return;
-      sites = data.sites;
-      areas = data.areas || [...DEFAULT_AREAS];
-      bookingHistory = data.bookingHistory || [];
-      sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
-      const ok = await persistNow();
-      if(ok){
-        showToast("Imported", data.sites.length + " sites imported", "success");
-        populateAreaDropdowns();
-        render();
+/* ============ PPT GENERATION ============ */
+async function generateSelectedSitesPPT(){
+  if(selectedSites.size === 0){
+    showToast("Info", "Please select at least one site", "warning");
+    return;
+  }
+  if(typeof PptxGenJS === "undefined"){
+    showToast("Error", "PPT library not loaded. Please refresh the page.", "danger");
+    return;
+  }
+  
+  showProgress("Generating PPT...", "Creating slides, please wait");
+  
+  try {
+    const pptx = new PptxGenJS();
+    pptx.layout = "LAYOUT_WIDE";
+    
+    const selectedList = sites.filter(s => selectedSites.has(s.id));
+    
+    // ---------- COVER SLIDE ----------
+    const coverSlide = pptx.addSlide();
+    coverSlide.background = { color: "1E40AF" };
+    coverSlide.addText("Site Management Report", {
+      x: 0.5, y: 2.3, w: 12.33, h: 1,
+      fontSize: 44, bold: true, color: "FFFFFF", align: "center", fontFace: "Arial"
+    });
+    coverSlide.addText(selectedList.length + " Sites Selected", {
+      x: 0.5, y: 3.6, w: 12.33, h: 0.6,
+      fontSize: 22, color: "BFDBFE", align: "center", fontFace: "Arial"
+    });
+    coverSlide.addText("Generated: " + new Date().toLocaleString("en-IN"), {
+      x: 0.5, y: 6.5, w: 12.33, h: 0.4,
+      fontSize: 12, color: "93C5FD", align: "center", fontFace: "Arial"
+    });
+    
+    // ---------- SUMMARY SLIDE ----------
+    const statusCounts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
+    let totalRate = 0;
+    selectedList.forEach(s => {
+      statusCounts[s.status] = (statusCounts[s.status] || 0) + 1;
+      totalRate += parseFloat(s.rate) || 0;
+    });
+    
+    const summarySlide = pptx.addSlide();
+    summarySlide.addText("Summary", {
+      x: 0.5, y: 0.3, w: 12.33, h: 0.7,
+      fontSize: 30, bold: true, color: "1E40AF", fontFace: "Arial"
+    });
+    summarySlide.addTable([
+      [{ text: "Category", options: { bold: true, fill: "1E40AF", color: "FFFFFF" } },
+       { text: "Count", options: { bold: true, fill: "1E40AF", color: "FFFFFF" } }],
+      ["Total Sites", String(selectedList.length)],
+      ["Available", String(statusCounts.Available)],
+      ["Not Available", String(statusCounts["Not Available"])],
+      ["Under Maintenance", String(statusCounts["Under Maintenance"])],
+      ["Total Monthly Rate", "₹" + totalRate.toLocaleString("en-IN")]
+    ], {
+      x: 0.5, y: 1.3, w: 12.33,
+      colW: [6.17, 6.16],
+      fontSize: 16, border: { pt: 1, color: "CBD5E1" },
+      align: "left", valign: "middle", rowH: 0.55, fontFace: "Arial"
+    });
+    
+    // ---------- INDIVIDUAL SITE SLIDES ----------
+    for(let i = 0; i < selectedList.length; i++){
+      const site = selectedList[i];
+      const slide = pptx.addSlide();
+      
+      // Header bar
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 0, y: 0, w: 13.33, h: 0.9, fill: { color: "1E40AF" }
+      });
+      slide.addText((site.site || site.siteCode || "Site"), {
+        x: 0.3, y: 0.1, w: 12, h: 0.7,
+        fontSize: 22, bold: true, color: "FFFFFF", valign: "middle", fontFace: "Arial"
+      });
+      
+      // Image
+      let imageData = null;
+      if(site.imageKey){
+        imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
       }
-    } catch(err){
-      showToast("Error", "Failed to parse file: " + err.message, "danger");
+      
+      if(imageData){
+        try {
+          slide.addImage({ 
+            data: imageData, 
+            x: 0.4, y: 1.1, w: 6, h: 5.6,
+            sizing: { type: "contain", w: 6, h: 5.6 }
+          });
+        } catch(e){
+          slide.addShape(pptx.ShapeType.rect, {
+            x: 0.4, y: 1.1, w: 6, h: 5.6,
+            fill: { color: "F1F5F9" }, line: { color: "CBD5E1" }
+          });
+          slide.addText("📷 Image error", {
+            x: 0.4, y: 3.5, w: 6, h: 0.6,
+            fontSize: 16, color: "94A3B8", align: "center", fontFace: "Arial"
+          });
+        }
+      } else {
+        slide.addShape(pptx.ShapeType.rect, {
+          x: 0.4, y: 1.1, w: 6, h: 5.6,
+          fill: { color: "F1F5F9" }, line: { color: "CBD5E1", dashType: "dash" }
+        });
+        slide.addText("📷 No Image", {
+          x: 0.4, y: 3.5, w: 6, h: 0.6,
+          fontSize: 18, color: "94A3B8", align: "center", fontFace: "Arial"
+        });
+      }
+      
+      // Details table
+      const details = [
+        ["Area", site.area || "—"],
+        ["Site Name", site.site || "—"],
+        ["Site Code", site.siteCode || "—"],
+        ["Location", site.location || "—"],
+        ["Company", site.customer || "—"],
+        ["Monthly Rate", site.rate ? "₹" + parseFloat(site.rate).toLocaleString("en-IN") : "—"],
+        ["From", site.fromDate || "—"],
+        ["To", site.toDate || "—"],
+        ["Days", String(calcDays(site.fromDate, site.toDate))],
+        ["Status", site.status || "—"]
+      ];
+      
+      const tableRows = details.map(([k, v]) => [
+        { text: k, options: { bold: true, fill: "EFF6FF", color: "1E40AF" } },
+        { text: String(v), options: { color: "0F172A" } }
+      ]);
+      
+      slide.addTable(tableRows, {
+        x: 6.7, y: 1.1, w: 6.2,
+        colW: [2.2, 4],
+        fontSize: 13, border: { pt: 1, color: "CBD5E1" },
+        align: "left", valign: "middle", rowH: 0.52, fontFace: "Arial"
+      });
+      
+      // Slide number
+      slide.addText("Slide " + (i + 2) + " / " + (selectedList.length + 2), {
+        x: 11, y: 7, w: 2, h: 0.3,
+        fontSize: 10, color: "94A3B8", align: "right", fontFace: "Arial"
+      });
     }
-  };
-  reader.readAsText(file);
-  event.target.value = "";
+    
+    await pptx.writeFile({ fileName: "sites-report-" + new Date().toISOString().slice(0, 10) + ".pptx" });
+    
+    hideProgress();
+    showToast("Success", "PPT downloaded: " + selectedList.length + " sites", "success");
+  } catch(e){
+    hideProgress();
+    console.error("PPT Error:", e);
+    showToast("Error", "Failed to generate PPT: " + e.message, "danger");
+  }
 }
 
-/* ============ BULK SITE UPLOAD ============ */
-function openBulkUpload(){
+/* ============ BULK MENU DROPDOWN ============ */
+function toggleBulkMenu(e){
+  if(e) e.stopPropagation();
+  const panel = document.getElementById("bulkMenuPanel");
+  panel.classList.toggle("show");
+}
+function closeBulkMenu(){
+  const panel = document.getElementById("bulkMenuPanel");
+  if(panel) panel.classList.remove("show");
+}
+
+/* ============ BULK UPLOAD MODAL (3 TABS) ============ */
+function openBulkUpload(tab){
+  tab = tab || "sites";
+  const oldModal = document.getElementById("bulkModal");
+  if(oldModal) oldModal.remove();
+  
   const modalHtml = `
   <div class="modal" id="bulkModal">
-    <div class="box" style="width:min(900px,100%)">
-      <h2>📦 Bulk Site Upload</h2>
-      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-        <b>CSV Format:</b> Area, Site Code, Site Name, Location, Company, Rate, From (dd/mm/yyyy), To (dd/mm/yyyy)<br>
-        <b>Example:</b> Chandigarh, CG01, Sector 17, 30.7123, 76.7890, ABC Corp, 15000, 01/01/2025, 31/12/2025
+    <div class="box" style="width:min(950px,100%)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h2 style="margin:0">📦 Bulk Operations</h2>
+        <button onclick="closeBulkModal()" style="background:transparent;border:0;font-size:24px;cursor:pointer;color:#64748b;padding:0 8px">×</button>
       </div>
       
-      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-        <button onclick="downloadBulkTemplate()" style="padding:10px 16px;background:#6b7280;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
-          📥 Download CSV Template
+      <!-- Tabs -->
+      <div style="display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid #e2e8f0">
+        <button type="button" id="bulkTabBtn_sites" onclick="switchBulkTab('sites')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:-2px;display:flex;align-items:center;gap:6px">
+          📄 Sites (CSV)
         </button>
-        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
-          📁 Choose CSV File
-          <input type="file" id="bulkFileInput" accept=".csv" style="display:none" onchange="handleBulkFile(event)">
-        </label>
-        <button onclick="closeBulkModal()" style="padding:10px 16px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:auto">
-          Cancel
+        <button type="button" id="bulkTabBtn_images" onclick="switchBulkTab('images')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:-2px;display:flex;align-items:center;gap:6px">
+          🖼️ Images
+        </button>
+        <button type="button" id="bulkTabBtn_logo" onclick="switchBulkTab('logo')" style="padding:10px 18px;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:-2px;display:flex;align-items:center;gap:6px">
+          🎨 Logo
         </button>
       </div>
       
-      <div id="bulkPreview" style="display:none">
-        <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Preview (<span id="bulkCount">0</span> sites)</h3>
-        <div style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px">
-          <table style="width:100%;border-collapse:collapse;font-size:12px" id="bulkTable">
-            <thead style="background:#f8fafc;position:sticky;top:0">
-              <tr>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Area</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Code</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Name</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Location</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Company</th>
-                <th style="padding:8px;text-align:right;border-bottom:1px solid #e2e8f0">Rate</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">From</th>
-                <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">To</th>
-              </tr>
-            </thead>
-            <tbody id="bulkTableBody"></tbody>
-          </table>
+      <!-- SITES TAB -->
+      <div id="bulkTabContent_sites">
+        <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
+          <b>CSV Format:</b> Area, Site Code, Site Name, Location, Company, Rate, From (dd/mm/yyyy), To (dd/mm/yyyy)<br>
+          <b>Example:</b> Chandigarh, CG01, Sector 17, 30.7123;76.7890, ABC Corp, 15000, 01/01/2025, 31/12/2025
         </div>
+        
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <button onclick="downloadBulkTemplate()" style="padding:10px 16px;background:#6b7280;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+            📥 Download CSV Template
+          </button>
+          <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
+            📁 Choose CSV File
+            <input type="file" id="bulkFileInput" accept=".csv" style="display:none" onchange="handleBulkFile(event)">
+          </label>
+        </div>
+        
+        <div id="bulkPreview" style="display:none">
+          <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Preview (<span id="bulkCount">0</span> sites)</h3>
+          <div style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px">
+            <table style="width:100%;border-collapse:collapse;font-size:12px">
+              <thead style="background:#f8fafc;position:sticky;top:0">
+                <tr>
+                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Area</th>
+                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Code</th>
+                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Name</th>
+                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Location</th>
+                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">Company</th>
+                  <th style="padding:8px;text-align:right;border-bottom:1px solid #e2e8f0">Rate</th>
+                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">From</th>
+                  <th style="padding:8px;text-align:left;border-bottom:1px solid #e2e8f0">To</th>
+                </tr>
+              </thead>
+              <tbody id="bulkTableBody"></tbody>
+            </table>
+          </div>
+          <div class="modal-actions">
+            <button class="secondary" onclick="closeBulkModal()">Cancel</button>
+            <button onclick="confirmBulkUpload()" style="background:#10b981;color:#fff">✅ Confirm & Upload All</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- IMAGES TAB -->
+      <div id="bulkTabContent_images" style="display:none">
+        <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
+          <b>How it works:</b> Image file name should match the <b>Site Code</b> (e.g., <code>CG01.jpg</code> for site code <code>CG01</code>).<br>
+          You can select multiple images at once. Supported: JPG, PNG, WebP.
+        </div>
+        
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
+            📁 Choose Images
+            <input type="file" id="bulkImgInput" accept="image/*" multiple style="display:none" onchange="handleBulkImages(event)">
+          </label>
+        </div>
+        
+        <div id="bulkImgPreview" style="display:none">
+          <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Matched Images (<span id="bulkImgCount">0</span>)</h3>
+          <div id="bulkImgList" style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;padding:10px"></div>
+          <div class="modal-actions">
+            <button class="secondary" onclick="closeBulkModal()">Cancel</button>
+            <button onclick="confirmBulkImages()" style="background:#10b981;color:#fff">✅ Upload All Images</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- LOGO TAB -->
+      <div id="bulkTabContent_logo" style="display:none">
+        <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
+          Logo will be displayed on the login screen. Recommended size: <b>200x60px</b>, PNG with transparent background. Max 2 MB.
+        </div>
+        
+        <div style="text-align:center;margin-bottom:16px;padding:20px;background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px">
+          <img id="logoPreviewImg" src="" style="max-width:200px;max-height:80px;object-fit:contain;display:none;margin:0 auto" onerror="this.style.display='none'">
+          <div id="logoPreviewPlaceholder" style="padding:20px;color:#94a3b8;font-style:italic">No logo set</div>
+        </div>
+        
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+          <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
+            📁 Choose Logo
+            <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoFile(event)">
+          </label>
+          <button onclick="removeLogo()" style="padding:10px 16px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+            🗑️ Remove
+          </button>
+        </div>
+        
         <div class="modal-actions">
           <button class="secondary" onclick="closeBulkModal()">Cancel</button>
-          <button onclick="confirmBulkUpload()" style="background:#10b981;color:#fff">✅ Confirm & Upload All</button>
+          <button onclick="saveLogo()" style="background:#10b981;color:#fff">✅ Save Logo</button>
         </div>
       </div>
     </div>
   </div>`;
-  const oldModal = document.getElementById("bulkModal");
-  if(oldModal) oldModal.remove();
+  
   document.body.insertAdjacentHTML("beforeend", modalHtml);
   document.getElementById("bulkModal").classList.add("show");
+  
+  // Initialize tab state
+  switchBulkTab(tab);
+  
+  // If logo tab, preload current logo
+  if(tab === "logo"){ newLogoData = null; loadCurrentLogoIntoPreview(); }
+}
+
+function switchBulkTab(tab){
+  const tabs = ["sites", "images", "logo"];
+  tabs.forEach(t => {
+    const btn = document.getElementById("bulkTabBtn_" + t);
+    const content = document.getElementById("bulkTabContent_" + t);
+    if(!btn || !content) return;
+    if(t === tab){
+      btn.style.borderBottomColor = "#3b82f6";
+      btn.style.color = "#1e40af";
+      btn.style.fontWeight = "700";
+      content.style.display = "block";
+    } else {
+      btn.style.borderBottomColor = "transparent";
+      btn.style.color = "#64748b";
+      btn.style.fontWeight = "600";
+      content.style.display = "none";
+    }
+  });
+  if(tab === "logo"){
+    newLogoData = null;
+    loadCurrentLogoIntoPreview();
+  }
+}
+
+function loadCurrentLogoIntoPreview(){
+  const img = document.getElementById("logoPreviewImg");
+  const placeholder = document.getElementById("logoPreviewPlaceholder");
+  if(!img || !placeholder) return;
+  const localLogo = localStorage.getItem("custom_logo");
+  const currentLogo = localLogo || LOGO_URL;
+  if(currentLogo && currentLogo.length > 10){
+    img.src = currentLogo;
+    img.style.display = "block";
+    placeholder.style.display = "none";
+  } else {
+    img.style.display = "none";
+    placeholder.style.display = "block";
+  }
 }
 
 function closeBulkModal(){
   const modal = document.getElementById("bulkModal");
   if(modal) modal.remove();
   bulkPreviewData = [];
+  bulkImageMatches = [];
+  newLogoData = null;
 }
 
 function downloadBulkTemplate(){
@@ -1799,16 +2067,16 @@ function renderBulkPreview(){
   count.textContent = bulkPreviewData.length;
   let html = "";
   bulkPreviewData.forEach(d => {
-    html += `<tr style="border-bottom:1px solid #f1f5f9">
-      <td style="padding:6px 8px">${esc(d.area)}</td>
-      <td style="padding:6px 8px;font-family:monospace">${esc(d.siteCode)}</td>
-      <td style="padding:6px 8px">${esc(d.site)}</td>
-      <td style="padding:6px 8px;font-size:11px;color:#64748b">${esc(d.location).substring(0,30)}</td>
-      <td style="padding:6px 8px">${esc(d.customer)}</td>
-      <td style="padding:6px 8px;text-align:right">${d.rate ? "₹" + d.rate.toLocaleString("en-IN") : "—"}</td>
-      <td style="padding:6px 8px">${esc(d.fromDate) || "—"}</td>
-      <td style="padding:6px 8px">${esc(d.toDate) || "—"}</td>
-    </tr>`;
+    html += '<tr style="border-bottom:1px solid #f1f5f9">' +
+      '<td style="padding:6px 8px">' + esc(d.area) + '</td>' +
+      '<td style="padding:6px 8px;font-family:monospace">' + esc(d.siteCode) + '</td>' +
+      '<td style="padding:6px 8px">' + esc(d.site) + '</td>' +
+      '<td style="padding:6px 8px;font-size:11px;color:#64748b">' + esc(d.location).substring(0,30) + '</td>' +
+      '<td style="padding:6px 8px">' + esc(d.customer) + '</td>' +
+      '<td style="padding:6px 8px;text-align:right">' + (d.rate ? "₹" + d.rate.toLocaleString("en-IN") : "—") + '</td>' +
+      '<td style="padding:6px 8px">' + (esc(d.fromDate) || "—") + '</td>' +
+      '<td style="padding:6px 8px">' + (esc(d.toDate) || "—") + '</td>' +
+      '</tr>';
   });
   tbody.innerHTML = html;
   preview.style.display = "block";
@@ -1816,7 +2084,7 @@ function renderBulkPreview(){
 
 async function confirmBulkUpload(){
   if(bulkPreviewData.length === 0) return;
-  if(!confirm(`Upload ${bulkPreviewData.length} sites?`)) return;
+  if(!confirm("Upload " + bulkPreviewData.length + " sites?")) return;
   showProgress("Uploading...", "Adding sites to database");
   let added = 0;
   const now = Date.now();
@@ -1854,48 +2122,6 @@ async function confirmBulkUpload(){
 }
 
 /* ============ BULK IMAGE UPLOAD ============ */
-function openBulkImageUpload(){
-  const modalHtml = `
-  <div class="modal" id="bulkImgModal">
-    <div class="box" style="width:min(900px,100%)">
-      <h2>🖼️ Bulk Image Upload</h2>
-      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-        <b>How it works:</b> Image file name should match the <b>Site Code</b> (e.g., <code>CG01.jpg</code> for site code <code>CG01</code>).<br>
-        You can select multiple images at once. Supported: JPG, PNG, WebP.
-      </div>
-      
-      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
-          📁 Choose Images
-          <input type="file" id="bulkImgInput" accept="image/*" multiple style="display:none" onchange="handleBulkImages(event)">
-        </label>
-        <button onclick="closeBulkImgModal()" style="padding:10px 16px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:auto">
-          Cancel
-        </button>
-      </div>
-      
-      <div id="bulkImgPreview" style="display:none">
-        <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">Matched Images (<span id="bulkImgCount">0</span>)</h3>
-        <div id="bulkImgList" style="max-height:300px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px;padding:10px"></div>
-        <div class="modal-actions">
-          <button class="secondary" onclick="closeBulkImgModal()">Cancel</button>
-          <button onclick="confirmBulkImages()" style="background:#10b981;color:#fff">✅ Upload All Images</button>
-        </div>
-      </div>
-    </div>
-  </div>`;
-  const oldModal = document.getElementById("bulkImgModal");
-  if(oldModal) oldModal.remove();
-  document.body.insertAdjacentHTML("beforeend", modalHtml);
-  document.getElementById("bulkImgModal").classList.add("show");
-}
-
-function closeBulkImgModal(){
-  const modal = document.getElementById("bulkImgModal");
-  if(modal) modal.remove();
-  bulkImageMatches = [];
-}
-
 function readFileAsDataURL(file){
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -1912,7 +2138,7 @@ async function handleBulkImages(event){
   const listEl = document.getElementById("bulkImgList");
   for(const file of files){
     const baseName = file.name.replace(/\.[^.]+$/, "").trim().toUpperCase();
-    const site = sites.find(s => 
+    const site = sites.find(s =>
       (s.siteCode && s.siteCode.toUpperCase() === baseName) ||
       (s.site && s.site.toUpperCase() === baseName)
     );
@@ -1926,14 +2152,14 @@ async function handleBulkImages(event){
   } else {
     let html = "";
     bulkImageMatches.forEach((m) => {
-      html += `<div style="display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid #f1f5f9">
-        <img src="${m.dataUrl}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid #e2e8f0">
-        <div style="flex:1">
-          <div style="font-weight:600;font-size:13px">${esc(m.site.site || m.site.siteCode)}</div>
-          <div style="font-size:11px;color:#64748b">${esc(m.site.area)} • ${esc(m.file.name)}</div>
-        </div>
-        <span style="color:#10b981;font-weight:700;font-size:12px">✓ Matched</span>
-      </div>`;
+      html += '<div style="display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid #f1f5f9">' +
+        '<img src="' + m.dataUrl + '" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid #e2e8f0">' +
+        '<div style="flex:1">' +
+        '<div style="font-weight:600;font-size:13px">' + esc(m.site.site || m.site.siteCode) + '</div>' +
+        '<div style="font-size:11px;color:#64748b">' + esc(m.site.area) + ' • ' + esc(m.file.name) + '</div>' +
+        '</div>' +
+        '<span style="color:#10b981;font-weight:700;font-size:12px">✓ Matched</span>' +
+        '</div>';
     });
     listEl.innerHTML = html;
   }
@@ -1944,7 +2170,7 @@ async function handleBulkImages(event){
 
 async function confirmBulkImages(){
   if(bulkImageMatches.length === 0) return;
-  if(!confirm(`Upload ${bulkImageMatches.length} images?`)) return;
+  if(!confirm("Upload " + bulkImageMatches.length + " images?")) return;
   showProgress("Uploading images...", "This may take a moment");
   let uploaded = 0;
   const now = Date.now();
@@ -1962,7 +2188,7 @@ async function confirmBulkImages(){
   hideProgress();
   if(ok){
     showToast("Success", uploaded + " images uploaded", "success");
-    closeBulkImgModal();
+    closeBulkModal();
     render();
   } else {
     showToast("Error", "Failed to save images", "danger");
@@ -1970,61 +2196,6 @@ async function confirmBulkImages(){
 }
 
 /* ============ LOGO UPLOAD ============ */
-function openLogoUpload(){
-  const modalHtml = `
-  <div class="modal" id="logoModal">
-    <div class="box" style="width:min(500px,100%)">
-      <h2>🖼️ Upload Logo</h2>
-      <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-bottom:16px;font-size:12px;color:#0c4a6e;line-height:1.6">
-        Logo will be displayed on the login screen and can be used in exports. Recommended size: 200x60px, PNG with transparent background.
-      </div>
-      
-      <div style="text-align:center;margin-bottom:16px">
-        <img id="logoPreviewImg" src="" style="max-width:200px;max-height:80px;object-fit:contain;border:1px solid #e2e8f0;border-radius:8px;padding:8px;background:#f8fafc;display:none" onerror="this.style.display='none'">
-        <div id="logoPreviewPlaceholder" style="display:none;padding:20px;color:#94a3b8;font-style:italic">No logo set</div>
-      </div>
-      
-      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-        <label style="padding:10px 16px;background:#3b82f6;color:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px">
-          📁 Choose Logo
-          <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoFile(event)">
-        </label>
-        <button onclick="removeLogo()" style="padding:10px 16px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
-          🗑️ Remove Logo
-        </button>
-      </div>
-      
-      <div class="modal-actions">
-        <button class="secondary" onclick="closeLogoModal()">Cancel</button>
-        <button onclick="saveLogo()" style="background:#10b981;color:#fff">✅ Save Logo</button>
-      </div>
-    </div>
-  </div>`;
-  const oldModal = document.getElementById("logoModal");
-  if(oldModal) oldModal.remove();
-  document.body.insertAdjacentHTML("beforeend", modalHtml);
-  document.getElementById("logoModal").classList.add("show");
-  newLogoData = null;
-  const img = document.getElementById("logoPreviewImg");
-  const placeholder = document.getElementById("logoPreviewPlaceholder");
-  const localLogo = localStorage.getItem("custom_logo");
-  const currentLogo = localLogo || LOGO_URL;
-  if(currentLogo && currentLogo.length > 10){
-    img.src = currentLogo;
-    img.style.display = "block";
-    placeholder.style.display = "none";
-  } else {
-    img.style.display = "none";
-    placeholder.style.display = "block";
-  }
-}
-
-function closeLogoModal(){
-  const modal = document.getElementById("logoModal");
-  if(modal) modal.remove();
-  newLogoData = null;
-}
-
 function handleLogoFile(event){
   const file = event.target.files[0];
   if(!file) return;
@@ -2051,7 +2222,7 @@ async function removeLogo(){
 async function saveLogo(){
   if(newLogoData === null){
     showToast("Info", "No changes made", "info");
-    closeLogoModal();
+    closeBulkModal();
     return;
   }
   showProgress("Saving logo...", "");
@@ -2070,22 +2241,30 @@ async function saveLogo(){
   }
   hideProgress();
   showToast("Success", "Logo updated", "success");
-  closeLogoModal();
+  closeBulkModal();
 }
 
 /* ============ REFRESH ============ */
 async function refreshPage(event){
   if(event) event.preventDefault();
-  const btn = event ? event.target.closest("button") : null;
-  if(btn) btn.textContent = "⏳ Loading...";
-  const ok = await loadCloudData();
-  if(ok){
-    render();
-    showToast("Refreshed", "Data loaded from cloud", "success");
-  } else {
-    showToast("Error", "Failed to refresh", "danger");
+  const btn = document.querySelector(".btn-refresh-header");
+  if(!btn) return;
+  const originalHTML = btn.innerHTML;
+  btn.innerHTML = "⏳ Loading...";
+  btn.disabled = true;
+  try {
+    const ok = await loadCloudData();
+    if(ok){
+      render();
+      showToast("Refreshed", "Data loaded from cloud", "success");
+    } else {
+      showToast("Error", "Failed to refresh data", "danger");
+    }
+  } catch(e){
+    showToast("Error", "Refresh failed: " + e.message, "danger");
   }
-  if(btn) btn.textContent = "🔄 Refresh";
+  btn.innerHTML = originalHTML;
+  btn.disabled = false;
 }
 
 /* ============ AUTO RELEASE EXPIRED ============ */
@@ -2106,6 +2285,47 @@ async function autoReleaseExpiredSites(){
     }
   });
   if(changed) await persistNow();
+}
+
+/* ============ BACKUP / IMPORT ============ */
+function downloadBackup(){
+  const data = { sites, areas, bookingHistory, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "site-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function triggerImport(){ document.getElementById("importFile").click(); }
+
+function handleImportFile(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!data.sites || !Array.isArray(data.sites)){ showToast("Error", "Invalid backup file", "danger"); return; }
+      if(!confirm("Import " + data.sites.length + " sites? This will replace all current data.")) return;
+      sites = data.sites;
+      areas = data.areas || [...DEFAULT_AREAS];
+      bookingHistory = data.bookingHistory || [];
+      sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
+      const ok = await persistNow();
+      if(ok){
+        showToast("Imported", data.sites.length + " sites imported", "success");
+        populateAreaDropdowns();
+        render();
+      }
+    } catch(err){
+      showToast("Error", "Failed to parse file: " + err.message, "danger");
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = "";
 }
 
 /* ============ TELEGRAM ============ */
