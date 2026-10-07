@@ -471,7 +471,7 @@ let currentUser = null, sites = [], areas = [...DEFAULT_AREAS], bookingHistory =
 let imageCache = {}, imageFailed = new Set();
 let selectedSites = new Set(), selectedAreas = new Set(), multiAreaSelected = new Set();
 let visibleSites = [], editIndex = -1, currentImageData = "";
-let collapsedAreas = new Set(); // Always start as empty Set
+let collapsedAreas = new Set();
 let areaFilters = {};
 let autoRefreshTimer = null, lastDataHash = "", renderDebounceTimer = null;
 let activeStatuses = new Set();
@@ -618,7 +618,7 @@ function startAutoRefresh(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
   autoRefreshTimer = setInterval(async () => {
     if(!currentUser || document.hidden) return;
-    const result = await apiGet("/data?t=" + Date.now());
+    const result = await apiGet("/data");
     if(result && result.success){
       const newHash = JSON.stringify({ sites: result.sites || [], areas: result.areas || [] });
       if(newHash !== lastDataHash){
@@ -638,12 +638,30 @@ function startAutoRefresh(){
 function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
 
-async function apiGet(path){ try { const r = await fetch(API_URL + path, { method: "GET", cache: "no-store", headers: { "Cache-Control": "no-cache" } }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+/* ============ API - CACHE BUST ============ */
+async function apiGet(path){ 
+  try { 
+    const separator = path.includes("?") ? "&" : "?";
+    const url = API_URL + path + separator + "_cb=" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
+    const r = await fetch(url, { 
+      method: "GET", 
+      cache: "no-store",
+      headers: { 
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      } 
+    }); 
+    return await r.json(); 
+  } catch(e){ 
+    return { success: false, error: e.message }; 
+  } 
+}
 async function apiPost(path, body){ try { const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 async function apiDelete(path){ try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 
 async function loadCloudData(){
-  const result = await apiGet("/data?t=" + Date.now());
+  const result = await apiGet("/data");
   if(result && result.success){
     sites = Array.isArray(result.sites) ? result.sites : [];
     areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
@@ -693,7 +711,6 @@ async function loadLogoFromCloud(){
   return false;
 }
 
-/* ============ POPULATE AREA DROPDOWN ============ */
 function populateAreaDropdowns(){
   const formSel = document.getElementById("farea"); 
   if(!formSel) return;
@@ -705,14 +722,10 @@ function populateAreaDropdowns(){
     opt.textContent = a;
     formSel.appendChild(opt);
   });
-  if(currentVal && areas.includes(currentVal)){
-    formSel.value = currentVal;
-  } else if(areas.length > 0){
-    formSel.value = areas[0];
-  }
+  if(currentVal && areas.includes(currentVal)){ formSel.value = currentVal; }
+  else if(areas.length > 0){ formSel.value = areas[0]; }
 }
 
-/* ============ FILTER ============ */
 function toggleMultiStatusPanel(e){ if(e) e.stopPropagation(); document.getElementById("multiStatusPanel").classList.toggle("show"); }
 document.addEventListener("click", (e) => {
   const wrap = document.getElementById("multiStatusWrap");
@@ -1271,7 +1284,6 @@ async function confirmPptGeneration(){
   await generateSelectedSitesPPT(pptSelectedFormat);
 }
 
-/* ============ MAIN PPT FUNCTION - 2 FORMATS ============ */
 async function generateSelectedSitesPPT(format){
   format = format || "black";
   if(selectedSites.size === 0){ showToast("Info", "Select at least one site", "warning"); return; }
@@ -1284,7 +1296,6 @@ async function generateSelectedSitesPPT(format){
     pptx.company = "DS Outdoor Media";
     const selectedList = sites.filter(s => selectedSites.has(s.id));
     
-    // COVER
     const cover = pptx.addSlide();
     cover.background = { color: "1E40AF" };
     cover.addText("Professional Site Booking & Management", { x:0.5, y:1.8, w:12.33, h:0.6, fontSize:22, color:"BFDBFE", align:"center", fontFace:"Arial" });
@@ -1294,12 +1305,10 @@ async function generateSelectedSitesPPT(format){
     cover.addText("Total Sites " + selectedList.length, { x:0.5, y:4.8, w:12.33, h:0.5, fontSize:16, color:"93C5FD", align:"center", fontFace:"Arial" });
     cover.addText("Generated " + new Date().toLocaleString("en-IN"), { x:0.5, y:6.8, w:12.33, h:0.4, fontSize:11, color:"60A5FA", align:"center", fontFace:"Arial" });
     
-    // PER-SITE SLIDES
     for(let i = 0; i < selectedList.length; i++){
       const site = selectedList[i];
       const slide = pptx.addSlide();
       
-      // HEADER
       slide.addShape(pptx.ShapeType.rect, { x:0, y:0, w:13.33, h:0.9, fill:{color:"1E40AF"} });
       slide.addShape(pptx.ShapeType.rect, { x:0.15, y:0.12, w:0.65, h:0.65, fill:{color:"2563EB"} });
       slide.addText(String(i+1), { x:0.15, y:0.12, w:0.65, h:0.65, fontSize:22, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
@@ -1310,25 +1319,18 @@ async function generateSelectedSitesPPT(format){
       slide.addShape(pptx.ShapeType.rect, { x:11.25, y:0.12, w:1.9, h:0.65, fill:{color:statusColor} });
       slide.addText((site.status || "").toUpperCase(), { x:11.25, y:0.12, w:1.9, h:0.65, fontSize:10, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
       
-      // IMAGE AREA - LETTERBOX
       const imgX = 0, imgY = 0.9, imgW = 13.33, imgH = 5.5;
-      
       let imageData = null;
       if(site.imageKey) imageData = imageCache[site.imageKey] || await getImage(site.imageKey);
       
       if(imageData){
         try {
           if(format === "blur"){
-            // BLUR: fill with stretched image + dark overlay + original contain on top
-            try {
-              slide.addImage({ data: imageData, x: imgX, y: imgY, w: imgW, h: imgH, sizing: { type: "cover", w: imgW, h: imgH } });
-            } catch(e) {
-              slide.addShape(pptx.ShapeType.rect, { x: imgX, y: imgY, w: imgW, h: imgH, fill: { color: "1F2937" } });
-            }
+            try { slide.addImage({ data: imageData, x: imgX, y: imgY, w: imgW, h: imgH, sizing: { type: "cover", w: imgW, h: imgH } }); }
+            catch(e) { slide.addShape(pptx.ShapeType.rect, { x: imgX, y: imgY, w: imgW, h: imgH, fill: { color: "1F2937" } }); }
             slide.addShape(pptx.ShapeType.rect, { x: imgX, y: imgY, w: imgW, h: imgH, fill: { color: "000000", transparency: 50 } });
             slide.addImage({ data: imageData, x: imgX, y: imgY, w: imgW, h: imgH, sizing: { type: "contain", w: imgW, h: imgH } });
           } else {
-            // BLACK: solid black background + original contain on top
             slide.addShape(pptx.ShapeType.rect, { x: imgX, y: imgY, w: imgW, h: imgH, fill: { color: "000000" } });
             slide.addImage({ data: imageData, x: imgX, y: imgY, w: imgW, h: imgH, sizing: { type: "contain", w: imgW, h: imgH } });
           }
@@ -1343,7 +1345,6 @@ async function generateSelectedSitesPPT(format){
         slide.addText("No Image", { x: imgX, y: imgY + 2.5, w: imgW, h: 0.5, fontSize:18, color:txtColor, align:"center", fontFace:"Arial" });
       }
       
-      // FOOTER
       const footerY = 6.4;
       slide.addShape(pptx.ShapeType.rect, { x: 0, y: footerY, w: 13.33, h: 0.75, fill: { color: "F8FAFC" } });
       const cols = [
@@ -1357,14 +1358,12 @@ async function generateSelectedSitesPPT(format){
         slide.addText(col.value, { x: col.x, y: footerY + 0.28, w: 3.2, h: 0.42, fontSize: 12, bold: true, color: "1E40AF", fontFace: "Arial" });
       });
       
-      // MAP BUTTON
       if(site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/)){
         slide.addShape(pptx.ShapeType.rect, { x:11.0, y:7.2, w:2.0, h:0.5, fill:{color:"1E40AF"} });
         slide.addText("🗺️ Map", { x:11.0, y:7.2, w:2.0, h:0.5, fontSize:11, bold:true, color:"FFFFFF", align:"center", valign:"middle", fontFace:"Arial" });
       }
     }
     
-    // THANK YOU
     const thanks = pptx.addSlide();
     thanks.background = { color: "1E40AF" };
     thanks.addText("Thank You", { x:0.5, y:2.5, w:12.33, h:1, fontSize:48, bold:true, color:"FFFFFF", align:"center", fontFace:"Arial" });
@@ -1725,7 +1724,7 @@ async function saveLogo(){
   closeBulkModal();
 }
 
-/* ============ REFRESH - FULL SITE REFRESH ============ */
+/* ============ REFRESH - FULL SITE RESET ============ */
 async function refreshPage(event){
   if(event){ event.preventDefault(); event.stopPropagation(); }
   const btn = document.querySelector(".btn-refresh-header");
@@ -1736,10 +1735,8 @@ async function refreshPage(event){
   btn.disabled = true;
   btn.style.opacity = "0.7";
   try {
-    // FULL RESET - Fetch everything fresh
-    const result = await apiGet("/data?_t=" + Date.now());
+    const result = await apiGet("/data");
     if(result && result.success){
-      // 1. Replace ALL data
       sites = Array.isArray(result.sites) ? result.sites : [];
       areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
       bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
@@ -1749,9 +1746,8 @@ async function refreshPage(event){
       });
       lastDataHash = JSON.stringify({ sites, areas });
       
-      // 2. Reset ALL UI state - critical!
       areaFilters = {};
-      collapsedAreas = new Set(); // Reset all areas to EXPANDED
+      collapsedAreas = new Set();
       selectedSites.clear();
       activeStatuses.clear();
       document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
@@ -1760,10 +1756,7 @@ async function refreshPage(event){
       document.getElementById("dateFilterFrom").value = "";
       document.getElementById("dateFilterTo").value = "";
       
-      // 3. Refresh all dropdowns and lists
       populateAreaDropdowns();
-      
-      // 4. Re-render everything from scratch
       render();
       updateSelectBar();
       
