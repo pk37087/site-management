@@ -9,7 +9,6 @@
 <title>Site Management System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js?v=2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{max-width:100%}
@@ -53,40 +52,50 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card .card-icon{position:absolute;top:14px;right:16px;font-size:20px;opacity:0.15;font-weight:900}
 .card.available::before{background:linear-gradient(180deg,#10b981,#059669)}
 .card.available b{color:#047857}
+.card.available .card-icon{color:#10b981;opacity:0.2}
 .card.notavailable::before{background:linear-gradient(180deg,#ef4444,#dc2626)}
 .card.notavailable b{color:#b91c1c}
+.card.notavailable .card-icon{color:#ef4444;opacity:0.2}
 .card.maintenance::before{background:linear-gradient(180deg,#f59e0b,#d97706)}
 .card.maintenance b{color:#b45309}
+.card.maintenance .card-icon{color:#f59e0b;opacity:0.2}
 .card.total::before{background:linear-gradient(180deg,#3b82f6,#1d4ed8)}
 .card.total b{color:#1e40af}
+.card.total .card-icon{color:#3b82f6;opacity:0.2}
 .toolbar{background:#fff;padding:10px;border-radius:10px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border:1px solid #e2e8f0;align-items:center}
 .toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-family:inherit;background:#fff;outline:none;color:#0f172a;min-width:160px;flex:1;font-size:13px !important;height:36px}
 .toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;height:36px;white-space:nowrap}
+.toolbar button.refresh-btn{background:#0ea5e9;color:#fff;border-color:#0284c7}
 .toolbar button.multi-area-btn{background:#7c3aed;color:#fff;border-color:#6d28d9}
 .filter-box{display:flex;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;flex-wrap:nowrap;height:36px}
 .filter-box .date-group{display:flex;align-items:center;background:#fff;border-right:1px solid #cbd5e1;height:100%}
 .filter-box .date-input{padding:0 8px;border:0;font-family:inherit;font-size:12px !important;width:95px;background:#fff;color:#0f172a;outline:none;height:100%}
+.filter-box .date-input:focus{background:#eff6ff}
 .filter-box .date-input::placeholder{color:#94a3b8;font-size:11px}
 .filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700;display:flex;align-items:center}
-.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-weight:700;font-size:11px;height:100%;display:flex;align-items:center;gap:4px}
-.filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;cursor:pointer;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none;align-items:center}
+.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-family:inherit;font-weight:700;font-size:11px;height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.filter-box .apply-btn:hover{background:#2563eb}
+.filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none;align-items:center}
 .filter-box .clear-btn.show{display:flex}
-.filter-active-badge{background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;border:1px solid #93c5fd;display:none;align-items:center;gap:3px;height:24px}
+.filter-box .clear-btn:hover{background:#fef2f2}
+.filter-active-badge{background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:14px;font-size:10px;font-weight:700;border:1px solid #93c5fd;display:none;align-items:center;gap:3px;white-space:nowrap;height:24px}
 .filter-active-badge.show{display:inline-flex}
 .multi-status-wrap{position:relative;height:36px;display:flex}
-.multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;cursor:pointer;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;border-radius:6px;min-width:130px}
+.multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;white-space:nowrap;border-radius:6px;min-width:130px}
+.multi-status-btn:hover{background:#eff6ff}
 .multi-status-btn .ms-arrow{font-size:10px;color:#64748b}
 .multi-status-btn .ms-count{background:#3b82f6;color:#fff;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700}
 .multi-status-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,0.15);z-index:100;min-width:220px;padding:6px}
 .multi-status-panel.show{display:block}
 .multi-status-panel label{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
+.multi-status-panel label:hover{background:#f1f5f9}
 .multi-status-panel label input{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6}
 .multi-status-panel .ms-divider{height:1px;background:#e2e8f0;margin:6px 4px}
 .multi-status-panel .ms-all{color:#3b82f6}
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:8px 10px;border-radius:8px;margin-bottom:12px;display:none;gap:6px;flex-wrap:wrap;align-items:stretch}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 12px;border-radius:5px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;min-height:36px;min-width:90px}
-.select-bar button{padding:0 12px;font-size:12px;border-radius:5px;font-weight:600;cursor:pointer;border:0;color:#fff;min-height:36px;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:110px}
+.select-bar button{padding:0 12px;font-size:12px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;border:0;color:#fff;min-height:36px;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:110px}
 .select-bar .ppt-sel{background:#7c3aed}
 .select-bar .bulk-status-sel{background:#0ea5e9}
 .select-bar .clear-sel{background:#fff;color:#334155;border:1px solid #cbd5e1}
@@ -96,17 +105,18 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .area-header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:8px;border-radius:14px 14px 0 0}
 .area-header .area-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
 .area-header .area-count{background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
-.area-header .area-actions button{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;min-height:28px}
+.area-header .area-actions{display:flex;gap:6px}
+.area-header .area-actions button{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);padding:5px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;min-height:28px}
 .area-header .select-all-cb{width:18px;height:18px;cursor:pointer;accent-color:#fff;margin-right:4px}
 .area-block.collapsed .area-content{display:none}
 .area-filter-bar{padding:8px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.area-filter-bar select{padding:6px 10px;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;outline:none}
+.area-filter-bar select{padding:6px 10px;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;font-family:inherit;outline:none}
 .empty-area{padding:18px;text-align:center;color:#94a3b8;font-style:italic;font-size:12px}
 .site-cards-grid{display:grid;grid-template-columns:1fr;gap:4px;padding:6px}
 .site-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px;display:flex;align-items:flex-start;gap:12px}
 .site-card.not-card{background:#fef2f2;border-color:#fecaca}
 .site-card.maint-card{background:#fffbeb;border-color:#fcd34d}
-.site-card.selected-card{background:#fef3c7;border-color:#f59e0b}
+.site-card.selected-card{background:#fef3c7;border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.2)}
 .site-card-top{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .site-card-cb{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6}
 .site-card-num{font-size:10px;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:2px 6px;border-radius:3px;min-width:28px;text-align:center}
@@ -120,12 +130,13 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .site-card-rate{color:#059669;font-weight:700;background:#ecfdf5;padding:2px 8px;border-radius:4px;border:1px solid #a7f3d0}
 .site-card-dates{color:#64748b}
 .days-badge{background:#eef2ff;color:#4338ca;font-weight:600;padding:1px 5px;border-radius:3px;font-size:9px;border:1px solid #c7d2fe}
+.site-card-status{flex-shrink:0}
 .status{font-weight:600;padding:4px 10px;border-radius:20px;font-size:9px;text-transform:uppercase}
 .s-available{background:#d1fae5;color:#065f46}
 .s-not{background:#fee2e2;color:#991b1b}
 .s-maintenance{background:#fef3c7;color:#92400e}
 .site-card-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
-.site-card-actions button{padding:6px 12px;font-size:11px;border-radius:5px;font-weight:600;cursor:pointer;background:#f1f5f9;color:#334155;border:0;min-height:32px}
+.site-card-actions button{padding:6px 12px;font-size:11px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;background:#f1f5f9;color:#334155;border:0;min-height:32px}
 .site-card-actions button.history-btn{background:#ede9fe;color:#6d28d9}
 .site-card-actions button.map-btn{background:#cffafe;color:#0e7490}
 .modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;z-index:2000;overflow-y:auto}
@@ -137,13 +148,13 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .formgrid input,.formgrid select{width:100%;margin-top:6px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none}
 .full-width{grid-column:1/-1}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px;padding-top:18px;border-top:1px solid #f1f5f9;flex-wrap:wrap}
-.modal-actions button{padding:11px 18px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;border:0;min-height:44px}
+.modal-actions button{padding:11px 18px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;border:0;min-height:44px}
 .modal-actions button.secondary{background:#fff;color:#334155;border:1px solid #e2e8f0}
 .modal-actions button:not(.secondary){background:#3b82f6;color:#fff}
 .gps-box{background:#fef2f2;border:1.5px dashed #fca5a5;border-radius:10px;padding:10px;margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .gps-box .gps-status{font-size:12px;color:#991b1b;font-weight:600;flex:1;min-width:140px}
 .gps-box .gps-status.ok{color:#065f46}
-.gps-box .gps-btn{background:#dc2626;color:#fff;padding:9px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:0}
+.gps-box .gps-btn{background:#dc2626;color:#fff;padding:9px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;border:0}
 .image-upload-box{background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px;padding:16px;margin-top:10px;text-align:center;cursor:pointer}
 .image-upload-box .iu-icon{font-size:28px;margin-bottom:6px}
 .image-upload-box .iu-title{font-size:13px;font-weight:600;color:#334155}
@@ -154,6 +165,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .date-row{display:flex;gap:6px}
 .date-row select{flex:1;padding:11px 6px}
 .calc-preview{background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-top:12px;font-size:12px;color:#0c4a6e}
+.date-warning{background:#fffbeb;border:1px solid #fcd34d;color:#92400e;padding:10px;border-radius:8px;font-size:12px;margin-top:8px;display:none;font-weight:600}
+.date-warning.show{display:block}
 .history-item{background:#f8fafc;border-left:3px solid #7c3aed;padding:12px;margin-bottom:10px;border-radius:8px;font-size:13px;border:1px solid #e2e8f0}
 .empty-history{text-align:center;color:#94a3b8;padding:40px;font-style:italic}
 .image-viewer{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.95);z-index:3000;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
@@ -171,9 +184,11 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toast .toast-title{font-weight:700;margin-bottom:2px;font-size:13px}
 .toast .toast-msg{font-size:12px;opacity:0.85;word-break:break-word}
 .toast .toast-close{background:transparent;border:0;color:#fff;cursor:pointer;font-size:16px;opacity:0.6;padding:0;flex-shrink:0}
+.toast .toast-close:hover{opacity:1}
 .history-search-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:14px;display:flex;gap:8px;align-items:center}
-.history-search-box input{flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;outline:none;font-size:14px !important;height:40px}
-.history-search-box button{padding:0 16px;height:40px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-size:13px}
+.history-search-box input{flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;outline:none;font-size:14px !important;height:40px}
+.history-search-box button{padding:0 16px;height:40px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px}
+.history-search-box button:hover{background:#2563eb}
 @media (max-width:1024px){#areaContainer{grid-template-columns:1fr}}
 @media (max-width:768px){
   header{padding:10px 12px}
@@ -188,7 +203,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .card b{font-size:28px}
   .toolbar{padding:8px;gap:6px}
   .toolbar #search{min-width:100%;flex:1 1 100%}
-  .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center;height:36px}
+  .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center;height:36px;min-height:36px}
   .filter-box{width:100%;flex:1 1 100%;flex-wrap:wrap;height:auto}
   .filter-box .date-group{flex:1 1 100%;border-right:0;border-bottom:1px solid #cbd5e1;height:36px}
   .filter-box .date-input{flex:1;min-width:90px}
@@ -209,6 +224,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions{flex-direction:column-reverse}
   .modal-actions button{width:100%}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
+}
+@media (max-width:380px){
+  .cards{grid-template-columns:1fr}
+  .header-actions button{min-width:calc(50% - 3px)}
+  .toolbar button{min-width:calc(50% - 3px)}
+  #app{padding-top:160px}
 }
 </style>
 </head>
@@ -231,14 +252,14 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 
 <div id="app" class="hidden">
-<header>
+<header id="mainHeader">
   <div class="header-left">
     <h1>Site Management</h1>
     <span class="header-user" id="userInfo">Loading...</span>
   </div>
   <div class="header-actions">
-    <button class="btn-refresh-header" onclick="refreshPage(event)">🔄 Refresh</button>
-    <button class="btn-telegram" onclick="openTelegramSettings()">📱 Telegram</button>
+    <button class="btn-refresh-header" onclick="refreshPage(event)" title="Refresh data">🔄 Refresh</button>
+    <button class="btn-telegram" id="telegramBtn" onclick="openTelegramSettings()" title="Telegram notifications">📱 Telegram</button>
     <button class="btn-yellow admin-only" onclick="openBulkUpload()">Bulk</button>
     <button class="btn-gray admin-only" onclick="downloadBackup()">Backup</button>
     <button class="btn-light admin-only" onclick="triggerImport()">Import</button>
@@ -276,8 +297,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
       <span class="date-sep">→</span>
       <input type="text" class="date-input" id="dateFilterTo" placeholder="dd/mm/yyyy" maxlength="10" oninput="handleDateInput(this,'to')" onkeydown="handleDateKeyDown(event)">
     </div>
-    <button type="button" class="apply-btn" onclick="applyFilters()">🔍 Apply</button>
-    <button type="button" class="clear-btn" id="clearFilterBtn" onclick="clearAllFilters()">✕</button>
+    <button type="button" class="apply-btn" onclick="applyFilters()" title="Apply filter (Enter)">🔍 Apply</button>
+    <button type="button" class="clear-btn" id="clearFilterBtn" onclick="clearAllFilters()" title="Clear all filters">✕</button>
   </div>
   <span class="filter-active-badge" id="filterBadge"></span>
   <button class="admin-only" onclick="openAreaManager()">Manage Areas</button>
@@ -311,7 +332,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
 </label>
 <label class="full-width">Location / Address
-  <div><input id="flocation" placeholder="Address or GPS location" oninput="onLocationManualChange()"></div>
+  <div><input id="flocation" placeholder="Address ya GPS location" oninput="onLocationManualChange()"></div>
   <div class="gps-box">
     <span class="gps-status" id="gpsStatus">GPS not captured</span>
     <button type="button" class="gps-btn" onclick="captureGPS()" id="gpsBtn">Use GPS</button>
@@ -332,25 +353,26 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <span style="font-weight:600;color:#0ea5e9;font-size:11px">⚡ Auto from dates</span>
   </div>
   <select id="fstatus" disabled style="margin-top:6px;background:#f1f5f9;cursor:not-allowed;font-weight:700"><option>Available</option><option>Not Available</option><option>Under Maintenance</option></select>
-  <div id="statusHint" style="font-size:12px;color:#0c4a6e;margin-top:6px;background:#f0f9ff;padding:8px 12px;border-radius:6px;border:1px solid #bae6fd;font-weight:600">💡 Status auto from dates</div>
+  <div id="statusHint" style="font-size:12px;color:#0c4a6e;margin-top:6px;background:#f0f9ff;padding:8px 12px;border-radius:6px;border:1px solid #bae6fd;font-weight:600">💡 Status dates ke hisaab se automatically set hoga</div>
 </label>
 <label>Booking From<div class="date-row"><select id="ffrom_d"></select><select id="ffrom_m"></select><select id="ffrom_y"></select></div></label>
 <label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
 </div>
 <div class="calc-preview" id="calcPreview">Enter dates to see auto-calculation</div>
+<div class="date-warning" id="dateWarning">Past date select ki hai. Please confirm.</div>
 <div class="modal-actions"><button class="secondary" onclick="closeModal()">Cancel</button><button onclick="saveSite()">Save Site</button></div>
 </div></div>
 
 <!-- HISTORY MODAL -->
 <div class="modal" id="historyModal"><div class="box">
-<h2>Booking History</h2>
-<div class="history-search-box">
-  <input id="historySearchInput" type="text" placeholder="Search..." oninput="filterHistoryList()">
+<h2 id="historyTitle">Booking History</h2>
+<div id="historySearchWrap" class="history-search-box">
+  <input id="historySearchInput" type="text" placeholder="Search by site name or code..." oninput="filterHistoryList()">
   <button onclick="clearHistorySearch()">Clear</button>
 </div>
 <div id="historyContent"></div>
 <div class="modal-actions">
-  <button class="secondary" onclick="downloadHistoryCSV()" style="background:#059669;color:#fff">📥 CSV</button>
+  <button class="secondary" onclick="downloadHistoryCSV()" style="background:#059669;color:#fff">📥 Download CSV</button>
   <button class="secondary" onclick="closeHistoryModal()">Close</button>
 </div>
 </div></div>
@@ -359,34 +381,47 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="modal" id="telegramModal"><div class="box" style="width:min(600px,100%)">
 <h2>📱 Telegram Notifications</h2>
 <div style="background:#fffbeb;border:1px solid #fcd34d;padding:12px;border-radius:8px;margin-bottom:12px;font-size:12px;color:#92400e;line-height:1.6">
-  <b>Setup:</b> @BotFather → /newbot → Token → /start → getUpdates → Chat ID
+  <b>Setup Guide:</b><br>
+  <b>Step 1:</b> Telegram me <code>@BotFather</code> → <code>/newbot</code><br>
+  <b>Step 2:</b> Bot ka naam + username do<br>
+  <b>Step 3:</b> BotFather tumhe <b>Token</b> dega<br>
+  <b>Step 4:</b> Apne bot ko Telegram me khol ke <code>/start</code> bhejo<br>
+  <b>Step 5:</b> Browser me kholo: <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code><br>
+  <b>Step 6:</b> Wahan <code>"chat":{"id":123456789}</code> milega — wahi <b>Chat ID</b> hai
 </div>
 <div class="formgrid" style="grid-template-columns:1fr">
-  <label>Bot Token<input id="tgBotToken" type="text" autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
-  <label>Chat ID<input id="tgChatId" type="text" autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
-  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px"><input type="checkbox" id="tgEnabled" style="width:20px;height:20px"><span style="font-weight:600">Enable Notifications</span></label>
-  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px"><input type="checkbox" id="tgOnlyNotAvail" checked style="width:20px;height:20px"><span style="font-weight:600">Only Not Available / Maint.</span></label>
+  <label>Bot Token<input id="tgBotToken" type="text" placeholder="123456:ABC-XYZ..." autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
+  <label>Chat ID<input id="tgChatId" type="text" placeholder="123456789" autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
+  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:8px;font-size:13px">
+    <input type="checkbox" id="tgEnabled" style="width:20px;height:20px;cursor:pointer;accent-color:#0088cc">
+    <span style="font-weight:600;color:#0f172a">Enable Telegram Notifications</span>
+  </label>
+  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:4px;font-size:13px">
+    <input type="checkbox" id="tgOnlyNotAvail" checked style="width:20px;height:20px;cursor:pointer;accent-color:#0088cc">
+    <span style="font-weight:600;color:#0f172a">Sirf "Not Available" aur "Under Maintenance" ke liye</span>
+  </label>
 </div>
 <div id="telegramStatus" style="margin-top:12px;padding:10px;border-radius:8px;font-size:12px;display:none"></div>
 <div class="modal-actions">
-  <button class="secondary" onclick="testTelegram()">🧪 Test</button>
+  <button class="secondary" onclick="testTelegram()">🧪 Test Message</button>
   <button class="secondary" onclick="closeTelegramSettings()">Cancel</button>
-  <button onclick="saveTelegramSettings()">Save</button>
+  <button onclick="saveTelegramSettings()">Save Settings</button>
 </div>
 </div></div>
 
 <!-- MULTI AREA SELECT MODAL -->
 <div class="modal" id="multiAreaModal"><div class="box">
 <h2>☑ Select Multiple Areas</h2>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px;">Areas select karein aur unki saari sites ko ek saath select karein.</p>
 <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-  <button onclick="multiAreaSelectAll()" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1">Select All</button>
-  <button onclick="multiAreaDeselectAll()" style="padding:8px 14px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1">Deselect All</button>
-  <span id="multiAreaSelCount" style="font-size:12px;color:#64748b;font-weight:600;display:flex;align-items:center">0</span>
+  <button onclick="multiAreaSelectAll()" id="multiAreaSelAllBtn" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Select All Areas</button>
+  <button onclick="multiAreaDeselectAll()" style="padding:8px 14px;background:#fff;color:#334155;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;flex:1;min-width:120px">Deselect All</button>
+  <span id="multiAreaSelCount" style="font-size:12px;color:#64748b;font-weight:600;display:flex;align-items:center">0 selected</span>
 </div>
 <div id="multiAreaList" style="margin-bottom:20px;max-height:400px;overflow-y:auto;"></div>
 <div class="modal-actions">
   <button class="secondary" onclick="closeMultiAreaModal()">Cancel</button>
-  <button onclick="applyMultiAreaSelection()" style="background:#7c3aed;color:#fff">Select All Sites</button>
+  <button onclick="applyMultiAreaSelection()" style="background:#7c3aed;color:#fff">Select All Sites in These Areas</button>
 </div>
 </div></div>
 
@@ -394,21 +429,21 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="modal" id="areaModal"><div class="box">
 <h2>Manage Areas</h2>
 <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-  <button onclick="toggleAllAreas()" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1">Select All</button>
-  <button onclick="bulkDeleteAreas()" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1">Delete</button>
-  <span id="areaSelCount" style="font-size:12px;color:#64748b;font-weight:600">0</span>
+  <button onclick="toggleAllAreas()" id="areaSelAllBtn" style="padding:8px 14px;background:#f59e0b;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1;min-width:120px">Select All</button>
+  <button onclick="bulkDeleteAreas()" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;flex:1;min-width:120px">Delete Selected</button>
+  <span id="areaSelCount" style="font-size:12px;color:#64748b;font-weight:600">0 selected</span>
 </div>
 <div id="areaList" style="margin-bottom:20px;"></div>
 <div style="display:flex;gap:10px;flex-wrap:wrap">
-  <input id="newAreaName" placeholder="New area name" style="flex:1;min-width:180px;padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;outline:none">
-  <button onclick="addNewArea()" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">+ Add</button>
+  <input id="newAreaName" placeholder="New area name" style="flex:1;min-width:180px;padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none">
+  <button onclick="addNewArea()" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;min-height:44px">+ Add Area</button>
 </div>
 <div class="modal-actions"><button class="secondary" onclick="closeAreaModal()">Close</button></div>
 </div></div>
 
 <div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
   <button class="close-viewer" onclick="closeImageViewer()">×</button>
-  <img id="viewerImage" src="" alt="">
+  <img id="viewerImage" src="" alt="" onclick="event.stopPropagation()">
 </div>
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
 <div id="toastContainer"></div>
@@ -416,19 +451,32 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <script>
 const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
+const COMPANY_NAME = "DS Outdoor Media";
+const THEME_COLOR = "1E40AF";
 let LOGO_URL = "https://pk37087.github.io/site-management/logo.png";
-let currentUser = null, sites = [], areas = [...DEFAULT_AREAS], bookingHistory = [];
-let imageCache = {}, imageFailed = new Set();
-let selectedSites = new Set(), selectedAreas = new Set(), multiAreaSelected = new Set();
-let visibleSites = [], editIndex = -1, currentImageData = "";
-let collapsedAreas = new Set();
+
+let currentUser = null;
+let sites = [];
+let areas = [...DEFAULT_AREAS];
+let bookingHistory = [];
+let imageCache = {};
+let imageFailed = new Set();
+let selectedSites = new Set();
+let selectedAreas = new Set();
+let multiAreaSelected = new Set();
+let visibleSites = [];
+let editIndex = -1;
+let currentImageData = "";
+let collapsedAreas = null;
 let areaFilters = {};
-let autoRefreshTimer = null, lastDataHash = "", renderDebounceTimer = null;
+let autoRefreshTimer = null;
+let lastDataHash = "";
+let renderDebounceTimer = null;
 let activeStatuses = new Set();
 let telegramConfig = { botToken: "", chatId: "", enabled: false, onlyNotAvailMaint: true };
-let historySearchQuery = "", bulkPreviewData = [], bulkImageMatches = [], newLogoData = null;
-let pptSelectedFormat = "black";
+let historySearchQuery = "";
 
+/* ============ TOAST ============ */
 function showToast(title, message, type){
   const container = document.getElementById("toastContainer");
   const toast = document.createElement("div");
@@ -440,22 +488,19 @@ function showToast(title, message, type){
   setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 300); }, 6000);
 }
 
-function showProgress(t, s){
-  let ov = document.getElementById("progressOverlay");
-  if(!ov){
-    ov = document.createElement("div");
-    ov.id = "progressOverlay";
-    ov.style.cssText = "display:none;position:fixed;inset:0;background:rgba(15,23,42,0.7);z-index:9998;align-items:center;justify-content:center;padding:16px";
-    ov.innerHTML = '<div style="background:#fff;border-radius:16px;padding:28px;text-align:center;min-width:260px"><div style="width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div><div id="progressText" style="font-weight:700;font-size:15px;margin-bottom:6px">Working...</div><div id="progressSub" style="font-size:12px;color:#64748b"></div></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style>';
-    document.body.appendChild(ov);
-  }
-  document.getElementById("progressText").textContent = t || "Working...";
-  document.getElementById("progressSub").textContent = s || "";
-  ov.style.display = "flex";
-}
-function hideProgress(){ const ov = document.getElementById("progressOverlay"); if(ov) ov.style.display = "none"; }
+/* ============ CORE DATE & STATUS LOGIC (FIXED) ============ */
+/* 
+   NEW RULE:
+   - To date STRICTLY greater than today → Not Available
+   - To date TODAY or PAST → Available (aaj wali booking bhi Available)
+*/
 
-function todayMidnight(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
+function todayMidnight(){
+  const t = new Date();
+  t.setHours(0,0,0,0);
+  return t;
+}
+
 function parseDDMMYYYY(s){
   if(!s) return null;
   const p = String(s).trim().split("/");
@@ -466,14 +511,34 @@ function parseDDMMYYYY(s){
   if(d.getFullYear() !== yyyy || d.getMonth() !== (mm-1) || d.getDate() !== dd) return null;
   return d;
 }
+
 function calcStatusFromDates(fromStr, toStr){
-  const fromD = parseDDMMYYYY(fromStr), toD = parseDDMMYYYY(toStr);
+  // Agar To date aaj se aage hai → Not Available
+  // Warna (aaj ya past) → Available
+  const fromD = parseDDMMYYYY(fromStr);
+  const toD = parseDDMMYYYY(toStr);
   if(!fromD || !toD) return "Available";
   const today = todayMidnight();
   const toMid = new Date(toD); toMid.setHours(0,0,0,0);
+  // Strictly greater → Not Available
+  // Equal to today → Available ✅
   if(toMid > today) return "Not Available";
   return "Available";
 }
+
+/* ============ DATE HELPERS ============ */
+function handleDateInput(input, which){
+  const oldVal = input.value;
+  const oldLen = parseInt(input.dataset.lastLength || "0");
+  const isDeleting = oldVal.length < oldLen;
+  input.dataset.lastLength = oldVal.length;
+  if(isDeleting){ input.value = oldVal.replace(/[^\d\/]/g, ""); return; }
+  let val = oldVal.replace(/\D/g, "");
+  if(val.length >= 2){ let dd = val.substring(0, 2); if(parseInt(dd) > 31) dd = "31"; if(parseInt(dd) === 0) dd = "01"; val = dd + "/" + val.substring(2); }
+  if(val.length >= 5){ let parts = val.split("/"); let mm = parts[1].substring(0, 2); if(parseInt(mm) > 12) mm = "12"; if(parseInt(mm) === 0) mm = "01"; val = parts[0] + "/" + mm + (parts[1].length > 2 ? "/" + parts[1].substring(2, 6) : ""); }
+  input.value = val.substring(0, 10);
+}
+function handleDateKeyDown(event){ if(event.key === "Enter"){ event.preventDefault(); applyFilters(); } }
 function ddmmyyyyToISO(s){
   if(!s) return "";
   const p = String(s).trim().split("/");
@@ -486,18 +551,6 @@ function calcDays(f, t){
   if(isNaN(fd) || isNaN(td) || td < fd) return 0;
   return Math.floor((td - fd) / 86400000) + 1;
 }
-function handleDateInput(input){
-  const oldVal = input.value;
-  const oldLen = parseInt(input.dataset.lastLength || "0");
-  const isDeleting = oldVal.length < oldLen;
-  input.dataset.lastLength = oldVal.length;
-  if(isDeleting){ input.value = oldVal.replace(/[^\d\/]/g, ""); return; }
-  let val = oldVal.replace(/\D/g, "");
-  if(val.length >= 2){ let dd = val.substring(0, 2); if(parseInt(dd) > 31) dd = "31"; if(parseInt(dd) === 0) dd = "01"; val = dd + "/" + val.substring(2); }
-  if(val.length >= 5){ let parts = val.split("/"); let mm = parts[1].substring(0, 2); if(parseInt(mm) > 12) mm = "12"; if(parseInt(mm) === 0) mm = "01"; val = parts[0] + "/" + mm + (parts[1].length > 2 ? "/" + parts[1].substring(2, 6) : ""); }
-  input.value = val.substring(0, 10);
-}
-function handleDateKeyDown(event){ if(event.key === "Enter"){ event.preventDefault(); applyFilters(); } }
 function getDateFromDropdowns(prefix){
   const d = document.getElementById(prefix+"_d"), m = document.getElementById(prefix+"_m"), y = document.getElementById(prefix+"_y");
   if(!d || !m || !y) return "";
@@ -511,24 +564,55 @@ function setDateDropdowns(prefix, val){
   }
   const p = val.split("/"); d.value = p[0]; m.value = p[1]; y.value = p[2];
 }
+
+/* ============ LIVE STATUS UPDATE ============ */
 function updateCalcPreview(){
-  const from = getDateFromDropdowns("ffrom"), to = getDateFromDropdowns("fto");
+  const from = getDateFromDropdowns("ffrom");
+  const to = getDateFromDropdowns("fto");
   const days = calcDays(from, to);
-  document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " | <b>To:</b> " + (to||"—") + " | <b>Days:</b> " + days;
+  document.getElementById("dateWarning").classList.remove("show");
+  let extra = "";
+  if(from && to && days === 0) extra = " ⚠️ To date From se pehle!";
+  document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " &nbsp;|&nbsp; <b>To:</b> " + (to||"—") + " &nbsp;|&nbsp; <b>Days:</b> " + days + extra;
+  
   const status = calcStatusFromDates(from, to);
-  document.getElementById("fstatus").value = status;
+  const sel = document.getElementById("fstatus");
   const hint = document.getElementById("statusHint");
-  if(status === "Not Available"){ hint.innerHTML = "🚨 <b>Not Available</b>"; hint.style.background = "#fef2f2"; hint.style.color = "#991b1b"; }
-  else { hint.innerHTML = "✅ <b>Available</b>"; hint.style.background = "#ecfdf5"; hint.style.color = "#065f46"; }
+  sel.value = status;
+  
+  if(status === "Not Available"){
+    hint.innerHTML = "🚨 <b>Not Available</b> — Booking future me khatam hogi (To: " + to + ")";
+    hint.style.background = "#fef2f2";
+    hint.style.borderColor = "#fecaca";
+    hint.style.color = "#991b1b";
+  } else if(from && to){
+    // Check if booking ends today
+    const todayISO = ddmmyyyyToISO(new Date().toLocaleDateString('en-GB'));
+    const toISO = ddmmyyyyToISO(to);
+    if(toISO === todayISO){
+      hint.innerHTML = "✅ <b>Available</b> — Booking aaj (" + to + ") khatam ho rahi hai";
+    } else {
+      hint.innerHTML = "✅ <b>Available</b> — Booking past me khatam ho chuki hai";
+    }
+    hint.style.background = "#ecfdf5";
+    hint.style.borderColor = "#a7f3d0";
+    hint.style.color = "#065f46";
+  } else {
+    hint.innerHTML = "💡 Booking dates dene par status automatically <b>Not Available</b> ho jayega";
+    hint.style.background = "#f0f9ff";
+    hint.style.borderColor = "#bae6fd";
+    hint.style.color = "#0c4a6e";
+  }
 }
 
+/* ============ LOGIN ============ */
 async function doLogin(){
   const username = document.getElementById("loginUser").value.trim();
   const password = document.getElementById("loginPass").value;
   const btn = document.getElementById("loginBtn");
   const err = document.getElementById("loginError");
   err.classList.remove("show");
-  if(!username || !password){ err.textContent = "Required"; err.classList.add("show"); return; }
+  if(!username || !password){ err.textContent = "Username aur password required"; err.classList.add("show"); return; }
   btn.disabled = true; btn.textContent = "Signing in...";
   try {
     const res = await fetch(API_URL + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }) });
@@ -537,7 +621,7 @@ async function doLogin(){
     currentUser = data.user;
     sessionStorage.setItem("sms_user", JSON.stringify(currentUser));
     showApp();
-  } catch(e){ err.textContent = "Server error"; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; }
+  } catch(e){ err.textContent = "Server connect fail"; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; }
 }
 
 async function showApp(){
@@ -568,34 +652,29 @@ function startAutoRefresh(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
   autoRefreshTimer = setInterval(async () => {
     if(!currentUser || document.hidden) return;
-    const modal = document.getElementById("modal"); 
-    if(modal && modal.classList.contains("show")) return;
-    const pptModal = document.getElementById("pptFormatModal");
-    if(pptModal && pptModal.classList.contains("show")) return;
-    
-    try {
-      const result = await apiGet("/data");
-      if(result && result.success === true && Array.isArray(result.sites)){
-        if(result.sites.length === 0 && sites.length > 0){ return; }
-        const newHash = JSON.stringify({ sites: result.sites, areas: result.areas || [] });
-        if(newHash !== lastDataHash){
-          sites = result.sites;
-          areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
-          bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
-          sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
-          lastDataHash = newHash;
-          populateAreaDropdowns();
-          render();
-        }
+    const result = await apiGet("/data");
+    if(result && result.success){
+      const newHash = JSON.stringify({ sites: result.sites || [], areas: result.areas || [], bookingHistory: result.bookingHistory || [] });
+      if(newHash !== lastDataHash){
+        const modal = document.getElementById("modal"); if(modal && modal.classList.contains("show")) return;
+        sites = result.sites || [];
+        areas = (result.areas && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
+        bookingHistory = result.bookingHistory || [];
+        sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
+        lastDataHash = newHash;
+        render();
       }
-    } catch(e) { console.warn("Auto-refresh error:", e); }
-  }, 30000);
+    }
+  }, 20000);
 }
 
+/* ============ UTILS ============ */
 function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
+function showProgress(t, s){ document.getElementById("progressText").textContent = t || "Working..."; document.getElementById("progressSub").textContent = s || ""; document.getElementById("progressOverlay").classList.add("show"); }
+function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
 
-/* ============ API WITH CACHE BUST ============ */
+/* ============ API - WITH CACHE BUST ============ */
 async function apiGet(path){ 
   try { 
     const separator = path.includes("?") ? "&" : "?";
@@ -619,41 +698,23 @@ async function apiDelete(path){ try { const r = await fetch(API_URL + path, { me
 
 async function loadCloudData(){
   const result = await apiGet("/data");
-  if(result && result.success === true && Array.isArray(result.sites)){
-    const cloudHasData = result.sites.length > 0 || (result.areas && result.areas.length > 0);
-    const localHasData = sites.length > 0 || areas.length > 0;
-    if(!cloudHasData && localHasData){
-      console.warn("Cloud returned empty — keeping local data");
-      return false;
-    }
-    sites = result.sites;
+  if(result && result.success){
+    sites = Array.isArray(result.sites) ? result.sites : [];
     areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
     bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
     sites.forEach((s, i) => {
       if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
       if(!s.siteCode){ const m = (s.site||"").match(/^([A-Z]{2,5}\d{1,4})/i); s.siteCode = m ? m[1].toUpperCase() : ""; }
     });
-    lastDataHash = JSON.stringify({ sites, areas });
+    lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
     return true;
   }
   return false;
 }
 async function persistNow(){
-  try {
-    const result = await apiPost("/data", { 
-      sites: sites || [], 
-      areas: areas || [], 
-      bookingHistory: bookingHistory || [] 
-    });
-    if(result && result.success){ 
-      lastDataHash = JSON.stringify({ sites, areas }); 
-      return true; 
-    }
-    return false;
-  } catch(e){ 
-    console.error("Save failed:", e); 
-    return false; 
-  }
+  const result = await apiPost("/data", { sites, areas, bookingHistory });
+  if(result && result.success){ lastDataHash = JSON.stringify({ sites, areas, bookingHistory }); return true; }
+  return false;
 }
 async function saveImage(key, dataUrl){ const result = await apiPost("/image/" + encodeURIComponent(key), { data: dataUrl }); if(result && result.success){ imageCache[key] = dataUrl; imageFailed.delete(key); } return result; }
 async function getImage(key){
@@ -665,42 +726,28 @@ async function getImage(key){
 }
 async function deleteImage(key){ delete imageCache[key]; imageFailed.delete(key); return await apiDelete("/image/" + encodeURIComponent(key)); }
 
+/* ============ LOGO ============ */
 async function loadLogoFromCloud(){
-  const localLogo = localStorage.getItem("custom_logo");
-  if(localLogo && localLogo.length > 10){
-    LOGO_URL = localLogo;
-    const loginLogo = document.getElementById("loginLogoImg");
-    if(loginLogo){ loginLogo.src = localLogo; loginLogo.style.display = "inline-block"; }
-    return true;
-  }
   try {
     const result = await apiGet("/logo");
     if(result && result.success && result.data){
       LOGO_URL = result.data;
-      localStorage.setItem("custom_logo", result.data);
-      const loginLogo = document.getElementById("loginLogoImg");
-      if(loginLogo){ loginLogo.src = result.data; loginLogo.style.display = "inline-block"; }
+      const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo){ loginLogo.src = result.data; loginLogo.style.display = "inline-block"; }
       return true;
     }
   } catch(e){}
+  const loginLogo = document.getElementById("loginLogoImg"); if(loginLogo) loginLogo.src = LOGO_URL;
   return false;
 }
 
+/* ============ POPULATE ============ */
 function populateAreaDropdowns(){
-  const formSel = document.getElementById("farea"); 
-  if(!formSel) return;
-  const currentVal = formSel.value;
+  const formSel = document.getElementById("farea"); if(!formSel) return;
   formSel.innerHTML = '';
-  areas.forEach(a => { 
-    const opt = document.createElement("option");
-    opt.value = a;
-    opt.textContent = a;
-    formSel.appendChild(opt);
-  });
-  if(currentVal && areas.includes(currentVal)){ formSel.value = currentVal; }
-  else if(areas.length > 0){ formSel.value = areas[0]; }
+  areas.forEach(a => { formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
 }
 
+/* ============ FILTER ============ */
 function toggleMultiStatusPanel(e){ if(e) e.stopPropagation(); document.getElementById("multiStatusPanel").classList.toggle("show"); }
 document.addEventListener("click", (e) => {
   const wrap = document.getElementById("multiStatusWrap");
@@ -714,6 +761,8 @@ function onStatusCheckChange(){
   if(allCb) allCb.checked = activeStatuses.size === 3;
   render();
 }
+function statusMatchesFilter(status){ if(activeStatuses.size === 0) return true; return activeStatuses.has(status); }
+
 function filterByCard(status){
   if(status === "ALL"){
     activeStatuses.clear();
@@ -789,551 +838,472 @@ function updateCardsWithFilteredCounts(){
   document.getElementById("notavail").textContent = counts["Not Available"];
   document.getElementById("maintenance").textContent = counts["Under Maintenance"];
 }
+function debouncedRender(){ if(renderDebounceTimer) clearTimeout(renderDebounceTimer); renderDebounceTimer = setTimeout(() => { render(); }, 200); }
 
-function debouncedRender(){
-  if(renderDebounceTimer) clearTimeout(renderDebounceTimer);
-  renderDebounceTimer = setTimeout(render, 200);
+async function refreshPage(e){
+  if(e){ e.stopPropagation(); if(e.preventDefault) e.preventDefault(); }
+  const btn = e.target.closest(".btn-refresh-header");
+  if(btn){ btn.disabled = true; btn.textContent = "Refreshing..."; }
+  try {
+    imageFailed.clear(); imageCache = {}; selectedSites.clear();
+    clearAllFilters();
+    await loadCloudData(); await loadLogoFromCloud();
+    collapsedAreas = new Set(areas);
+    render();
+    if(btn){ btn.textContent = "✓ Refreshed"; setTimeout(() => { btn.textContent = "🔄 Refresh"; btn.disabled = false; }, 800); }
+  } catch(err){ if(btn){ btn.textContent = "🔄 Refresh"; btn.disabled = false; } }
 }
 
-/* ============ RENDER - FIXED ============ */
-async function render(){
-  updateCardsWithFilteredCounts();
-  const multiLabel = document.getElementById("multiStatusLabel");
-  const multiCount = document.getElementById("multiStatusCount");
-  if(activeStatuses.size === 0){ multiLabel.textContent = "Status: All"; multiCount.style.display = "none"; }
-  else { multiLabel.textContent = "Status: " + activeStatuses.size; multiCount.textContent = activeStatuses.size; multiCount.style.display = "inline"; }
-  
-  const badge = document.getElementById("filterBadge");
-  const hasDate = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
-  const hasSearch = document.getElementById("search").value.trim();
-  const filterParts = [];
-  if(activeStatuses.size > 0) filterParts.push(activeStatuses.size + " status");
-  if(hasDate) filterParts.push("date");
-  if(hasSearch) filterParts.push("search");
-  if(filterParts.length > 0){ badge.textContent = "Filters: " + filterParts.join(", "); badge.classList.add("show"); document.getElementById("clearFilterBtn").classList.add("show"); }
-  else { badge.classList.remove("show"); document.getElementById("clearFilterBtn").classList.remove("show"); }
-
-  const container = document.getElementById("areaContainer");
-  const filteredSites = getFilteredSites();
-  visibleSites = filteredSites;
-
-  const areaSet = new Set(areas);
-  filteredSites.forEach(s => { if(s.area) areaSet.add(s.area); });
-  const allAreaNames = Array.from(areaSet).sort((a,b) => a.localeCompare(b));
-  
-  const grouped = {};
-  allAreaNames.forEach(a => grouped[a] = []);
-  filteredSites.forEach(s => {
-    const siteArea = s.area || "Unassigned";
-    if(!grouped[siteArea]) grouped[siteArea] = [];
-    grouped[siteArea].push(s);
-  });
-
-  let html = "";
-
-  for(const area of allAreaNames){
-    const areaSites = grouped[area] || [];
-    if(areaSites.length === 0 && !document.getElementById("search").value.trim() && activeStatuses.size === 0 && !hasDate) continue;
-    
-    const isCollapsed = collapsedAreas.has(area);
-    if(!areaFilters[area]) areaFilters[area] = "ALL";
-    const areaStatusFilter = areaFilters[area];
-    let displaySites = areaSites;
-    if(areaStatusFilter !== "ALL") displaySites = areaSites.filter(s => s.status === areaStatusFilter);
-    if(activeStatuses.size > 0) displaySites = displaySites.filter(s => activeStatuses.has(s.status));
-    
-    const areaStatusCounts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
-    areaSites.forEach(s => { if(areaStatusCounts[s.status] !== undefined) areaStatusCounts[s.status]++; });
-
-    html += '<div class="area-block ' + (isCollapsed ? "collapsed" : "") + '" data-area="' + esc(area) + '">';
-    html += '<div class="area-header" onclick="toggleAreaCollapse(event, \'' + esc(area).replace(/'/g, "\\'") + '\')">';
-    html += '<div class="area-name">';
-    html += '<input type="checkbox" class="select-all-cb" onclick="event.stopPropagation();toggleSelectAllInArea(this, \'' + esc(area).replace(/'/g, "\\'") + '\')" ' + (areaSites.length > 0 && areaSites.every(s => selectedSites.has(s.id)) ? "checked" : "") + '>';
-    html += esc(area) + ' <span class="area-count">' + areaSites.length + '</span></div>';
-    html += '<div class="area-actions" onclick="event.stopPropagation()">';
-    html += '<button onclick="toggleAreaSelectAll(\'' + esc(area).replace(/'/g, "\\'") + '\')">' + (areaSites.every(s => selectedSites.has(s.id)) && areaSites.length > 0 ? "Deselect" : "Select") + '</button></div></div>';
-    html += '<div class="area-content"><div class="area-filter-bar">';
-    html += '<select onchange="setAreaFilter(\'' + esc(area).replace(/'/g, "\\'") + '\', this.value)">';
-    html += '<option value="ALL"' + (areaStatusFilter === "ALL" ? " selected" : "") + '>All (' + areaSites.length + ')</option>';
-    html += '<option value="Available"' + (areaStatusFilter === "Available" ? " selected" : "") + '>Available (' + areaStatusCounts.Available + ')</option>';
-    html += '<option value="Not Available"' + (areaStatusFilter === "Not Available" ? " selected" : "") + '>Not Available (' + areaStatusCounts["Not Available"] + ')</option>';
-    html += '<option value="Under Maintenance"' + (areaStatusFilter === "Under Maintenance" ? " selected" : "") + '>Maint. (' + areaStatusCounts["Under Maintenance"] + ')</option>';
-    html += '</select></div>';
-    if(displaySites.length === 0){ html += '<div class="empty-area">No sites</div>'; }
-    else { html += '<div class="site-cards-grid">'; displaySites.forEach((site, idx) => { html += renderSiteCard(site, idx); }); html += '</div>'; }
-    html += '</div></div>';
-  }
-
-  if(filteredSites.length === 0){ html = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8"><div style="font-size:48px;margin-bottom:16px">🔍</div><div style="font-size:16px;font-weight:600">No sites found</div></div>'; }
-  container.innerHTML = html;
-  updateSelectBar();
-}
-
-function renderSiteCard(site, idx){
-  const isSelected = selectedSites.has(site.id);
-  const statusClass = site.status === "Available" ? "s-available" : (site.status === "Not Available" ? "s-not" : "s-maintenance");
-  const cardClass = site.status === "Not Available" ? "not-card" : (site.status === "Under Maintenance" ? "maint-card" : "");
-  const days = calcDays(site.fromDate, site.toDate);
-  const hasImage = !!site.imageKey;
-  let imgHtml = "";
-  if(hasImage){
-    const cached = imageCache[site.imageKey];
-    imgHtml = '<img class="site-card-img" src="' + (cached || '') + '" alt="site" onclick="event.stopPropagation();openImageViewer(\'' + esc(site.imageKey).replace(/'/g, "\\'") + '\')" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" onload="this.nextElementSibling.style.display=\'none\'">' +
-      '<div class="site-card-img no-img" style="display:none">📷</div>';
-    if(!cached) {
-      getImage(site.imageKey).then(data => {
-        if(data) { const img = document.querySelector('.site-card[data-id="' + site.id + '"] .site-card-img'); if(img) { img.src = data; } }
-      });
-    }
-  } else { imgHtml = '<div class="site-card-img no-img" onclick="event.stopPropagation();openEdit(\'' + site.id + '\')">📷</div>'; }
-
-  let html = '<div class="site-card ' + cardClass + (isSelected ? ' selected-card' : '') + '" data-id="' + site.id + '">';
-  html += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSelected ? 'checked' : '') + ' onchange="toggleSiteSelect(\'' + site.id + '\', this.checked)"><span class="site-card-num">#' + (idx + 1) + '</span></div>';
-  html += imgHtml;
-  html += '<div class="site-card-body">';
-  html += '<div class="site-card-name">' + esc(site.site || site.siteCode || "Unnamed");
-  if(site.siteCode) html += ' <span style="font-size:11px;color:#64748b;font-family:monospace">(' + esc(site.siteCode) + ')</span>';
-  if(site.location) html += '<span class="site-card-loc-inline">📍 ' + esc(site.location.substring(0, 40)) + '</span>';
-  html += '</div>';
-  html += '<div class="site-card-meta">';
-  if(site.customer) html += '<span class="site-card-comp">🏢 ' + esc(site.customer) + '</span>';
-  if(site.rate) html += '<span class="site-card-rate">' + formatINR(site.rate) + '/mo</span>';
-  html += '</div>';
-  html += '<div class="site-card-dates">';
-  if(site.fromDate) html += '📅 ' + esc(site.fromDate);
-  if(site.toDate) html += ' → ' + esc(site.toDate);
-  if(days > 0) html += ' <span class="days-badge">' + days + ' days</span>';
-  html += '</div></div>';
-  html += '<div class="site-card-status"><span class="status ' + statusClass + '">' + esc(site.status) + '</span></div>';
-  html += '<div class="site-card-actions">';
-  html += '<button onclick="event.stopPropagation();openEdit(\'' + site.id + '\')">✏️ Edit</button>';
-  html += '<button class="history-btn" onclick="event.stopPropagation();openSiteHistory(\'' + site.id + '\')">📜</button>';
-  if(site.location && site.location.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/)){
-    html += '<button class="map-btn" onclick="event.stopPropagation();openMap(\'' + esc(site.location) + '\')">🗺️</button>';
-  }
-  html += '</div></div>';
-  return html;
-}
-
-function toggleAreaCollapse(event, area){
-  if(event.target.tagName === "INPUT" || event.target.tagName === "BUTTON") return;
-  if(collapsedAreas.has(area)) collapsedAreas.delete(area);
-  else collapsedAreas.add(area);
-  render();
-}
-function setAreaFilter(area, value){ areaFilters[area] = value; render(); }
-function toggleSelectAllInArea(cb, area){
-  const areaSites = visibleSites.filter(s => s.area === area);
-  areaSites.forEach(s => { if(cb.checked) selectedSites.add(s.id); else selectedSites.delete(s.id); });
-  render();
-}
-function toggleAreaSelectAll(area){
-  const areaSites = visibleSites.filter(s => s.area === area);
-  const allSelected = areaSites.every(s => selectedSites.has(s.id));
-  if(allSelected) areaSites.forEach(s => selectedSites.delete(s.id));
-  else areaSites.forEach(s => selectedSites.add(s.id));
-  render();
-}
-function toggleSiteSelect(id, checked){
-  if(checked) selectedSites.add(id);
-  else selectedSites.delete(id);
-  updateSelectBar();
-  const card = document.querySelector('.site-card[data-id="' + id + '"]');
-  if(card) card.classList.toggle("selected-card", checked);
-  render();
-}
-function updateSelectBar(){
-  const bar = document.getElementById("selectBar");
-  const count = document.getElementById("selCount");
-  if(selectedSites.size > 0){ bar.classList.add("show"); count.textContent = selectedSites.size + " selected"; }
-  else { bar.classList.remove("show"); }
-  if(currentUser && currentUser.role === "Admin"){ document.getElementById("deleteBtn").style.display = selectedSites.size > 0 ? "inline-flex" : "none"; }
-}
-function clearSelection(){ selectedSites.clear(); updateSelectBar(); render(); }
-function bulkDeleteSelected(){
-  if(selectedSites.size === 0) return;
-  if(!confirm("Delete " + selectedSites.size + " sites?")) return;
-  sites = sites.filter(s => !selectedSites.has(s.id));
-  selectedSites.clear();
-  persistNow().then(() => { showToast("Deleted", "Sites removed", "success"); render(); });
-}
-
+/* ============ OPEN ADD/EDIT ============ */
 function openAdd(){
   editIndex = -1;
-  document.getElementById("modalTitle").textContent = "Add Site";
-  populateAreaDropdowns();
-  ["fsitecode","fsite","flocation","fcustomer","frate"].forEach(id => document.getElementById(id).value = "");
-  document.getElementById("fstatus").value = "Available";
-  currentImageData = "";
-  document.getElementById("imagePreviewWrap").style.display = "none";
-  document.getElementById("imageUploadBox").style.display = "block";
+  document.getElementById("modalTitle").textContent = "Add New Site";
+  document.getElementById("fsitecode").value = "";
+  document.getElementById("fsite").value = "";
+  document.getElementById("flocation").value = "";
+  document.getElementById("flocation").dataset.lat = ""; document.getElementById("flocation").dataset.lng = "";
+  document.getElementById("fcustomer").value = "";
+  document.getElementById("frate").value = "";
+  currentImageData = ""; removeImage();
+  document.getElementById("farea").value = areas[0] || "";
+  const t = new Date();
+  const today = String(t.getDate()).padStart(2,"0")+"/"+String(t.getMonth()+1).padStart(2,"0")+"/"+t.getFullYear();
+  setDateDropdowns("ffrom", today); setDateDropdowns("fto", today);
   document.getElementById("gpsStatus").textContent = "GPS not captured";
   document.getElementById("gpsStatus").className = "gps-status";
-  populateDateDropdowns();
   updateCalcPreview();
   document.getElementById("modal").classList.add("show");
 }
-function openEdit(id){
-  const site = sites.find(s => s.id === id);
-  if(!site) return;
-  editIndex = sites.indexOf(site);
+function quickAddSiteInArea(areaName){ openAdd(); document.getElementById("farea").value = areaName; }
+
+async function editSite(i){
+  if(currentUser.role !== "Admin" && currentUser.role !== "Viewer"){ alert("No permission"); return; }
+  editIndex = i;
+  const x = sites[i];
   document.getElementById("modalTitle").textContent = "Edit Site";
-  populateAreaDropdowns();
-  document.getElementById("farea").value = site.area || areas[0] || "";
-  document.getElementById("fsitecode").value = site.siteCode || "";
-  document.getElementById("fsite").value = site.site || "";
-  document.getElementById("flocation").value = site.location || "";
-  document.getElementById("fcustomer").value = site.customer || "";
-  document.getElementById("frate").value = site.rate || "";
-  document.getElementById("fstatus").value = site.status || "Available";
-  currentImageData = "";
-  if(site.imageKey){
-    const cached = imageCache[site.imageKey];
-    if(cached){ document.getElementById("imagePreview").src = cached; document.getElementById("imagePreviewWrap").style.display = "block"; document.getElementById("imageUploadBox").style.display = "none"; }
-    else { getImage(site.imageKey).then(data => { if(data){ document.getElementById("imagePreview").src = data; document.getElementById("imagePreviewWrap").style.display = "block"; document.getElementById("imageUploadBox").style.display = "none"; } }); }
-  } else { document.getElementById("imagePreviewWrap").style.display = "none"; document.getElementById("imageUploadBox").style.display = "block"; }
-  populateDateDropdowns();
-  setDateDropdowns("ffrom", site.fromDate || "");
-  setDateDropdowns("fto", site.toDate || "");
+  if(x.area && !areas.includes(x.area)){ areas.push(x.area); populateAreaDropdowns(); }
+  document.getElementById("farea").value = x.area || areas[0] || "";
+  document.getElementById("fsitecode").value = x.siteCode || "";
+  document.getElementById("fsite").value = x.site || "";
+  document.getElementById("flocation").value = x.location || "";
+  document.getElementById("flocation").dataset.lat = x.lat || ""; document.getElementById("flocation").dataset.lng = x.lng || "";
+  document.getElementById("fcustomer").value = x.customer || "";
+  document.getElementById("frate").value = x.rate || "";
+  setDateDropdowns("ffrom", x.fromDate || ""); setDateDropdowns("fto", x.toDate || "");
+  if(x.lat && x.lng){ document.getElementById("gpsStatus").textContent = "GPS: " + x.lat + ", " + x.lng; document.getElementById("gpsStatus").className = "gps-status ok"; }
+  else { document.getElementById("gpsStatus").textContent = "GPS not captured"; document.getElementById("gpsStatus").className = "gps-status"; }
+  if(x.hasImage){ let data = await getImage(x.id); if(data){ currentImageData = data; showImagePreview(data); } else { currentImageData = ""; removeImage(); } }
+  else { currentImageData = ""; removeImage(); }
   updateCalcPreview();
   document.getElementById("modal").classList.add("show");
-}
-function populateDateDropdowns(){
-  const days = Array.from({length: 31}, (_, i) => String(i + 1).padStart(2, "0"));
-  const months = Array.from({length: 12}, (_, i) => String(i + 1).padStart(2, "0"));
-  const years = Array.from({length: 11}, (_, i) => String(new Date().getFullYear() - 2 + i));
-  ["ffrom_d", "fto_d"].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = days.map(d => '<option value="'+d+'">'+d+'</option>').join(''); });
-  ["ffrom_m", "fto_m"].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = months.map(m => '<option value="'+m+'">'+m+'</option>').join(''); });
-  ["ffrom_y", "fto_y"].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = years.map(y => '<option value="'+y+'">'+y+'</option>').join(''); });
-  const t = new Date();
-  ["ffrom_d", "fto_d"].forEach(id => { const el = document.getElementById(id); if(el) el.value = String(t.getDate()).padStart(2, "0"); });
-  ["ffrom_m", "fto_m"].forEach(id => { const el = document.getElementById(id); if(el) el.value = String(t.getMonth() + 1).padStart(2, "0"); });
-  ["ffrom_y", "fto_y"].forEach(id => { const el = document.getElementById(id); if(el) el.value = String(t.getFullYear()); });
-  ["ffrom_d","ffrom_m","ffrom_y","fto_d","fto_m","fto_y"].forEach(id => { const el = document.getElementById(id); if(el) el.onchange = updateCalcPreview; });
 }
 function closeModal(){ document.getElementById("modal").classList.remove("show"); }
 
+/* ============ SAVE SITE (with FIXED auto-status) ============ */
 async function saveSite(){
-  const area = document.getElementById("farea").value;
-  const siteCode = document.getElementById("fsitecode").value.trim().toUpperCase();
-  const siteName = document.getElementById("fsite").value.trim();
-  const location = document.getElementById("flocation").value.trim();
-  const customer = document.getElementById("fcustomer").value.trim();
-  const rate = parseFloat(document.getElementById("frate").value) || 0;
-  const fromDate = getDateFromDropdowns("ffrom");
-  const toDate = getDateFromDropdowns("fto");
-  const status = calcStatusFromDates(fromDate, toDate);
-  if(!area){ showToast("Error", "Area required", "danger"); return; }
-  if(!siteCode && !siteName){ showToast("Error", "Site code or name required", "danger"); return; }
-  const siteData = { area, siteCode, site: siteName || siteCode, location, customer, rate, fromDate, toDate, status, imageKey: "" };
-  if(currentImageData){
-    const key = "img_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
-    const result = await saveImage(key, currentImageData);
-    if(result && result.success){ siteData.imageKey = key; }
-  }
-  if(editIndex >= 0){
-    const oldSite = sites[editIndex];
-    if(oldSite.imageKey && siteData.imageKey && oldSite.imageKey !== siteData.imageKey) await deleteImage(oldSite.imageKey);
-    siteData.id = oldSite.id;
-    sites[editIndex] = { ...oldSite, ...siteData };
-    bookingHistory.push({ id: "hist_" + Date.now(), siteId: siteData.id, siteName: siteData.site, siteCode: siteData.siteCode, area: siteData.area, fromDate: siteData.fromDate, toDate: siteData.toDate, status: siteData.status, customer: siteData.customer, rate: siteData.rate, changedAt: new Date().toISOString(), changedBy: currentUser ? currentUser.username : "unknown", action: "edited" });
-  } else {
-    siteData.id = "id_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
-    sites.push(siteData);
-    bookingHistory.push({ id: "hist_" + Date.now(), siteId: siteData.id, siteName: siteData.site, siteCode: siteData.siteCode, area: siteData.area, fromDate: siteData.fromDate, toDate: siteData.toDate, status: siteData.status, customer: siteData.customer, rate: siteData.rate, changedAt: new Date().toISOString(), changedBy: currentUser ? currentUser.username : "unknown", action: "created" });
-  }
-  const ok = await persistNow();
-  if(ok){ showToast("Saved", "Site saved", "success"); closeModal(); render(); }
-  else showToast("Error", "Failed", "danger");
+  const fromVal = getDateFromDropdowns("ffrom"), toVal = getDateFromDropdowns("fto");
+  const areaVal = document.getElementById("farea").value;
+  if(!areaVal){ alert("Area select karein"); return; }
+  
+  // ✅ GUARANTEED AUTO STATUS with new logic (today = Available)
+  const statusVal = calcStatusFromDates(fromVal, toVal);
+  
+  const id = editIndex < 0 ? "id_"+Math.random().toString(36).slice(2,10) : sites[editIndex].id;
+  const hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
+  const oldStatus = editIndex < 0 ? null : sites[editIndex].status;
+  const loc = document.getElementById("flocation");
+  const siteCodeInput = document.getElementById("fsitecode").value.trim().toUpperCase();
+  const siteNameInput = document.getElementById("fsite").value.trim();
+  const finalSiteName = siteNameInput || siteCodeInput || "Unnamed Site";
+  const finalSiteCode = siteCodeInput || (finalSiteName.match(/^([A-Z]{2,5}\d{1,4})/i) || [])[1]?.toUpperCase() || "";
+  const newSite = {
+    id, area: areaVal, site: finalSiteName, siteCode: finalSiteCode,
+    location: loc.value.trim(), lat: loc.dataset.lat || "", lng: loc.dataset.lng || "",
+    customer: document.getElementById("fcustomer").value.trim(),
+    rate: document.getElementById("frate").value.trim(),
+    status: statusVal, fromDate: fromVal, toDate: toVal,
+    hasImage: !!currentImageData
+  };
+  showProgress("Saving...", "");
+  if(currentImageData){ await saveImage(id, currentImageData); }
+  else if(hadImage){ await deleteImage(id); }
+  if(editIndex < 0) sites.push(newSite); else sites[editIndex] = newSite;
+  await persistNow(); hideProgress();
+  closeModal(); render();
+  if(oldStatus && oldStatus !== statusVal){ notifyStatusChange(newSite, oldStatus, statusVal); }
+  else if(editIndex < 0 && statusVal !== "Available"){ notifyStatusChange(newSite, "Available", statusVal); }
 }
 
-function handleImageUpload(event){
-  const file = event.target.files[0];
-  if(!file) return;
-  if(file.size > 8 * 1024 * 1024){ showToast("Error", "Under 8 MB required", "danger"); return; }
+/* ============ IMAGE ============ */
+function handleImageUpload(e){
+  const file = e.target.files[0]; if(!file) return;
+  if(!file.type.startsWith("image/")){ alert("Only images"); return; }
+  if(file.size > 8*1024*1024){ alert("Max 8 MB"); return; }
+  showProgress("Processing...", "");
   const reader = new FileReader();
-  reader.onload = (e) => {
-    currentImageData = e.target.result;
-    document.getElementById("imagePreview").src = currentImageData;
-    document.getElementById("imagePreviewWrap").style.display = "block";
-    document.getElementById("imageUploadBox").style.display = "none";
-  };
+  reader.onload = (ev) => { compressImageSmart(ev.target.result, (compressed) => { hideProgress(); currentImageData = compressed; showImagePreview(compressed); }); };
   reader.readAsDataURL(file);
+  e.target.value = "";
 }
-function removeImage(){
-  currentImageData = "";
-  document.getElementById("imagePreviewWrap").style.display = "none";
-  document.getElementById("imageUploadBox").style.display = "block";
-  document.getElementById("fimage").value = "";
+function compressImageSmart(dataUrl, cb){
+  const img = new Image();
+  img.onload = () => {
+    const MAX_W = 1024, MAX_H = 1024, MAX_B = 800 * 1024;
+    let w = img.width, h = img.height;
+    if(w > MAX_W || h > MAX_H){ const r = Math.min(MAX_W / w, MAX_H / h); w = Math.round(w * r); h = Math.round(h * r); }
+    const canvas = document.createElement("canvas"); canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d", { alpha: false }); ctx.imageSmoothingQuality = "high";
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
+    let quality = 0.75; let result = canvas.toDataURL("image/jpeg", quality); let attempts = 0;
+    while(result.length > MAX_B && quality > 0.5 && attempts < 10){ quality -= 0.05; result = canvas.toDataURL("image/jpeg", quality); attempts++; }
+    cb(result);
+  };
+  img.onerror = () => { alert("Image load fail"); cb(dataUrl); };
+  img.src = dataUrl;
 }
-function openImageViewer(key){
-  const cached = imageCache[key];
-  if(cached){ document.getElementById("viewerImage").src = cached; document.getElementById("imageViewer").classList.add("show"); return; }
-  getImage(key).then(data => { if(data){ document.getElementById("viewerImage").src = data; document.getElementById("imageViewer").classList.add("show"); } });
-}
+function showImagePreview(data){ document.getElementById("imagePreview").src = data; document.getElementById("imagePreviewWrap").style.display = "block"; document.getElementById("imageUploadBox").style.display = "none"; }
+function removeImage(){ currentImageData = ""; document.getElementById("imagePreview").src = ""; document.getElementById("imagePreviewWrap").style.display = "none"; document.getElementById("imageUploadBox").style.display = "block"; }
 function closeImageViewer(){ document.getElementById("imageViewer").classList.remove("show"); }
-function openMap(location){
-  if(!location) return;
-  const parts = location.split(",");
-  if(parts.length === 2){
-    const lat = parseFloat(parts[0]), lng = parseFloat(parts[1]);
-    if(!isNaN(lat) && !isNaN(lng)){ window.open("https://www.google.com/maps?q=" + lat + "," + lng, "_blank"); return; }
-  }
-  window.open("https://www.google.com/maps?q=" + encodeURIComponent(location), "_blank");
-}
-function onLocationManualChange(){
-  const loc = document.getElementById("flocation").value.trim();
-  if(loc.match(/^-?\d+\.?\d*,\s*-?\d+\.?\d*$/)){ document.getElementById("gpsStatus").textContent = "✅ GPS captured"; document.getElementById("gpsStatus").className = "gps-status ok"; }
-  else { document.getElementById("gpsStatus").textContent = "GPS not captured"; document.getElementById("gpsStatus").className = "gps-status"; }
-}
 function captureGPS(){
-  if(!navigator.geolocation){ showToast("Error", "Not supported", "danger"); return; }
-  const btn = document.getElementById("gpsBtn");
+  const btn = document.getElementById("gpsBtn"), status = document.getElementById("gpsStatus");
+  if(!navigator.geolocation){ alert("GPS not supported"); return; }
   btn.disabled = true; btn.textContent = "Getting...";
+  status.className = "gps-status"; status.textContent = "Getting...";
   navigator.geolocation.getCurrentPosition(
     (pos) => {
-      const loc = pos.coords.latitude.toFixed(6) + ", " + pos.coords.longitude.toFixed(6);
-      document.getElementById("flocation").value = loc;
-      document.getElementById("gpsStatus").textContent = "✅ GPS captured";
-      document.getElementById("gpsStatus").className = "gps-status ok";
-      btn.disabled = false; btn.textContent = "Use GPS";
+      const lat = pos.coords.latitude.toFixed(7), lng = pos.coords.longitude.toFixed(7);
+      document.getElementById("flocation").dataset.lat = lat; document.getElementById("flocation").dataset.lng = lng;
+      const cur = document.getElementById("flocation").value.trim();
+      document.getElementById("flocation").value = cur ? cur + " | " + lat + ", " + lng : lat + ", " + lng;
+      status.className = "gps-status ok"; status.textContent = "Accurate: " + Math.round(pos.coords.accuracy) + "m";
+      btn.disabled = false; btn.textContent = "Re-capture";
     },
-    (err) => { showToast("Error", err.message, "danger"); btn.disabled = false; btn.textContent = "Use GPS"; },
-    { enableHighAccuracy: true, timeout: 10000 }
+    (err) => { btn.disabled = false; btn.textContent = "Use GPS"; status.textContent = err.code === 1 ? "Denied" : "Error"; },
+    { enableHighAccuracy: true, timeout: 15000 }
   );
 }
+function onLocationManualChange(){ document.getElementById("flocation").dataset.lat = ""; document.getElementById("flocation").dataset.lng = ""; }
+function getGoogleMapsUrl(site){
+  if(site.lat && site.lng) return "https://www.google.com/maps?q=" + site.lat + "," + site.lng;
+  if(site.location) return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(site.location);
+  return "";
+}
+function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location"); return; } window.open(url, "_blank"); }
 
-function openHistoryModal(){ historySearchQuery = ""; document.getElementById("historySearchInput").value = ""; renderHistoryList(); document.getElementById("historyModal").classList.add("show"); }
-function openSiteHistory(siteId){
-  const site = sites.find(s => s.id === siteId);
-  if(!site) return;
-  historySearchQuery = site.siteCode || site.site || "";
-  document.getElementById("historySearchInput").value = historySearchQuery;
-  renderHistoryList();
-  document.getElementById("historyModal").classList.add("show");
-}
-function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
-function filterHistoryList(){ historySearchQuery = document.getElementById("historySearchInput").value.trim().toLowerCase(); renderHistoryList(); }
-function clearHistorySearch(){ historySearchQuery = ""; document.getElementById("historySearchInput").value = ""; renderHistoryList(); }
-function renderHistoryList(){
-  let filtered = bookingHistory.slice().reverse();
-  if(historySearchQuery){
-    const q = historySearchQuery.toLowerCase();
-    filtered = filtered.filter(h => ((h.siteName || "") + " " + (h.siteCode || "") + " " + (h.area || "") + " " + (h.customer || "")).toLowerCase().includes(q));
-  }
-  const container = document.getElementById("historyContent");
-  if(filtered.length === 0){ container.innerHTML = '<div class="empty-history">No history</div>'; return; }
-  let html = "";
-  filtered.forEach(h => {
-    const statusClass = h.status === "Available" ? "s-available" : (h.status === "Not Available" ? "s-not" : "s-maintenance");
-    const actionText = h.action === "created" ? "🆕" : "✏️";
-    const date = new Date(h.changedAt);
-    const dateStr = date.toLocaleDateString() + " " + date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
-    html += '<div class="history-item"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div style="flex:1">';
-    html += '<div style="font-weight:700;font-size:14px;margin-bottom:4px">' + esc(h.siteName || h.siteCode) + '</div>';
-    html += '<span class="status ' + statusClass + '" style="font-size:10px">' + esc(h.status) + '</span>';
-    html += ' <span style="font-size:11px;color:#64748b">' + esc(h.area) + '</span>';
-    html += '<div style="font-size:12px;color:#475569;margin-top:4px">📅 ' + esc(h.fromDate || "—") + ' → ' + esc(h.toDate || "—") + '</div>';
-    html += '</div><div style="text-align:right;font-size:11px;color:#94a3b8">' + actionText + '<br>' + dateStr + '</div></div></div>';
-  });
-  container.innerHTML = html;
-}
-function downloadHistoryCSV(){
-  let csv = "Site Name,Site Code,Area,From,To,Status,Customer,Rate,Action,Changed At\n";
-  bookingHistory.forEach(h => {
-    csv += '"' + (h.siteName || "").replace(/"/g, '""') + '","' + (h.siteCode || "").replace(/"/g, '""') + '","' + (h.area || "").replace(/"/g, '""') + '","' + (h.fromDate || "") + '","' + (h.toDate || "") + '","' + (h.status || "") + '","' + (h.customer || "").replace(/"/g, '""') + '",' + (h.rate || 0) + ',"' + (h.action || "") + '","' + (h.changedAt || "") + '"\n';
-  });
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href = url; a.download = "booking-history-" + new Date().toISOString().slice(0, 10) + ".csv"; a.click();
-}
-
-function exportCSV(){
-  let csv = "Area,Site Code,Site Name,Location,Company,Rate,From,To,Days,Status\n";
-  visibleSites.forEach(s => {
-    csv += '"' + (s.area || "").replace(/"/g, '""') + '","' + (s.siteCode || "").replace(/"/g, '""') + '","' + (s.site || "").replace(/"/g, '""') + '","' + (s.location || "").replace(/"/g, '""') + '","' + (s.customer || "").replace(/"/g, '""') + '",' + (s.rate || 0) + ',"' + (s.fromDate || "") + '","' + (s.toDate || "") + '",' + calcDays(s.fromDate, s.toDate) + ',"' + (s.status || "") + '"\n';
-  });
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href = url; a.download = "sites-export-" + new Date().toISOString().slice(0, 10) + ".csv"; a.click();
-}
-
-function openAreaManager(){ selectedAreas.clear(); renderAreaList(); document.getElementById("areaModal").classList.add("show"); }
-function closeAreaModal(){ document.getElementById("areaModal").classList.remove("show"); }
-function renderAreaList(){
-  const container = document.getElementById("areaList");
-  let html = "";
-  areas.forEach((a) => {
-    const count = sites.filter(s => s.area === a).length;
-    html += '<div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #f1f5f9">';
-    html += '<input type="checkbox" ' + (selectedAreas.has(a) ? "checked" : "") + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\', this.checked)" style="width:18px;height:18px">';
-    html += '<span style="flex:1;font-weight:600">' + esc(a) + ' <span style="color:#94a3b8;font-size:12px">(' + count + ')</span></span>';
-    html += '<button onclick="renameArea(\'' + esc(a).replace(/'/g, "\\'") + '\')" style="padding:5px 10px;background:#f1f5f9;border:0;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600">✏️</button></div>';
-  });
-  container.innerHTML = html || '<div style="text-align:center;color:#94a3b8;padding:20px">No areas</div>';
-  document.getElementById("areaSelCount").textContent = selectedAreas.size;
-}
-function toggleAreaSelect(area, checked){ if(checked) selectedAreas.add(area); else selectedAreas.delete(area); document.getElementById("areaSelCount").textContent = selectedAreas.size; }
-function toggleAllAreas(){ if(selectedAreas.size === areas.length) selectedAreas.clear(); else areas.forEach(a => selectedAreas.add(a)); renderAreaList(); }
-async function bulkDeleteAreas(){
-  if(selectedAreas.size === 0){ showToast("Info", "No areas selected", "warning"); return; }
-  const count = sites.filter(s => selectedAreas.has(s.area)).length;
-  if(!confirm("Delete " + selectedAreas.size + " areas + " + count + " sites?")) return;
-  sites = sites.filter(s => !selectedAreas.has(s.area));
-  areas = areas.filter(a => !selectedAreas.has(a));
-  selectedAreas.clear();
-  if(await persistNow()){ showToast("Deleted", "Removed", "success"); populateAreaDropdowns(); renderAreaList(); render(); }
-}
-async function addNewArea(){
-  const name = document.getElementById("newAreaName").value.trim();
-  if(!name){ showToast("Error", "Enter name", "danger"); return; }
-  if(areas.includes(name)){ showToast("Error", "Already exists", "danger"); return; }
-  areas.push(name); areas.sort();
-  document.getElementById("newAreaName").value = "";
-  if(await persistNow()){ showToast("Added", name + " (saved)", "success"); populateAreaDropdowns(); renderAreaList(); render(); }
-  else showToast("Error", "Failed to save area", "danger");
-}
-function renameArea(area){
-  const newName = prompt("Rename area:", area);
-  if(!newName || newName === area) return;
-  if(areas.includes(newName)){ showToast("Error", "Exists", "danger"); return; }
-  const idx = areas.indexOf(area); if(idx === -1) return;
-  areas[idx] = newName;
-  sites.forEach(s => { if(s.area === area) s.area = newName; });
-  persistNow().then(() => { showToast("Renamed", newName, "success"); populateAreaDropdowns(); renderAreaList(); render(); });
-}
-
-function openMultiAreaSelect(){ multiAreaSelected.clear(); renderMultiAreaList(); document.getElementById("multiAreaModal").classList.add("show"); }
-function closeMultiAreaModal(){ document.getElementById("multiAreaModal").classList.remove("show"); }
-function renderMultiAreaList(){
-  const container = document.getElementById("multiAreaList");
-  let html = "";
-  areas.forEach(a => {
-    const count = sites.filter(s => s.area === a).length;
-    html += '<label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;cursor:pointer;' + (multiAreaSelected.has(a) ? "background:#ede9fe" : "") + '">';
-    html += '<input type="checkbox" ' + (multiAreaSelected.has(a) ? "checked" : "") + ' onchange="toggleMultiArea(\'' + esc(a).replace(/'/g, "\\'") + '\', this.checked)" style="width:18px;height:18px">';
-    html += '<span style="font-weight:600">' + esc(a) + '</span><span style="color:#94a3b8;font-size:12px">(' + count + ')</span></label>';
-  });
-  container.innerHTML = html;
-  document.getElementById("multiAreaSelCount").textContent = multiAreaSelected.size;
-}
-function toggleMultiArea(area, checked){ if(checked) multiAreaSelected.add(area); else multiAreaSelected.delete(area); renderMultiAreaList(); }
-function multiAreaSelectAll(){ areas.forEach(a => multiAreaSelected.add(a)); renderMultiAreaList(); }
-function multiAreaDeselectAll(){ multiAreaSelected.clear(); renderMultiAreaList(); }
-function applyMultiAreaSelection(){
-  const toSelect = sites.filter(s => multiAreaSelected.has(s.area));
-  toSelect.forEach(s => selectedSites.add(s.id));
-  closeMultiAreaModal(); updateSelectBar(); render();
-  showToast("Selected", toSelect.length + " sites", "success");
-}
-
-function openBulkStatusModal(){
-  if(selectedSites.size === 0) return;
-  const status = prompt("Status (Available / Not Available / Under Maintenance):");
-  if(!status) return;
-  const valid = ["Available", "Not Available", "Under Maintenance"];
-  if(!valid.includes(status)){ showToast("Error", "Invalid", "danger"); return; }
-  selectedSites.forEach(id => {
-    const site = sites.find(s => s.id === id);
-    if(site && site.status !== status){
-      site.status = status;
-      bookingHistory.push({ id: "hist_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6), siteId: site.id, siteName: site.site, siteCode: site.siteCode, area: site.area, fromDate: site.fromDate, toDate: site.toDate, status: status, customer: site.customer, rate: site.rate, changedAt: new Date().toISOString(), changedBy: currentUser ? currentUser.username : "unknown", action: "bulk_status" });
-    }
-  });
-  persistNow().then(() => { showToast("Updated", "Status updated", "success"); render(); });
-}
-
-/* ============ REFRESH - FULL CACHE BUST + EXPAND ALL ============ */
-async function refreshPage(event){
-  if(event){ event.preventDefault(); event.stopPropagation(); }
-  const btn = document.querySelector(".btn-refresh-header");
-  if(!btn) return;
-  if(btn.disabled) return;
-  const originalHTML = btn.innerHTML;
-  btn.innerHTML = "⏳ Loading...";
-  btn.disabled = true;
-  btn.style.opacity = "0.7";
-  
-  try {
-    const result = await apiGet("/data");
-    
-    if(result && result.success === true && Array.isArray(result.sites)){
-      const cloudHasData = result.sites.length > 0;
-      const localHasData = sites.length > 0;
-      
-      if(!cloudHasData && localHasData){
-        const choice = confirm(
-          "⚠️ WARNING\n\nCloud returned 0 sites, but you have " + sites.length + " sites locally.\n\n" +
-          "Click OK = Keep local data (SAFE)\nClick Cancel = Load empty cloud (WILL WIPE)"
-        );
-        if(choice){
-          showToast("Safe", "Local data preserved", "warning");
-        } else {
-          sites = []; areas = [...DEFAULT_AREAS]; bookingHistory = [];
-          populateAreaDropdowns(); render();
-        }
-      } else {
-        sites = result.sites;
-        areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
-        bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
-        sites.forEach((s, i) => {
-          if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
-          if(!s.siteCode){ const m = (s.site||"").match(/^([A-Z]{2,5}\d{1,4})/i); s.siteCode = m ? m[1].toUpperCase() : ""; }
-        });
-        lastDataHash = JSON.stringify({ sites, areas });
-        
-        // CRITICAL: Reset UI state
-        areaFilters = {};
-        collapsedAreas = new Set(); // ← Empty set = ALL AREAS EXPANDED
-        selectedSites.clear();
-        activeStatuses.clear();
-        document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
-        const msAll = document.getElementById("msAll"); if(msAll) msAll.checked = false;
-        document.getElementById("search").value = "";
-        document.getElementById("dateFilterFrom").value = "";
-        document.getElementById("dateFilterTo").value = "";
-        imageCache = {};
-        imageFailed.clear();
-        
-        populateAreaDropdowns();
-        render();
-        updateSelectBar();
-        
-        showToast("Refreshed", sites.length + " sites, " + areas.length + " areas loaded", "success");
-      }
-    } else {
-      showToast("Warning", "Cloud invalid data. Local safe.", "warning");
-    }
-  } catch(e){
-    showToast("Error", "Refresh failed: " + e.message, "danger");
-  }
-  
-  btn.innerHTML = originalHTML;
-  btn.disabled = false;
-  btn.style.opacity = "1";
-}
-
+/* ============ AUTO RELEASE EXPIRED (FIXED: today wali bhi release) ============ */
 async function autoReleaseExpiredSites(){
-  let changed = false;
   const today = todayMidnight();
-  sites.forEach(s => {
-    if(s.toDate){
-      const toD = parseDDMMYYYY(s.toDate);
-      if(toD){
-        const toMid = new Date(toD); toMid.setHours(0,0,0,0);
-        const newStatus = toMid > today ? "Not Available" : "Available";
-        if(s.status !== newStatus && s.status !== "Under Maintenance"){ s.status = newStatus; changed = true; }
+  let changed = false;
+  sites.forEach(x => {
+    if(x.toDate){
+      const toD = parseDDMMYYYY(x.toDate);
+      if(!toD) return;
+      toD.setHours(0,0,0,0);
+      // ✅ Aaj wali bhi release (toD <= today)
+      // Sirf "Not Available" aur "Under Maintenance" ko release karo
+      // Available sites ko chhoona nahi
+      if(toD <= today && (x.status === "Not Available" || x.status === "Under Maintenance")){
+        bookingHistory.push({
+          site: x.site, siteCode: x.siteCode || "", area: x.area || "Unassigned",
+          customer: x.customer || "", fromDate: x.fromDate || "", toDate: x.toDate || "",
+          days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'),
+          status: x.status, location: x.location || "", rate: x.rate || ""
+        });
+        x.status = "Available"; x.customer = ""; x.fromDate = ""; x.toDate = "";
+        changed = true;
       }
     }
   });
   if(changed) await persistNow();
+  return changed;
 }
 
+/* ============ RENDER ============ */
+async function render(){
+  await autoReleaseExpiredSites();
+  updateCardsWithFilteredCounts();
+  if(collapsedAreas === null) collapsedAreas = new Set(areas);
+  const q = (document.getElementById("search").value || "").toLowerCase().trim();
+  const hasDateFilter = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
+  const isFiltering = activeStatuses.size > 0 || q || hasDateFilter;
+  if(isFiltering) collapsedAreas.clear();
+  const container = document.getElementById("areaContainer");
+  container.innerHTML = "";
+  visibleSites = [];
+  let areasToShow = [...areas];
+  const unassignedCount = sites.filter(s => !s.area || s.area === "Unassigned").length;
+  if(unassignedCount > 0 && !areasToShow.includes("Unassigned")) areasToShow.push("Unassigned");
+  let totalShown = 0;
+  for(const areaName of areasToShow){
+    const areaFilter = areaFilters[areaName] || "ALL";
+    const areaSites = sites.filter(s => {
+      const sArea = s.area || "Unassigned";
+      if(sArea !== areaName) return false;
+      if(!statusMatchesFilter(s.status)) return false;
+      if(areaFilter !== "ALL" && s.status !== areaFilter) return false;
+      if(!siteMatchesDateFilter(s)) return false;
+      const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
+      if(q && !hay.includes(q)) return false;
+      return true;
+    });
+    if(isFiltering && areaSites.length === 0) continue;
+    totalShown += areaSites.length;
+    areaSites.forEach(s => visibleSites.push(s));
+    const isCollapsed = collapsedAreas.has(areaName);
+    const block = document.createElement("div");
+    block.className = "area-block" + (isCollapsed ? " collapsed" : "");
+    const header = document.createElement("div");
+    header.className = "area-header";
+    header.onclick = (e) => { if(e.target.tagName === "BUTTON" || e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return; toggleAreaCollapse(areaName); };
+    const areaAvail = areaSites.filter(s => s.status === "Available").length;
+    const areaNot = areaSites.filter(s => s.status === "Not Available").length;
+    const areaMaint = areaSites.filter(s => s.status === "Under Maintenance").length;
+    const allAreaSel = areaSites.length > 0 && areaSites.every(s => selectedSites.has(s.id));
+    let headerHTML = '<input type="checkbox" class="select-all-cb" ' + (allAreaSel ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectAllInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.checked)">';
+    headerHTML += '<div class="area-name">' + esc(areaName) + '</div>';
+    headerHTML += '<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">';
+    headerHTML += '<span class="area-count" style="background:#fff;color:#1f2937">' + areaSites.length + '</span>';
+    headerHTML += '<span class="area-count" style="background:#16a34a;color:#fff">' + areaAvail + '</span>';
+    headerHTML += '<span class="area-count" style="background:#dc2626;color:#fff">' + areaNot + '</span>';
+    headerHTML += '<span class="area-count" style="background:#facc15;color:#111827">' + areaMaint + '</span>';
+    if(currentUser.role === "Admin"){ headerHTML += '<div class="area-actions"><button onclick="event.stopPropagation(); quickAddSiteInArea(\'' + esc(areaName).replace(/'/g, "\\'") + '\')">+ Add</button></div>'; }
+    headerHTML += '<span>' + (isCollapsed ? '▶' : '▼') + '</span></div>';
+    header.innerHTML = headerHTML;
+    block.appendChild(header);
+    const content = document.createElement("div");
+    content.className = "area-content";
+    if(areaSites.length === 0 && areaFilter === "ALL"){ content.innerHTML = '<div class="empty-area">No sites.</div>'; }
+    else {
+      let filterBarHTML = '<div class="area-filter-bar" onclick="event.stopPropagation()"><select onchange="setAreaFilter(\'' + esc(areaName).replace(/'/g, "\\'") + '\', this.value)">';
+      filterBarHTML += '<option value="ALL"' + (areaFilter === "ALL" ? ' selected' : '') + '>All</option>';
+      filterBarHTML += '<option value="Available"' + (areaFilter === "Available" ? ' selected' : '') + '>Available</option>';
+      filterBarHTML += '<option value="Not Available"' + (areaFilter === "Not Available" ? ' selected' : '') + '>Not Available</option>';
+      filterBarHTML += '<option value="Under Maintenance"' + (areaFilter === "Under Maintenance" ? ' selected' : '') + '>Under Maintenance</option>';
+      filterBarHTML += '</select><span style="font-size:11px;color:#64748b;margin-left:auto">Showing ' + areaSites.length + '</span></div>';
+      let cardsHTML = filterBarHTML + '<div class="site-cards-grid">';
+      areaSites.forEach((x, idx) => {
+        const globalIdx = sites.indexOf(x);
+        const isSel = selectedSites.has(x.id);
+        const days = calcDays(x.fromDate, x.toDate);
+        let sc = "s-available";
+        if(x.status === "Not Available") sc = "s-not"; else if(x.status === "Under Maintenance") sc = "s-maintenance";
+        let cardCls = "site-card";
+        if(x.status === "Not Available") cardCls += " not-card"; else if(x.status === "Under Maintenance") cardCls += " maint-card";
+        if(isSel) cardCls += " selected-card";
+        const histCount = bookingHistory.filter(h => h.site === x.site).length;
+        const histBtn = histCount > 0 ? '<button class="history-btn" onclick="showHistory(' + globalIdx + ')">' + histCount + '</button>' : '';
+        const mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
+        let imgHTML;
+        if(x.hasImage && !imageFailed.has(x.id)){ imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site" onerror="handleImgError(this, ' + globalIdx + ')">'; }
+        else { imgHTML = '<div class="site-card-img no-img" onclick="editSite(' + globalIdx + ')">📷</div>'; }
+        const actionBtns = (currentUser.role === "Admin" || currentUser.role === "Viewer") ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' + mapBtn + histBtn : mapBtn + histBtn;
+        cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
+        cardsHTML += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' onchange="toggleSelect(\'' + x.id + '\')"><span class="site-card-num">#' + (idx + 1) + '</span>' + imgHTML + '</div>';
+        cardsHTML += '<div class="site-card-body"><div class="site-card-name">' + esc(x.site) + (x.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;margin-left:6px">' + esc(x.siteCode) + '</span>' : '') + (x.location ? ' <span class="site-card-loc-inline">' + esc(x.location) + '</span>' : '') + '</div>';
+        cardsHTML += '<div class="site-card-meta">';
+        if(x.customer) cardsHTML += '<span class="site-card-comp">' + esc(x.customer) + '</span>';
+        if(x.rate) cardsHTML += '<span class="site-card-rate">' + formatINR(x.rate) + '/month</span>';
+        if(x.status !== "Available" && (x.fromDate || x.toDate)) cardsHTML += '<span class="site-card-dates">' + esc(x.fromDate || "") + ' - ' + esc(x.toDate || "") + (days > 0 ? ' <span class="days-badge">' + days + 'd</span>' : '') + '</span>';
+        cardsHTML += '</div></div>';
+        cardsHTML += '<div class="site-card-status"><span class="status ' + sc + '">' + esc(x.status) + '</span></div>';
+        cardsHTML += '<div class="site-card-actions">' + actionBtns + '</div>';
+        cardsHTML += '</div>';
+      });
+      cardsHTML += '</div>';
+      content.innerHTML = cardsHTML;
+    }
+    block.appendChild(content);
+    container.appendChild(block);
+  }
+  if(totalShown === 0 && isFiltering){ container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match your filters.</div>'; }
+  loadVisibleImages();
+  updateSelectBar();
+}
+
+function handleImgError(img, globalIdx){ img.outerHTML = '<div class="site-card-img no-img" onclick="editSite(' + globalIdx + ')">📷</div>'; const id = img.dataset.imgId; if(id) imageFailed.add(id); }
+async function loadVisibleImages(){
+  const imgs = document.querySelectorAll("img.site-card-img[data-img-id]");
+  for(const img of imgs){ const id = img.dataset.imgId; if(imageCache[id]){ img.src = imageCache[id]; } else { const data = await getImage(id); if(data){ img.src = data; } } }
+}
+function toggleSelect(id){
+  if(selectedSites.has(id)) selectedSites.delete(id); else selectedSites.add(id);
+  document.querySelectorAll("div.site-card[data-site-id]").forEach(card => {
+    if(card.dataset.siteId === id){
+      if(selectedSites.has(id)) card.classList.add("selected-card"); else card.classList.remove("selected-card");
+      const cb = card.querySelector('input.site-card-cb'); if(cb) cb.checked = selectedSites.has(id);
+    }
+  });
+  updateSelectBar();
+}
+function toggleSelectAllInArea(areaName, checked){
+  sites.forEach(s => { const sArea = s.area || "Unassigned"; if(sArea === areaName){ if(checked) selectedSites.add(s.id); else selectedSites.delete(s.id); } });
+  render();
+}
+function clearSelection(){ selectedSites.clear(); render(); }
+function updateSelectBar(){
+  const bar = document.getElementById("selectBar");
+  document.getElementById("selCount").textContent = selectedSites.size + " selected";
+  if(selectedSites.size > 0) bar.classList.add("show"); else bar.classList.remove("show");
+  const delBtn = document.getElementById("deleteBtn");
+  if(delBtn){ if(currentUser && currentUser.role === "Admin") delBtn.style.display = "inline-flex"; else delBtn.style.display = "none"; }
+}
+function toggleAreaCollapse(areaName){ if(collapsedAreas.has(areaName)) collapsedAreas.delete(areaName); else collapsedAreas.add(areaName); render(); }
+function setAreaFilter(areaName, value){ areaFilters[areaName] = value; render(); }
+
+/* ============ AREA MGMT ============ */
+function openAreaManager(){ if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; } renderAreaList(); document.getElementById("areaModal").classList.add("show"); }
+function closeAreaModal(){ selectedAreas.clear(); document.getElementById("areaModal").classList.remove("show"); }
+function renderAreaList(){
+  const list = document.getElementById("areaList"); if(!list) return;
+  if(areas.length === 0){ list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px">No areas.</div>'; updateAreaSelCount(); return; }
+  let html = '';
+  areas.forEach((a, i) => {
+    const count = sites.filter(s => s.area === a).length;
+    const isSel = selectedAreas.has(a);
+    html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '"><input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleAreaSelect(\'' + esc(a).replace(/'/g, "\\'") + '\')"><span class="name">' + esc(a) + ' (' + count + ')</span><button onclick="renameArea(' + i + ')" style="padding:6px 12px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Rename</button><button onclick="deleteArea(' + i + ')" style="padding:6px 12px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Delete</button></div>';
+  });
+  list.innerHTML = html; updateAreaSelCount();
+}
+function toggleAreaSelect(areaName){ if(selectedAreas.has(areaName)) selectedAreas.delete(areaName); else selectedAreas.add(areaName); renderAreaList(); }
+function toggleAllAreas(){ if(selectedAreas.size === areas.length) selectedAreas.clear(); else areas.forEach(a => selectedAreas.add(a)); renderAreaList(); }
+function updateAreaSelCount(){
+  const el = document.getElementById("areaSelCount"); if(el) el.textContent = selectedAreas.size + " selected";
+  const btn = document.getElementById("areaSelAllBtn");
+  if(btn){ if(selectedAreas.size === areas.length && areas.length > 0) btn.textContent = "Deselect All"; else btn.textContent = "Select All"; }
+}
+async function bulkDeleteAreas(){
+  if(selectedAreas.size === 0){ alert("Koi select nahi"); return; }
+  const arr = [...selectedAreas];
+  if(!confirm("Delete " + arr.length + " areas?")) return;
+  sites.forEach(s => { if(selectedAreas.has(s.area)) s.area = "Unassigned"; });
+  areas = areas.filter(a => !selectedAreas.has(a));
+  selectedAreas.clear();
+  await persistNow(); populateAreaDropdowns(); renderAreaList(); render();
+}
+async function addNewArea(){
+  const name = document.getElementById("newAreaName").value.trim();
+  if(!name){ alert("Naam likhein"); return; }
+  if(areas.includes(name)){ alert("Already exists"); return; }
+  areas.push(name);
+  await persistNow();
+  document.getElementById("newAreaName").value = "";
+  renderAreaList(); populateAreaDropdowns(); render();
+}
+async function renameArea(index){
+  const oldName = areas[index];
+  const newName = prompt("Naya name:", oldName);
+  if(!newName || newName.trim() === "") return;
+  if(newName !== oldName && areas.includes(newName)){ alert("Already exists"); return; }
+  const trimmed = newName.trim();
+  areas[index] = trimmed;
+  sites.forEach(s => { if(s.area === oldName) s.area = trimmed; });
+  await persistNow();
+  renderAreaList(); populateAreaDropdowns(); render();
+}
+async function deleteArea(index){
+  const areaName = areas[index];
+  const count = sites.filter(s => s.area === areaName).length;
+  if(count > 0){ if(!confirm(areaName + " mein " + count + " sites. Continue?")) return; sites.forEach(s => { if(s.area === areaName) s.area = "Unassigned"; }); }
+  else { if(!confirm("Delete '" + areaName + "'?")) return; }
+  areas.splice(index, 1);
+  await persistNow();
+  renderAreaList(); populateAreaDropdowns(); render();
+}
+
+/* ============ MULTI AREA ============ */
+function openMultiAreaSelect(){ if(currentUser.role !== "Admin"){ alert("Sirf Admin"); return; } multiAreaSelected.clear(); renderMultiAreaList(); document.getElementById("multiAreaModal").classList.add("show"); }
+function closeMultiAreaModal(){ multiAreaSelected.clear(); document.getElementById("multiAreaModal").classList.remove("show"); }
+function renderMultiAreaList(){
+  const list = document.getElementById("multiAreaList");
+  if(areas.length === 0){ list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px">No areas.</div>'; return; }
+  let html = '';
+  areas.forEach(a => {
+    const siteCount = sites.filter(s => s.area === a).length;
+    const isSel = multiAreaSelected.has(a);
+    html += '<div class="area-list-item' + (isSel ? ' sel' : '') + '"><input type="checkbox" ' + (isSel ? 'checked' : '') + ' onchange="toggleMultiArea(\'' + esc(a).replace(/'/g, "\\'") + '\')"><span class="name">' + esc(a) + ' <span style="color:#94a3b8;font-weight:400;font-size:12px">(' + siteCount + ' sites)</span></span></div>';
+  });
+  list.innerHTML = html;
+  document.getElementById("multiAreaSelCount").textContent = multiAreaSelected.size + " selected";
+}
+function toggleMultiArea(areaName){ if(multiAreaSelected.has(areaName)) multiAreaSelected.delete(areaName); else multiAreaSelected.add(areaName); renderMultiAreaList(); }
+function multiAreaSelectAll(){ areas.forEach(a => multiAreaSelected.add(a)); renderMultiAreaList(); }
+function multiAreaDeselectAll(){ multiAreaSelected.clear(); renderMultiAreaList(); }
+function applyMultiAreaSelection(){
+  if(multiAreaSelected.size === 0){ alert("Koi area select nahi"); return; }
+  let totalSites = 0;
+  sites.forEach(s => { const sArea = s.area || "Unassigned"; if(multiAreaSelected.has(sArea)){ selectedSites.add(s.id); totalSites++; } });
+  closeMultiAreaModal();
+  render();
+  alert("✅ " + totalSites + " sites selected");
+}
+
+/* ============ DATE DROPDOWNS ============ */
+const YEARS = [];
+const CUR_YEAR = new Date().getFullYear();
+for(let y = CUR_YEAR - 2; y <= 2050; y++) YEARS.push(y);
+function initDateDropdowns(){
+  [["ffrom_d","ffrom_m","ffrom_y"],["fto_d","fto_m","fto_y"]].forEach(ids => {
+    const d = document.getElementById(ids[0]), m = document.getElementById(ids[1]), y = document.getElementById(ids[2]);
+    d.innerHTML = ""; m.innerHTML = ""; y.innerHTML = "";
+    for(let i=1;i<=31;i++) d.innerHTML += '<option value="'+String(i).padStart(2,"0")+'">'+String(i).padStart(2,"0")+'</option>';
+    for(let i=0;i<12;i++) m.innerHTML += '<option value="'+String(i+1).padStart(2,"0")+'">'+String(i+1).padStart(2,"0")+'</option>';
+    YEARS.forEach(yy => y.innerHTML += '<option value="'+yy+'">'+yy+'</option>');
+  });
+}
+
+/* ============ HISTORY ============ */
+function openHistoryModal(){
+  historySearchQuery = "";
+  document.getElementById("historySearchInput").value = "";
+  renderHistoryList();
+  document.getElementById("historyModal").classList.add("show");
+}
+function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); historySearchQuery = ""; }
+function clearHistorySearch(){ document.getElementById("historySearchInput").value = ""; historySearchQuery = ""; renderHistoryList(); }
+function filterHistoryList(){ historySearchQuery = (document.getElementById("historySearchInput").value || "").toLowerCase().trim(); renderHistoryList(); }
+function renderHistoryList(){
+  const content = document.getElementById("historyContent");
+  document.getElementById("historyTitle").textContent = "All Booking History";
+  let list = bookingHistory.slice().reverse();
+  if(historySearchQuery){
+    list = list.filter(h => (h.site || "").toLowerCase().includes(historySearchQuery) || (h.siteCode || "").toLowerCase().includes(historySearchQuery) || (h.area || "").toLowerCase().includes(historySearchQuery));
+  }
+  if(list.length === 0){
+    content.innerHTML = '<div class="empty-history">' + (historySearchQuery ? "No matches found for '" + esc(historySearchQuery) + "'" : "No booking history found.") + '</div>';
+    return;
+  }
+  let html = "";
+  list.forEach(h => {
+    html += '<div class="history-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px"><b style="color:#6d28d9;font-size:14px">' + esc(h.site) + (h.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px;font-family:monospace">' + esc(h.siteCode) + '</span>' : '') + '</b><span style="font-size:11px;color:#64748b">Ended: ' + esc(h.endedOn || "—") + '</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">';
+    html += '<div><span style="color:#64748b">Area:</span> <b>' + esc(h.area || "—") + '</b></div>';
+    html += '<div><span style="color:#64748b">Company:</span> <b>' + esc(h.customer || "—") + '</b></div>';
+    html += '<div><span style="color:#64748b">Rate:</span> <b>' + (h.rate ? "₹" + Number(h.rate).toLocaleString('en-IN') : "—") + '</b></div>';
+    html += '<div><span style="color:#64748b">Days:</span> <b>' + (h.days || 0) + '</b></div>';
+    html += '<div><span style="color:#64748b">From:</span> <b>' + esc(h.fromDate || "—") + '</b></div>';
+    html += '<div><span style="color:#64748b">To:</span> <b>' + esc(h.toDate || "—") + '</b></div>';
+    html += '<div><span style="color:#64748b">Status:</span> <b>' + esc(h.status || "—") + '</b></div>';
+    html += '<div><span style="color:#64748b">Location:</span> <b>' + esc(h.location || "—") + '</b></div>';
+    html += '</div></div>';
+  });
+  content.innerHTML = html;
+}
+function downloadHistoryCSV(){
+  if(bookingHistory.length === 0){ alert("No history"); return; }
+  let csv = "Site,Site Code,Area,Customer,Rate,Days,From,To,Ended On,Status,Location\n";
+  bookingHistory.forEach(h => {
+    csv += '"' + (h.site || "").replace(/"/g, '""') + '","' + (h.siteCode || "").replace(/"/g, '""') + '","' + (h.area || "").replace(/"/g, '""') + '","' + (h.customer || "").replace(/"/g, '""') + '","' + (h.rate || "") + '","' + (h.days || 0) + '","' + (h.fromDate || "") + '","' + (h.toDate || "") + '","' + (h.endedOn || "") + '","' + (h.status || "") + '","' + (h.location || "").replace(/"/g, '""') + '"\n';
+  });
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = "booking-history-" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
+}
+
+/* ============ BACKUP ============ */
 function downloadBackup(){
   const data = { sites, areas, bookingHistory, exportedAt: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href = url; a.download = "site-backup-" + new Date().toISOString().slice(0, 10) + ".json"; a.click();
+  const a = document.createElement("a"); a.href = url; a.download = "backup-" + new Date().toISOString().slice(0,10) + ".json"; a.click();
 }
 function triggerImport(){ document.getElementById("importFile").click(); }
 function handleImportFile(event){
@@ -1343,64 +1313,126 @@ function handleImportFile(event){
   reader.onload = async (e) => {
     try {
       const data = JSON.parse(e.target.result);
-      if(!data.sites || !Array.isArray(data.sites)){ showToast("Error", "Invalid", "danger"); return; }
-      if(!confirm("Import " + data.sites.length + " sites? This will replace all data.")) return;
+      if(!data.sites || !Array.isArray(data.sites)){ alert("Invalid file"); return; }
+      if(!confirm("Import " + data.sites.length + " sites? This will replace all current data.")) return;
       sites = data.sites;
       areas = data.areas || [...DEFAULT_AREAS];
       bookingHistory = data.bookingHistory || [];
       sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
-      if(await persistNow()){ showToast("Imported", data.sites.length + " sites", "success"); populateAreaDropdowns(); render(); }
-    } catch(err){ showToast("Error", "Parse: " + err.message, "danger"); }
+      await persistNow();
+      populateAreaDropdowns();
+      render();
+      alert("✅ Imported");
+    } catch(err){ alert("Error: " + err.message); }
   };
   reader.readAsText(file);
   event.target.value = "";
 }
 
+/* ============ TELEGRAM ============ */
 function loadTelegramConfig(){
-  try {
-    const saved = localStorage.getItem("telegram_config");
-    if(saved) telegramConfig = { ...telegramConfig, ...JSON.parse(saved) };
-  } catch(e){}
-  const tokenEl = document.getElementById("tgBotToken");
-  const chatEl = document.getElementById("tgChatId");
-  const enabledEl = document.getElementById("tgEnabled");
-  const onlyEl = document.getElementById("tgOnlyNotAvail");
-  if(tokenEl) tokenEl.value = telegramConfig.botToken || "";
-  if(chatEl) chatEl.value = telegramConfig.chatId || "";
-  if(enabledEl) enabledEl.checked = !!telegramConfig.enabled;
-  if(onlyEl) onlyEl.checked = telegramConfig.onlyNotAvailMaint !== false;
+  const saved = localStorage.getItem("telegram_config");
+  if(saved){ try { telegramConfig = JSON.parse(saved); } catch(e){} }
+  document.getElementById("tgBotToken").value = telegramConfig.botToken || "";
+  document.getElementById("tgChatId").value = telegramConfig.chatId || "";
+  document.getElementById("tgEnabled").checked = !!telegramConfig.enabled;
+  document.getElementById("tgOnlyNotAvail").checked = telegramConfig.onlyNotAvailMaint !== false;
 }
-function openTelegramSettings(){ loadTelegramConfig(); document.getElementById("telegramStatus").style.display = "none"; document.getElementById("telegramModal").classList.add("show"); }
+function openTelegramSettings(){
+  loadTelegramConfig();
+  document.getElementById("telegramStatus").style.display = "none";
+  document.getElementById("telegramModal").classList.add("show");
+}
 function closeTelegramSettings(){ document.getElementById("telegramModal").classList.remove("show"); }
 async function saveTelegramSettings(){
-  const botToken = document.getElementById("tgBotToken").value.trim();
-  const chatId = document.getElementById("tgChatId").value.trim();
-  const enabled = document.getElementById("tgEnabled").checked;
-  const onlyNotAvailMaint = document.getElementById("tgOnlyNotAvail").checked;
-  if(enabled && (!botToken || !chatId)){ showToast("Error", "Required", "danger"); return; }
-  telegramConfig = { botToken, chatId, enabled, onlyNotAvailMaint };
+  telegramConfig = {
+    botToken: document.getElementById("tgBotToken").value.trim(),
+    chatId: document.getElementById("tgChatId").value.trim(),
+    enabled: document.getElementById("tgEnabled").checked,
+    onlyNotAvailMaint: document.getElementById("tgOnlyNotAvail").checked
+  };
   localStorage.setItem("telegram_config", JSON.stringify(telegramConfig));
-  showToast("Saved", "Settings saved", "success");
-  closeTelegramSettings();
+  document.getElementById("telegramStatus").style.display = "block";
+  document.getElementById("telegramStatus").style.background = "#ecfdf5";
+  document.getElementById("telegramStatus").style.color = "#065f46";
+  document.getElementById("telegramStatus").textContent = "✅ Settings saved!";
+  setTimeout(closeTelegramSettings, 1000);
 }
 async function testTelegram(){
-  const botToken = document.getElementById("tgBotToken").value.trim();
-  const chatId = document.getElementById("tgChatId").value.trim();
+  if(!telegramConfig.botToken || !telegramConfig.chatId){ alert("Token + Chat ID required"); return; }
   const status = document.getElementById("telegramStatus");
-  if(!botToken || !chatId){ status.style.display = "block"; status.style.background = "#fef2f2"; status.style.color = "#991b1b"; status.textContent = "Enter both"; return; }
-  status.style.display = "block"; status.style.background = "#f0f9ff"; status.style.color = "#0c4a6e"; status.textContent = "Sending...";
+  status.style.display = "block"; status.style.background = "#f0f9ff"; status.style.color = "#0c4a6e";
+  status.textContent = "Sending test...";
   try {
-    const res = await fetch("https://api.telegram.org/bot" + botToken + "/sendMessage", {
+    const res = await fetch("https://api.telegram.org/bot" + telegramConfig.botToken + "/sendMessage", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: chatId, text: "🧪 Test from Site Management", parse_mode: "Markdown" })
+      body: JSON.stringify({ chat_id: telegramConfig.chatId, text: "🧪 Test from Site Management", parse_mode: "Markdown" })
     });
     const data = await res.json();
     if(data.ok){ status.style.background = "#ecfdf5"; status.style.color = "#065f46"; status.textContent = "✅ Sent!"; }
     else { status.style.background = "#fef2f2"; status.style.color = "#991b1b"; status.textContent = "❌ " + (data.description || "Failed"); }
   } catch(e){ status.style.background = "#fef2f2"; status.style.color = "#991b1b"; status.textContent = "❌ " + e.message; }
 }
+async function notifyStatusChange(site, oldStatus, newStatus){
+  if(!telegramConfig.enabled || !telegramConfig.botToken || !telegramConfig.chatId) return;
+  if(telegramConfig.onlyNotAvailMaint && newStatus === "Available") return;
+  const msg = "🚨 *Site Status Change*\n*Site:* " + esc(site.site) + "\n*Code:* " + esc(site.siteCode || "—") + "\n*Area:* " + esc(site.area) + "\n*Status:* " + oldStatus + " → *" + newStatus + "*\n*Company:* " + esc(site.customer || "—") + "\n*Dates:* " + (site.fromDate || "—") + " to " + (site.toDate || "—");
+  try {
+    await fetch("https://api.telegram.org/bot" + telegramConfig.botToken + "/sendMessage", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: telegramConfig.chatId, text: msg, parse_mode: "Markdown" })
+    });
+  } catch(e){}
+}
 
-checkSession();
+/* ============ BULK (placeholder) ============ */
+function openBulkUpload(){ alert("Bulk upload feature available in full version"); }
+
+/* ============ BULK STATUS ============ */
+async function openBulkStatusModal(){
+  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
+  const status = prompt("Status select karein:\n1 = Available\n2 = Not Available\n3 = Under Maintenance\n\nType 1, 2 or 3:");
+  if(!status) return;
+  const statusMap = { "1": "Available", "2": "Not Available", "3": "Under Maintenance" };
+  const newStatus = statusMap[status.trim()];
+  if(!newStatus){ alert("Invalid"); return; }
+  sites.forEach(s => { if(selectedSites.has(s.id)) s.status = newStatus; });
+  await persistNow();
+  render();
+  alert("✅ Status updated for " + selectedSites.size + " sites");
+}
+
+/* ============ BULK DELETE ============ */
+async function bulkDeleteSelected(){
+  if(selectedSites.size === 0) return;
+  if(!confirm("Delete " + selectedSites.size + " sites?")) return;
+  const ids = [...selectedSites];
+  for(const id of ids){ if(imageCache[id]) delete imageCache[id]; try { await apiDelete("/image/" + encodeURIComponent(id)); } catch(e){} }
+  sites = sites.filter(s => !selectedSites.has(s.id));
+  selectedSites.clear();
+  await persistNow();
+  render();
+  alert("✅ Deleted");
+}
+
+/* ============ EXPORT ============ */
+function exportCSV(){
+  const list = visibleSites.length > 0 ? visibleSites : sites;
+  if(list.length === 0){ alert("No sites"); return; }
+  let csv = "Area,Site Code,Site,Location,Customer,Rate,Status,From,To,Days\n";
+  list.forEach(s => {
+    csv += '"' + (s.area || "").replace(/"/g, '""') + '","' + (s.siteCode || "").replace(/"/g, '""') + '","' + (s.site || "").replace(/"/g, '""') + '","' + (s.location || "").replace(/"/g, '""') + '","' + (s.customer || "").replace(/"/g, '""') + '","' + (s.rate || "") + '","' + (s.status || "") + '","' + (s.fromDate || "") + '","' + (s.toDate || "") + '","' + calcDays(s.fromDate, s.toDate) + '"\n';
+  });
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = "sites-" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
+}
+
+/* ============ INIT ============ */
+document.addEventListener("DOMContentLoaded", () => {
+  initDateDropdowns();
+  checkSession();
+});
 </script>
 </body>
 </html>
