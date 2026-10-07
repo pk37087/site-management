@@ -478,7 +478,6 @@ let activeStatuses = new Set();
 let telegramConfig = { botToken: "", chatId: "", enabled: false, onlyNotAvailMaint: true };
 let historySearchQuery = "", bulkPreviewData = [], bulkImageMatches = [], newLogoData = null;
 let pptSelectedFormat = "black";
-let dataLoadFailed = false; // Flag to prevent wipe
 
 function showToast(title, message, type){
   const container = document.getElementById("toastContainer");
@@ -615,7 +614,6 @@ function doLogout(){
 }
 function checkSession(){ const saved = sessionStorage.getItem("sms_user"); if(saved){ try { currentUser = JSON.parse(saved); showApp(); } catch(e){ sessionStorage.removeItem("sms_user"); } } }
 
-/* ============ AUTO REFRESH - SAFE ============ */
 function startAutoRefresh(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
   autoRefreshTimer = setInterval(async () => {
@@ -627,13 +625,8 @@ function startAutoRefresh(){
     
     try {
       const result = await apiGet("/data");
-      // SAFETY: Only update if valid AND has data
       if(result && result.success === true && Array.isArray(result.sites)){
-        // If cloud empty but we have local data, skip (prevent wipe)
-        if(result.sites.length === 0 && sites.length > 0){
-          console.warn("Auto-refresh: Cloud empty, keeping local");
-          return;
-        }
+        if(result.sites.length === 0 && sites.length > 0){ return; }
         const newHash = JSON.stringify({ sites: result.sites, areas: result.areas || [] });
         if(newHash !== lastDataHash){
           sites = result.sites;
@@ -652,7 +645,6 @@ function startAutoRefresh(){
 function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
 
-/* ============ API - CACHE BUST ============ */
 async function apiGet(path){ 
   try { 
     const separator = path.includes("?") ? "&" : "?";
@@ -670,42 +662,18 @@ async function apiGet(path){
     return { success: false, error: e.message }; 
   } 
 }
-async function apiPost(path, body){ 
-  try { 
-    const r = await fetch(API_URL + path, { 
-      method: "POST", 
-      headers: { "Content-Type": "application/json" }, 
-      body: JSON.stringify(body) 
-    }); 
-    return await r.json(); 
-  } catch(e){ 
-    return { success: false, error: e.message }; 
-  } 
-}
-async function apiDelete(path){ 
-  try { 
-    const r = await fetch(API_URL + path, { method: "DELETE" }); 
-    return await r.json(); 
-  } catch(e){ 
-    return { success: false, error: e.message }; 
-  } 
-}
+async function apiPost(path, body){ try { const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+async function apiDelete(path){ try { const r = await fetch(API_URL + path, { method: "DELETE" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 
-/* ============ LOAD DATA - SAFE ============ */
 async function loadCloudData(){
   const result = await apiGet("/data");
-  // CRITICAL: Only accept if valid success flag AND sites is array
   if(result && result.success === true && Array.isArray(result.sites)){
     const cloudHasData = result.sites.length > 0 || (result.areas && result.areas.length > 0);
     const localHasData = sites.length > 0 || areas.length > 0;
-    
-    // SAFETY: If cloud empty but local has data, don't wipe local
     if(!cloudHasData && localHasData){
       console.warn("Cloud returned empty — keeping local data");
-      dataLoadFailed = true;
       return false;
     }
-    
     sites = result.sites;
     areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
     bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
@@ -714,15 +682,10 @@ async function loadCloudData(){
       if(!s.siteCode){ const m = (s.site||"").match(/^([A-Z]{2,5}\d{1,4})/i); s.siteCode = m ? m[1].toUpperCase() : ""; }
     });
     lastDataHash = JSON.stringify({ sites, areas });
-    dataLoadFailed = false;
     return true;
   }
-  console.warn("Cloud load failed:", result);
-  dataLoadFailed = true;
   return false;
 }
-
-/* ============ SAVE DATA - SAFE ============ */
 async function persistNow(){
   try {
     const result = await apiPost("/data", { 
@@ -740,7 +703,6 @@ async function persistNow(){
     return false; 
   }
 }
-
 async function saveImage(key, dataUrl){ const result = await apiPost("/image/" + encodeURIComponent(key), { data: dataUrl }); if(result && result.success){ imageCache[key] = dataUrl; imageFailed.delete(key); } return result; }
 async function getImage(key){
   if(imageCache[key]) return imageCache[key];
@@ -883,12 +845,14 @@ function debouncedRender(){
   renderDebounceTimer = setTimeout(render, 200);
 }
 
+/* ============ RENDER - FIXED: Site ke area ko automatically include karega ============ */
 async function render(){
   updateCardsWithFilteredCounts();
   const multiLabel = document.getElementById("multiStatusLabel");
   const multiCount = document.getElementById("multiStatusCount");
   if(activeStatuses.size === 0){ multiLabel.textContent = "Status: All"; multiCount.style.display = "none"; }
   else { multiLabel.textContent = "Status: " + activeStatuses.size; multiCount.textContent = activeStatuses.size; multiCount.style.display = "inline"; }
+  
   const badge = document.getElementById("filterBadge");
   const hasDate = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
   const hasSearch = document.getElementById("search").value.trim();
@@ -903,24 +867,37 @@ async function render(){
   const filteredSites = getFilteredSites();
   visibleSites = filteredSites;
 
+  // CRITICAL FIX: Build area set from BOTH areas array AND sites array
+  const areaSet = new Set(areas);
+  filteredSites.forEach(s => { if(s.area) areaSet.add(s.area); });
+  const allAreaNames = Array.from(areaSet).sort((a,b) => a.localeCompare(b));
+  
+  // Build grouped sites
   const grouped = {};
-  areas.forEach(a => grouped[a] = []);
-  filteredSites.forEach(s => { if(!grouped[s.area]) grouped[s.area] = []; grouped[s.area].push(s); });
+  allAreaNames.forEach(a => grouped[a] = []);
+  filteredSites.forEach(s => {
+    const siteArea = s.area || "Unassigned";
+    if(!grouped[siteArea]) grouped[siteArea] = [];
+    grouped[siteArea].push(s);
+  });
 
   let html = "";
-  const sortedAreas = Object.keys(grouped).sort((a,b) => a.localeCompare(b));
 
-  for(const area of sortedAreas){
+  for(const area of allAreaNames){
     const areaSites = grouped[area] || [];
+    
+    // Skip empty areas (unless searching)
     if(areaSites.length === 0 && !document.getElementById("search").value.trim() && activeStatuses.size === 0 && !hasDate) continue;
+    
     const isCollapsed = collapsedAreas.has(area);
     if(!areaFilters[area]) areaFilters[area] = "ALL";
     const areaStatusFilter = areaFilters[area];
     let displaySites = areaSites;
     if(areaStatusFilter !== "ALL") displaySites = areaSites.filter(s => s.status === areaStatusFilter);
     if(activeStatuses.size > 0) displaySites = displaySites.filter(s => activeStatuses.has(s.status));
+    
     const areaStatusCounts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
-    areaSites.forEach(s => areaStatusCounts[s.status]++);
+    areaSites.forEach(s => { if(areaStatusCounts[s.status] !== undefined) areaStatusCounts[s.status]++; });
 
     html += '<div class="area-block ' + (isCollapsed ? "collapsed" : "") + '" data-area="' + esc(area) + '">';
     html += '<div class="area-header" onclick="toggleAreaCollapse(event, \'' + esc(area).replace(/'/g, "\\'") + '\')">';
@@ -1786,7 +1763,6 @@ async function saveLogo(){
   closeBulkModal();
 }
 
-/* ============ REFRESH - SAFE VERSION ============ */
 async function refreshPage(event){
   if(event){ event.preventDefault(); event.stopPropagation(); }
   const btn = document.querySelector(".btn-refresh-header");
@@ -1800,12 +1776,10 @@ async function refreshPage(event){
   try {
     const result = await apiGet("/data");
     
-    // CRITICAL: Only update if response valid AND success flag
     if(result && result.success === true && Array.isArray(result.sites)){
       const cloudHasData = result.sites.length > 0;
       const localHasData = sites.length > 0;
       
-      // SAFETY CHECK: Cloud empty but local has data → ask user
       if(!cloudHasData && localHasData){
         const choice = confirm(
           "⚠️ WARNING\n\n" +
@@ -1818,19 +1792,15 @@ async function refreshPage(event){
         );
         
         if(choice){
-          // Keep local data
-          showToast("Safe", "Local data preserved (" + sites.length + " sites). Check Worker KV binding!", "warning");
+          showToast("Safe", "Local data preserved (" + sites.length + " sites)", "warning");
         } else {
-          // User chose to load empty cloud
           sites = [];
           areas = Array.isArray(result.areas) && result.areas.length > 0 ? result.areas : [...DEFAULT_AREAS];
           bookingHistory = [];
           populateAreaDropdowns();
           render();
-          showToast("Loaded", "Cloud data loaded (empty)", "warning");
         }
       } else {
-        // Normal case: update with cloud data
         sites = result.sites;
         areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
         bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
@@ -1840,7 +1810,6 @@ async function refreshPage(event){
         });
         lastDataHash = JSON.stringify({ sites, areas });
         
-        // Reset UI
         areaFilters = {};
         collapsedAreas = new Set();
         selectedSites.clear();
@@ -1858,10 +1827,10 @@ async function refreshPage(event){
         showToast("Refreshed", sites.length + " sites, " + areas.length + " areas loaded", "success");
       }
     } else {
-      showToast("Warning", "Cloud returned invalid data. Local data kept safe.", "warning");
+      showToast("Warning", "Cloud invalid data. Local safe.", "warning");
     }
   } catch(e){
-    showToast("Error", "Refresh failed: " + e.message + " — Local data safe", "danger");
+    showToast("Error", "Refresh failed: " + e.message, "danger");
   }
   
   btn.innerHTML = originalHTML;
