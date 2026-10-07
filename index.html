@@ -1265,9 +1265,6 @@ function handleImageUpload(e){
   reader.readAsDataURL(file);
   e.target.value = "";
 }
-function compressImage(dataUrl, maxW, quality, cb){
-  compressImageSmart(dataUrl, cb);
-}
 function compressImageSmart(dataUrl, cb){
   const img = new Image();
   img.onload = () => {
@@ -1359,11 +1356,20 @@ function getGoogleMapsUrl(site){
 }
 function openMap(i){ const url = getGoogleMapsUrl(sites[i]); if(!url){ alert("No location set"); return; } window.open(url, "_blank"); }
 
-/* ============ PPT GENERATOR - Image 80% + FIXED Clickable LOCATION & IMAGE ============ */
-async function generateSelectedSitesPPT(){
-  if(selectedSites.size === 0){ alert("Pehle kam se kam ek site select karein"); return; }
+/* ============================================================
+   PPT GENERATOR — Real Image + No Stretch + Details Below
+   ============================================================ */
+async function generateSelectedSitesPPT() {
+  if (selectedSites.size === 0) {
+    alert("Pehle kam se kam ek site select karein");
+    return;
+  }
+
   const list = sites.filter(s => selectedSites.has(s.id));
-  if(list.length === 0){ alert("Koi site nahi mili"); return; }
+  if (list.length === 0) {
+    alert("Koi site nahi mili");
+    return;
+  }
 
   const uniqueAreas = [...new Set(list.map(s => s.area || "Unassigned"))];
   const singleArea = uniqueAreas.length === 1 ? uniqueAreas[0] : null;
@@ -1376,7 +1382,7 @@ async function generateSelectedSitesPPT(){
     pptx.title = singleArea ? "Site Report - " + singleArea : "Selected Sites Report";
     pptx.author = COMPANY_NAME;
 
-    // ---------- COVER SLIDE ----------
+    // ========== COVER SLIDE ==========
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
@@ -1403,7 +1409,7 @@ async function generateSelectedSitesPPT(){
     slide.addText("Generated", { x: 8.7, y: 5.4, w: 4, h: 0.3, fontSize: 9, bold: true, color: "93C5FD", charSpacing: 2 });
     slide.addText(new Date().toLocaleString('en-GB'), { x: 8.7, y: 5.7, w: 4, h: 0.4, fontSize: 12, bold: true, color: "FFFFFF" });
 
-    // ---------- EXECUTIVE SUMMARY SLIDE ----------
+    // ========== EXECUTIVE SUMMARY SLIDE ==========
     const avail = list.filter(s => s.status === "Available").length;
     const notAvail = list.filter(s => s.status === "Not Available").length;
     const maint = list.filter(s => s.status === "Under Maintenance").length;
@@ -1413,36 +1419,38 @@ async function generateSelectedSitesPPT(){
     slide.addText("EXECUTIVE SUMMARY", { x: 0.7, y: 0.5, w: 12, h: 0.3, fontSize: 11, bold: true, color: "1E40AF", charSpacing: 3 });
     slide.addText("Site Availability Overview", { x: 0.7, y: 0.85, w: 12, h: 0.7, fontSize: 32, bold: true, color: "0F172A" });
 
-    const cardY = 2.2;
-    const cardH = 1.8;
-    const cardW = 2.9;
-    const gap = 0.15;
+    const cardY = 2.2, cardH = 1.8, cardW = 2.9, gap = 0.15;
     const totalW = cardW * 4 + gap * 3;
     const startX = (13.33 - totalW) / 2;
 
+    // Total
     slide.addShape(pptx.ShapeType.roundRect, { x: startX, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
     slide.addShape(pptx.ShapeType.rect, { x: startX, y: cardY, w: 0.08, h: cardH, fill: { color: "64748B" } });
     slide.addText("TOTAL SITES", { x: startX + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "64748B", charSpacing: 2 });
     slide.addText(String(list.length), { x: startX + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "0F172A" });
 
+    // Available
     const x2 = startX + cardW + gap;
     slide.addShape(pptx.ShapeType.roundRect, { x: x2, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
     slide.addShape(pptx.ShapeType.rect, { x: x2, y: cardY, w: 0.08, h: cardH, fill: { color: "10B981" } });
     slide.addText("AVAILABLE", { x: x2 + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "047857", charSpacing: 2 });
     slide.addText(String(avail), { x: x2 + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "047857" });
 
+    // Not Available
     const x3 = startX + (cardW + gap) * 2;
     slide.addShape(pptx.ShapeType.roundRect, { x: x3, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
     slide.addShape(pptx.ShapeType.rect, { x: x3, y: cardY, w: 0.08, h: cardH, fill: { color: "EF4444" } });
     slide.addText("NOT AVAILABLE", { x: x3 + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "B91C1C", charSpacing: 2 });
     slide.addText(String(notAvail), { x: x3 + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "B91C1C" });
 
+    // Maintenance
     const x4 = startX + (cardW + gap) * 3;
     slide.addShape(pptx.ShapeType.roundRect, { x: x4, y: cardY, w: cardW, h: cardH, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 }, rectRadius: 0.1 });
     slide.addShape(pptx.ShapeType.rect, { x: x4, y: cardY, w: 0.08, h: cardH, fill: { color: "F59E0B" } });
     slide.addText("MAINTENANCE", { x: x4 + 0.3, y: cardY + 0.3, w: cardW - 0.5, h: 0.3, fontSize: 10, bold: true, color: "B45309", charSpacing: 2 });
     slide.addText(String(maint), { x: x4 + 0.3, y: cardY + 0.7, w: cardW - 0.5, h: 0.9, fontSize: 44, bold: true, color: "B45309" });
 
+    // Progress bar
     slide.addShape(pptx.ShapeType.rect, { x: 0.7, y: 4.6, w: 11.93, h: 0.15, fill: { color: "E2E8F0" } });
     if(list.length > 0){
       let barX = 0.7;
@@ -1454,95 +1462,97 @@ async function generateSelectedSitesPPT(){
 
     slide.addText("Generated by " + COMPANY_NAME, { x: 0.7, y: 6.7, w: 12, h: 0.3, fontSize: 9, color: "94A3B8", align: "center" });
 
-    // ---------- SITE SLIDES - Image 80% + FIXED Hyperlinks ----------
-    for(let i = 0; i < list.length; i++){
+    // ========== SITE SLIDES — Real Image + No Stretch + Details Below ==========
+    const HEADER_H = 0.75;
+    const DETAILS_H = 1.45;
+    const IMG_Y = HEADER_H;
+    const IMG_H = 7.5 - HEADER_H - DETAILS_H;
+    const IMG_W = 13.33;
+
+    for (let i = 0; i < list.length; i++) {
       const x = list[i];
-      showProgress("Generating PPT...", "Slide " + (i+1) + " / " + list.length);
+      showProgress("Generating PPT...", "Slide " + (i + 1) + " / " + list.length);
 
       const days = calcDays(x.fromDate, x.toDate);
       let stColor = "059669", stText = "Available";
-      if(x.status === "Not Available"){ stColor = "DC2626"; stText = "Not Available"; }
-      else if(x.status === "Under Maintenance"){ stColor = "D97706"; stText = "Under Maintenance"; }
+      if (x.status === "Not Available") { stColor = "DC2626"; stText = "Not Available"; }
+      else if (x.status === "Under Maintenance") { stColor = "D97706"; stText = "Under Maintenance"; }
 
       let imgData = null;
-      if(x.hasImage){
+      if (x.hasImage) {
         imgData = imageCache[x.id] || await getImage(x.id);
       }
-
       const mapLink = getGoogleMapsUrl(x);
 
       slide = pptx.addSlide();
       slide.background = { color: "FFFFFF" };
 
-      // ---------- TOP BAR ----------
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.65, fill: { color: "1E3A8A" } });
-      slide.addShape(pptx.ShapeType.roundRect, { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fill: { color: "3B82F6" }, line: { color: "FFFFFF", width: 1 }, rectRadius: 0.08 });
-      slide.addText(String(i+1), { x: 0.2, y: 0.08, w: 0.48, h: 0.48, fontSize: 16, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-      slide.addText(x.site, { x: 0.78, y: 0.05, w: 8.5, h: 0.55, fontSize: 14, bold: true, color: "FFFFFF", valign: "middle" });
-      slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, line: { color: stColor }, rectRadius: 0.15 });
-      slide.addText(stText.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+      // HEADER
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: HEADER_H, fill: { color: "1E3A8A" } });
+      slide.addShape(pptx.ShapeType.roundRect, { x: 0.25, y: 0.13, w: 0.5, h: 0.5, fill: { color: "3B82F6" }, line: { color: "FFFFFF", width: 1 }, rectRadius: 0.08 });
+      slide.addText(String(i + 1), { x: 0.25, y: 0.13, w: 0.5, h: 0.5, fontSize: 18, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+      slide.addText(x.site, { x: 0.9, y: 0.1, w: 9, h: 0.55, fontSize: 18, bold: true, color: "FFFFFF", valign: "middle" });
+      slide.addShape(pptx.ShapeType.roundRect, { x: 10.7, y: 0.18, w: 2.4, h: 0.4, fill: { color: stColor }, line: { color: stColor }, rectRadius: 0.15 });
+      slide.addText(stText.toUpperCase(), { x: 10.7, y: 0.18, w: 2.4, h: 0.4, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
 
-      // ---------- IMAGE (80% - CLICKABLE via hyperlink) ----------
-      const imgY = 0.65;
-      const imgH = 5.75;
-      if(imgData){
+      // IMAGE AREA (No Stretch)
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: IMG_Y, w: IMG_W, h: IMG_H, fill: { color: "F1F5F9" } });
+
+      if (imgData) {
         try {
-          const imgOpts = { data: imgData, x: 0, y: imgY, w: 13.33, h: imgH, sizing: { type: "contain", w: 13.33, h: imgH } };
-          if(mapLink) imgOpts.hyperlink = { url: mapLink };
+          const imgOpts = {
+            data: imgData,
+            x: 0, y: IMG_Y,
+            w: IMG_W, h: IMG_H,
+            sizing: { type: "contain", w: IMG_W, h: IMG_H }
+          };
+          if (mapLink) imgOpts.hyperlink = { url: mapLink };
           slide.addImage(imgOpts);
-        } catch(e){ console.warn("Image add fail:", e); }
-      } else {
-        slide.addShape(pptx.ShapeType.rect, { x: 0, y: imgY, w: 13.33, h: imgH, fill: { color: "F1F5F9" } });
-        // No Image text - clickable if map link exists
-        if(mapLink){
-          slide.addText([
-            { text: "No Image - Click for Map", options: { hyperlink: { url: mapLink }, color: "0563C1", underline: true, fontSize: 26 } }
-          ], { x: 0, y: imgY, w: 13.33, h: imgH, align: "center", valign: "middle" });
-        } else {
-          slide.addText("No Image", { x: 0, y: imgY, w: 13.33, h: imgH, fontSize: 26, color: "94A3B8", align: "center", valign: "middle" });
+        } catch (e) {
+          console.warn("Image add failed:", e);
+          addNoImagePlaceholder(slide, pptx, IMG_Y, IMG_W, IMG_H, mapLink);
         }
-      }
-
-      // ---------- DETAILS BAR (20% - 0.75 inches) ----------
-      const detY = 6.4;
-      const detH = 0.75;
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: detY, w: 13.33, h: detH, fill: { color: "F8FAFC" } });
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: detY, w: 13.33, h: 0.05, fill: { color: "1E40AF" } });
-
-      const colW = 13.33 / 4;
-
-      // Column 1: AREA
-      slide.addText("AREA", { x: 0.15, y: detY + 0.08, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF", charSpacing: 1.5 });
-      slide.addText(x.area || "Unassigned", { x: 0.15, y: detY + 0.34, w: colW - 0.3, h: 0.35, fontSize: 16, bold: true, color: "0F172A", valign: "middle" });
-
-      // Column 2: LOCATION - FIXED HYPERLINK using array format
-      slide.addText("LOCATION", { x: colW + 0.15, y: detY + 0.08, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF", charSpacing: 1.5 });
-      const locText = x.location || "—";
-      if(mapLink && x.location){
-        slide.addText([
-          { text: locText, options: { hyperlink: { url: mapLink }, color: "0563C1", underline: true, bold: true, fontSize: 14 } }
-        ], {
-          x: colW + 0.15, y: detY + 0.34, w: colW - 0.3, h: 0.35, valign: "middle"
-        });
       } else {
-        slide.addText(locText, { x: colW + 0.15, y: detY + 0.34, w: colW - 0.3, h: 0.35, fontSize: 14, bold: true, color: "0F172A", valign: "middle" });
+        addNoImagePlaceholder(slide, pptx, IMG_Y, IMG_W, IMG_H, mapLink);
       }
 
-      // Column 3: COMPANY
-      slide.addText("COMPANY", { x: colW*2 + 0.15, y: detY + 0.08, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF", charSpacing: 1.5 });
-      slide.addText(x.customer || "—", { x: colW*2 + 0.15, y: detY + 0.34, w: colW - 0.3, h: 0.35, fontSize: 14, bold: true, color: "059669", valign: "middle" });
+      // DETAILS PANEL (Below)
+      const DET_Y = IMG_Y + IMG_H;
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: DET_Y, w: 13.33, h: DETAILS_H, fill: { color: "FFFFFF" } });
+      slide.addShape(pptx.ShapeType.rect, { x: 0, y: DET_Y, w: 13.33, h: 0.06, fill: { color: "1E40AF" } });
 
-      // Column 4: BOOKING
-      slide.addText("BOOKING", { x: colW*3 + 0.15, y: detY + 0.08, w: colW - 0.3, h: 0.22, fontSize: 10, bold: true, color: "1E40AF", charSpacing: 1.5 });
-      const bookingText = (x.fromDate || "") + " → " + (x.toDate || "") + (days > 0 ? " (" + days + "d)" : "");
-      slide.addText(bookingText, { x: colW*3 + 0.15, y: detY + 0.34, w: colW - 0.3, h: 0.35, fontSize: 13, bold: true, color: "0F172A", valign: "middle" });
+      // Row 1
+      const row1Y = DET_Y + 0.15;
+      slide.addText("AREA", { x: 0.3, y: row1Y, w: 2, h: 0.22, fontSize: 9, bold: true, color: "1E40AF", charSpacing: 1.5 });
+      slide.addText(x.area || "—", { x: 0.3, y: row1Y + 0.24, w: 2.8, h: 0.35, fontSize: 14, bold: true, color: "0F172A", valign: "middle" });
 
-      // ---------- FOOTER ----------
-      slide.addShape(pptx.ShapeType.rect, { x: 0, y: 7.15, w: 13.33, h: 0.35, fill: { color: "0F172A" } });
-      slide.addText(COMPANY_NAME + "  •  Page " + (i + 3), { x: 0.5, y: 7.18, w: 12.33, h: 0.28, fontSize: 8, color: "94A3B8", align: "center", valign: "middle" });
+      slide.addText("LOCATION", { x: 3.4, y: row1Y, w: 4, h: 0.22, fontSize: 9, bold: true, color: "1E40AF", charSpacing: 1.5 });
+      if (mapLink && x.location) {
+        slide.addText([{ text: x.location, options: { hyperlink: { url: mapLink }, color: "0563C1", underline: true, bold: true, fontSize: 13 } }], { x: 3.4, y: row1Y + 0.24, w: 5.8, h: 0.35, valign: "middle" });
+      } else {
+        slide.addText(x.location || "—", { x: 3.4, y: row1Y + 0.24, w: 5.8, h: 0.35, fontSize: 13, bold: true, color: "0F172A", valign: "middle" });
+      }
+
+      slide.addText("COMPANY", { x: 9.5, y: row1Y, w: 3.5, h: 0.22, fontSize: 9, bold: true, color: "1E40AF", charSpacing: 1.5 });
+      slide.addText(x.customer || "—", { x: 9.5, y: row1Y + 0.24, w: 3.5, h: 0.35, fontSize: 13, bold: true, color: "059669", valign: "middle" });
+
+      // Row 2
+      const row2Y = DET_Y + 0.82;
+      slide.addText("BOOKING PERIOD", { x: 0.3, y: row2Y, w: 3, h: 0.22, fontSize: 9, bold: true, color: "1E40AF", charSpacing: 1.5 });
+      slide.addText((x.fromDate || "—") + "  →  " + (x.toDate || "—"), { x: 0.3, y: row2Y + 0.24, w: 6, h: 0.35, fontSize: 13, bold: true, color: "0F172A", valign: "middle" });
+
+      if (days > 0) {
+        slide.addText("DURATION", { x: 7.5, y: row2Y, w: 2, h: 0.22, fontSize: 9, bold: true, color: "1E40AF", charSpacing: 1.5 });
+        slide.addShape(pptx.ShapeType.roundRect, { x: 7.5, y: row2Y + 0.24, w: 1.8, h: 0.35, fill: { color: "EEF2FF" }, line: { color: "C7D2FE", width: 1 }, rectRadius: 0.1 });
+        slide.addText(days + " days", { x: 7.5, y: row2Y + 0.24, w: 1.8, h: 0.35, fontSize: 12, bold: true, color: "4338CA", align: "center", valign: "middle" });
+      }
+
+      if (x.lat && x.lng) {
+        slide.addText("GPS: " + x.lat + ", " + x.lng, { x: 9.5, y: row2Y + 0.28, w: 3.5, h: 0.3, fontSize: 10, color: "64748B", italic: true });
+      }
     }
 
-    // ---------- END SLIDE ----------
+    // ========== END SLIDE ==========
     slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 7.5, fill: { color: "1E3A8A" } });
@@ -1556,18 +1566,32 @@ async function generateSelectedSitesPPT(){
 
     let msg = "✅ PPT ban gayi!\n\nFile: " + fileName + "\n\n";
     msg += "📊 Total slides: " + (list.length + 3) + "\n\n";
-    msg += "🖱️ HYPERLINK TEST KARNE KA TARIKA:\n";
-    msg += "1. PPT kholo\n";
-    msg += "2. F5 dabao (Slide Show mode)\n";
-    msg += "3. LOCATION ya IMAGE par click karo\n";
-    msg += "4. Google Maps khulega ✅\n\n";
-    msg += "⚠️ Editing mode me click kaam nahi karega. F5 (Slide Show) zaroor use karo.";
+    msg += "🖼️ Image poori dikhegi (koi crop/stretch nahi)\n";
+    msg += "📋 Details image ke neeche\n";
+    msg += "🖱️ Image ya Location par click → Google Maps khulega\n\n";
+    msg += "⚠️ Slide Show (F5) mode me hyperlinks kaam karenge.";
     alert(msg);
 
-  } catch(e){
+  } catch (e) {
     hideProgress();
     alert("PPT generate nahi ho payi: " + e.message);
     console.error(e);
+  }
+}
+
+function addNoImagePlaceholder(slide, pptx, y, w, h, mapLink) {
+  slide.addShape(pptx.ShapeType.rect, {
+    x: 0, y: y, w: w, h: h,
+    fill: { color: "F1F5F9" },
+    line: { color: "CBD5E1", width: 2, dashType: "dash" }
+  });
+  if (mapLink) {
+    slide.addText(
+      [{ text: "📍 No Image — Click to View on Map", options: { hyperlink: { url: mapLink }, color: "0563C1", underline: true, fontSize: 22, bold: true } }],
+      { x: 0, y: y, w: w, h: h, align: "center", valign: "middle" }
+    );
+  } else {
+    slide.addText("📷 No Image Available", { x: 0, y: y, w: w, h: h, fontSize: 22, color: "94A3B8", align: "center", valign: "middle" });
   }
 }
 
