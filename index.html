@@ -4,11 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <title>Site Management System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{max-width:100%}
@@ -45,7 +44,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;position:relative;overflow:hidden;cursor:pointer;min-height:100px;display:flex;flex-direction:column;justify-content:center;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
 .card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,0.08);border-color:#cbd5e1}
 .card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
-.card::after{content:'';position:absolute;top:-30px;right:-30px;width:90px;height:90px;border-radius:50%;background:rgba(148,163,184,0.06);pointer-events:none}
 .card .card-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.7px;display:block;margin-bottom:6px}
 .card b{font-size:34px;font-weight:800;color:#0f172a;line-height:1;display:block;letter-spacing:-0.5px}
 .card .card-icon{position:absolute;top:14px;right:16px;font-size:20px;opacity:0.15;font-weight:900}
@@ -62,7 +60,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;height:36px;white-space:nowrap}
 .filter-box{display:flex;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;flex-wrap:nowrap;height:36px}
 .filter-box .date-group{display:flex;align-items:center;background:#fff;border-right:1px solid #cbd5e1;height:100%}
-.filter-box .date-input{padding:0 8px;border:0;font-family:inherit;font-size:12px !important;width:95px;background:#fff;color:#0f172a;outline:none;height:100%}
+.filter-box .date-input{padding:0 8px;border:0;font-family:inherit;font-size:12px !important;width:110px;background:#fff;color:#0f172a;outline:none;height:100%}
+.filter-box .date-input:focus{background:#eff6ff}
+.filter-box .date-input::placeholder{color:#94a3b8;font-size:11px}
 .filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700;display:flex;align-items:center}
 .filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-family:inherit;font-weight:700;font-size:11px;height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
 .filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none;align-items:center}
@@ -71,19 +71,21 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .multi-status-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,0.15);z-index:100;min-width:220px;padding:6px}
 .multi-status-panel.show{display:block}
 .multi-status-panel label{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
+.multi-status-panel label:hover{background:#f1f5f9}
 .multi-status-panel label input{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6}
 .multi-status-panel .ms-divider{height:1px;background:#e2e8f0;margin:6px 4px}
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:8px 10px;border-radius:8px;margin-bottom:12px;display:none;gap:6px;flex-wrap:wrap;align-items:stretch}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 12px;border-radius:5px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;min-height:36px;min-width:90px}
 .select-bar button{padding:0 12px;font-size:12px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;border:0;color:#fff;min-height:36px;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:110px}
+.select-bar .ppt-sel{background:#7c3aed}
 .select-bar .bulk-status-sel{background:#0ea5e9}
 .select-bar .clear-sel{background:#fff;color:#334155;border:1px solid #cbd5e1}
 .select-bar .delete-sel{background:#dc2626}
 #areaContainer{display:grid;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:12px;align-items:start}
 .area-block{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;height:fit-content}
 .area-header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:8px;border-radius:14px 14px 0 0}
-.area-header .area-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.area-header .area-name{font-size:13px;font-weight:700}
 .area-header .area-count{background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
 .area-block.collapsed .area-content{display:none}
 .empty-area{padding:18px;text-align:center;color:#94a3b8;font-style:italic;font-size:12px}
@@ -165,6 +167,25 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .history-search-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:14px;display:flex;gap:8px;align-items:center}
 .history-search-box input{flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;outline:none;font-size:14px !important;height:40px}
 .history-search-box button{padding:0 16px;height:40px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px}
+.bulk-tab-bar{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #e2e8f0;overflow-x:auto}
+.bulk-tab{flex:1;padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-family:inherit;min-width:140px;white-space:nowrap;margin-bottom:-2px}
+.bulk-tab.active{color:#3b82f6;border-bottom-color:#3b82f6}
+.bulk-tab:hover{background:#f8fafc}
+.bulk-tab-content{display:none}
+.bulk-tab-content.active{display:block}
+.bulk-info{background:#fffbeb;border:1px solid #fcd34d;padding:12px;border-radius:8px;margin-bottom:12px;font-size:12px;color:#92400e;line-height:1.6}
+.bulk-info code{background:#fff;padding:2px 6px;border-radius:4px;font-family:monospace;color:#1e40af;font-size:11px}
+.upload-dropzone{border:2px dashed #cbd5e1;border-radius:12px;padding:24px 16px;text-align:center;background:#f8fafc;cursor:pointer;margin-bottom:12px;transition:all 0.2s}
+.upload-dropzone:hover{border-color:#3b82f6;background:#eff6ff}
+.upload-dropzone .dz-icon{font-size:36px;margin-bottom:8px}
+.upload-dropzone .dz-title{font-size:14px;font-weight:600;color:#334155;margin-bottom:4px}
+.upload-dropzone .dz-sub{font-size:11px;color:#94a3b8}
+.ppt-option{display:flex;align-items:center;gap:10px;padding:12px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:8px;transition:all 0.2s}
+.ppt-option:hover{border-color:#3b82f6;background:#eff6ff}
+.ppt-option.selected{border-color:#3b82f6;background:#dbeafe}
+.ppt-option input{width:20px;height:20px;cursor:pointer;accent-color:#3b82f6}
+.ppt-option .ppt-label{font-weight:600;color:#0f172a;font-size:13px}
+.ppt-option .ppt-desc{font-size:11px;color:#64748b;margin-top:2px}
 @media (max-width:1024px){#areaContainer{grid-template-columns:1fr}}
 @media (max-width:768px){
   .header-actions{width:100%;justify-content:flex-start;gap:5px}
@@ -177,6 +198,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px}
   .filter-box{width:100%;flex:1 1 100%;flex-wrap:wrap;height:auto}
   .filter-box .date-group{flex:1 1 100%;border-right:0;border-bottom:1px solid #cbd5e1;height:36px}
+  .filter-box .date-input{flex:1;min-width:90px}
   .filter-box .apply-btn{flex:1;min-width:100%;height:36px;justify-content:center}
   .multi-status-wrap{width:100%;height:36px}
   .multi-status-btn{width:100%}
@@ -192,6 +214,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions{flex-direction:column-reverse}
   .modal-actions button{width:100%}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
+  .bulk-tab{font-size:11px;padding:10px 12px;min-width:110px}
 }
 </style>
 </head>
@@ -218,8 +241,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   </div>
   <div class="header-actions">
     <button class="btn-refresh-header" id="refreshBtn" type="button">🔄 Refresh</button>
-    <button class="btn-telegram" id="telegramBtn" type="button">📱 Telegram</button>
-    <button class="btn-yellow admin-only" id="bulkBtn" type="button">Bulk</button>
+    <button class="btn-yellow admin-only" id="bulkBtn" type="button">📦 Bulk</button>
     <button class="btn-gray admin-only" id="backupBtn" type="button">Backup</button>
     <button class="btn-light admin-only" id="importBtn" type="button">Import</button>
     <button class="btn-red" id="logoutBtn" type="button">Logout</button>
@@ -266,6 +288,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div class="select-bar" id="selectBar">
   <span class="count-badge" id="selCount">0 selected</span>
+  <button class="ppt-sel" id="pptBtn" type="button">📊 Generate PPT</button>
   <button class="bulk-status-sel" id="bulkStatusBtn" type="button">Bulk Status</button>
   <button class="clear-sel" id="clearSelBtn" type="button">Clear</button>
   <button class="delete-sel" id="deleteBtn" type="button" style="display:none">Delete</button>
@@ -280,6 +303,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div id="progressSub" style="font-size:13px;opacity:0.7">Please wait</div>
 </div>
 
+<!-- ADD/EDIT SITE MODAL -->
 <div class="modal" id="modal"><div class="box">
 <h2 id="modalTitle">Add Site</h2>
 <div class="formgrid">
@@ -321,6 +345,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="modal-actions"><button class="secondary" id="cancelModalBtn" type="button">Cancel</button><button id="saveSiteBtn" type="button">Save Site</button></div>
 </div></div>
 
+<!-- HISTORY MODAL -->
 <div class="modal" id="historyModal"><div class="box">
 <h2 id="historyTitle">Booking History</h2>
 <div class="history-search-box">
@@ -334,11 +359,134 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 </div></div>
 
+<!-- BULK UPLOAD MODAL (with 2 tabs) -->
+<div class="modal" id="bulkModal"><div class="box" style="width:min(750px,100%)">
+<h2>📦 Bulk Upload</h2>
+
+<div class="bulk-tab-bar">
+  <button class="bulk-tab active" id="bulkTabSite" type="button">📄 Bulk Site Upload</button>
+  <button class="bulk-tab" id="bulkTabImage" type="button">🖼️ Bulk Image Upload</button>
+</div>
+
+<!-- Tab 1: Bulk Site Upload -->
+<div class="bulk-tab-content active" id="bulkContentSite">
+  <div class="bulk-info">
+    <b>CSV Format (columns):</b><br>
+    <code>area,site,siteCode,location,company,rate,from,to</code><br><br>
+    <b>Example:</b><br>
+    <code>Chandigarh,CG01_Chandigarh,CG01,Delhi Counter,ABC Media,50000,01/01/2026,31/12/2026</code><br><br>
+    <b>Note:</b> Status auto-set hoga dates ke hisaab se
+  </div>
+  
+  <div class="upload-dropzone" id="csvDropzone">
+    <div class="dz-icon">📄</div>
+    <div class="dz-title">Click to upload CSV file</div>
+    <div class="dz-sub">or paste CSV below</div>
+  </div>
+  <input type="file" id="csvFile" accept=".csv,.txt" style="display:none">
+  
+  <label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:14px;margin-bottom:6px">Or paste CSV directly:</label>
+  <textarea id="csvText" placeholder="area,site,siteCode,location,company,rate,from,to&#10;Chandigarh,CG01,CG01,Sector 17,ABC Media,50000,01/01/2026,31/12/2026" style="width:100%;height:150px;padding:11px;border:1px solid #e2e8f0;border-radius:8px;font-family:monospace;font-size:12px;outline:none;resize:vertical"></textarea>
+  
+  <div id="csvPreview" style="margin-top:12px;display:none"></div>
+  
+  <div class="modal-actions">
+    <button class="secondary" id="cancelBulkSiteBtn" type="button">Cancel</button>
+    <button id="processBulkSiteBtn" type="button" style="background:#10b981">✅ Process Sites</button>
+  </div>
+</div>
+
+<!-- Tab 2: Bulk Image Upload -->
+<div class="bulk-tab-content" id="bulkContentImage">
+  <div class="bulk-info">
+    <b>Bulk Image Upload Rules:</b><br>
+    • Image ka naam = Site Code (case-insensitive)<br>
+    • Example: <code>CG01.jpg</code> → <code>CG01</code> site me upload hoga<br>
+    • Multiple images ek saath select kar sakte ho<br>
+    • Supported: JPG, PNG, WEBP - Max 8 MB each<br>
+    • Image automatically compress hogi
+  </div>
+  
+  <div class="upload-dropzone" id="imageDropzone">
+    <div class="dz-icon">🖼️</div>
+    <div class="dz-title">Click to select images</div>
+    <div class="dz-sub">Multiple images select kar sakte ho</div>
+  </div>
+  <input type="file" id="imageFiles" accept="image/*" multiple style="display:none">
+  
+  <div id="imagePreviewList" style="margin-top:12px;max-height:250px;overflow-y:auto;display:none"></div>
+  
+  <div class="modal-actions">
+    <button class="secondary" id="cancelBulkImageBtn" type="button">Cancel</button>
+    <button id="processBulkImageBtn" type="button" style="background:#10b981">🖼️ Process Images</button>
+  </div>
+</div>
+
+</div></div>
+
+<!-- PPT OPTIONS MODAL -->
+<div class="modal" id="pptModal"><div class="box" style="width:min(600px,100%)">
+<h2>📊 Generate PPT</h2>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px"><b id="pptCount">0</b> sites selected hain</p>
+
+<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-bottom:8px">PPT Layout Style:</label>
+<div id="pptStyleOptions">
+  <label class="ppt-option selected" data-style="split">
+    <input type="radio" name="pptStyle" value="split" checked>
+    <div>
+      <div class="ppt-label">📋 Split Layout</div>
+      <div class="ppt-desc">Image left, details right side</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="cover">
+    <input type="radio" name="pptStyle" value="cover">
+    <div>
+      <div class="ppt-label">🖼️ Cover Layout</div>
+      <div class="ppt-desc">Full image fills the box</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="contain">
+    <input type="radio" name="pptStyle" value="contain">
+    <div>
+      <div class="ppt-label">📦 Contain Layout</div>
+      <div class="ppt-desc">Full image with black background</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="grid">
+    <input type="radio" name="pptStyle" value="grid">
+    <div>
+      <div class="ppt-label">▦ Grid Layout</div>
+      <div class="ppt-desc">4 sites per slide (2x2 grid)</div>
+    </div>
+  </label>
+</div>
+
+<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:16px;margin-bottom:8px">Include in PPT:</label>
+<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px">
+  <input type="checkbox" id="pptIncludeImages" checked style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">
+  <span style="font-weight:600;font-size:13px">Site images</span>
+</label>
+<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px">
+  <input type="checkbox" id="pptIncludeCompany" checked style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">
+  <span style="font-weight:600;font-size:13px">Company & Rate info</span>
+</label>
+<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px">
+  <input type="checkbox" id="pptIncludeDates" checked style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">
+  <span style="font-weight:600;font-size:13px">Booking dates & duration</span>
+</label>
+
+<div class="modal-actions">
+  <button class="secondary" id="cancelPptBtn" type="button">Cancel</button>
+  <button id="generatePptBtn" type="button" style="background:#7c3aed">📊 Generate PPT</button>
+</div>
+</div></div>
+
+<!-- TELEGRAM MODAL -->
 <div class="modal" id="telegramModal"><div class="box" style="width:min(600px,100%)">
 <h2>📱 Telegram Notifications</h2>
 <div class="formgrid" style="grid-template-columns:1fr">
-  <label>Bot Token<input id="tgBotToken" type="text" placeholder="123456:ABC-XYZ..." autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
-  <label>Chat ID<input id="tgChatId" type="text" placeholder="123456789" autocomplete="off" style="font-family:monospace;font-size:12px !important"></label>
+  <label>Bot Token<input id="tgBotToken" type="text" placeholder="123456:ABC-XYZ..." style="font-family:monospace;font-size:12px !important"></label>
+  <label>Chat ID<input id="tgChatId" type="text" placeholder="123456789" style="font-family:monospace;font-size:12px !important"></label>
   <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:8px;font-size:13px">
     <input type="checkbox" id="tgEnabled" style="width:20px;height:20px;cursor:pointer;accent-color:#0088cc">
     <span style="font-weight:600;color:#0f172a">Enable Telegram Notifications</span>
@@ -346,12 +494,13 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 <div id="telegramStatus" style="margin-top:12px;padding:10px;border-radius:8px;font-size:12px;display:none"></div>
 <div class="modal-actions">
-  <button class="secondary" id="testTgBtn" type="button">🧪 Test Message</button>
+  <button class="secondary" id="testTgBtn" type="button">🧪 Test</button>
   <button class="secondary" id="cancelTgBtn" type="button">Cancel</button>
-  <button id="saveTgBtn" type="button">Save Settings</button>
+  <button id="saveTgBtn" type="button">Save</button>
 </div>
 </div></div>
 
+<!-- AREA MODAL -->
 <div class="modal" id="areaModal"><div class="box" style="width:min(600px,100%)">
 <h2>Manage Areas</h2>
 <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
@@ -375,6 +524,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 // ==================== CONFIG ====================
 const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
+const COMPANY_NAME = "DS Outdoor Media";
 
 // ==================== STATE ====================
 let currentUser = null;
@@ -393,6 +543,8 @@ let activeStatuses = new Set();
 let telegramConfig = { botToken: "", chatId: "", enabled: false };
 let isRendering = false;
 let isReleasing = false;
+let csvParsedSites = [];
+let bulkImagesToUpload = [];
 
 // ==================== TOAST ====================
 function showToast(title, message, type){
@@ -441,8 +593,8 @@ function ddmmyyyyToISO(s){
 
 function calcDays(f, t){
   if(!f || !t) return 0;
-  const fd = new Date(ddmmyyyyToISO(f)), td = new Date(ddmmyyyyToISO(t));
-  if(isNaN(fd) || isNaN(td) || td < fd) return 0;
+  const fd = parseDDMMYYYY(f), td = parseDDMMYYYY(t);
+  if(!fd || !td || td < fd) return 0;
   return Math.floor((td - fd) / 86400000) + 1;
 }
 
@@ -456,10 +608,7 @@ function debounce(fn, ms){ let timer; return function(){ clearTimeout(timer); ti
 // ==================== API ====================
 async function apiGet(path){
   try {
-    const r = await fetch(API_URL + path, {
-      cache: "no-store",
-      headers: { "Cache-Control": "no-cache" }
-    });
+    const r = await fetch(API_URL + path, { cache: "no-store" });
     return await r.json();
   } catch(e){ return { success: false, error: e.message }; }
 }
@@ -490,16 +639,8 @@ async function doLogin(){
   const btn = document.getElementById("loginBtn");
   const err = document.getElementById("loginError");
   err.classList.remove("show");
-  err.textContent = "";
-  
-  if(!username || !password){
-    err.textContent = "Username aur password required";
-    err.classList.add("show");
-    return;
-  }
-  
+  if(!username || !password){ err.textContent = "Username aur password required"; err.classList.add("show"); return; }
   btn.disabled = true; btn.textContent = "Signing in...";
-  
   try {
     const res = await fetch(API_URL + "/login", {
       method: "POST",
@@ -508,18 +649,15 @@ async function doLogin(){
       cache: "no-store"
     });
     const data = await res.json();
-    
     if(!data.success){
       err.textContent = data.error || "Login failed";
       err.classList.add("show");
       btn.disabled = false; btn.textContent = "Sign In";
       return;
     }
-    
     currentUser = data.user;
     sessionStorage.setItem("sms_user", JSON.stringify(currentUser));
     await showApp();
-    
   } catch(e){
     err.textContent = "Server connect fail: " + e.message;
     err.classList.add("show");
@@ -529,34 +667,26 @@ async function doLogin(){
 
 async function showApp(){
   if(!currentUser) return;
-  
   document.getElementById("loginOverlay").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
   document.getElementById("userInfo").textContent = currentUser.username + " (" + currentUser.role + ")";
-  
   if(currentUser.role !== "Admin"){
     document.querySelectorAll(".admin-only").forEach(el => { el.style.display = "none"; });
   }
-  
   showProgress("Loading...", "");
   loadTelegramConfig();
-  
   const loadOk = await loadCloudData();
-  
   hideProgress();
-  
   if(!loadOk){
-    // ❌ Wapas login screen pe bhejo
     document.getElementById("loginOverlay").classList.remove("hidden");
     document.getElementById("app").classList.add("hidden");
     const err = document.getElementById("loginError");
-    err.textContent = "Data load fail. Internet check karo ya dobara try karo.";
+    err.textContent = "Data load fail. Internet check karo.";
     err.classList.add("show");
     const btn = document.getElementById("loginBtn");
     if(btn){ btn.disabled = false; btn.textContent = "Sign In"; }
     return;
   }
-  
   populateAreaDropdowns();
   await autoReleaseExpiredSites();
   render();
@@ -585,60 +715,18 @@ function checkSession(){
 async function loadCloudData(){
   try {
     const result = await apiGet("/data");
-    
-    if(!result){
-      console.error("No response from /data");
-      return false;
-    }
-    
-    if(!result.success){
-      console.error("API error:", result.error);
-      return false;
-    }
-    
-    // ✅ Data parse karo
+    if(!result || !result.success){ console.error("Data load fail:", result?.error); return false; }
     const newSites = Array.isArray(result.sites) ? result.sites : [];
-    const newAreas = (Array.isArray(result.areas) && result.areas.length > 0) 
-      ? result.areas 
-      : [...DEFAULT_AREAS];
+    const newAreas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
     const newHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
-    
-    // ✅ SAFETY: Agar cloud empty hai lekin local bhara hai → preserve
-    if(newSites.length === 0 && sites.length > 0){
-      console.warn("Cloud empty, local data preserve kiya");
-      return true;
-    }
-    
-    // ✅ SAFETY: Agar 50% se kam data hai → confirm
-    if(sites.length > 20 && newSites.length < sites.length * 0.5){
-      const ok = confirm(
-        "⚠️ Cloud me kam sites hain!\n\n" +
-        "Local: " + sites.length + "\n" +
-        "Cloud: " + newSites.length + "\n\n" +
-        "Cloud data load karna hai? (Cancel = local rakho)"
-      );
-      if(!ok){
-        console.warn("User ne cloud load karne se mana kiya");
-        return true;
-      }
-    }
-    
+    if(newSites.length === 0 && sites.length > 0){ return true; }
     sites = newSites;
     areas = newAreas;
     bookingHistory = newHistory;
-    
-    sites.forEach((s, i) => {
-      if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i;
-    });
-    
+    sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
     lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
-    console.log("✅ Data loaded:", sites.length, "sites");
     return true;
-    
-  } catch(e){
-    console.error("loadCloudData error:", e);
-    return false;
-  }
+  } catch(e){ console.error("loadCloudData error:", e); return false; }
 }
 
 async function persistNow(){
@@ -648,15 +736,9 @@ async function persistNow(){
       lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
       return true;
     }
-    // ⚠️ Agar worker safety block kare to user ko batao
-    if(result && result.error){
-      alert("⚠️ " + result.error);
-    }
+    if(result && result.error){ alert("⚠️ " + result.error); }
     return false;
-  } catch(e){
-    console.error("persistNow error:", e);
-    return false;
-  }
+  } catch(e){ console.error("persistNow error:", e); return false; }
 }
 
 async function saveImage(key, dataUrl){
@@ -664,7 +746,6 @@ async function saveImage(key, dataUrl){
   if(result && result.success){ imageCache[key] = dataUrl; imageFailed.delete(key); }
   return result;
 }
-
 async function getImage(key){
   if(imageCache[key]) return imageCache[key];
   if(imageFailed.has(key)) return null;
@@ -672,7 +753,6 @@ async function getImage(key){
   if(result && result.success && result.data){ imageCache[key] = result.data; return result.data; }
   imageFailed.add(key); return null;
 }
-
 async function deleteImage(key){
   delete imageCache[key];
   imageFailed.delete(key);
@@ -772,8 +852,7 @@ function setDateDropdowns(prefix, val){
     return;
   }
   const p = val.split("/");
-  d.value = p[0];
-  m.value = p[1];
+  d.value = p[0]; m.value = p[1];
   if(!Array.from(y.options).some(o => o.value === p[2])){
     const opt = document.createElement("option");
     opt.value = p[2]; opt.textContent = p[2];
@@ -1118,6 +1197,30 @@ async function loadVisibleImages(){
   }
 }
 
+// ✅ CHANGE 3: Status card click se saare same-status sites select honge
+function filterByStatus(status){
+  // Toggle status filter
+  if(activeStatuses.has(status)) activeStatuses.delete(status);
+  else activeStatuses.add(status);
+  
+  // Auto-select all sites with this status (across all areas)
+  if(activeStatuses.has(status)){
+    sites.forEach(s => {
+      if(s.status === status) selectedSites.add(s.id);
+    });
+    showToast("Selected", sites.filter(s => s.status === status).length + " '" + status + "' sites selected", "success");
+  } else {
+    // Deselect all sites with this status
+    sites.forEach(s => {
+      if(s.status === status) selectedSites.delete(s.id);
+    });
+  }
+  
+  document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = activeStatuses.has(cb.value); });
+  updateMultiStatusLabel();
+  render();
+}
+
 function toggleSelect(id){
   if(selectedSites.has(id)) selectedSites.delete(id);
   else selectedSites.add(id);
@@ -1169,14 +1272,6 @@ function updateMultiStatusLabel(){
   else label.textContent = "Status (" + activeStatuses.size + ")";
 }
 
-function filterByStatus(status){
-  if(activeStatuses.has(status)) activeStatuses.delete(status);
-  else activeStatuses.add(status);
-  document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = activeStatuses.has(cb.value); });
-  updateMultiStatusLabel();
-  render();
-}
-
 function onStatusCheckChange(){
   activeStatuses.clear();
   document.querySelectorAll(".ms-cb:checked").forEach(cb => activeStatuses.add(cb.value));
@@ -1184,6 +1279,438 @@ function onStatusCheckChange(){
   if(allCb) allCb.checked = activeStatuses.size === 3;
   updateMultiStatusLabel();
   render();
+}
+
+// ==================== CHANGE 2: DATE INPUT FIX (Backspace works) ====================
+function initDateFilterInputs(){
+  const dFrom = document.getElementById("dateFilterFrom");
+  const dTo = document.getElementById("dateFilterTo");
+  
+  [dFrom, dTo].forEach(inp => {
+    // Store previous value
+    inp.dataset.lastLength = "0";
+    
+    inp.addEventListener("input", function(e){
+      const oldVal = this.value;
+      const oldLen = parseInt(this.dataset.lastLength || "0");
+      const isDeleting = oldVal.length < oldLen || e.inputType === "deleteContentBackward";
+      
+      this.dataset.lastLength = oldVal.length;
+      
+      // If user is deleting, don't reformat - let them delete freely
+      if(isDeleting){
+        // Only remove non-digit/non-slash chars
+        this.value = oldVal.replace(/[^\d\/]/g, "");
+        return;
+      }
+      
+      // Only auto-format when adding
+      let v = oldVal.replace(/\D/g, "");
+      if(v.length >= 2) v = v.slice(0,2) + "/" + v.slice(2);
+      if(v.length >= 5) v = v.slice(0,5) + "/" + v.slice(5,9);
+      this.value = v;
+    });
+    
+    // Handle keydown for backspace specifically
+    inp.addEventListener("keydown", function(e){
+      if(e.key === "Backspace"){
+        // Allow default backspace to work
+        this.dataset.lastLength = this.value.length - 1;
+      }
+    });
+  });
+}
+
+// ==================== CHANGE 4: BULK UPLOAD (2 categories) ====================
+function openBulkUpload(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
+  
+  // Reset tabs
+  document.getElementById("bulkTabSite").classList.add("active");
+  document.getElementById("bulkTabImage").classList.remove("active");
+  document.getElementById("bulkContentSite").classList.add("active");
+  document.getElementById("bulkContentImage").classList.remove("active");
+  
+  // Reset states
+  csvParsedSites = [];
+  bulkImagesToUpload = [];
+  document.getElementById("csvText").value = "";
+  document.getElementById("csvPreview").style.display = "none";
+  document.getElementById("imagePreviewList").style.display = "none";
+  document.getElementById("imagePreviewList").innerHTML = "";
+  
+  document.getElementById("bulkModal").classList.add("show");
+}
+
+function closeBulkModal(){
+  document.getElementById("bulkModal").classList.remove("show");
+  csvParsedSites = [];
+  bulkImagesToUpload = [];
+}
+
+// --- Bulk Site Upload ---
+function parseCSVLine(line){
+  const res = []; let cur = ""; let inQ = false;
+  for(let i=0; i<line.length; i++){
+    const c = line[i];
+    if(c === '"'){ if(inQ && line[i+1] === '"'){ cur += '"'; i++; } else inQ = !inQ; }
+    else if(c === ',' && !inQ){ res.push(cur.trim()); cur = ""; }
+    else cur += c;
+  }
+  res.push(cur.trim());
+  return res;
+}
+
+function parseCSV(text){
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if(lines.length < 2){ alert("CSV needs header + data"); return; }
+  const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().trim());
+  if(!headers.includes("site")){ alert("'site' column missing"); return; }
+  
+  const idx = {};
+  headers.forEach((h, i) => idx[h] = i);
+  
+  csvParsedSites = [];
+  for(let i=1; i<lines.length; i++){
+    const cells = parseCSVLine(lines[i]);
+    if(!cells[idx.site]) continue;
+    
+    const siteName = cells[idx.site];
+    const codeMatch = siteName.match(/^([A-Z]{2,5}\d{1,4})/i);
+    const siteCode = (idx.sitecode !== undefined && cells[idx.sitecode]) ? cells[idx.sitecode].toUpperCase() : (codeMatch ? codeMatch[1].toUpperCase() : "");
+    const areaVal = (idx.area !== undefined && cells[idx.area]) ? cells[idx.area].trim() : "Unassigned";
+    const fromD = idx.from !== undefined ? (cells[idx.from]||"") : "";
+    const toD = idx.to !== undefined ? (cells[idx.to]||"") : "";
+    const autoStatus = calcStatusFromDates(fromD, toD);
+    
+    csvParsedSites.push({
+      id: "id_" + Math.random().toString(36).slice(2,10),
+      area: areaVal, site: siteName, siteCode: siteCode,
+      location: idx.location !== undefined ? (cells[idx.location]||"") : "",
+      customer: idx.company !== undefined ? (cells[idx.company]||"") : "",
+      rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "",
+      status: autoStatus,
+      fromDate: fromD, toDate: toD,
+      lat: "", lng: "", hasImage: false
+    });
+  }
+  
+  showCSVPreview();
+}
+
+function showCSVPreview(){
+  const preview = document.getElementById("csvPreview");
+  if(csvParsedSites.length === 0){ preview.style.display = "none"; return; }
+  
+  let html = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>✅ ' + csvParsedSites.length + ' sites parsed</b></div>';
+  html += '<div style="max-height:200px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px"><table style="width:100%;font-size:11px;border-collapse:collapse">';
+  html += '<thead style="background:#f1f5f9;position:sticky;top:0"><tr><th style="padding:6px;text-align:left">Site</th><th style="padding:6px;text-align:left">Area</th><th style="padding:6px;text-align:left">Status</th></tr></thead><tbody>';
+  csvParsedSites.slice(0, 20).forEach(s => {
+    html += '<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:6px">' + esc(s.site) + '</td><td style="padding:6px">' + esc(s.area) + '</td><td style="padding:6px">' + esc(s.status) + '</td></tr>';
+  });
+  html += '</tbody></table></div>';
+  if(csvParsedSites.length > 20){ html += '<div style="text-align:center;font-size:11px;color:#64748b;margin-top:6px">...aur ' + (csvParsedSites.length - 20) + ' more</div>'; }
+  
+  preview.innerHTML = html;
+  preview.style.display = "block";
+}
+
+async function processBulkSites(){
+  if(csvParsedSites.length === 0){ alert("Pehle CSV parse karo"); return; }
+  
+  let added = 0, updated = 0;
+  csvParsedSites.forEach(newSite => {
+    if(newSite.area && newSite.area !== "Unassigned" && !areas.includes(newSite.area)) areas.push(newSite.area);
+    const existing = sites.findIndex(s => s.site === newSite.site);
+    if(existing >= 0){
+      sites[existing] = { ...sites[existing], ...newSite, id: sites[existing].id, hasImage: sites[existing].hasImage };
+      updated++;
+    } else {
+      sites.push(newSite);
+      added++;
+    }
+  });
+  
+  showProgress("Saving...", "");
+  await persistNow();
+  hideProgress();
+  populateAreaDropdowns();
+  render();
+  closeBulkModal();
+  showToast("Bulk Upload", "Added: " + added + ", Updated: " + updated, "success");
+}
+
+// --- Bulk Image Upload ---
+function handleBulkImageSelect(e){
+  const files = Array.from(e.target.files || []);
+  if(files.length === 0) return;
+  
+  bulkImagesToUpload = files.filter(f => f.type.startsWith("image/"));
+  showBulkImagePreview();
+  e.target.value = "";
+}
+
+function showBulkImagePreview(){
+  const list = document.getElementById("imagePreviewList");
+  if(bulkImagesToUpload.length === 0){ list.style.display = "none"; return; }
+  
+  let html = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>🖼️ ' + bulkImagesToUpload.length + ' images selected</b></div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px">';
+  
+  bulkImagesToUpload.forEach((f, i) => {
+    const nameNoExt = f.name.replace(/\.[^.]+$/, "");
+    const matchingSite = sites.find(s => s.siteCode && s.siteCode.toUpperCase() === nameNoExt.toUpperCase());
+    const matchBadge = matchingSite ? '<div style="font-size:10px;color:#059669;font-weight:700;text-align:center;margin-top:2px">✅ ' + esc(matchingSite.siteCode) + '</div>' : '<div style="font-size:10px;color:#dc2626;font-weight:700;text-align:center;margin-top:2px">❌ No match</div>';
+    
+    html += '<div style="border:1px solid #e2e8f0;border-radius:6px;padding:4px;background:#fff">';
+    html += '<div style="font-size:10px;color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;padding:2px">' + esc(nameNoExt) + '</div>';
+    html += matchBadge;
+    html += '</div>';
+  });
+  html += '</div>';
+  
+  list.innerHTML = html;
+  list.style.display = "block";
+}
+
+async function processBulkImages(){
+  if(bulkImagesToUpload.length === 0){ alert("Pehle images select karo"); return; }
+  
+  let uploaded = 0, skipped = 0;
+  showProgress("Uploading images...", "0 / " + bulkImagesToUpload.length);
+  
+  for(let i = 0; i < bulkImagesToUpload.length; i++){
+    const file = bulkImagesToUpload[i];
+    const nameNoExt = file.name.replace(/\.[^.]+$/, "");
+    const matchingSite = sites.find(s => s.siteCode && s.siteCode.toUpperCase() === nameNoExt.toUpperCase());
+    
+    if(!matchingSite){ skipped++; continue; }
+    
+    showProgress("Uploading images...", (i+1) + " / " + bulkImagesToUpload.length + " — " + file.name);
+    
+    try {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => resolve(ev.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      
+      const compressed = await new Promise((resolve) => {
+        compressImageSmart(dataUrl, resolve);
+      });
+      
+      await saveImage(matchingSite.id, compressed);
+      matchingSite.hasImage = true;
+      uploaded++;
+    } catch(e){
+      console.error("Upload error:", e);
+      skipped++;
+    }
+  }
+  
+  await persistNow();
+  hideProgress();
+  render();
+  closeBulkModal();
+  showToast("Bulk Images", "Uploaded: " + uploaded + ", Skipped: " + skipped, uploaded > 0 ? "success" : "warning");
+}
+
+// ==================== CHANGE 1: PPT GENERATION WITH OPTIONS ====================
+function openPPTFormatModal(){
+  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
+  document.getElementById("pptCount").textContent = selectedSites.size;
+  document.getElementById("pptModal").classList.add("show");
+}
+
+function closePPTModal(){
+  document.getElementById("pptModal").classList.remove("show");
+}
+
+async function generatePPT(){
+  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
+  if(typeof PptxGenJS === "undefined"){ alert("PPT library load nahi hui. Internet check karo."); return; }
+  
+  const style = document.querySelector('input[name="pptStyle"]:checked').value;
+  const includeImages = document.getElementById("pptIncludeImages").checked;
+  const includeCompany = document.getElementById("pptIncludeCompany").checked;
+  const includeDates = document.getElementById("pptIncludeDates").checked;
+  
+  const list = sites.filter(s => selectedSites.has(s.id));
+  if(list.length === 0){ alert("Koi site nahi mila"); return; }
+  
+  closePPTModal();
+  showProgress("Generating PPT...", "Preparing");
+  
+  try {
+    const pptx = new PptxGenJS();
+    pptx.layout = "LAYOUT_WIDE";
+    pptx.author = COMPANY_NAME;
+    
+    // Cover slide
+    let slide = pptx.addSlide();
+    slide.background = { color: "1E3A8A" };
+    slide.addText("Site Report", { x: 0.5, y: 2.3, w: 12.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center" });
+    slide.addText("Total Sites: " + list.length, { x: 0.5, y: 3.7, w: 12.33, h: 0.6, fontSize: 20, color: "93C5FD", align: "center" });
+    slide.addText("Generated: " + new Date().toLocaleDateString('en-GB'), { x: 0.5, y: 4.4, w: 12.33, h: 0.5, fontSize: 14, color: "FFFFFF", align: "center" });
+    
+    // Individual slides (split, cover, contain) OR grid
+    if(style === "grid"){
+      // Grid: 4 sites per slide (2x2)
+      for(let i = 0; i < list.length; i += 4){
+        showProgress("Generating PPT...", "Slide " + (Math.floor(i/4) + 1));
+        slide = pptx.addSlide();
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.5, fill: { color: "1E3A8A" } });
+        slide.addText("Grid View — " + (i+1) + " to " + Math.min(i+4, list.length), { x: 0.3, y: 0.05, w: 12.7, h: 0.4, fontSize: 14, bold: true, color: "FFFFFF" });
+        
+        const gridSites = list.slice(i, i+4);
+        const cellW = 6.5, cellH = 3.1;
+        const positions = [
+          { x: 0.15, y: 0.6 }, { x: 6.85, y: 0.6 },
+          { x: 0.15, y: 3.8 }, { x: 6.85, y: 3.8 }
+        ];
+        
+        for(let j = 0; j < gridSites.length; j++){
+          const x = gridSites[j];
+          const pos = positions[j];
+          let stColor = "059669";
+          if(x.status === "Not Available") stColor = "DC2626";
+          else if(x.status === "Under Maintenance") stColor = "D97706";
+          
+          // Card background
+          slide.addShape(pptx.ShapeType.rect, { x: pos.x, y: pos.y, w: cellW, h: cellH, fill: { color: "F8FAFC" }, line: { color: "CBD5E1", width: 1 } });
+          
+          // Image
+          if(includeImages && x.hasImage){
+            const imgData = imageCache[x.id] || await getImage(x.id);
+            if(imgData){
+              try {
+                slide.addImage({ data: imgData, x: pos.x + 0.1, y: pos.y + 0.1, w: cellW - 0.2, h: 1.7, sizing: { type: "cover", w: cellW - 0.2, h: 1.7 } });
+              } catch(e){}
+            }
+          }
+          
+          // Site name
+          slide.addText(x.site.substring(0, 40), { x: pos.x + 0.1, y: pos.y + 1.85, w: cellW - 0.2, h: 0.3, fontSize: 10, bold: true, color: "0F172A" });
+          
+          // Status
+          slide.addShape(pptx.ShapeType.roundRect, { x: pos.x + 0.1, y: pos.y + 2.15, w: 1.2, h: 0.25, fill: { color: stColor }, rectRadius: 0.1 });
+          slide.addText(x.status.toUpperCase(), { x: pos.x + 0.1, y: pos.y + 2.15, w: 1.2, h: 0.25, fontSize: 7, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+          
+          // Info
+          let infoText = "";
+          if(x.area) infoText += x.area;
+          if(includeCompany && x.customer) infoText += " • " + x.customer;
+          if(includeDates && x.fromDate) infoText += "\n" + x.fromDate + " - " + x.toDate;
+          slide.addText(infoText, { x: pos.x + 1.4, y: pos.y + 2.15, w: cellW - 1.5, h: 0.7, fontSize: 8, color: "64748B" });
+        }
+      }
+    } else {
+      // Individual slides
+      for(let i = 0; i < list.length; i++){
+        const x = list[i];
+        showProgress("Generating PPT...", "Slide " + (i+1) + " / " + list.length);
+        const days = calcDays(x.fromDate, x.toDate);
+        let stColor = "059669";
+        if(x.status === "Not Available") stColor = "DC2626";
+        else if(x.status === "Under Maintenance") stColor = "D97706";
+        
+        slide = pptx.addSlide();
+        
+        // Header
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.65, fill: { color: "1E3A8A" } });
+        slide.addText(x.site, { x: 0.3, y: 0.1, w: 9, h: 0.45, fontSize: 14, bold: true, color: "FFFFFF" });
+        slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
+        slide.addText(x.status.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+        
+        // Image section
+        let imgData = null;
+        if(includeImages && x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
+        
+        if(style === "split"){
+          // Left: image, Right: details
+          slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 6.5, h: 5.5, fill: { color: "F1F5F9" } });
+          if(imgData){
+            try { slide.addImage({ data: imgData, x: 0.1, y: 0.75, w: 6.3, h: 5.3, sizing: { type: "contain", w: 6.3, h: 5.3 } }); } catch(e){}
+          } else {
+            slide.addText("📷 No Image", { x: 0.1, y: 3, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
+          }
+          
+          // Right side info
+          let infoY = 0.9;
+          slide.addText("Site Details", { x: 6.8, y: infoY, w: 6.3, h: 0.4, fontSize: 16, bold: true, color: "1E40AF" });
+          infoY += 0.6;
+          
+          const rows = [
+            ["Site Name", x.site],
+            ["Site Code", x.siteCode || "—"],
+            ["Area", x.area || "—"],
+            ["Location", x.location || "—"]
+          ];
+          if(includeCompany){
+            rows.push(["Company", x.customer || "—"]);
+            rows.push(["Rate", x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/month" : "—"]);
+          }
+          if(includeDates){
+            rows.push(["From Date", x.fromDate || "—"]);
+            rows.push(["To Date", x.toDate || "—"]);
+            rows.push(["Duration", days > 0 ? days + " days" : "—"]);
+          }
+          rows.push(["Status", x.status]);
+          
+          rows.forEach(([label, val]) => {
+            slide.addText(label + ":", { x: 6.8, y: infoY, w: 1.8, h: 0.35, fontSize: 10, bold: true, color: "64748B" });
+            slide.addText(String(val).substring(0, 50), { x: 8.6, y: infoY, w: 4.5, h: 0.35, fontSize: 11, color: "0F172A" });
+            infoY += 0.42;
+          });
+        } else if(style === "cover" || style === "contain"){
+          slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
+          if(imgData){
+            try {
+              const sizing = style === "cover" ? { type: "cover", w: 13.33, h: 5.5 } : { type: "contain", w: 13.33, h: 5.5 };
+              slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: sizing });
+            } catch(e){}
+          } else {
+            slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+          }
+        }
+        
+        // Footer
+        slide.addShape(pptx.ShapeType.rect, { x: 0, y: 6.15, w: 13.33, h: 1.25, fill: { color: "F8FAFC" } });
+        const cols = [];
+        cols.push({ label: "AREA", value: x.area || "—" });
+        if(includeCompany){
+          cols.push({ label: "COMPANY", value: x.customer || "—" });
+          cols.push({ label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') : "—" });
+        }
+        if(includeDates){
+          cols.push({ label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—" });
+        }
+        
+        const colW = 13.33 / cols.length;
+        cols.forEach((f, idx) => {
+          const cx = idx * colW;
+          slide.addText(f.label, { x: cx+0.1, y: 6.23, w: colW-0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
+          slide.addText(String(f.value).substring(0, 30), { x: cx+0.1, y: 6.48, w: colW-0.2, h: 0.4, fontSize: 11, bold: true, color: "1E40AF" });
+        });
+      }
+    }
+    
+    // Thank you slide
+    slide = pptx.addSlide();
+    slide.background = { color: "1E3A8A" };
+    slide.addText("Thank You", { x: 0, y: 3, w: 13.33, h: 1.2, fontSize: 54, bold: true, color: "FFFFFF", align: "center" });
+    slide.addText(COMPANY_NAME, { x: 0, y: 5.7, w: 13.33, h: 0.4, fontSize: 14, bold: true, color: "FFFFFF", align: "center" });
+    
+    const fileName = "Site_Report_" + new Date().toISOString().slice(0,10) + ".pptx";
+    await pptx.writeFile({ fileName: fileName });
+    hideProgress();
+    showToast("PPT Generated", "File: " + fileName, "success");
+  } catch(e){
+    hideProgress();
+    alert("PPT generation failed: " + e.message);
+    console.error(e);
+  }
 }
 
 // ==================== TELEGRAM ====================
@@ -1197,26 +1724,10 @@ function loadTelegramConfig(){
       telegramConfig.enabled = !!parsed.enabled;
     }
   } catch(e){}
-  updateTelegramBtn();
 }
-
 function saveTelegramConfig(){
   localStorage.setItem("sms_telegram_config", JSON.stringify(telegramConfig));
-  updateTelegramBtn();
 }
-
-function updateTelegramBtn(){
-  const btn = document.getElementById("telegramBtn");
-  if(!btn) return;
-  if(telegramConfig.enabled && telegramConfig.botToken && telegramConfig.chatId){
-    btn.textContent = "📱 Telegram ON";
-    btn.style.background = "#0088cc";
-  } else {
-    btn.textContent = "📱 Telegram";
-    btn.style.background = "#6b7280";
-  }
-}
-
 function openTelegramSettings(){
   document.getElementById("tgBotToken").value = telegramConfig.botToken || "";
   document.getElementById("tgChatId").value = telegramConfig.chatId || "";
@@ -1224,9 +1735,7 @@ function openTelegramSettings(){
   document.getElementById("telegramStatus").style.display = "none";
   document.getElementById("telegramModal").classList.add("show");
 }
-
 function closeTelegramSettings(){ document.getElementById("telegramModal").classList.remove("show"); }
-
 function saveTelegramSettings(){
   const token = document.getElementById("tgBotToken").value.trim();
   const chatId = document.getElementById("tgChatId").value.trim();
@@ -1237,18 +1746,14 @@ function saveTelegramSettings(){
   telegramConfig.enabled = enabled;
   saveTelegramConfig();
   showTelegramStatus("✅ Settings saved!", "success");
-  showToast("Telegram", "Settings saved", "success");
 }
-
 function showTelegramStatus(msg, type){
   const el = document.getElementById("telegramStatus");
   el.textContent = msg;
   el.style.display = "block";
   if(type === "success"){ el.style.background = "#ecfdf5"; el.style.color = "#065f46"; }
   else if(type === "error"){ el.style.background = "#fef2f2"; el.style.color = "#991b1b"; }
-  else { el.style.background = "#eff6ff"; el.style.color = "#1e40af"; }
 }
-
 async function sendTelegramMessage(text){
   if(!telegramConfig.enabled || !telegramConfig.botToken || !telegramConfig.chatId) return false;
   try {
@@ -1262,7 +1767,6 @@ async function sendTelegramMessage(text){
     return data.ok === true;
   } catch(e){ return false; }
 }
-
 async function testTelegram(){
   const token = document.getElementById("tgBotToken").value.trim();
   const chatId = document.getElementById("tgChatId").value.trim();
@@ -1278,20 +1782,12 @@ async function testTelegram(){
 }
 
 // ==================== HISTORY ====================
-function openHistoryModal(){
-  renderHistoryList();
-  document.getElementById("historyModal").classList.add("show");
-}
-
+function openHistoryModal(){ renderHistoryList(); document.getElementById("historyModal").classList.add("show"); }
 function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
-
 function renderHistoryList(){
   const content = document.getElementById("historyContent");
   const list = bookingHistory.slice().reverse();
-  if(list.length === 0){
-    content.innerHTML = '<div class="empty-history">No booking history found.</div>';
-    return;
-  }
+  if(list.length === 0){ content.innerHTML = '<div class="empty-history">No booking history found.</div>'; return; }
   let html = "";
   list.forEach(h => {
     html += '<div class="history-item"><b style="color:#6d28d9">' + esc(h.site) + '</b>';
@@ -1305,7 +1801,6 @@ function renderHistoryList(){
   });
   content.innerHTML = html;
 }
-
 function downloadHistoryCSV(){
   if(bookingHistory.length === 0){ alert("No history"); return; }
   const headers = ["Site", "Site Code", "Area", "Company", "From", "To", "Days", "Ended On", "Status", "Location", "Rate"];
@@ -1373,16 +1868,11 @@ function openAreaManager(){
   renderAreaList();
   document.getElementById("areaModal").classList.add("show");
 }
-
 function closeAreaModal(){ document.getElementById("areaModal").classList.remove("show"); }
-
 function renderAreaList(){
   const list = document.getElementById("areaList");
   if(!list) return;
-  if(areas.length === 0){
-    list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px">No areas.</div>';
-    return;
-  }
+  if(areas.length === 0){ list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px">No areas.</div>'; return; }
   let html = '';
   areas.forEach((a, i) => {
     const count = sites.filter(s => s.area === a).length;
@@ -1393,7 +1883,6 @@ function renderAreaList(){
   });
   list.innerHTML = html;
 }
-
 async function addNewArea(){
   const name = document.getElementById("newAreaName").value.trim();
   if(!name){ alert("Naam likhein"); return; }
@@ -1405,7 +1894,6 @@ async function addNewArea(){
   populateAreaDropdowns();
   render();
 }
-
 async function renameArea(index){
   const oldName = areas[index];
   const newName = prompt("Naya name:", oldName);
@@ -1419,7 +1907,6 @@ async function renameArea(index){
   populateAreaDropdowns();
   render();
 }
-
 async function deleteArea(index){
   const areaName = areas[index];
   const count = sites.filter(s => s.area === areaName).length;
@@ -1436,71 +1923,6 @@ async function deleteArea(index){
   render();
 }
 
-// ==================== BULK UPLOAD ====================
-function openBulkUpload(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
-  const csv = prompt("CSV paste karein (columns: area,site,location,company,rate,from,to):");
-  if(!csv) return;
-  parseCSV(csv);
-}
-
-function parseCSVLine(line){
-  const res = []; let cur = ""; let inQ = false;
-  for(let i=0; i<line.length; i++){
-    const c = line[i];
-    if(c === '"'){ if(inQ && line[i+1] === '"'){ cur += '"'; i++; } else inQ = !inQ; }
-    else if(c === ',' && !inQ){ res.push(cur.trim()); cur = ""; }
-    else cur += c;
-  }
-  res.push(cur.trim());
-  return res;
-}
-
-async function parseCSV(text){
-  const lines = text.split(/\r?\n/).filter(l => l.trim());
-  if(lines.length < 2){ alert("CSV needs header + data"); return; }
-  const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().trim());
-  if(!headers.includes("site")){ alert("'site' column missing"); return; }
-  const idx = {};
-  headers.forEach((h, i) => idx[h] = i);
-  let added = 0, updated = 0;
-  for(let i=1; i<lines.length; i++){
-    const cells = parseCSVLine(lines[i]);
-    if(!cells[idx.site]) continue;
-    let areaVal = idx.area !== undefined ? (cells[idx.area]||"").trim() : "";
-    if(!areaVal) areaVal = "Unassigned";
-    if(areaVal !== "Unassigned" && !areas.includes(areaVal)) areas.push(areaVal);
-    const siteName = cells[idx.site];
-    const codeMatch = siteName.match(/^([A-Z]{2,5}\d{1,4})/i);
-    const siteCode = codeMatch ? codeMatch[1].toUpperCase() : "";
-    const fromD = idx.from !== undefined ? (cells[idx.from]||"") : "";
-    const toD = idx.to !== undefined ? (cells[idx.to]||"") : "";
-    const autoStatus = calcStatusFromDates(fromD, toD);
-    const newSite = {
-      id: "id_"+Math.random().toString(36).slice(2,10),
-      area: areaVal, site: siteName, siteCode: siteCode,
-      location: idx.location !== undefined ? (cells[idx.location]||"") : "",
-      customer: idx.company !== undefined ? (cells[idx.company]||"") : "",
-      rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "",
-      status: autoStatus,
-      fromDate: fromD, toDate: toD,
-      lat: "", lng: "", hasImage: false
-    };
-    const existing = sites.findIndex(s => s.site === siteName);
-    if(existing >= 0){
-      sites[existing] = { ...sites[existing], ...newSite, id: sites[existing].id };
-      updated++;
-    } else {
-      sites.push(newSite);
-      added++;
-    }
-  }
-  await persistNow();
-  populateAreaDropdowns();
-  render();
-  alert("✅ Added: " + added + (updated > 0 ? ", Updated: " + updated : ""));
-}
-
 // ==================== BACKUP ====================
 async function downloadBackup(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
@@ -1511,12 +1933,10 @@ async function downloadBackup(){
   a.download = "sms_backup_" + new Date().toISOString().slice(0,19).replace(/[:T]/g, "-") + ".json";
   a.click();
 }
-
 function triggerImport(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
   document.getElementById("importFile").click();
 }
-
 function handleImportFile(e){
   const file = e.target.files[0];
   if(!file) return;
@@ -1543,6 +1963,7 @@ function handleImportFile(e){
 // ==================== EVENT LISTENERS ====================
 window.addEventListener("DOMContentLoaded", () => {
   initDateDropdowns();
+  initDateFilterInputs(); // CHANGE 2: Date input backspace fix
 
   document.getElementById("loginBtn").addEventListener("click", doLogin);
   document.getElementById("loginPass").addEventListener("keypress", e => { if(e.key === "Enter") doLogin(); });
@@ -1555,11 +1976,14 @@ window.addEventListener("DOMContentLoaded", () => {
     render();
     showToast("Refreshed", "Data reloaded", "success");
   });
-  document.getElementById("telegramBtn").addEventListener("click", openTelegramSettings);
+  
+  // CHANGE 4: Bulk button opens modal with tabs
   document.getElementById("bulkBtn").addEventListener("click", openBulkUpload);
+  
   document.getElementById("backupBtn").addEventListener("click", downloadBackup);
   document.getElementById("importBtn").addEventListener("click", triggerImport);
 
+  // CHANGE 3: Card click selects all same-status sites
   document.getElementById("cardTotal").addEventListener("click", () => {
     activeStatuses.clear();
     document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
@@ -1588,20 +2012,12 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   document.querySelectorAll(".ms-cb").forEach(cb => cb.addEventListener("change", onStatusCheckChange));
 
-  const dFrom = document.getElementById("dateFilterFrom");
-  const dTo = document.getElementById("dateFilterTo");
-  [dFrom, dTo].forEach(inp => {
-    inp.addEventListener("input", function(){
-      let v = this.value.replace(/\D/g, "");
-      if(v.length >= 2) v = v.slice(0,2) + "/" + v.slice(2);
-      if(v.length >= 5) v = v.slice(0,5) + "/" + v.slice(5,9);
-      this.value = v;
-    });
-  });
-
   document.getElementById("applyFilterBtn").addEventListener("click", render);
   document.getElementById("clearFilterBtn").addEventListener("click", () => {
-    dFrom.value = ""; dTo.value = "";
+    document.getElementById("dateFilterFrom").value = "";
+    document.getElementById("dateFilterTo").value = "";
+    document.getElementById("dateFilterFrom").dataset.lastLength = "0";
+    document.getElementById("dateFilterTo").dataset.lastLength = "0";
     render();
   });
 
@@ -1610,6 +2026,9 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("historyBtn").addEventListener("click", openHistoryModal);
   document.getElementById("exportBtn").addEventListener("click", exportCSV);
 
+  // CHANGE 1: PPT button opens options modal
+  document.getElementById("pptBtn").addEventListener("click", openPPTFormatModal);
+  
   document.getElementById("bulkStatusBtn").addEventListener("click", openBulkStatusModal);
   document.getElementById("clearSelBtn").addEventListener("click", clearSelection);
   document.getElementById("deleteBtn").addEventListener("click", bulkDeleteSelected);
@@ -1627,13 +2046,62 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("closeHistoryBtn").addEventListener("click", closeHistoryModal);
   document.getElementById("downloadHistoryBtn").addEventListener("click", downloadHistoryCSV);
 
+  // Bulk modal tabs
+  document.getElementById("bulkTabSite").addEventListener("click", () => {
+    document.getElementById("bulkTabSite").classList.add("active");
+    document.getElementById("bulkTabImage").classList.remove("active");
+    document.getElementById("bulkContentSite").classList.add("active");
+    document.getElementById("bulkContentImage").classList.remove("active");
+  });
+  document.getElementById("bulkTabImage").addEventListener("click", () => {
+    document.getElementById("bulkTabImage").classList.add("active");
+    document.getElementById("bulkTabSite").classList.remove("active");
+    document.getElementById("bulkContentImage").classList.add("active");
+    document.getElementById("bulkContentSite").classList.remove("active");
+  });
+  
+  // Bulk CSV
+  document.getElementById("csvDropzone").addEventListener("click", () => document.getElementById("csvFile").click());
+  document.getElementById("csvFile").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { parseCSV(ev.target.result); };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+  document.getElementById("csvText").addEventListener("input", function(){
+    if(this.value.trim().length > 20){ parseCSV(this.value); }
+  });
+  document.getElementById("processBulkSiteBtn").addEventListener("click", processBulkSites);
+  document.getElementById("cancelBulkSiteBtn").addEventListener("click", closeBulkModal);
+  
+  // Bulk Images
+  document.getElementById("imageDropzone").addEventListener("click", () => document.getElementById("imageFiles").click());
+  document.getElementById("imageFiles").addEventListener("change", handleBulkImageSelect);
+  document.getElementById("processBulkImageBtn").addEventListener("click", processBulkImages);
+  document.getElementById("cancelBulkImageBtn").addEventListener("click", closeBulkModal);
+
+  // PPT modal
+  document.querySelectorAll('input[name="pptStyle"]').forEach(radio => {
+    radio.addEventListener("change", function(){
+      document.querySelectorAll(".ppt-option").forEach(opt => opt.classList.remove("selected"));
+      this.closest(".ppt-option").classList.add("selected");
+    });
+  });
+  document.getElementById("generatePptBtn").addEventListener("click", generatePPT);
+  document.getElementById("cancelPptBtn").addEventListener("click", closePPTModal);
+
+  // Telegram
   document.getElementById("cancelTgBtn").addEventListener("click", closeTelegramSettings);
   document.getElementById("saveTgBtn").addEventListener("click", saveTelegramSettings);
   document.getElementById("testTgBtn").addEventListener("click", testTelegram);
 
+  // Area modal
   document.getElementById("closeAreaBtn").addEventListener("click", closeAreaModal);
   document.getElementById("addAreaBtn").addEventListener("click", addNewArea);
 
+  // Image viewer
   document.getElementById("closeViewerBtn").addEventListener("click", closeImageViewer);
   document.getElementById("imageViewer").addEventListener("click", (e) => {
     if(e.target.id === "imageViewer") closeImageViewer();
