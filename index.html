@@ -1537,7 +1537,8 @@ function createFitBlurImage(dataUrl, targetW, targetH){
     img.onerror = function(){ resolve(null); };
     img.src = dataUrl;
   });
-}function generatePPT(){
+}
+function generatePPT(){
   if(selectedSites.size === 0){ alert("Please select sites first"); return; }
   if(typeof PptxGenJS === "undefined"){ alert("PPT library not loaded"); return; }
   var style = document.querySelector('input[name="pptStyle"]:checked').value;
