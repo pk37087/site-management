@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>Site Management v9</title>
+<title>Site Management System</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
@@ -37,7 +37,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;position:relative;overflow:hidden;cursor:pointer;min-height:100px;display:flex;flex-direction:column;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.08)}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.08);border-color:#cbd5e1}
+.card:active{transform:translateY(0)}
 .card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
 .card .card-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px}
 .card b{font-size:34px;font-weight:800;color:#0f172a;line-height:1;display:block}
@@ -49,6 +50,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card.maintenance b{color:#b45309}
 .card.total::before{background:linear-gradient(180deg,#3b82f6,#1d4ed8)}
 .card.total b{color:#1e40af}
+.card.card-active{box-shadow:0 0 0 3px rgba(59,130,246,0.3),0 8px 20px rgba(15,23,42,0.1);border-color:#3b82f6}
 .toolbar{background:#fff;padding:10px;border-radius:10px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border:1px solid #e2e8f0;align-items:center}
 .toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;outline:none;min-width:160px;flex:1;font-size:13px!important;height:36px}
 .toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;gap:5px;min-height:36px;height:36px}
@@ -56,8 +58,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .filter-box .date-group{display:flex;align-items:center;background:#fff;border-right:1px solid #cbd5e1;height:100%}
 .filter-box .date-input{padding:0 8px;border:0;font-size:12px!important;width:110px;background:#fff;outline:none;height:100%}
 .filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700}
-.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;font-weight:700;font-size:11px;height:100%}
-.filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none}
+.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;font-weight:700;font-size:11px;height:100%;cursor:pointer}
+.filter-box .apply-btn:hover{background:#2563eb}
+.filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none;cursor:pointer}
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:8px 10px;border-radius:8px;margin-bottom:12px;display:none;gap:6px;flex-wrap:wrap;align-items:stretch}
 .select-bar.show{display:flex}
 .select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 12px;border-radius:5px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;min-height:36px;min-width:90px}
@@ -88,6 +91,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .site-card-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:#64748b}
 .site-card-comp{color:#334155;font-weight:500}
 .site-card-rate{color:#059669;font-weight:700;background:#ecfdf5;padding:2px 8px;border-radius:4px;border:1px solid #a7f3d0}
+.site-card-size{color:#7c3aed;font-weight:700;background:#f3e8ff;padding:2px 8px;border-radius:4px;border:1px solid #c4b5fd}
 .site-card-dates{color:#64748b}
 .days-badge{background:#eef2ff;color:#4338ca;font-weight:600;padding:1px 5px;border-radius:3px;font-size:9px;border:1px solid #c7d2fe}
 .site-card-status{flex-shrink:0}
@@ -319,8 +323,11 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <input id="fsite" placeholder="Full site name (optional)" style="flex:1">
   </div>
 </label>
+<label class="full-width">Site Size (dimensions)
+  <input id="fsitesize" placeholder="e.g. 20x10, 10x8, 14x4.6">
+</label>
 <label class="full-width">Location / Address
-  <div><input id="flocation" placeholder="Address ya GPS location"></div>
+  <div><input id="flocation" placeholder="Address or GPS location"></div>
   <div class="gps-box">
     <span class="gps-status" id="gpsStatus">GPS not captured</span>
     <button type="button" class="gps-btn" id="gpsBtn">Use GPS</button>
@@ -340,8 +347,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <span>Status</span>
     <span style="font-weight:600;color:#0ea5e9;font-size:11px">⚡ Auto from dates</span>
   </div>
-  <select id="fstatus" disabled style="margin-top:6px;background:#f1f5f9;cursor:not-allowed;font-weight:700"><option>Available</option><option>Not Available</option><option>Under Maintenance</option></select>
-  <div id="statusHint" style="font-size:12px;color:#0c4a6e;margin-top:6px;background:#f0f9ff;padding:8px 12px;border-radius:6px;border:1px solid #bae6fd;font-weight:600">💡 Status dates ke hisaab se automatically set hoga</div>
+  <select id="fstatus" style="margin-top:6px;font-weight:700"><option>Available</option><option>Not Available</option><option>Under Maintenance</option></select>
+  <div id="statusHint" style="font-size:12px;color:#0c4a6e;margin-top:6px;background:#f0f9ff;padding:8px 12px;border-radius:6px;border:1px solid #bae6fd;font-weight:600">💡 Status will be auto-set based on dates</div>
 </label>
 <label>Booking From<div class="date-row"><select id="ffrom_d"></select><select id="ffrom_m"></select><select id="ffrom_y"></select></div></label>
 <label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
@@ -367,7 +374,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <button class="bulk-tab" id="bulkTabLogo" type="button">🏷️ Logo</button>
 </div>
 <div class="bulk-tab-content active" id="bulkContentSite">
-  <div class="bulk-info"><b>CSV Format:</b><br><code>area,site,siteCode,location,company,rate,from,to</code></div>
+  <div class="bulk-info"><b>CSV Format:</b><br><code>area,site,siteCode,siteSize,location,company,rate,from,to</code></div>
   <div class="upload-dropzone" id="csvDropzone"><div class="dz-icon">📄</div><div class="dz-title">Click to upload CSV</div></div>
   <input type="file" id="csvFile" accept=".csv,.txt" style="display:none">
   <textarea id="csvText" placeholder="Paste CSV here..." style="width:100%;height:120px;padding:11px;border:1px solid #e2e8f0;border-radius:8px;font-family:monospace;font-size:12px;outline:none;margin-top:14px"></textarea>
@@ -382,7 +389,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div class="modal-actions"><button class="secondary" id="cancelBulkImageBtn" type="button">Cancel</button><button id="processBulkImageBtn" type="button" style="background:#10b981">🖼️ Process</button></div>
 </div>
 <div class="bulk-tab-content" id="bulkContentLogo">
-  <div class="bulk-info"><b>Company Logo:</b><br>PPT first page pe show hoga<br>Max 2 MB</div>
+  <div class="bulk-info"><b>Company Logo:</b><br>Shows on PPT first page<br>Max 2 MB</div>
   <div id="logoEmptyState">
     <div class="upload-dropzone" id="logoDropzone"><div class="dz-icon">🏷️</div><div class="dz-title">Click to upload logo</div><div class="dz-sub">PNG, JPG, SVG</div></div>
     <input type="file" id="logoFile" accept="image/*" style="display:none">
@@ -552,6 +559,7 @@ var isReleasing = false;
 var csvParsedSites = [];
 var bulkImagesToUpload = [];
 var companyLogo = "";
+var activeStatusFilter = null;
 
 function showToast(title, message, type){
   var c = document.getElementById("toastContainer");
@@ -615,7 +623,7 @@ function doLogin(){
   var btn = document.getElementById("loginBtn");
   var err = document.getElementById("loginError");
   err.classList.remove("show");
-  if(!username || !password){ err.textContent = "Required"; err.classList.add("show"); return; }
+  if(!username || !password){ err.textContent = "Username and password required"; err.classList.add("show"); return; }
   btn.disabled = true; btn.textContent = "Signing in...";
   fetch(API_URL + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: username, password: password }), cache: "no-store" })
     .then(function(r){ return r.json(); })
@@ -625,7 +633,7 @@ function doLogin(){
       sessionStorage.setItem("sms_user", JSON.stringify(currentUser));
       showApp();
     })
-    .catch(function(e){ err.textContent = "Server fail: " + e.message; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; });
+    .catch(function(e){ err.textContent = "Server connection failed: " + e.message; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; });
 }
 function showApp(){
   if(!currentUser) return;
@@ -684,6 +692,10 @@ function updateCards(){
   document.getElementById("avail").textContent = counts.Available;
   document.getElementById("notavail").textContent = counts["Not Available"];
   document.getElementById("maintenance").textContent = counts["Under Maintenance"];
+  document.getElementById("cardTotal").classList.toggle("card-active", activeStatusFilter === null);
+  document.getElementById("cardAvailable").classList.toggle("card-active", activeStatusFilter === "Available");
+  document.getElementById("cardNotAvailable").classList.toggle("card-active", activeStatusFilter === "Not Available");
+  document.getElementById("cardMaintenance").classList.toggle("card-active", activeStatusFilter === "Under Maintenance");
 }
 
 function loadCompanyLogo(){
@@ -752,7 +764,7 @@ function autoReleaseExpiredSites(){
       if(!toD) return;
       toD.setHours(0,0,0,0);
       if(toD < today && (x.status === "Not Available" || x.status === "Under Maintenance")){
-        bookingHistory.push({ site: x.site, siteCode: x.siteCode || "", area: x.area || "Unassigned", customer: x.customer || "", fromDate: x.fromDate || "", toDate: x.toDate || "", days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'), status: x.status, location: x.location || "", rate: x.rate || "" });
+        bookingHistory.push({ site: x.site, siteCode: x.siteCode || "", siteSize: x.siteSize || "", area: x.area || "Unassigned", customer: x.customer || "", fromDate: x.fromDate || "", toDate: x.toDate || "", days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'), status: x.status, location: x.location || "", rate: x.rate || "" });
         x.status = "Available"; x.customer = ""; x.fromDate = ""; x.toDate = "";
         changed = true;
       }
@@ -810,14 +822,20 @@ function updateCalcPreview(){
   var days = calcDays(from, to);
   var status = calcStatusFromDates(from, to);
   document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " | <b>To:</b> " + (to||"—") + " | <b>Days:</b> " + days + " | <b>Status:</b> " + status;
+  
+  var sel = document.getElementById("fstatus");
   var hint = document.getElementById("statusHint");
-  if(!hint) return;
+  sel.value = status;
+  
   if(status === "Not Available"){
-    hint.innerHTML = "🚨 Future booking — <b>Not Available</b> me save hoga";
+    hint.innerHTML = "🚨 <b>Not Available</b> — Booking ends in future";
     hint.style.background = "#fef2f2"; hint.style.borderColor = "#fecaca"; hint.style.color = "#991b1b";
-  } else {
-    hint.innerHTML = "✅ Booking past me hai — <b>Available</b> me save hoga";
+  } else if(from && to){
+    hint.innerHTML = "✅ <b>Available</b> — Booking has ended in past";
     hint.style.background = "#ecfdf5"; hint.style.borderColor = "#a7f3d0"; hint.style.color = "#065f46";
+  } else {
+    hint.innerHTML = "💡 Status will auto-set based on booking dates";
+    hint.style.background = "#f0f9ff"; hint.style.borderColor = "#bae6fd"; hint.style.color = "#0c4a6e";
   }
 }
 
@@ -826,6 +844,7 @@ function openAdd(){
   document.getElementById("modalTitle").textContent = "Add New Site";
   document.getElementById("fsitecode").value = "";
   document.getElementById("fsite").value = "";
+  document.getElementById("fsitesize").value = "";
   document.getElementById("flocation").value = "";
   document.getElementById("flocation").dataset.lat = "";
   document.getElementById("flocation").dataset.lng = "";
@@ -842,7 +861,7 @@ function openAdd(){
   document.getElementById("modal").classList.add("show");
 }
 function editSite(i){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
   editIndex = i;
   var x = sites[i];
   if(!x) return;
@@ -851,6 +870,7 @@ function editSite(i){
   document.getElementById("farea").value = x.area || areas[0] || "";
   document.getElementById("fsitecode").value = x.siteCode || "";
   document.getElementById("fsite").value = x.site || "";
+  document.getElementById("fsitesize").value = x.siteSize || "";
   document.getElementById("flocation").value = x.location || "";
   document.getElementById("flocation").dataset.lat = x.lat || "";
   document.getElementById("flocation").dataset.lng = x.lng || "";
@@ -875,21 +895,33 @@ function editSite(i){
 function closeModal(){ document.getElementById("modal").classList.remove("show"); }
 
 function saveSite(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
   var fromVal = getDateFromDropdowns("ffrom"), toVal = getDateFromDropdowns("fto");
   var areaVal = document.getElementById("farea").value;
-  if(!areaVal){ alert("Area select karein"); return; }
-  var statusVal = calcStatusFromDates(fromVal, toVal);
+  if(!areaVal){ alert("Please select an area"); return; }
+  
+  // ✅ CHECK: If future date, force Not Available
+  var autoStatus = calcStatusFromDates(fromVal, toVal);
+  var userStatus = document.getElementById("fstatus").value;
+  
+  if(autoStatus === "Not Available" && userStatus === "Available"){
+    alert("⚠️ WARNING:\n\nThe booking dates are in the future.\nStatus cannot be set to 'Available'.\n\nPlease select 'Not Available' or change the dates.");
+    return;
+  }
+  
+  var statusVal = userStatus;
   var id = editIndex < 0 ? "id_"+Math.random().toString(36).slice(2,10) : sites[editIndex].id;
   var hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
   var loc = document.getElementById("flocation");
   var siteCodeInput = document.getElementById("fsitecode").value.trim().toUpperCase();
   var siteNameInput = document.getElementById("fsite").value.trim();
+  var siteSizeInput = document.getElementById("fsitesize").value.trim();
   var finalSiteName = siteNameInput || siteCodeInput || "Unnamed Site";
   var codeMatch = finalSiteName.match(/^([A-Z]{2,5}\d{1,4})/i);
   var finalSiteCode = siteCodeInput || (codeMatch ? codeMatch[1].toUpperCase() : "");
   var newSite = {
     id: id, area: areaVal, site: finalSiteName, siteCode: finalSiteCode,
+    siteSize: siteSizeInput,
     location: loc.value.trim(), lat: loc.dataset.lat || "", lng: loc.dataset.lng || "",
     customer: document.getElementById("fcustomer").value.trim(),
     rate: document.getElementById("frate").value.trim(),
@@ -911,15 +943,15 @@ function saveSite(){
     render();
   }).catch(function(e){
     hideProgress();
-    alert("Save fail: " + e.message);
+    alert("Save failed: " + e.message);
   });
 }
 
 function handleImageUpload(e){
   var file = e.target.files[0];
   if(!file) return;
-  if(!file.type.startsWith("image/")){ alert("Only images"); return; }
-  if(file.size > 8*1024*1024){ alert("Max 8 MB"); return; }
+  if(!file.type.startsWith("image/")){ alert("Only images are allowed"); return; }
+  if(file.size > 8*1024*1024){ alert("Max file size is 8 MB"); return; }
   showProgress("Processing image (high quality)...", "Please wait");
   var reader = new FileReader();
   reader.onload = function(ev){
@@ -927,7 +959,7 @@ function handleImageUpload(e){
       hideProgress();
       currentImageData = compressed;
       showImagePreview(compressed);
-      showToast("✅ Image Ready", "High quality image processed", "success");
+      showToast("Image Ready", "High quality image processed successfully", "success");
     });
   };
   reader.readAsDataURL(file);
@@ -973,7 +1005,7 @@ function render(){
     if(collapsedAreas === null) collapsedAreas = new Set(areas);
     var q = (document.getElementById("search").value || "").toLowerCase().trim();
     var hasDateFilter = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
-    var isFiltering = q || hasDateFilter;
+    var isFiltering = q || hasDateFilter || activeStatusFilter;
     if(isFiltering) collapsedAreas.clear();
     var container = document.getElementById("areaContainer");
     container.innerHTML = "";
@@ -986,7 +1018,8 @@ function render(){
       var areaSites = sites.filter(function(s){
         var sArea = s.area || "Unassigned";
         if(sArea !== areaName) return false;
-        var hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
+        if(activeStatusFilter && s.status !== activeStatusFilter) return false;
+        var hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + (s.siteSize||"") + " " + s.status).toLowerCase();
         if(q && hay.indexOf(q) === -1) return false;
         return true;
       });
@@ -1036,6 +1069,7 @@ function render(){
           cardsHTML += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' data-id="' + x.id + '"><span class="site-card-num">#' + (idx + 1) + '</span>' + imgHTML + '</div>';
           cardsHTML += '<div class="site-card-body"><div class="site-card-name">' + esc(x.site) + (x.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;margin-left:6px">' + esc(x.siteCode) + '</span>' : '') + '</div>';
           cardsHTML += '<div class="site-card-meta">';
+          if(x.siteSize) cardsHTML += '<span class="site-card-size">📐 ' + esc(x.siteSize) + '</span>';
           if(x.customer) cardsHTML += '<span class="site-card-comp">' + esc(x.customer) + '</span>';
           if(x.rate) cardsHTML += '<span class="site-card-rate">' + formatRate(x.rate) + '</span>';
           if(x.status !== "Available" && (x.fromDate || x.toDate)) cardsHTML += '<span class="site-card-dates">' + esc(x.fromDate || "") + ' - ' + esc(x.toDate || "") + (days > 0 ? ' <span class="days-badge">' + days + 'd</span>' : '') + '</span>';
@@ -1050,7 +1084,7 @@ function render(){
       block.appendChild(content);
       container.appendChild(block);
     }
-    if(totalShown === 0 && isFiltering) container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match</div>';
+    if(totalShown === 0 && isFiltering) container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match your filters</div>';
     document.querySelectorAll('.site-card-cb').forEach(function(cb){ cb.addEventListener('change', function(){ toggleSelect(this.dataset.id); }); });
     loadVisibleImages();
     updateSelectBar();
@@ -1123,7 +1157,7 @@ function initDateFilterInputs(){
 }
 
 function openBulkUpload(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
   document.getElementById("bulkTabSite").classList.add("active");
   document.getElementById("bulkTabImage").classList.remove("active");
   document.getElementById("bulkTabLogo").classList.remove("active");
@@ -1165,10 +1199,11 @@ function parseCSV(text){
     var codeMatch = siteName.match(/^([A-Z]{2,5}\d{1,4})/i);
     var siteCode = (idx.sitecode !== undefined && cells[idx.sitecode]) ? cells[idx.sitecode].toUpperCase() : (codeMatch ? codeMatch[1].toUpperCase() : "");
     var areaVal = (idx.area !== undefined && cells[idx.area]) ? cells[idx.area].trim() : "Unassigned";
+    var siteSize = (idx.sitesize !== undefined && cells[idx.sitesize]) ? cells[idx.sitesize] : "";
     var fromD = idx.from !== undefined ? (cells[idx.from]||"") : "";
     var toD = idx.to !== undefined ? (cells[idx.to]||"") : "";
     var autoStatus = calcStatusFromDates(fromD, toD);
-    csvParsedSites.push({ id: "id_" + Math.random().toString(36).slice(2,10), area: areaVal, site: siteName, siteCode: siteCode, location: idx.location !== undefined ? (cells[idx.location]||"") : "", customer: idx.company !== undefined ? (cells[idx.company]||"") : "", rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "", status: autoStatus, fromDate: fromD, toDate: toD, lat: "", lng: "", hasImage: false });
+    csvParsedSites.push({ id: "id_" + Math.random().toString(36).slice(2,10), area: areaVal, site: siteName, siteCode: siteCode, siteSize: siteSize, location: idx.location !== undefined ? (cells[idx.location]||"") : "", customer: idx.company !== undefined ? (cells[idx.company]||"") : "", rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "", status: autoStatus, fromDate: fromD, toDate: toD, lat: "", lng: "", hasImage: false });
   }
   showCSVPreview();
 }
@@ -1179,7 +1214,7 @@ function showCSVPreview(){
   preview.style.display = "block";
 }
 function processBulkSites(){
-  if(csvParsedSites.length === 0){ alert("Pehle CSV parse karo"); return; }
+  if(csvParsedSites.length === 0){ alert("Please parse CSV first"); return; }
   var added = 0, updated = 0;
   csvParsedSites.forEach(function(newSite){
     if(newSite.area && newSite.area !== "Unassigned" && areas.indexOf(newSite.area) === -1) areas.push(newSite.area);
@@ -1213,11 +1248,11 @@ function handleBulkImageSelect(e){
 function showBulkImagePreview(){
   var list = document.getElementById("imagePreviewList");
   if(bulkImagesToUpload.length === 0){ list.style.display = "none"; return; }
-  list.innerHTML = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>🖼️ ' + bulkImagesToUpload.length + ' images</b></div>';
+  list.innerHTML = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>🖼️ ' + bulkImagesToUpload.length + ' images selected</b></div>';
   list.style.display = "block";
 }
 function processBulkImages(){
-  if(bulkImagesToUpload.length === 0){ alert("Pehle images select karo"); return; }
+  if(bulkImagesToUpload.length === 0){ alert("Please select images first"); return; }
   var uploaded = 0, skipped = 0;
   var i = 0;
   showProgress("Uploading images...", "0 / " + bulkImagesToUpload.length);
@@ -1256,7 +1291,7 @@ function processBulkImages(){
 function handleLogoUpload(e){
   var file = e.target.files[0];
   if(!file) return;
-  if(!file.type.startsWith("image/")){ alert("Only images"); return; }
+  if(!file.type.startsWith("image/")){ alert("Only images allowed"); return; }
   if(file.size > 2*1024*1024){ alert("Max 2 MB"); return; }
   showProgress("Processing logo...", "Reading file");
   var reader = new FileReader();
@@ -1265,8 +1300,8 @@ function handleLogoUpload(e){
       showProgress("Uploading logo...", "Saving");
       apiPost("/logo", { data: compressed }).then(function(result){
         hideProgress();
-        if(result && result.success){ companyLogo = compressed; updateLogoUI(); showToast("✅ Logo Saved", "PPT me show hoga", "success"); }
-        else alert("❌ Logo save fail: " + (result && result.error ? result.error : "Unknown"));
+        if(result && result.success){ companyLogo = compressed; updateLogoUI(); showToast("Logo Saved", "Will show on PPT first page", "success"); }
+        else alert("Logo save failed: " + (result && result.error ? result.error : "Unknown"));
       });
     });
   };
@@ -1302,14 +1337,14 @@ function compressLogoSmart(dataUrl, cb){
   img.src = dataUrl;
 }
 function handleDeleteLogo(){
-  if(!confirm("Logo delete?")) return;
+  if(!confirm("Delete logo?")) return;
   apiPost("/logo", { data: "" }).then(function(result){
     if(result && result.success){ companyLogo = ""; updateLogoUI(); showToast("Deleted", "Logo removed", "success"); }
   });
 }
 
 function openPPTFormatModal(){
-  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
+  if(selectedSites.size === 0){ alert("Please select sites first"); return; }
   document.getElementById("pptCount").textContent = selectedSites.size + " sites";
   document.getElementById("pptModal").classList.add("show");
 }
@@ -1461,8 +1496,8 @@ function createFitBlurImage(dataUrl, targetW, targetH){
 }
 
 function generatePPT(){
-  if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
-  if(typeof PptxGenJS === "undefined"){ alert("PPT library load nahi hui"); return; }
+  if(selectedSites.size === 0){ alert("Please select sites first"); return; }
+  if(typeof PptxGenJS === "undefined"){ alert("PPT library not loaded"); return; }
   var style = document.querySelector('input[name="pptStyle"]:checked').value;
   var theme = document.querySelector('input[name="pptTheme"]:checked').value;
   var includeImages = document.getElementById("pptIncludeImages").checked;
@@ -1474,7 +1509,7 @@ function generatePPT(){
   };
   var T = THEMES[theme] || THEMES["dark-navy"];
   var list = sites.filter(function(s){ return selectedSites.has(s.id); });
-  if(list.length === 0){ alert("Koi site nahi"); return; }
+  if(list.length === 0){ alert("No sites found"); return; }
   closePPTModal();
   showProgress("Generating PPT...", "Preparing");
   
@@ -1485,7 +1520,7 @@ function generatePPT(){
   var now = new Date();
   var dateOnly = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
   
-  // ========== COVER SLIDE (✅ AREA CARDS REMOVED) ==========
+  // ========== COVER SLIDE ==========
   var slide = pptx.addSlide();
   slide.background = { color: T.bg };
   slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.15, fill: { color: T.accent } });
@@ -1505,32 +1540,29 @@ function generatePPT(){
   slide.addShape(pptx.ShapeType.rect, { x: 5.92, y: currentY, w: 1.5, h: 0.03, fill: { color: T.accent } });
   currentY += 0.5;
   slide.addText("SITE REPORT", { x: 0.5, y: currentY, w: 12.33, h: 1.1, fontSize: 56, bold: true, color: "FFFFFF", align: "center", charSpacing: 4 });
-  currentY += 1.3;
-  slide.addText(dateOnly, { x: 0.5, y: currentY, w: 12.33, h: 0.4, fontSize: 15, color: T.bodyText, align: "center" });
+  currentY += 1.4;
   
-  // ✅ BOTTOM INFO BAR (Prepared by | Date | Total Sites | Generated)
+  // ✅ Area names instead of date
+  var areaNamesList = [];
+  var areaSeen = {};
+  list.forEach(function(s){ var a = s.area || "Unassigned"; if(!areaSeen[a]){ areaSeen[a] = true; areaNamesList.push(a); } });
+  var areaText = areaNamesList.join(" • ");
+  slide.addText(areaText.substring(0, 100), { x: 0.5, y: currentY, w: 12.33, h: 0.5, fontSize: 18, bold: true, color: T.accent, align: "center", charSpacing: 2 });
+  
+  // Bottom info bar
   var bottomY = 6.5;
   slide.addShape(pptx.ShapeType.rect, { x: 0.5, y: bottomY - 0.15, w: 12.33, h: 0.01, fill: { color: T.accent, transparency: 50 } });
-  
-  // Item 1: Prepared By
   slide.addText("PREPARED BY", { x: 0.65, y: bottomY, w: 2.8, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
   slide.addText(COMPANY_NAME, { x: 0.65, y: bottomY + 0.24, w: 3.2, h: 0.3, fontSize: 12, bold: true, color: "FFFFFF" });
-  
-  // Item 2: Date
   slide.addText("DATE", { x: 4.2, y: bottomY, w: 2, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
   slide.addText(dateOnly, { x: 4.2, y: bottomY + 0.24, w: 2.8, h: 0.3, fontSize: 12, bold: true, color: "FFFFFF" });
-  
-  // Item 3: Total Sites
   slide.addText("TOTAL SITES", { x: 7.3, y: bottomY, w: 2, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
   slide.addText(String(list.length), { x: 7.3, y: bottomY + 0.24, w: 1.5, h: 0.3, fontSize: 14, bold: true, color: T.accent });
-  
-  // Item 4: Generated
   slide.addText("GENERATED", { x: 9.9, y: bottomY, w: 3, h: 0.25, fontSize: 8, bold: true, color: "64748B", align: "right", charSpacing: 2 });
   slide.addText(dateOnly, { x: 8.9, y: bottomY + 0.24, w: 4, h: 0.3, fontSize: 12, bold: true, color: "FFFFFF", align: "right" });
   
   // ========== INDIVIDUAL SLIDES ==========
   var chain = Promise.resolve();
-  
   list.forEach(function(x, i){
     chain = chain.then(function(){
       showProgress("Generating...", "Slide " + (i+1) + " / " + list.length);
@@ -1541,200 +1573,167 @@ function generatePPT(){
       
       var s = pptx.addSlide();
       s.background = { color: T.bg };
-      
-      // Header bar
       s.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.55, fill: { color: T.accentDark } });
-      s.addText((i+1) + ". " + x.site, { x: 0.3, y: 0.1, w: 9, h: 0.4, fontSize: 13, bold: true, color: "FFFFFF" });
+      s.addText((i+1) + ". " + x.site + (x.siteSize ? " | " + x.siteSize : ""), { x: 0.3, y: 0.1, w: 9.5, h: 0.4, fontSize: 12, bold: true, color: "FFFFFF" });
       s.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.11, w: 2.15, h: 0.33, fill: { color: stColor }, rectRadius: 0.1 });
       s.addText(x.status.toUpperCase(), { x: 11.0, y: 0.11, w: 2.15, h: 0.33, fontSize: 8, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
       
       var imgPromise = (includeImages && x.hasImage) ? (imageCache[x.id] ? Promise.resolve(imageCache[x.id]) : getImage(x.id)) : Promise.resolve(null);
       
       return imgPromise.then(function(imgData){
-        // ========== FULL DETAIL (✅ ALL DETAILS BELOW IMAGE) ==========
-        if(style === "full-detail"){
-          var imgH = 3.9;
-          if(imgData){
-            return createFitBlackImage(imgData, 2560, 1080).then(function(p){
-              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: imgH });
-            });
-          } else {
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: imgH, fill: { color: "1E293B" } });
-            s.addText("📷 No Image Available", { x: 0, y: 2.2, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
-          }
-          return new Promise(function(resolve){
-            var detY = 0.55 + imgH;
-            var detH = 7.5 - detY;
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: detY, w: 13.33, h: detH, fill: { color: "F8FAFC" } });
-            
-            // Row 1: Site Name (big)
-            s.addText(x.site, { x: 0.3, y: detY + 0.08, w: 9.5, h: 0.35, fontSize: 14, bold: true, color: "0F172A" });
-            // Site Code badge on right
-            if(x.siteCode){
-              s.addShape(pptx.ShapeType.roundRect, { x: 11.8, y: detY + 0.08, w: 1.3, h: 0.32, fill: { color: T.accentDark }, rectRadius: 0.06 });
-              s.addText(x.siteCode, { x: 11.8, y: detY + 0.08, w: 1.3, h: 0.32, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-            }
-            
-            // Row 2: 4 columns
-            var detailRowY = detY + 0.55;
-            var colW = 13.33 / 4;
-            
-            // Column 1: AREA + Location
-            s.addText("AREA", { x: 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-            s.addText(x.area || "—", { x: 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark });
-            if(x.location){
-              s.addText("📍 LOCATION", { x: 0.3, y: detailRowY + 0.62, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-              s.addText(x.location.substring(0, 45), { x: 0.3, y: detailRowY + 0.84, w: colW - 0.4, h: 0.5, fontSize: 9, color: "475569" });
-            }
-            
-            // Column 2: COMPANY
-            s.addText("COMPANY", { x: colW + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-            s.addText(x.customer || "—", { x: colW + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "047857" });
-            
-            // Column 3: RATE
-            s.addText("RATE", { x: colW * 2 + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-            s.addText(x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", { x: colW * 2 + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "B45309" });
-            
-            // Column 4: DURATION
-            s.addText("DURATION", { x: colW * 3 + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-            var durText = (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—";
-            s.addText(durText, { x: colW * 3 + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 10, bold: true, color: "6D28D9" });
-            
-            resolve();
-          });
+        // All layouts now include details below image
+        var imgH = 4.7;
+        if(style === "full-detail" || style === "split-detail"){
+          imgH = 3.9;
         }
-        // ========== SPLIT DETAIL (✅ CLICKABLE LOCATION) ==========
-        else if(style === "split-detail"){
-          var leftW = 7.3;
-          var rightX = 7.3;
-          var rightW = 13.33 - leftW;
-          
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: leftW, h: 6.95, fill: { color: "000000" } });
-          if(imgData){
-            return createFitBlackImage(imgData, 1800, 1900).then(function(p){
-              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: leftW, h: 6.95 });
-            });
-          } else {
-            s.addText("📷 No Image", { x: 0, y: 3.5, w: leftW, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
-          }
-          return new Promise(function(resolve){
-            s.addShape(pptx.ShapeType.rect, { x: rightX, y: 0.55, w: rightW, h: 6.95, fill: { color: "F8FAFC" } });
-            s.addShape(pptx.ShapeType.rect, { x: rightX, y: 0.55, w: rightW, h: 0.05, fill: { color: T.accent } });
-            
-            var ry = 0.7;
-            s.addText("SITE DETAILS", { x: rightX + 0.2, y: ry, w: rightW - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark, charSpacing: 2 });
-            ry += 0.5;
-            
-            var details = [
-              { icon: "🏷️", label: "Site Code", value: x.siteCode || "—" },
-              { icon: "📍", label: "Area", value: x.area || "—" },
-              { icon: "🗺️", label: "Location", value: (x.location || "—").substring(0, 60) },
-              { icon: "🏢", label: "Company", value: x.customer || "—" },
-              { icon: "💰", label: "Rate", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—" },
-              { icon: "📅", label: "From Date", value: x.fromDate || "—" },
-              { icon: "📅", label: "To Date", value: x.toDate || "—" },
-              { icon: "⏱️", label: "Duration", value: days > 0 ? days + " days" : "—" },
-              { icon: "🔔", label: "Status", value: x.status }
-            ];
-            
-            details.forEach(function(d){
-              if(ry > 7.0) return;
-              s.addText(d.icon + " " + d.label, { x: rightX + 0.2, y: ry, w: rightW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1 });
-              s.addText(String(d.value), { x: rightX + 0.2, y: ry + 0.22, w: rightW - 0.4, h: 0.35, fontSize: 11, bold: true, color: "0F172A" });
-              ry += 0.62;
-            });
-            
-            resolve();
-          });
-        }
-        // ========== EXISTING LAYOUTS (✅ LOCATION CLICKABLE + ALL DETAILS IN FOOTER) ==========
-        else if(style === "center-black" || style === "fit-black"){
+        
+        if(style === "center-black" || style === "fit-black"){
           var fn = style === "center-black" ? createCenterBlackImage : createFitBlackImage;
           if(imgData){
             return fn(imgData, 2560, 1440).then(function(p){
-              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: 4.7 });
+              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: imgH });
             });
           } else {
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: 4.7, fill: { color: "000000" } });
-            s.addText("📷 No Image Available", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: imgH, fill: { color: "000000" } });
+            s.addText("No Image Available", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           }
         } else if(style === "center-blur" || style === "fit-blur"){
           var fn2 = style === "center-blur" ? createCenterBlurImage : createFitBlurImage;
           if(imgData){
             return fn2(imgData, 2560, 1440).then(function(p){
-              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: 4.7 });
+              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: imgH });
             });
           } else {
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: 4.7, fill: { color: "1E293B" } });
-            s.addText("📷 No Image Available", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: imgH, fill: { color: "1E293B" } });
+            s.addText("No Image Available", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           }
         } else if(style === "split"){
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 6.5, h: 6.95, fill: { color: "F1F5F9" } });
-          if(imgData){ try { s.addImage({ data: imgData, x: 0.1, y: 0.65, w: 6.3, h: 6.75, sizing: { type: "contain", w: 6.3, h: 6.75 } }); } catch(e){} }
-          else s.addText("📷 No Image", { x: 0.1, y: 3.8, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 6.5, h: 5.5, fill: { color: "F1F5F9" } });
+          if(imgData){ try { s.addImage({ data: imgData, x: 0.1, y: 0.65, w: 6.3, h: 5.3, sizing: { type: "contain", w: 6.3, h: 5.3 } }); } catch(e){} }
+          else s.addText("No Image", { x: 0.1, y: 3, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
+        } else if(style === "cover"){
+          if(imgData){ try { s.addImage({ data: imgData, x: 0, y: 0.55, w: 13.33, h: imgH, sizing: { type: "cover", w: 13.33, h: imgH } }); } catch(e){} }
+          else s.addText("No Image", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+        }
+        
+        // ========== DETAILS SECTION (for all non-split layouts) ==========
+        if(style === "split"){
+          // Split: details on right
           var infoY = 0.8;
-          s.addText("Site Details", { x: 6.8, y: infoY, w: 6.3, h: 0.4, fontSize: 16, bold: true, color: T.accentDark });
-          infoY += 0.6;
-          var rows2 = [["Site Name", x.site], ["Site Code", x.siteCode || "—"], ["Area", x.area || "—"], ["Location", x.location || "—"]];
-          if(includeCompany){
-            rows2.push(["Company", x.customer || "—"]);
-            rows2.push(["Rate", x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—"]);
-          }
-          if(includeDates){ rows2.push(["From", x.fromDate || "—"]); rows2.push(["To", x.toDate || "—"]); rows2.push(["Duration", days > 0 ? days + " days" : "—"]); }
-          rows2.push(["Status", x.status]);
-          rows2.forEach(function(row){
-            s.addText(row[0] + ":", { x: 6.8, y: infoY, w: 1.8, h: 0.35, fontSize: 10, bold: true, color: "64748B" });
-            var isLocation = (row[0] === "Location" && x.location);
-            s.addText(String(row[1]).substring(0, 50), { 
-              x: 8.6, y: infoY, w: 4.5, h: 0.35, fontSize: 11, 
-              color: isLocation ? "0891B2" : "0F172A",
-              underline: isLocation ? true : false,
-              hyperlink: isLocation ? { url: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location) } : undefined
+          s.addText("SITE DETAILS", { x: 6.8, y: infoY, w: 6.3, h: 0.4, fontSize: 14, bold: true, color: T.accentDark, charSpacing: 2 });
+          infoY += 0.55;
+          var rows = [
+            { label: "Site Code", value: x.siteCode || "—" },
+            { label: "Area", value: x.area || "—" },
+            { label: "Site Size", value: x.siteSize || "—" },
+            { label: "Location", value: x.location || "—", link: x.location ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location) : null },
+            { label: "Company", value: x.customer || "—" },
+            { label: "Rate", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—" },
+            { label: "From Date", value: x.fromDate || "—" },
+            { label: "To Date", value: x.toDate || "—" },
+            { label: "Duration", value: days > 0 ? days + " days" : "—" },
+            { label: "Status", value: x.status }
+          ];
+          rows.forEach(function(row){
+            s.addText(row.label + ":", { x: 6.8, y: infoY, w: 1.7, h: 0.3, fontSize: 9, bold: true, color: "64748B" });
+            var isLink = (row.label === "Location" && row.link);
+            s.addText(String(row.value).substring(0, 45), { 
+              x: 8.5, y: infoY, w: 4.6, h: 0.3, fontSize: 10, 
+              color: isLink ? "0891B2" : "0F172A",
+              underline: isLink,
+              hyperlink: isLink ? { url: row.link } : undefined
             });
             infoY += 0.42;
           });
-        } else if(style === "cover"){
-          if(imgData){ try { s.addImage({ data: imgData, x: 0, y: 0.55, w: 13.33, h: 4.7, sizing: { type: "cover", w: 13.33, h: 4.7 } }); } catch(e){} }
-          else s.addText("📷 No Image", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
-        }
-        
-        // ✅ FOOTER with all details + CLICKABLE LOCATION (for non-detail styles)
-        if(style !== "full-detail" && style !== "split-detail"){
-          var footerY = 5.4;
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: footerY, w: 13.33, h: 2.1, fill: { color: "F8FAFC" } });
+        } else if(style === "full-detail" || style === "split-detail"){
+          // Full Detail: details below image
+          var detY = 0.55 + imgH;
+          var detH = 7.5 - detY;
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: detY, w: 13.33, h: detH, fill: { color: "F8FAFC" } });
           
-          // Row 1: Area | Company | Rate | Duration
-          var cols = [
-            { label: "AREA", value: x.area || "—" },
-            { label: "COMPANY", value: x.customer || "—" },
-            { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—" },
-            { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—" }
-          ];
+          s.addText(x.site, { x: 0.3, y: detY + 0.08, w: 9.5, h: 0.35, fontSize: 14, bold: true, color: "0F172A" });
+          if(x.siteCode){
+            s.addShape(pptx.ShapeType.roundRect, { x: 11.8, y: detY + 0.08, w: 1.3, h: 0.32, fill: { color: T.accentDark }, rectRadius: 0.06 });
+            s.addText(x.siteCode, { x: 11.8, y: detY + 0.08, w: 1.3, h: 0.32, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+          }
+          
+          var detailRowY = detY + 0.55;
           var colW = 13.33 / 4;
-          cols.forEach(function(f, idx){
-            var cx = idx * colW;
-            s.addText(f.label, { x: cx+0.15, y: footerY + 0.12, w: colW-0.3, h: 0.22, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
-            s.addText(String(f.value).substring(0, 30), { x: cx+0.15, y: footerY + 0.36, w: colW-0.3, h: 0.35, fontSize: 11, bold: true, color: T.accentDark });
-          });
           
-          // Row 2: Location (clickable)
+          // Column 1: Area
+          s.addText("AREA", { x: 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          s.addText(x.area || "—", { x: 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark });
+          
+          // Column 2: Site Size
+          s.addText("SITE SIZE", { x: colW + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          s.addText(x.siteSize || "—", { x: colW + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "7C3AED" });
+          
+          // Column 3: Company
+          s.addText("COMPANY", { x: colW * 2 + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          s.addText(x.customer || "—", { x: colW * 2 + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "047857" });
+          
+          // Column 4: Rate
+          s.addText("RATE", { x: colW * 3 + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          s.addText(x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", { x: colW * 3 + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "B45309" });
+          
+          // Row 3: Duration + Location
+          var row3Y = detailRowY + 0.65;
+          s.addText("DURATION", { x: 0.3, y: row3Y, w: 2.5, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          var durText = (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—";
+          s.addText(durText, { x: 0.3, y: row3Y + 0.22, w: 6, h: 0.3, fontSize: 10, bold: true, color: "6D28D9" });
+          
           if(x.location){
-            s.addText("📍 LOCATION", { x: 0.15, y: footerY + 0.9, w: 3, h: 0.22, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+            s.addText("LOCATION", { x: 6.5, y: row3Y, w: 2, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
             var mapUrl = (x.lat && x.lng) 
               ? "https://www.google.com/maps?q=" + x.lat + "," + x.lng 
               : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location);
-            s.addText(x.location.substring(0, 100), { 
-              x: 0.15, y: footerY + 1.15, w: 12.5, h: 0.35, fontSize: 11, 
+            s.addText(x.location.substring(0, 50), { 
+              x: 6.5, y: row3Y + 0.22, w: 6.5, h: 0.3, fontSize: 10, 
               color: "0891B2", underline: true, 
               hyperlink: { url: mapUrl }
             });
-            s.addText("🗺️ Click to open in Maps", { x: 0.15, y: footerY + 1.55, w: 5, h: 0.25, fontSize: 8, italic: true, color: "94A3B8" });
+          }
+        } else {
+          // For all other layouts (center-black, center-blur, fit-black, fit-blur, cover) - details at bottom
+          var footerY = 5.35;
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: footerY, w: 13.33, h: 2.15, fill: { color: "F8FAFC" } });
+          
+          // Row 1: Area | Site Size | Company | Rate
+          var cols = [
+            { label: "AREA", value: x.area || "—" },
+            { label: "SITE SIZE", value: x.siteSize || "—" },
+            { label: "COMPANY", value: x.customer || "—" },
+            { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—" }
+          ];
+          var colW2 = 13.33 / 4;
+          cols.forEach(function(f, idx){
+            var cx = idx * colW2;
+            s.addText(f.label, { x: cx+0.15, y: footerY + 0.08, w: colW2-0.3, h: 0.22, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+            s.addText(String(f.value).substring(0, 30), { x: cx+0.15, y: footerY + 0.32, w: colW2-0.3, h: 0.35, fontSize: 11, bold: true, color: T.accentDark });
+          });
+          
+          // Row 2: Duration
+          var durText2 = (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—";
+          s.addText("DURATION", { x: 0.15, y: footerY + 0.8, w: 2.5, h: 0.22, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+          s.addText(durText2, { x: 0.15, y: footerY + 1.04, w: 6, h: 0.3, fontSize: 11, bold: true, color: "6D28D9" });
+          
+          // Row 3: Location (clickable)
+          if(x.location){
+            s.addText("LOCATION", { x: 6.5, y: footerY + 0.8, w: 3, h: 0.22, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+            var mapUrl2 = (x.lat && x.lng) 
+              ? "https://www.google.com/maps?q=" + x.lat + "," + x.lng 
+              : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location);
+            s.addText(x.location.substring(0, 50), { 
+              x: 6.5, y: footerY + 1.04, w: 6.7, h: 0.3, fontSize: 10, 
+              color: "0891B2", underline: true, 
+              hyperlink: { url: mapUrl2 }
+            });
           }
           
-          // Row 3: Site Code badge (if exists)
+          // Site code badge
           if(x.siteCode){
-            s.addShape(pptx.ShapeType.roundRect, { x: 11.5, y: footerY + 0.9, w: 1.6, h: 0.35, fill: { color: T.accentDark }, rectRadius: 0.06 });
-            s.addText(x.siteCode, { x: 11.5, y: footerY + 0.9, w: 1.6, h: 0.35, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+            s.addShape(pptx.ShapeType.roundRect, { x: 11.8, y: footerY + 0.08, w: 1.3, h: 0.32, fill: { color: T.accentDark }, rectRadius: 0.06 });
+            s.addText(x.siteCode, { x: 11.8, y: footerY + 0.08, w: 1.3, h: 0.32, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
           }
         }
       });
@@ -1764,7 +1763,7 @@ function closeHistoryModal(){ document.getElementById("historyModal").classList.
 function renderHistoryList(){
   var content = document.getElementById("historyContent");
   var list = bookingHistory.slice().reverse();
-  if(list.length === 0){ content.innerHTML = '<div class="empty-history">No history</div>'; return; }
+  if(list.length === 0){ content.innerHTML = '<div class="empty-history">No history found</div>'; return; }
   var html = "";
   list.forEach(function(h){
     html += '<div class="history-item"><b>' + esc(h.site) + '</b>';
@@ -1778,26 +1777,26 @@ function renderHistoryList(){
 }
 function downloadHistoryCSV(){
   if(bookingHistory.length === 0){ alert("No history"); return; }
-  var headers = ["Site", "Site Code", "Area", "Company", "From", "To", "Days", "Ended On", "Status"];
+  var headers = ["Site", "Site Code", "Site Size", "Area", "Company", "From", "To", "Days", "Ended On", "Status"];
   var csv = headers.join(",") + "\n";
-  bookingHistory.forEach(function(h){ csv += [h.site, h.siteCode || "", h.area || "", h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status].map(function(v){ return '"' + String(v || "").replace(/"/g, '""') + '"'; }).join(",") + "\n"; });
+  bookingHistory.forEach(function(h){ csv += [h.site, h.siteCode || "", h.siteSize || "", h.area || "", h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status].map(function(v){ return '"' + String(v || "").replace(/"/g, '""') + '"'; }).join(",") + "\n"; });
   var blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
   var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "history_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
 }
 
 function exportCSV(){
   if(sites.length === 0){ alert("No sites"); return; }
-  var headers = ["Area", "Site", "Site Code", "Location", "Company", "Rate", "Status", "From", "To"];
+  var headers = ["Area", "Site", "Site Code", "Site Size", "Location", "Company", "Rate", "Status", "From", "To"];
   var csv = headers.join(",") + "\n";
-  sites.forEach(function(s){ csv += [s.area, s.site, s.siteCode||"", s.location, s.customer, s.rate, s.status, s.fromDate, s.toDate].map(function(v){ return '"' + String(v || "").replace(/"/g, '""') + '"'; }).join(",") + "\n"; });
+  sites.forEach(function(s){ csv += [s.area, s.site, s.siteCode||"", s.siteSize||"", s.location, s.customer, s.rate, s.status, s.fromDate, s.toDate].map(function(v){ return '"' + String(v || "").replace(/"/g, '""') + '"'; }).join(",") + "\n"; });
   var blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
   var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sites_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
 }
 
 function bulkDeleteSelected(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
-  if(selectedSites.size === 0){ alert("Koi site select nahi"); return; }
-  if(!confirm(selectedSites.size + " sites delete?")) return;
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  if(selectedSites.size === 0){ alert("No sites selected"); return; }
+  if(!confirm("Delete " + selectedSites.size + " sites?")) return;
   var ids = new Set(Array.from(selectedSites).map(String));
   var toDelete = sites.filter(function(s){ return ids.has(String(s.id)); });
   var chain = Promise.resolve();
@@ -1809,16 +1808,16 @@ function bulkDeleteSelected(){
   }).then(function(){
     updateCards();
     render();
-    alert("✅ " + toDelete.length + " deleted");
+    alert("✅ " + toDelete.length + " sites deleted");
   });
 }
 function openBulkStatusModal(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
-  if(selectedSites.size === 0){ alert("Pehle select karein"); return; }
-  var status = prompt("Status: Available / Not Available / Under Maintenance");
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  if(selectedSites.size === 0){ alert("Please select sites first"); return; }
+  var status = prompt("Enter status: Available / Not Available / Under Maintenance");
   if(!status) return;
   var newStatus = status.trim();
-  if(["Available","Not Available","Under Maintenance"].indexOf(newStatus) === -1){ alert("Invalid"); return; }
+  if(["Available","Not Available","Under Maintenance"].indexOf(newStatus) === -1){ alert("Invalid status"); return; }
   var ids = new Set(Array.from(selectedSites).map(String));
   var targets = sites.filter(function(s){ return ids.has(String(s.id)); });
   targets.forEach(function(s){ s.status = newStatus; });
@@ -1826,12 +1825,12 @@ function openBulkStatusModal(){
     updateCards();
     render();
     clearSelection();
-    alert("✅ " + targets.length + " updated");
+    alert("✅ " + targets.length + " sites updated");
   });
 }
 
 function openAreaManager(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
   renderAreaList();
   document.getElementById("areaModal").classList.add("show");
 }
@@ -1852,164 +1851,288 @@ function renderAreaList(){
 }
 function addNewArea(){
   var name = document.getElementById("newAreaName").value.trim();
-  if(!name){ alert("Naam likhein"); return; }
-  if(areas.indexOf(name) !== -1){ alert("Exists"); return; }
+  if(!name){ alert("Please enter a name"); return; }
+  if(areas.indexOf(name) !== -1){ alert("Area already exists"); return; }
   areas.push(name); persistNow();
   document.getElementById("newAreaName").value = "";
   renderAreaList(); populateAreaDropdowns(); render();
 }
 function renameArea(index){
   var oldName = areas[index];
-  var newName = prompt("Naya name:", oldName);
+  var newName = prompt("Enter new name:", oldName);
   if(!newName || newName.trim() === "") return;
-  if(newName !== oldName && areas.indexOf(newName) !== -1){ alert("Exists"); return; }
+  if(newName !== oldName && areas.indexOf(newName) !== -1){ alert("Area already exists"); return; }
   var trimmed = newName.trim();
-  areas[index] = trimmed;
+    areas[index] = trimmed;
   sites.forEach(function(s){ if(s.area === oldName) s.area = trimmed; });
-  persistNow(); renderAreaList(); populateAreaDropdowns(); render();
+  persistNow();
+  renderAreaList();
+  populateAreaDropdowns();
+  render();
 }
+
 function deleteArea(index){
   var areaName = areas[index];
   var count = sites.filter(function(s){ return s.area === areaName; }).length;
   if(count > 0){
-    if(!confirm(areaName + " mein " + count + " sites. Continue?")) return;
-    sites.forEach(function(s){ if(s.area === areaName) s.area = "Unassigned"; });
+    if(!confirm("Area '" + areaName + "' has " + count + " site(s). They will be moved to 'Unassigned'. Delete anyway?")) return;
   } else {
-    if(!confirm("Delete '" + areaName + "'?")) return;
+    if(!confirm("Delete area '" + areaName + "'?")) return;
   }
+  sites.forEach(function(s){ if(s.area === areaName) s.area = "Unassigned"; });
   areas.splice(index, 1);
-  persistNow(); renderAreaList(); populateAreaDropdowns(); render();
+  persistNow();
+  renderAreaList();
+  populateAreaDropdowns();
+  render();
 }
 
-function downloadBackup(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
-  var backup = { version: "1.0", exportedAt: new Date().toISOString(), sites: sites, areas: areas, bookingHistory: bookingHistory };
-  var blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-  var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-  a.download = "sms_backup_" + new Date().toISOString().slice(0,19).replace(/[:T]/g, "-") + ".json"; a.click();
+// Expose area functions globally
+window.renameArea = renameArea;
+window.deleteArea = deleteArea;
+window.editSite = editSite;
+window.openMap = openMap;
+
+function openMap(index){
+  var s = sites[index];
+  if(!s) return;
+  var url;
+  if(s.lat && s.lng){
+    url = "https://www.google.com/maps?q=" + s.lat + "," + s.lng;
+  } else if(s.location){
+    url = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(s.location);
+  } else {
+    alert("No location available");
+    return;
+  }
+  window.open(url, "_blank");
 }
-function triggerImport(){ if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; } document.getElementById("importFile").click(); }
+
+function openImageViewer(src){
+  document.getElementById("viewerImage").src = src;
+  document.getElementById("imageViewer").classList.add("show");
+}
+function closeImageViewer(){
+  document.getElementById("imageViewer").classList.remove("show");
+  document.getElementById("viewerImage").src = "";
+}
+
+function backupData(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  var backup = {
+    version: "1.0",
+    exportedAt: new Date().toISOString(),
+    sites: sites,
+    areas: areas,
+    bookingHistory: bookingHistory
+  };
+  var blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sms_backup_" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  showToast("Backup Created", "Data exported successfully", "success");
+}
+
+function importData(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  document.getElementById("importFile").click();
+}
 function handleImportFile(e){
   var file = e.target.files[0];
   if(!file) return;
   var reader = new FileReader();
   reader.onload = function(ev){
     try {
-      var backup = JSON.parse(ev.target.result);
-      if(!backup.sites || !Array.isArray(backup.sites)){ alert("Invalid"); return; }
-      if(!confirm("Import " + backup.sites.length + " sites?")) return;
-      sites = backup.sites || [];
-      areas = backup.areas || DEFAULT_AREAS.slice();
-      bookingHistory = backup.bookingHistory || [];
+      var data = JSON.parse(ev.target.result);
+      if(!data.sites || !Array.isArray(data.sites)){ alert("Invalid backup file"); return; }
+      if(!confirm("Import " + data.sites.length + " sites? This will REPLACE current data.")) return;
+      sites = data.sites || [];
+      areas = (Array.isArray(data.areas) && data.areas.length > 0) ? data.areas : DEFAULT_AREAS.slice();
+      bookingHistory = data.bookingHistory || [];
       sites.forEach(function(s, i){ if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
-      persistNow(); populateAreaDropdowns(); updateCards(); render();
-      alert("✅ Import done!");
-    } catch(err){ alert("Fail: " + err.message); }
+      showProgress("Importing...", "");
+      persistNow().then(function(){
+        hideProgress();
+        populateAreaDropdowns();
+        updateCards();
+        render();
+        showToast("Import Complete", sites.length + " sites loaded", "success");
+      });
+    } catch(err){
+      alert("Import failed: " + err.message);
+    }
   };
   reader.readAsText(file);
   e.target.value = "";
 }
 
-function openMap(i){
-  var site = sites[i];
-  var url = "";
-  if(site.lat && site.lng) url = "https://www.google.com/maps?q=" + site.lat + "," + site.lng;
-  else if(site.location) url = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(site.location);
-  if(!url){ alert("No location"); return; }
-  window.open(url, "_blank");
+function applyDateFilter(){
+  var fromStr = document.getElementById("dateFilterFrom").value.trim();
+  var toStr = document.getElementById("dateFilterTo").value.trim();
+  if(!fromStr && !toStr){ alert("Please enter at least one date"); return; }
+  document.getElementById("clearFilterBtn").style.display = "inline-block";
+  render();
+}
+function clearDateFilter(){
+  document.getElementById("dateFilterFrom").value = "";
+  document.getElementById("dateFilterTo").value = "";
+  document.getElementById("clearFilterBtn").style.display = "none";
+  render();
 }
 
-window.doLogin = doLogin;
-window.doLogout = doLogout;
-window.editSite = editSite;
-window.openMap = openMap;
-window.renameArea = renameArea;
-window.deleteArea = deleteArea;
-
-document.addEventListener("DOMContentLoaded", function(){
-  initDateDropdowns();
-  initDateFilterInputs();
-  document.getElementById("loginBtn").addEventListener("click", doLogin);
-  document.getElementById("loginPass").addEventListener("keypress", function(e){ if(e.key === "Enter") doLogin(); });
-  document.getElementById("logoutBtn").addEventListener("click", doLogout);
-  document.getElementById("refreshBtn").addEventListener("click", function(){
-    imageFailed.clear(); imageCache = {}; selectedSites.clear();
-    loadCloudData().then(function(){ return loadCompanyLogo(); }).then(function(){
-      collapsedAreas = new Set(areas);
-      updateCards();
-      render();
-      showToast("Refreshed", "Data reloaded", "success");
-    });
-  });
-  document.getElementById("bulkBtn").addEventListener("click", openBulkUpload);
-  document.getElementById("backupBtn").addEventListener("click", downloadBackup);
-  document.getElementById("importBtn").addEventListener("click", triggerImport);
-  document.getElementById("search").addEventListener("input", debounce(render, 200));
-  document.getElementById("applyFilterBtn").addEventListener("click", function(){ updateCards(); render(); });
-  document.getElementById("clearFilterBtn").addEventListener("click", function(){
-    document.getElementById("dateFilterFrom").value = "";
-    document.getElementById("dateFilterTo").value = "";
-    document.getElementById("dateFilterFrom").dataset.lastLength = "0";
-    document.getElementById("dateFilterTo").dataset.lastLength = "0";
+function manualRefresh(){
+  showProgress("Refreshing...", "");
+  loadCloudData().then(function(){
+    return loadCompanyLogo();
+  }).then(function(){
+    return autoReleaseExpiredSites();
+  }).then(function(){
+    hideProgress();
+    populateAreaDropdowns();
     updateCards();
     render();
+    showToast("Refreshed", "Data loaded from server", "info");
   });
-  document.getElementById("manageAreasBtn").addEventListener("click", openAreaManager);
-  document.getElementById("addSiteBtn").addEventListener("click", openAdd);
-  document.getElementById("historyBtn").addEventListener("click", openHistoryModal);
-  document.getElementById("exportBtn").addEventListener("click", exportCSV);
-  document.getElementById("pptBtn").addEventListener("click", openPPTFormatModal);
-  document.getElementById("bulkStatusBtn").addEventListener("click", openBulkStatusModal);
-  document.getElementById("clearSelBtn").addEventListener("click", clearSelection);
-  document.getElementById("deleteBtn").addEventListener("click", bulkDeleteSelected);
-  document.getElementById("cancelModalBtn").addEventListener("click", closeModal);
-  document.getElementById("saveSiteBtn").addEventListener("click", saveSite);
-  document.getElementById("imageUploadBox").addEventListener("click", function(){ document.getElementById("fimage").click(); });
-  document.getElementById("fimage").addEventListener("change", handleImageUpload);
-  document.getElementById("removeImgBtn").addEventListener("click", removeImage);
-  document.getElementById("gpsBtn").addEventListener("click", function(){
+}
+
+// ============ INIT / EVENT BINDINGS ============
+function bindEvents(){
+  // Login
+  var loginBtn = document.getElementById("loginBtn");
+  if(loginBtn) loginBtn.onclick = doLogin;
+  var loginPass = document.getElementById("loginPass");
+  if(loginPass){
+    loginPass.addEventListener("keydown", function(e){ if(e.key === "Enter") doLogin(); });
+  }
+
+  // Header
+  var refreshBtn = document.getElementById("refreshBtn");
+  if(refreshBtn) refreshBtn.onclick = manualRefresh;
+  var bulkBtn = document.getElementById("bulkBtn");
+  if(bulkBtn) bulkBtn.onclick = openBulkUpload;
+  var backupBtn = document.getElementById("backupBtn");
+  if(backupBtn) backupBtn.onclick = backupData;
+  var importBtn = document.getElementById("importBtn");
+  if(importBtn) importBtn.onclick = importData;
+  var logoutBtn = document.getElementById("logoutBtn");
+  if(logoutBtn) logoutBtn.onclick = doLogout;
+
+  // Toolbar
+  var searchInput = document.getElementById("search");
+  if(searchInput) searchInput.addEventListener("input", debounce(function(){ render(); }, 300));
+
+  var applyFilterBtn = document.getElementById("applyFilterBtn");
+  if(applyFilterBtn) applyFilterBtn.onclick = applyDateFilter;
+  var clearFilterBtn = document.getElementById("clearFilterBtn");
+  if(clearFilterBtn) clearFilterBtn.onclick = clearDateFilter;
+
+  var manageAreasBtn = document.getElementById("manageAreasBtn");
+  if(manageAreasBtn) manageAreasBtn.onclick = openAreaManager;
+  var addSiteBtn = document.getElementById("addSiteBtn");
+  if(addSiteBtn) addSiteBtn.onclick = openAdd;
+  var historyBtn = document.getElementById("historyBtn");
+  if(historyBtn) historyBtn.onclick = openHistoryModal;
+  var exportBtn = document.getElementById("exportBtn");
+  if(exportBtn) exportBtn.onclick = exportCSV;
+
+  // Select bar
+  var pptBtn = document.getElementById("pptBtn");
+  if(pptBtn) pptBtn.onclick = openPPTFormatModal;
+  var bulkStatusBtn = document.getElementById("bulkStatusBtn");
+  if(bulkStatusBtn) bulkStatusBtn.onclick = openBulkStatusModal;
+  var clearSelBtn = document.getElementById("clearSelBtn");
+  if(clearSelBtn) clearSelBtn.onclick = clearSelection;
+  var deleteBtn = document.getElementById("deleteBtn");
+  if(deleteBtn) deleteBtn.onclick = bulkDeleteSelected;
+
+  // Status cards
+  document.getElementById("cardTotal").onclick = function(){
+    activeStatusFilter = null; render();
+  };
+  document.getElementById("cardAvailable").onclick = function(){
+    activeStatusFilter = activeStatusFilter === "Available" ? null : "Available"; render();
+  };
+  document.getElementById("cardNotAvailable").onclick = function(){
+    activeStatusFilter = activeStatusFilter === "Not Available" ? null : "Not Available"; render();
+  };
+  document.getElementById("cardMaintenance").onclick = function(){
+    activeStatusFilter = activeStatusFilter === "Under Maintenance" ? null : "Under Maintenance"; render();
+  };
+
+  // Add/Edit modal
+  var cancelModalBtn = document.getElementById("cancelModalBtn");
+  if(cancelModalBtn) cancelModalBtn.onclick = closeModal;
+  var saveSiteBtn = document.getElementById("saveSiteBtn");
+  if(saveSiteBtn) saveSiteBtn.onclick = saveSite;
+
+  var gpsBtn = document.getElementById("gpsBtn");
+  if(gpsBtn) gpsBtn.onclick = function(){
     if(!navigator.geolocation){ alert("GPS not supported"); return; }
+    var status = document.getElementById("gpsStatus");
+    status.textContent = "Getting location...";
     navigator.geolocation.getCurrentPosition(function(pos){
-      var lat = pos.coords.latitude.toFixed(7), lng = pos.coords.longitude.toFixed(7);
-      document.getElementById("flocation").dataset.lat = lat;
-      document.getElementById("flocation").dataset.lng = lng;
-      document.getElementById("flocation").value = lat + ", " + lng;
-      document.getElementById("gpsStatus").textContent = "GPS captured";
-      document.getElementById("gpsStatus").className = "gps-status ok";
+      var loc = document.getElementById("flocation");
+      loc.dataset.lat = pos.coords.latitude;
+      loc.dataset.lng = pos.coords.longitude;
+      if(!loc.value.trim()){
+        loc.value = pos.coords.latitude.toFixed(6) + ", " + pos.coords.longitude.toFixed(6);
+      }
+      status.textContent = "✅ GPS captured: " + pos.coords.latitude.toFixed(4) + ", " + pos.coords.longitude.toFixed(4);
+      status.classList.add("ok");
+    }, function(err){
+      status.textContent = "❌ GPS failed: " + err.message;
     });
-  });
+  };
+
+  var imageUploadBox = document.getElementById("imageUploadBox");
+  if(imageUploadBox) imageUploadBox.onclick = function(){ document.getElementById("fimage").click(); };
+  var fimage = document.getElementById("fimage");
+  if(fimage) fimage.addEventListener("change", handleImageUpload);
+  var removeImgBtn = document.getElementById("removeImgBtn");
+  if(removeImgBtn) removeImgBtn.onclick = removeImage;
+
+  // Date dropdowns change -> update preview
   ["ffrom_d","ffrom_m","ffrom_y","fto_d","fto_m","fto_y"].forEach(function(id){
-    document.getElementById(id).addEventListener("change", updateCalcPreview);
+    var el = document.getElementById(id);
+    if(el) el.addEventListener("change", updateCalcPreview);
   });
-  document.getElementById("closeHistoryBtn").addEventListener("click", closeHistoryModal);
-  document.getElementById("downloadHistoryBtn").addEventListener("click", downloadHistoryCSV);
-  document.getElementById("bulkTabSite").addEventListener("click", function(){
-    document.getElementById("bulkTabSite").classList.add("active");
-    document.getElementById("bulkTabImage").classList.remove("active");
-    document.getElementById("bulkTabLogo").classList.remove("active");
+
+  // History modal
+  var closeHistoryBtn = document.getElementById("closeHistoryBtn");
+  if(closeHistoryBtn) closeHistoryBtn.onclick = closeHistoryModal;
+  var downloadHistoryBtn = document.getElementById("downloadHistoryBtn");
+  if(downloadHistoryBtn) downloadHistoryBtn.onclick = downloadHistoryCSV;
+
+  // Bulk modal tabs
+  var bulkTabSite = document.getElementById("bulkTabSite");
+  var bulkTabImage = document.getElementById("bulkTabImage");
+  var bulkTabLogo = document.getElementById("bulkTabLogo");
+  if(bulkTabSite) bulkTabSite.onclick = function(){
+    bulkTabSite.classList.add("active"); bulkTabImage.classList.remove("active"); bulkTabLogo.classList.remove("active");
     document.getElementById("bulkContentSite").classList.add("active");
     document.getElementById("bulkContentImage").classList.remove("active");
     document.getElementById("bulkContentLogo").classList.remove("active");
-  });
-  document.getElementById("bulkTabImage").addEventListener("click", function(){
-    document.getElementById("bulkTabImage").classList.add("active");
-    document.getElementById("bulkTabSite").classList.remove("active");
-    document.getElementById("bulkTabLogo").classList.remove("active");
+  };
+  if(bulkTabImage) bulkTabImage.onclick = function(){
+    bulkTabImage.classList.add("active"); bulkTabSite.classList.remove("active"); bulkTabLogo.classList.remove("active");
     document.getElementById("bulkContentImage").classList.add("active");
     document.getElementById("bulkContentSite").classList.remove("active");
     document.getElementById("bulkContentLogo").classList.remove("active");
-  });
-  document.getElementById("bulkTabLogo").addEventListener("click", function(){
-    document.getElementById("bulkTabLogo").classList.add("active");
-    document.getElementById("bulkTabSite").classList.remove("active");
-    document.getElementById("bulkTabImage").classList.remove("active");
+  };
+  if(bulkTabLogo) bulkTabLogo.onclick = function(){
+    bulkTabLogo.classList.add("active"); bulkTabSite.classList.remove("active"); bulkTabImage.classList.remove("active");
     document.getElementById("bulkContentLogo").classList.add("active");
     document.getElementById("bulkContentSite").classList.remove("active");
     document.getElementById("bulkContentImage").classList.remove("active");
     updateLogoUI();
-  });
-  document.getElementById("csvDropzone").addEventListener("click", function(){ document.getElementById("csvFile").click(); });
-  document.getElementById("csvFile").addEventListener("change", function(e){
+  };
+
+  // CSV upload
+  var csvDropzone = document.getElementById("csvDropzone");
+  if(csvDropzone) csvDropzone.onclick = function(){ document.getElementById("csvFile").click(); };
+  var csvFile = document.getElementById("csvFile");
+  if(csvFile) csvFile.addEventListener("change", function(e){
     var file = e.target.files[0];
     if(!file) return;
     var reader = new FileReader();
@@ -2017,41 +2140,105 @@ document.addEventListener("DOMContentLoaded", function(){
     reader.readAsText(file);
     e.target.value = "";
   });
-  document.getElementById("csvText").addEventListener("input", function(){
-    if(this.value.trim().length > 20) parseCSV(this.value);
-  });
-  document.getElementById("processBulkSiteBtn").addEventListener("click", processBulkSites);
-  document.getElementById("cancelBulkSiteBtn").addEventListener("click", closeBulkModal);
-  document.getElementById("imageDropzone").addEventListener("click", function(){ document.getElementById("imageFiles").click(); });
-  document.getElementById("imageFiles").addEventListener("change", handleBulkImageSelect);
-  document.getElementById("processBulkImageBtn").addEventListener("click", processBulkImages);
-  document.getElementById("cancelBulkImageBtn").addEventListener("click", closeBulkModal);
-  document.getElementById("logoDropzone").addEventListener("click", function(){ document.getElementById("logoFile").click(); });
-  document.getElementById("logoFile").addEventListener("change", handleLogoUpload);
-  document.getElementById("changeLogoBtn").addEventListener("click", function(){ document.getElementById("logoFile").click(); });
-  document.getElementById("deleteLogoBtn").addEventListener("click", handleDeleteLogo);
-  document.getElementById("closeBulkLogoBtn").addEventListener("click", closeBulkModal);
-  document.querySelectorAll('input[name="pptStyle"]').forEach(function(r){
-    r.addEventListener("change", function(){
-      var p = this.closest("#pptStyleOptions");
-      if(p) p.querySelectorAll(".ppt-option").forEach(function(o){ o.classList.remove("selected"); });
-      this.closest(".ppt-option").classList.add("selected");
+  var csvText = document.getElementById("csvText");
+  if(csvText) csvText.addEventListener("input", debounce(function(){ parseCSV(this.value); }, 500));
+  var cancelBulkSiteBtn = document.getElementById("cancelBulkSiteBtn");
+  if(cancelBulkSiteBtn) cancelBulkSiteBtn.onclick = closeBulkModal;
+  var processBulkSiteBtn = document.getElementById("processBulkSiteBtn");
+  if(processBulkSiteBtn) processBulkSiteBtn.onclick = processBulkSites;
+
+  // Bulk images
+  var imageDropzone = document.getElementById("imageDropzone");
+  if(imageDropzone) imageDropzone.onclick = function(){ document.getElementById("imageFiles").click(); };
+  var imageFiles = document.getElementById("imageFiles");
+  if(imageFiles) imageFiles.addEventListener("change", handleBulkImageSelect);
+  var cancelBulkImageBtn = document.getElementById("cancelBulkImageBtn");
+  if(cancelBulkImageBtn) cancelBulkImageBtn.onclick = closeBulkModal;
+  var processBulkImageBtn = document.getElementById("processBulkImageBtn");
+  if(processBulkImageBtn) processBulkImageBtn.onclick = processBulkImages;
+
+  // Logo
+  var logoDropzone = document.getElementById("logoDropzone");
+  if(logoDropzone) logoDropzone.onclick = function(){ document.getElementById("logoFile").click(); };
+  var logoFile = document.getElementById("logoFile");
+  if(logoFile) logoFile.addEventListener("change", handleLogoUpload);
+  var changeLogoBtn = document.getElementById("changeLogoBtn");
+  if(changeLogoBtn) changeLogoBtn.onclick = function(){ document.getElementById("logoFile").click(); };
+  var deleteLogoBtn = document.getElementById("deleteLogoBtn");
+  if(deleteLogoBtn) deleteLogoBtn.onclick = handleDeleteLogo;
+  var closeBulkLogoBtn = document.getElementById("closeBulkLogoBtn");
+  if(closeBulkLogoBtn) closeBulkLogoBtn.onclick = closeBulkModal;
+
+  // PPT modal
+  var cancelPptBtn = document.getElementById("cancelPptBtn");
+  if(cancelPptBtn) cancelPptBtn.onclick = closePPTModal;
+  var generatePptBtn = document.getElementById("generatePptBtn");
+  if(generatePptBtn) generatePptBtn.onclick = generatePPT;
+
+  // PPT option/theme selection styling
+  document.querySelectorAll(".ppt-option").forEach(function(opt){
+    opt.addEventListener("click", function(){
+      document.querySelectorAll(".ppt-option").forEach(function(o){ o.classList.remove("selected"); });
+      this.classList.add("selected");
+      var radio = this.querySelector('input[type="radio"]');
+      if(radio) radio.checked = true;
     });
   });
-  document.querySelectorAll('input[name="pptTheme"]').forEach(function(r){
-    r.addEventListener("change", function(){
-      document.querySelectorAll('input[name="pptTheme"]').forEach(function(x){ x.closest(".theme-card").classList.remove("selected"); });
-      this.closest(".theme-card").classList.add("selected");
+  document.querySelectorAll(".theme-card").forEach(function(card){
+    card.addEventListener("click", function(){
+      document.querySelectorAll(".theme-card").forEach(function(c){ c.classList.remove("selected"); });
+      this.classList.add("selected");
+      var radio = this.querySelector('input[type="radio"]');
+      if(radio) radio.checked = true;
     });
   });
-  document.getElementById("generatePptBtn").addEventListener("click", generatePPT);
-  document.getElementById("cancelPptBtn").addEventListener("click", closePPTModal);
-  document.getElementById("closeAreaBtn").addEventListener("click", closeAreaModal);
-  document.getElementById("addAreaBtn").addEventListener("click", addNewArea);
-  document.getElementById("closeViewerBtn").addEventListener("click", function(){ document.getElementById("imageViewer").classList.remove("show"); });
-  document.getElementById("imageViewer").addEventListener("click", function(e){ if(e.target.id === "imageViewer") document.getElementById("imageViewer").classList.remove("show"); });
-  document.getElementById("importFile").addEventListener("change", handleImportFile);
+
+  // Area modal
+  var addAreaBtn = document.getElementById("addAreaBtn");
+  if(addAreaBtn) addAreaBtn.onclick = addNewArea;
+  var closeAreaBtn = document.getElementById("closeAreaBtn");
+  if(closeAreaBtn) closeAreaBtn.onclick = closeAreaModal;
+  var newAreaName = document.getElementById("newAreaName");
+  if(newAreaName) newAreaName.addEventListener("keydown", function(e){ if(e.key === "Enter") addNewArea(); });
+
+  // Image viewer
+  var closeViewerBtn = document.getElementById("closeViewerBtn");
+  if(closeViewerBtn) closeViewerBtn.onclick = closeImageViewer;
+  var imageViewer = document.getElementById("imageViewer");
+  if(imageViewer) imageViewer.onclick = function(e){ if(e.target === this) closeImageViewer(); };
+
+  // Import file
+  var importFile = document.getElementById("importFile");
+  if(importFile) importFile.addEventListener("change", handleImportFile);
+
+  // Click on site card image to view
+  document.addEventListener("click", function(e){
+    if(e.target.classList && e.target.classList.contains("site-card-img") && !e.target.classList.contains("no-img")){
+      if(e.target.src) openImageViewer(e.target.src);
+    }
+  });
+
+  // Modal backdrop close
+  document.querySelectorAll(".modal").forEach(function(m){
+    m.addEventListener("click", function(e){
+      if(e.target === this && this.id !== "bulkModal"){
+        this.classList.remove("show");
+      }
+    });
+  });
+}
+
+// ============ BOOTSTRAP ============
+document.addEventListener("DOMContentLoaded", function(){
+  initDateDropdowns();
+  initDateFilterInputs();
+  bindEvents();
   checkSession();
+});
+
+// Cleanup on unload
+window.addEventListener("beforeunload", function(){
+  if(autoRefreshTimer) clearInterval(autoRefreshTimer);
 });
 </script>
 </body>
