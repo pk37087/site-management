@@ -1743,7 +1743,441 @@ function generatePPT(){
 
             var r3Y_S = r2Y_S + 0.7;
             s.addShape(pptx.ShapeType.roundRect, { x: 0.3, y: r3Y_S, w: 1.6, h: 0.3, fill: { color: stColor }, rectRadius: 0.08 });
+            s.addText(x.status.toUpperCase(), { x: 0.3, y: r3Y_S, w: 1.6, h: 0.3, fontSize: 8, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+          }
+        }
+      });
     });
-  </script>
+  });
+
+  chain.then(function(){
+    var s2 = pptx.addSlide();
+    s2.background = { color: T.bg };
+    s2.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.15, fill: { color: T.accent } });
+    s2.addShape(pptx.ShapeType.rect, { x: 0, y: 7.35, w: 13.33, h: 0.15, fill: { color: T.accent } });
+    s2.addText("THANK YOU", { x: 0, y: 3, w: 13.33, h: 1.2, fontSize: 54, bold: true, color: "FFFFFF", align: "center" });
+    s2.addText(COMPANY_NAME, { x: 0, y: 5.7, w: 13.33, h: 0.4, fontSize: 14, bold: true, color: T.subtitle, align: "center" });
+    var fileName = "Site_Report_" + new Date().toISOString().slice(0,10) + ".pptx";
+    return pptx.writeFile({ fileName: fileName });
+  }).then(function(){
+    hideProgress();
+    showToast("PPT Generated", "File ready!", "success");
+    selectedSites.clear();
+    updateSelectBar();
+    render();
+  }).catch(function(e){
+    hideProgress();
+    alert("PPT failed: " + e.message);
+  });
+}
+
+function openHistoryModal(){ renderHistoryList(); document.getElementById("historyModal").classList.add("show"); }
+function closeHistoryModal(){ document.getElementById("historyModal").classList.remove("show"); }
+function renderHistoryList(){
+  var content = document.getElementById("historyContent");
+  var list = bookingHistory.slice().reverse();
+  if(list.length === 0){ content.innerHTML = '<div class="empty-history">No history found</div>'; return; }
+  var html = "";
+  list.forEach(function(h){
+    html += '<div class="history-item"><b>' + esc(h.site) + '</b>';
+    html += '<div style="font-size:12px;margin-top:6px">';
+    html += '<div>Area: <b>' + esc(h.area || "—") + '</b></div>';
+    html += '<div>Company: <b>' + esc(h.customer || "—") + '</b></div>';
+    html += '<div>From: <b>' + esc(h.fromDate || "—") + '</b> To: <b>' + esc(h.toDate || "—") + '</b></div>';
+    html += '</div></div>';
+  });
+  content.innerHTML = html;
+}
+function downloadHistoryCSV(){
+  if(bookingHistory.length === 0){ alert("No history"); return; }
+  var headers = ["Site", "Site Code", "Site Size", "Area", "Company", "From", "To", "Days", "Ended On", "Status"];
+  var csv = headers.join(",") + "\n";
+  bookingHistory.forEach(function(h){ csv += [h.site, h.siteCode || "", h.siteSize || "", h.area || "", h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status].map(function(v){ return '"' + String(v || "").replace(/"/g, '""') + '"'; }).join(",") + "\n"; });
+  var blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "history_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
+}
+function exportCSV(){
+  if(sites.length === 0){ alert("No sites"); return; }
+  var headers = ["Area", "Site", "Site Code", "Site Size", "Location", "Company", "Rate", "Status", "From", "To"];
+  var csv = headers.join(",") + "\n";
+  sites.forEach(function(s){ csv += [s.area, s.site, s.siteCode||"", s.siteSize||"", s.location, s.customer, s.rate, s.status, s.fromDate, s.toDate].map(function(v){ return '"' + String(v || "").replace(/"/g, '""') + '"'; }).join(",") + "\n"; });
+  var blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sites_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
+}
+function bulkDeleteSelected(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  if(selectedSites.size === 0){ alert("No sites selected"); return; }
+  if(!confirm("Delete " + selectedSites.size + " sites?")) return;
+  var ids = new Set(Array.from(selectedSites).map(String));
+  var toDelete = sites.filter(function(s){ return ids.has(String(s.id)); });
+  var chain = Promise.resolve();
+  toDelete.forEach(function(s){ if(s.hasImage) chain = chain.then(function(){ return deleteImage(s.id); }); });
+  chain.then(function(){
+    sites = sites.filter(function(s){ return !ids.has(String(s.id)); });
+    selectedSites.clear();
+    return persistNow();
+  }).then(function(){
+    updateCards();
+    render();
+    alert("✅ " + toDelete.length + " sites deleted");
+  });
+}
+function openBulkStatusModal(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  if(selectedSites.size === 0){ alert("Please select sites first"); return; }
+  var status = prompt("Enter status: Available / Not Available / Under Maintenance");
+  if(!status) return;
+  var newStatus = status.trim();
+  if(["Available","Not Available","Under Maintenance"].indexOf(newStatus) === -1){ alert("Invalid status"); return; }
+  var ids = new Set(Array.from(selectedSites).map(String));
+  var targets = sites.filter(function(s){ return ids.has(String(s.id)); });
+  targets.forEach(function(s){ s.status = newStatus; });
+  persistNow().then(function(){
+    updateCards();
+    render();
+    clearSelection();
+    alert("✅ " + targets.length + " sites updated");
+  });
+}
+function openAreaManager(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  renderAreaList();
+  document.getElementById("areaModal").classList.add("show");
+}
+function closeAreaModal(){ document.getElementById("areaModal").classList.remove("show"); }
+function renderAreaList(){
+  var list = document.getElementById("areaList");
+  if(!list) return;
+  if(areas.length === 0){ list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px">No areas</div>'; return; }
+  var html = '';
+  areas.forEach(function(a, i){
+    var count = sites.filter(function(s){ return s.area === a; }).length;
+    html += '<div class="area-list-item"><span class="name">' + esc(a) + ' (' + count + ')</span>';
+    html += '<button onclick="window.renameArea(' + i + ')" style="padding:6px 12px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer">Rename</button>';
+    html += '<button onclick="window.deleteArea(' + i + ')" style="padding:6px 12px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer">Delete</button>';
+    html += '</div>';
+  });
+  list.innerHTML = html;
+}
+function addNewArea(){
+  var name = document.getElementById("newAreaName").value.trim();
+  if(!name){ alert("Please enter a name"); return; }
+  if(areas.indexOf(name) !== -1){ alert("Area already exists"); return; }
+  areas.push(name); persistNow();
+  document.getElementById("newAreaName").value = "";
+  renderAreaList(); populateAreaDropdowns(); render();
+}
+function renameArea(index){
+  var oldName = areas[index];
+  var newName = prompt("Enter new name:", oldName);
+  if(!newName || newName.trim() === "") return;
+  if(newName !== oldName && areas.indexOf(newName) !== -1){ alert("Area already exists"); return; }
+  var trimmed = newName.trim();
+  areas[index] = trimmed;
+  sites.forEach(function(s){ if(s.area === oldName) s.area = trimmed; });
+  persistNow();
+  renderAreaList();
+  populateAreaDropdowns();
+  render();
+}
+function deleteArea(index){
+  var areaName = areas[index];
+  var count = sites.filter(function(s){ return s.area === areaName; }).length;
+  if(count > 0){
+    if(!confirm("Area '" + areaName + "' has " + count + " site(s). They will be moved to 'Unassigned'. Delete anyway?")) return;
+  } else {
+    if(!confirm("Delete area '" + areaName + "'?")) return;
+  }
+  sites.forEach(function(s){ if(s.area === areaName) s.area = "Unassigned"; });
+  areas.splice(index, 1);
+  persistNow();
+  renderAreaList();
+  populateAreaDropdowns();
+  render();
+}
+function openMap(index){
+  var s = sites[index];
+  if(!s) return;
+  var url;
+  if(s.lat && s.lng){ url = "https://www.google.com/maps?q=" + s.lat + "," + s.lng; }
+  else if(s.location){ url = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(s.location); }
+  else { alert("No location available"); return; }
+  window.open(url, "_blank");
+}
+window.renameArea = renameArea;
+window.deleteArea = deleteArea;
+window.editSite = editSite;
+window.openMap = openMap;
+
+function openImageViewer(src){
+  document.getElementById("viewerImage").src = src;
+  document.getElementById("imageViewer").classList.add("show");
+}
+function closeImageViewer(){
+  document.getElementById("imageViewer").classList.remove("show");
+  document.getElementById("viewerImage").src = "";
+}
+function backupData(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  var backup = { version: "1.0", exportedAt: new Date().toISOString(), sites: sites, areas: areas, bookingHistory: bookingHistory };
+  var blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sms_backup_" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  showToast("Backup Created", "Data exported successfully", "success");
+}
+function importData(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  document.getElementById("importFile").click();
+}
+function handleImportFile(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    try {
+      var data = JSON.parse(ev.target.result);
+      if(!data.sites || !Array.isArray(data.sites)){ alert("Invalid backup file"); return; }
+      if(!confirm("Import " + data.sites.length + " sites? This will REPLACE current data.")) return;
+      sites = data.sites || [];
+      areas = (Array.isArray(data.areas) && data.areas.length > 0) ? data.areas : DEFAULT_AREAS.slice();
+      bookingHistory = data.bookingHistory || [];
+      sites.forEach(function(s, i){ if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
+      showProgress("Importing...", "");
+      persistNow().then(function(){
+        hideProgress();
+        populateAreaDropdowns();
+        updateCards();
+        render();
+        showToast("Import Complete", sites.length + " sites loaded", "success");
+      });
+    } catch(err){ alert("Import failed: " + err.message); }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+}
+function applyDateFilter(){
+  var fromStr = document.getElementById("dateFilterFrom").value.trim();
+  var toStr = document.getElementById("dateFilterTo").value.trim();
+  if(!fromStr && !toStr){ alert("Please enter at least one date"); return; }
+  if(fromStr && !isValidDDMMYYYY(fromStr)){ alert("Invalid 'From' date"); return; }
+  if(toStr && !isValidDDMMYYYY(toStr)){ alert("Invalid 'To' date"); return; }
+  var fD = fromStr ? parseDDMMYYYY(fromStr) : null;
+  var tD = toStr ? parseDDMMYYYY(toStr) : null;
+  if(fD && tD && tD < fD){ alert("'To' date cannot be before 'From' date"); return; }
+  activeDateFilter.from = fromStr || null;
+  activeDateFilter.to = toStr || null;
+  document.getElementById("clearFilterBtn").style.display = "inline-block";
+  render();
+}
+function clearDateFilter(){
+  document.getElementById("dateFilterFrom").value = "";
+  document.getElementById("dateFilterTo").value = "";
+  document.getElementById("clearFilterBtn").style.display = "none";
+  activeDateFilter.from = null;
+  activeDateFilter.to = null;
+  render();
+}
+function manualRefresh(){
+  showProgress("Refreshing...", "");
+  loadCloudData().then(function(){
+    return loadCompanyLogo();
+  }).then(function(){
+    return autoReleaseExpiredSites();
+  }).then(function(){
+    hideProgress();
+    populateAreaDropdowns();
+    updateCards();
+    render();
+    showToast("Refreshed", "Data loaded from server", "info");
+  }).catch(function(e){
+    hideProgress();
+    showToast("Refresh Failed", e && e.message ? e.message : "Server error", "danger");
+  });
+}
+function bindEvents(){
+  var loginBtn = document.getElementById("loginBtn");
+  if(loginBtn) loginBtn.onclick = doLogin;
+  var loginPass = document.getElementById("loginPass");
+  if(loginPass){ loginPass.addEventListener("keydown", function(e){ if(e.key === "Enter") doLogin(); }); }
+  var refreshBtn = document.getElementById("refreshBtn");
+  if(refreshBtn) refreshBtn.onclick = manualRefresh;
+  var bulkBtn = document.getElementById("bulkBtn");
+  if(bulkBtn) bulkBtn.onclick = openBulkUpload;
+  var backupBtn = document.getElementById("backupBtn");
+  if(backupBtn) backupBtn.onclick = backupData;
+  var importBtn = document.getElementById("importBtn");
+  if(importBtn) importBtn.onclick = importData;
+  var logoutBtn = document.getElementById("logoutBtn");
+  if(logoutBtn) logoutBtn.onclick = doLogout;
+  var searchInput = document.getElementById("search");
+  if(searchInput) searchInput.addEventListener("input", debounce(function(){ render(); }, 300));
+  var applyFilterBtn = document.getElementById("applyFilterBtn");
+  if(applyFilterBtn) applyFilterBtn.onclick = applyDateFilter;
+  var clearFilterBtn = document.getElementById("clearFilterBtn");
+  if(clearFilterBtn) clearFilterBtn.onclick = clearDateFilter;
+  var manageAreasBtn = document.getElementById("manageAreasBtn");
+  if(manageAreasBtn) manageAreasBtn.onclick = openAreaManager;
+  var addSiteBtn = document.getElementById("addSiteBtn");
+  if(addSiteBtn) addSiteBtn.onclick = openAdd;
+  var historyBtn = document.getElementById("historyBtn");
+  if(historyBtn) historyBtn.onclick = openHistoryModal;
+  var exportBtn = document.getElementById("exportBtn");
+  if(exportBtn) exportBtn.onclick = exportCSV;
+  var pptBtn = document.getElementById("pptBtn");
+  if(pptBtn) pptBtn.onclick = openPPTFormatModal;
+  var bulkStatusBtn = document.getElementById("bulkStatusBtn");
+  if(bulkStatusBtn) bulkStatusBtn.onclick = openBulkStatusModal;
+  var clearSelBtn = document.getElementById("clearSelBtn");
+  if(clearSelBtn) clearSelBtn.onclick = clearSelection;
+  var deleteBtn = document.getElementById("deleteBtn");
+  if(deleteBtn) deleteBtn.onclick = bulkDeleteSelected;
+  document.getElementById("cardTotal").onclick = function(){ activeStatusFilter = null; render(); };
+  document.getElementById("cardAvailable").onclick = function(){ activeStatusFilter = activeStatusFilter === "Available" ? null : "Available"; render(); };
+  document.getElementById("cardNotAvailable").onclick = function(){ activeStatusFilter = activeStatusFilter === "Not Available" ? null : "Not Available"; render(); };
+  document.getElementById("cardMaintenance").onclick = function(){ activeStatusFilter = activeStatusFilter === "Under Maintenance" ? null : "Under Maintenance"; render(); };
+  var cancelModalBtn = document.getElementById("cancelModalBtn");
+  if(cancelModalBtn) cancelModalBtn.onclick = closeModal;
+  var saveSiteBtn = document.getElementById("saveSiteBtn");
+  if(saveSiteBtn) saveSiteBtn.onclick = saveSite;
+  var gpsBtn = document.getElementById("gpsBtn");
+  if(gpsBtn) gpsBtn.onclick = function(){
+    if(!navigator.geolocation){ alert("GPS not supported"); return; }
+    var status = document.getElementById("gpsStatus");
+    status.textContent = "Getting location...";
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var loc = document.getElementById("flocation");
+      loc.dataset.lat = pos.coords.latitude;
+      loc.dataset.lng = pos.coords.longitude;
+      if(!loc.value.trim()){ loc.value = pos.coords.latitude.toFixed(6) + ", " + pos.coords.longitude.toFixed(6); }
+      status.textContent = "✅ GPS captured: " + pos.coords.latitude.toFixed(4) + ", " + pos.coords.longitude.toFixed(4);
+      status.classList.add("ok");
+    }, function(err){ status.textContent = "❌ GPS failed: " + err.message; });
+  };
+  var imageUploadBox = document.getElementById("imageUploadBox");
+  if(imageUploadBox) imageUploadBox.onclick = function(){ document.getElementById("fimage").click(); };
+  var fimage = document.getElementById("fimage");
+  if(fimage) fimage.addEventListener("change", handleImageUpload);
+  var removeImgBtn = document.getElementById("removeImgBtn");
+  if(removeImgBtn) removeImgBtn.onclick = removeImage;
+  ["ffrom_d","ffrom_m","ffrom_y","fto_d","fto_m","fto_y"].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener("change", updateCalcPreview);
+  });
+  var closeHistoryBtn = document.getElementById("closeHistoryBtn");
+  if(closeHistoryBtn) closeHistoryBtn.onclick = closeHistoryModal;
+  var downloadHistoryBtn = document.getElementById("downloadHistoryBtn");
+  if(downloadHistoryBtn) downloadHistoryBtn.onclick = downloadHistoryCSV;
+  var bulkTabSite = document.getElementById("bulkTabSite");
+  var bulkTabImage = document.getElementById("bulkTabImage");
+  var bulkTabLogo = document.getElementById("bulkTabLogo");
+  if(bulkTabSite) bulkTabSite.onclick = function(){
+    bulkTabSite.classList.add("active"); bulkTabImage.classList.remove("active"); bulkTabLogo.classList.remove("active");
+    document.getElementById("bulkContentSite").classList.add("active");
+    document.getElementById("bulkContentImage").classList.remove("active");
+    document.getElementById("bulkContentLogo").classList.remove("active");
+  };
+  if(bulkTabImage) bulkTabImage.onclick = function(){
+    bulkTabImage.classList.add("active"); bulkTabSite.classList.remove("active"); bulkTabLogo.classList.remove("active");
+    document.getElementById("bulkContentImage").classList.add("active");
+    document.getElementById("bulkContentSite").classList.remove("active");
+    document.getElementById("bulkContentLogo").classList.remove("active");
+  };
+  if(bulkTabLogo) bulkTabLogo.onclick = function(){
+    bulkTabLogo.classList.add("active"); bulkTabSite.classList.remove("active"); bulkTabImage.classList.remove("active");
+    document.getElementById("bulkContentLogo").classList.add("active");
+    document.getElementById("bulkContentSite").classList.remove("active");
+    document.getElementById("bulkContentImage").classList.remove("active");
+    updateLogoUI();
+  };
+  var csvDropzone = document.getElementById("csvDropzone");
+  if(csvDropzone) csvDropzone.onclick = function(){ document.getElementById("csvFile").click(); };
+  var csvFile = document.getElementById("csvFile");
+  if(csvFile) csvFile.addEventListener("change", function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){ parseCSV(ev.target.result); };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+  var csvText = document.getElementById("csvText");
+  if(csvText) csvText.addEventListener("input", debounce(function(){ parseCSV(this.value); }, 500));
+  var cancelBulkSiteBtn = document.getElementById("cancelBulkSiteBtn");
+  if(cancelBulkSiteBtn) cancelBulkSiteBtn.onclick = closeBulkModal;
+  var processBulkSiteBtn = document.getElementById("processBulkSiteBtn");
+  if(processBulkSiteBtn) processBulkSiteBtn.onclick = processBulkSites;
+  var imageDropzone = document.getElementById("imageDropzone");
+  if(imageDropzone) imageDropzone.onclick = function(){ document.getElementById("imageFiles").click(); };
+  var imageFiles = document.getElementById("imageFiles");
+  if(imageFiles) imageFiles.addEventListener("change", handleBulkImageSelect);
+  var cancelBulkImageBtn = document.getElementById("cancelBulkImageBtn");
+  if(cancelBulkImageBtn) cancelBulkImageBtn.onclick = closeBulkModal;
+  var processBulkImageBtn = document.getElementById("processBulkImageBtn");
+  if(processBulkImageBtn) processBulkImageBtn.onclick = processBulkImages;
+  var logoDropzone = document.getElementById("logoDropzone");
+  if(logoDropzone) logoDropzone.onclick = function(){ document.getElementById("logoFile").click(); };
+  var logoFile = document.getElementById("logoFile");
+  if(logoFile) logoFile.addEventListener("change", handleLogoUpload);
+  var changeLogoBtn = document.getElementById("changeLogoBtn");
+  if(changeLogoBtn) changeLogoBtn.onclick = function(){ document.getElementById("logoFile").click(); };
+  var deleteLogoBtn = document.getElementById("deleteLogoBtn");
+  if(deleteLogoBtn) deleteLogoBtn.onclick = handleDeleteLogo;
+  var closeBulkLogoBtn = document.getElementById("closeBulkLogoBtn");
+  if(closeBulkLogoBtn) closeBulkLogoBtn.onclick = closeBulkModal;
+  var cancelPptBtn = document.getElementById("cancelPptBtn");
+  if(cancelPptBtn) cancelPptBtn.onclick = closePPTModal;
+  var generatePptBtn = document.getElementById("generatePptBtn");
+  if(generatePptBtn) generatePptBtn.onclick = generatePPT;
+  document.querySelectorAll(".ppt-option").forEach(function(opt){
+    opt.addEventListener("click", function(){
+      document.querySelectorAll(".ppt-option").forEach(function(o){ o.classList.remove("selected"); });
+      this.classList.add("selected");
+      var radio = this.querySelector('input[type="radio"]');
+      if(radio) radio.checked = true;
+    });
+  });
+  document.querySelectorAll(".theme-card").forEach(function(card){
+    card.addEventListener("click", function(){
+      document.querySelectorAll(".theme-card").forEach(function(c){ c.classList.remove("selected"); });
+      this.classList.add("selected");
+      var radio = this.querySelector('input[type="radio"]');
+      if(radio) radio.checked = true;
+    });
+  });
+  var addAreaBtn = document.getElementById("addAreaBtn");
+  if(addAreaBtn) addAreaBtn.onclick = addNewArea;
+  var closeAreaBtn = document.getElementById("closeAreaBtn");
+  if(closeAreaBtn) closeAreaBtn.onclick = closeAreaModal;
+  var newAreaName = document.getElementById("newAreaName");
+  if(newAreaName) newAreaName.addEventListener("keydown", function(e){ if(e.key === "Enter") addNewArea(); });
+  var closeViewerBtn = document.getElementById("closeViewerBtn");
+  if(closeViewerBtn) closeViewerBtn.onclick = closeImageViewer;
+  var imageViewer = document.getElementById("imageViewer");
+  if(imageViewer) imageViewer.onclick = function(e){ if(e.target === this) closeImageViewer(); };
+  var importFile = document.getElementById("importFile");
+  if(importFile) importFile.addEventListener("change", handleImportFile);
+  document.addEventListener("click", function(e){
+    if(e.target.classList && e.target.classList.contains("site-card-img") && !e.target.classList.contains("no-img")){
+      if(e.target.src) openImageViewer(e.target.src);
+    }
+  });
+  document.querySelectorAll(".modal").forEach(function(m){
+    m.addEventListener("click", function(e){
+      if(e.target === this && this.id !== "bulkModal"){ this.classList.remove("show"); }
+    });
+  });
+}
+document.addEventListener("DOMContentLoaded", function(){
+  initDateDropdowns();
+  initDateFilterInputs();
+  bindEvents();
+  checkSession();
+});
+window.addEventListener("beforeunload", function(){
+  if(autoRefreshTimer) clearInterval(autoRefreshTimer);
+});
+</script>
 </body>
 </html>
