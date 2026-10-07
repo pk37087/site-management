@@ -1,1 +1,211 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPTX Site Report Generator</title>
 
+  <!-- PptxGenJS Library (CDN) -->
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background-color: #1e293b;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 450px;
+      width: 100%;
+      border: 1px solid #334155;
+    }
+    h2 {
+      margin-top: 0;
+      color: #38bdf8;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    button {
+      background-color: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #0369a1;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>PPT Report Generator</h2>
+    <p>Niche diye button par click karke full-detail layout ke saath PowerPoint presentation download karein.</p>
+    <button id="generatePptBtn">Download PPT Report</button>
+  </div>
+
+  <script>
+    // Sample Sites Data
+    var sampleSitesData = [
+      {
+        id: "site_101",
+        siteCode: "DEL-001",
+        site: "Connaught Place Main Billboard",
+        location: "Inner Circle, CP, New Delhi",
+        lat: "28.6315",
+        lng: "77.2167",
+        area: "Central Delhi",
+        siteSize: "20 x 10 ft",
+        rate: "1,50,000",
+        customer: "ABC Enterprises",
+        fromDate: "01/10/2026",
+        toDate: "31/10/2026",
+        status: "Booked",
+        imageUrl: "https://picsum.photos/800/400?random=1" // Placeholder Image URL
+      },
+      {
+        id: "site_102",
+        siteCode: "MUM-204",
+        site: "Bandra Highway Unipole",
+        location: "WEH, Bandra West, Mumbai",
+        lat: "19.0596",
+        lng: "72.8295",
+        area: "Mumbai Western",
+        siteSize: "40 x 20 ft",
+        rate: "3,20,000",
+        customer: "XYZ Brands",
+        fromDate: "15/10/2026",
+        toDate: "15/11/2026",
+        status: "Booked",
+        imageUrl: "https://picsum.photos/800/400?random=2"
+      }
+    ];
+
+    // PPT Generator Function
+    function generatePptPresentation(siteDataList, imageCache) {
+      // Initialize PptxGenJS
+      var pptx = new PptxGenJS();
+      pptx.layout = 'LAYOUT_16x9';
+
+      siteDataList.forEach(function(site) {
+        var slide = pptx.addSlide();
+
+        // Slide Background Color
+        slide.background = { color: "0F172A" };
+
+        // ------------------------------------------
+        // 1. TOP SECTION: Image Area (Preserve Aspect Ratio)
+        // ------------------------------------------
+        var imageBase64 = imageCache && imageCache[site.id] ? imageCache[site.id] : site.imageUrl;
+
+        if (imageBase64) {
+          slide.addImage({
+            path: imageBase64, // Path/URL/Base64
+            x: 0.5,
+            y: 0.3,
+            w: 9.0,
+            h: 2.9,
+            sizing: { type: "contain", align: "center" }
+          });
+        } else {
+          // Placeholder Box if Image Unavailable
+          slide.addShape(pptx.Shapes.rect, {
+            x: 0.5, y: 0.3, w: 9.0, h: 2.9,
+            fill: { color: "1E293B" }, line: { color: "334155", width: 1 }
+          });
+          slide.addText("📷 Image Not Available", {
+            x: 0.5, y: 0.3, w: 9.0, h: 2.9,
+            align: "center", color: "64748B", fontSize: 16
+          });
+        }
+
+        // ------------------------------------------
+        // 2. BOTTOM SECTION: Site Details Box
+        // ------------------------------------------
+        slide.addShape(pptx.Shapes.rect, {
+          x: 0.5, y: 3.3, w: 9.0, h: 2.0,
+          fill: { color: "1E293B" }, line: { color: "334155", width: 1 }
+        });
+
+        // Site Title & Code
+        var titleText = (site.siteCode ? "[" + site.siteCode + "] " : "") + (site.site || "Unnamed Site");
+        slide.addText(titleText, {
+          x: 0.7, y: 3.4, w: 8.6, h: 0.4,
+          fontSize: 15, bold: true, color: "F8FAFC"
+        });
+
+        // Google Maps Hyperlink Setup
+        var mapUrl = site.mapUrl;
+        if (!mapUrl) {
+          if (site.lat && site.lng) {
+            mapUrl = "https://maps.google.com/?q=" + site.lat + "," + site.lng;
+          } else {
+            mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent((site.location || "") + " " + (site.site || ""));
+          }
+        }
+
+        // Location Text with Clickable Link
+        slide.addText([
+          { text: "📍 Location: ", options: { bold: true, color: "38BDF8" } },
+          { text: site.location || "N/A", options: { underline: true, hyperlink: { url: mapUrl }, color: "38BDF8" } }
+        ], { x: 0.7, y: 3.8, w: 8.6, h: 0.3, fontSize: 11 });
+
+        // Specifications - Row 1
+        var detailsRow1 = [
+          "🏙️ Area: " + (site.area || "N/A"),
+          "📐 Size: " + (site.siteSize || "N/A"),
+          "💰 Rate: " + (site.rate ? "₹" + site.rate + "/PM" : "N/A")
+        ].join("    |    ");
+
+        slide.addText(detailsRow1, {
+          x: 0.7, y: 4.2, w: 8.6, h: 0.3,
+          fontSize: 11, color: "CBD5E1"
+        });
+
+        // Specifications - Row 2
+        var bookingDates = (site.fromDate && site.toDate) ? site.fromDate + " to " + site.toDate : "N/A";
+        var detailsRow2 = [
+          "🏢 Client: " + (site.customer || "N/A"),
+          "📅 Booking: " + bookingDates,
+          "⚡ Status: " + (site.status || "Available")
+        ].join("    |    ");
+
+        slide.addText(detailsRow2, {
+          x: 0.7, y: 4.5, w: 8.6, h: 0.3,
+          fontSize: 11, color: "CBD5E1"
+        });
+      });
+
+      // Export file
+      pptx.writeFile({ fileName: "Site_Details_Report.pptx" });
+    }
+
+    // Attach Event Listener
+    document.getElementById("generatePptBtn").addEventListener("click", function() {
+      generatePptPresentation(sampleSitesData, {});
+    });
+  </script>
+</body>
+</html>
