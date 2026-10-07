@@ -36,6 +36,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .btn-gray{background:#6b7280;color:#fff}
 .btn-red{background:#dc2626;color:#fff}
 .btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
+.btn-refresh-header{background:#0ea5e9;color:#fff}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
@@ -904,7 +905,8 @@ function handleImageUpload(e){
 function compressImageSmart(dataUrl, cb){
   const img = new Image();
   img.onload = () => {
-    const MAX_W = 1024, MAX_H = 1024, MAX_B = 800 * 1024;
+    // ✅ HIGH QUALITY: 1920x1920 with 0.9 quality
+    const MAX_W = 1920, MAX_H = 1920, MAX_B = 1200 * 1024;
     let w = img.width, h = img.height;
     if(w > MAX_W || h > MAX_H){
       const r = Math.min(MAX_W / w, MAX_H / h);
@@ -917,10 +919,10 @@ function compressImageSmart(dataUrl, cb){
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, w, h);
     ctx.drawImage(img, 0, 0, w, h);
-    let quality = 0.75;
+    let quality = 0.9;
     let result = canvas.toDataURL("image/jpeg", quality);
     let attempts = 0;
-    while(result.length > MAX_B && quality > 0.5 && attempts < 10){
+    while(result.length > MAX_B && quality > 0.6 && attempts < 10){
       quality -= 0.05;
       result = canvas.toDataURL("image/jpeg", quality);
       attempts++;
@@ -1288,13 +1290,12 @@ async function processBulkImages(){
   showToast("Bulk Images", "Uploaded: " + uploaded + ", Skipped: " + skipped, "success");
 }
 
-// ==================== LOGO UPLOAD (FIXED) ====================
+// ==================== LOGO UPLOAD ====================
 function handleLogoUpload(e){
   const file = e.target.files[0];
   if(!file) return;
   if(!file.type.startsWith("image/")){ alert("Only images"); return; }
   if(file.size > 2*1024*1024){ alert("Max 2 MB"); return; }
-  
   showProgress("Processing logo...", "Reading file");
   const reader = new FileReader();
   reader.onload = async (ev) => {
@@ -1302,11 +1303,9 @@ function handleLogoUpload(e){
       const compressed = await new Promise((resolve) => {
         compressLogoSmart(ev.target.result, resolve);
       });
-      
       showProgress("Uploading logo...", "Saving");
       const result = await apiPost("/logo", { data: compressed });
       hideProgress();
-      
       if(result && result.success){
         companyLogo = compressed;
         updateLogoUI();
@@ -1323,7 +1322,6 @@ function handleLogoUpload(e){
   reader.readAsDataURL(file);
   e.target.value = "";
 }
-
 function compressLogoSmart(dataUrl, cb){
   const img = new Image();
   img.onload = () => {
@@ -1356,7 +1354,6 @@ function compressLogoSmart(dataUrl, cb){
   img.onerror = () => cb(dataUrl);
   img.src = dataUrl;
 }
-
 async function handleDeleteLogo(){
   if(!confirm("Logo delete?")) return;
   const ok = await deleteCompanyLogo();
@@ -1373,80 +1370,135 @@ function closePPTModal(){
   document.getElementById("pptModal").classList.remove("show");
 }
 
-function getImageDimensions(dataUrl){
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => resolve({ w: img.width, h: img.height });
-    img.onerror = () => resolve({ w: 1, h: 1 });
-    img.src = dataUrl;
-  });
-}
-
-async function createCenterBlackImage(dataUrl, targetW = 1600, targetH = 900){
+// ✅ HIGH-QUALITY: Image with BLACK sides (aspect ratio preserved - NO STRETCH)
+async function createCenterBlackImage(dataUrl, targetW = 2560, targetH = 1440){
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
       try {
         const canvas = document.createElement("canvas");
-        canvas.width = targetW; canvas.height = targetH;
+        canvas.width = targetW;
+        canvas.height = targetH;
         const ctx = canvas.getContext("2d");
+        
+        // Solid black background
         ctx.fillStyle = "#000000";
         ctx.fillRect(0, 0, targetW, targetH);
+        
+        // ✅ Calculate FIT dimensions (preserve aspect ratio)
         const imgRatio = img.width / img.height;
         const canvasRatio = targetW / targetH;
         let drawW, drawH, drawX, drawY;
+        
         if(imgRatio > canvasRatio){
-          drawW = targetW; drawH = targetW / imgRatio; drawX = 0; drawY = (targetH - drawH) / 2;
+          drawW = targetW;
+          drawH = targetW / imgRatio;
+          drawX = 0;
+          drawY = (targetH - drawH) / 2;
         } else {
-          drawH = targetH; drawW = targetH * imgRatio; drawX = (targetW - drawW) / 2; drawY = 0;
+          drawH = targetH;
+          drawW = targetH * imgRatio;
+          drawX = (targetW - drawW) / 2;
+          drawY = 0;
         }
+        
+        // ✅ HIGH QUALITY smoothing
+        ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
         ctx.drawImage(img, drawX, drawY, drawW, drawH);
-        resolve(canvas.toDataURL("image/jpeg", 0.92));
-      } catch(e){ resolve(null); }
+        
+        // ✅ High quality JPEG output
+        resolve(canvas.toDataURL("image/jpeg", 0.95));
+      } catch(e){ 
+        console.error("Black image fail:", e);
+        resolve(null); 
+      }
     };
     img.onerror = () => resolve(null);
     img.src = dataUrl;
   });
 }
 
-async function createCenterBlurImage(dataUrl, targetW = 1600, targetH = 900){
+// ✅ HIGH-QUALITY: Image with BLURRED sides (aspect ratio preserved - NO STRETCH)
+async function createCenterBlurImage(dataUrl, targetW = 2560, targetH = 1440){
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
       try {
         const canvas = document.createElement("canvas");
-        canvas.width = targetW; canvas.height = targetH;
+        canvas.width = targetW;
+        canvas.height = targetH;
         const ctx = canvas.getContext("2d");
+        
         const imgRatio = img.width / img.height;
         const canvasRatio = targetW / targetH;
+        
+        // ✅ STEP 1: Draw blurred background (COVER mode - fills entire canvas)
         let bgW, bgH, bgX, bgY;
         if(imgRatio > canvasRatio){
-          bgH = targetH; bgW = img.width * (targetH / img.height); bgX = (targetW - bgW) / 2; bgY = 0;
+          bgH = targetH;
+          bgW = img.width * (targetH / img.height);
+          bgX = (targetW - bgW) / 2;
+          bgY = 0;
         } else {
-          bgW = targetW; bgH = img.height * (targetW / img.width); bgX = 0; bgY = (targetH - bgH) / 2;
+          bgW = targetW;
+          bgH = img.height * (targetW / img.width);
+          bgX = 0;
+          bgY = (targetH - bgH) / 2;
         }
-        ctx.filter = "blur(40px)";
-        ctx.drawImage(img, bgX - 50, bgY - 50, bgW + 100, bgH + 100);
+        
+        // ✅ Strong blur - overscale to prevent edge artifacts
+        const scale = 1.15;
+        ctx.filter = "blur(60px)";
+        ctx.drawImage(
+          img, 
+          bgX - (bgW * (scale - 1) / 2), 
+          bgY - (bgH * (scale - 1) / 2), 
+          bgW * scale, 
+          bgH * scale
+        );
         ctx.filter = "none";
+        
+        // Dark overlay for contrast
         ctx.fillStyle = "rgba(0,0,0,0.5)";
         ctx.fillRect(0, 0, targetW, targetH);
+        
+        // ✅ STEP 2: Draw original image centered (CONTAIN mode - SHARP)
         let drawW, drawH, drawX, drawY;
         if(imgRatio > canvasRatio){
-          drawW = targetW; drawH = targetW / imgRatio; drawX = 0; drawY = (targetH - drawH) / 2;
+          drawW = targetW;
+          drawH = targetW / imgRatio;
+          drawX = 0;
+          drawY = (targetH - drawH) / 2;
         } else {
-          drawH = targetH; drawW = targetH * imgRatio; drawX = (targetW - drawW) / 2; drawY = 0;
+          drawH = targetH;
+          drawW = targetH * imgRatio;
+          drawX = (targetW - drawW) / 2;
+          drawY = 0;
         }
-        ctx.shadowColor = "rgba(0,0,0,0.7)";
-        ctx.shadowBlur = 20;
+        
+        // Subtle shadow for center image (depth effect)
+        ctx.shadowColor = "rgba(0,0,0,0.75)";
+        ctx.shadowBlur = 30;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        
+        ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
         ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        
+        // Reset shadow
         ctx.shadowColor = "transparent";
         ctx.shadowBlur = 0;
-        resolve(canvas.toDataURL("image/jpeg", 0.92));
-      } catch(e){ resolve(null); }
+        
+        // ✅ High quality JPEG output
+        resolve(canvas.toDataURL("image/jpeg", 0.95));
+      } catch(e){ 
+        console.error("Blur image fail:", e);
+        resolve(null); 
+      }
     };
     img.onerror = () => resolve(null);
     img.src = dataUrl;
@@ -1477,18 +1529,12 @@ async function generatePPT(){
     let slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     
-    // Top accent bar
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.15, fill: { color: "3B82F6" } });
-    // Bottom accent bar
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 7.35, w: 13.33, h: 0.15, fill: { color: "3B82F6" } });
-    // Left bar
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.15, w: 0.35, h: 7.2, fill: { color: "1E40AF" } });
-    // Decorative circle top-right
     slide.addShape(pptx.ShapeType.ellipse, { x: 10.5, y: -2.0, w: 4.5, h: 4.5, fill: { color: "1E40AF", transparency: 75 } });
-    // Decorative circle bottom-left
     slide.addShape(pptx.ShapeType.ellipse, { x: -1.5, y: 6.0, w: 3, h: 3, fill: { color: "3B82F6", transparency: 80 } });
     
-    // Logo
     let currentY = 0.7;
     if(companyLogo){
       try {
@@ -1499,25 +1545,20 @@ async function generatePPT(){
       currentY = 1.3;
     }
     
-    // Company tagline
     slide.addText("DS OUTDOOR MEDIA", { x: 0.5, y: currentY, w: 12.33, h: 0.35, fontSize: 11, bold: true, color: "93C5FD", align: "center", charSpacing: 4 });
     currentY += 0.5;
     
-    // Divider
     slide.addShape(pptx.ShapeType.rect, { x: 5.92, y: currentY, w: 1.5, h: 0.03, fill: { color: "3B82F6" } });
     currentY += 0.35;
     
-    // Main title
     slide.addText("SITE REPORT", { x: 0.5, y: currentY, w: 12.33, h: 0.9, fontSize: 48, bold: true, color: "FFFFFF", align: "center", charSpacing: 3 });
     currentY += 1.0;
     
-    // Date
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
     slide.addText(dateStr, { x: 0.5, y: currentY, w: 12.33, h: 0.35, fontSize: 13, color: "CBD5E1", align: "center" });
     currentY += 0.7;
     
-    // Stats cards
     const totalSites = list.length;
     const availableSites = list.filter(s => s.status === "Available").length;
     const notAvailableSites = list.filter(s => s.status === "Not Available").length;
@@ -1543,7 +1584,6 @@ async function generatePPT(){
     });
     currentY += cardH + 0.45;
     
-    // Bottom info row
     const bottomY = 6.65;
     slide.addText("PREPARED BY", { x: 0.65, y: bottomY, w: 3, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
     slide.addText(COMPANY_NAME, { x: 0.65, y: bottomY + 0.25, w: 4, h: 0.3, fontSize: 11, bold: true, color: "FFFFFF" });
@@ -1606,7 +1646,7 @@ async function generatePPT(){
         if(style === "center-black"){
           if(imgData){
             try {
-              const processed = await createCenterBlackImage(imgData, 1600, 900);
+              const processed = await createCenterBlackImage(imgData, 2560, 1440);
               if(processed){
                 slide.addImage({ data: processed, x: 0, y: 0.65, w: 13.33, h: 5.5 });
               }
@@ -1620,7 +1660,7 @@ async function generatePPT(){
         } else if(style === "center-blur"){
           if(imgData){
             try {
-              const processed = await createCenterBlurImage(imgData, 1600, 900);
+              const processed = await createCenterBlurImage(imgData, 2560, 1440);
               if(processed){
                 slide.addImage({ data: processed, x: 0, y: 0.65, w: 13.33, h: 5.5 });
               }
@@ -1666,7 +1706,6 @@ async function generatePPT(){
           }
         }
         
-        // Footer
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: 6.15, w: 13.33, h: 1.25, fill: { color: "F8FAFC" } });
         const cols = [];
         cols.push({ label: "AREA", value: x.area || "—" });
@@ -1686,7 +1725,6 @@ async function generatePPT(){
       }
     }
     
-    // Thank You
     slide = pptx.addSlide();
     slide.background = { color: "0F172A" };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.15, fill: { color: "3B82F6" } });
