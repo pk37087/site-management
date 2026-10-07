@@ -36,14 +36,13 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .btn-gray{background:#6b7280;color:#fff}
 .btn-red{background:#dc2626;color:#fff}
 .btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
-.btn-telegram{background:#0088cc;color:#fff}
-.btn-refresh-header{background:#0ea5e9;color:#fff}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;position:relative;overflow:hidden;cursor:pointer;min-height:100px;display:flex;flex-direction:column;justify-content:center;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
 .card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,0.08);border-color:#cbd5e1}
 .card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
+.card.active-filter{box-shadow:0 0 0 3px rgba(59,130,246,0.25),0 8px 20px rgba(15,23,42,0.08);border-color:#3b82f6;transform:translateY(-2px)}
 .card .card-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.7px;display:block;margin-bottom:6px}
 .card b{font-size:34px;font-weight:800;color:#0f172a;line-height:1;display:block;letter-spacing:-0.5px}
 .card .card-icon{position:absolute;top:14px;right:16px;font-size:20px;opacity:0.15;font-weight:900}
@@ -164,9 +163,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toast .toast-title{font-weight:700;margin-bottom:2px;font-size:13px}
 .toast .toast-msg{font-size:12px;opacity:0.85;word-break:break-word}
 .toast .toast-close{background:transparent;border:0;color:#fff;cursor:pointer;font-size:16px;opacity:0.6;padding:0;flex-shrink:0}
-.history-search-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:14px;display:flex;gap:8px;align-items:center}
-.history-search-box input{flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;outline:none;font-size:14px !important;height:40px}
-.history-search-box button{padding:0 16px;height:40px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px}
 .bulk-tab-bar{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #e2e8f0;overflow-x:auto}
 .bulk-tab{flex:1;padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-family:inherit;min-width:140px;white-space:nowrap;margin-bottom:-2px}
 .bulk-tab.active{color:#3b82f6;border-bottom-color:#3b82f6}
@@ -186,6 +182,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .ppt-option input{width:20px;height:20px;cursor:pointer;accent-color:#3b82f6}
 .ppt-option .ppt-label{font-weight:600;color:#0f172a;font-size:13px}
 .ppt-option .ppt-desc{font-size:11px;color:#64748b;margin-top:2px}
+.logo-preview-box{display:flex;align-items:center;gap:14px;padding:14px;border:2px solid #e2e8f0;border-radius:10px;background:#f8fafc;margin-top:10px}
+.logo-preview-box img{max-width:120px;max-height:60px;object-fit:contain;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:4px}
+.logo-preview-box .logo-actions{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
 @media (max-width:1024px){#areaContainer{grid-template-columns:1fr}}
 @media (max-width:768px){
   .header-actions{width:100%;justify-content:flex-start;gap:5px}
@@ -348,9 +347,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <!-- HISTORY MODAL -->
 <div class="modal" id="historyModal"><div class="box">
 <h2 id="historyTitle">Booking History</h2>
-<div class="history-search-box">
-  <input id="historySearchInput" type="text" placeholder="Search by site name or code...">
-  <button id="clearHistoryBtn" type="button">Clear</button>
+<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:14px;display:flex;gap:8px;align-items:center">
+  <input id="historySearchInput" type="text" placeholder="Search..." style="flex:1;padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;outline:none">
 </div>
 <div id="historyContent"></div>
 <div class="modal-actions">
@@ -359,37 +357,33 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 </div></div>
 
-<!-- BULK UPLOAD MODAL (with 2 tabs) -->
+<!-- BULK UPLOAD MODAL (3 tabs now) -->
 <div class="modal" id="bulkModal"><div class="box" style="width:min(750px,100%)">
 <h2>📦 Bulk Upload</h2>
 
 <div class="bulk-tab-bar">
-  <button class="bulk-tab active" id="bulkTabSite" type="button">📄 Bulk Site Upload</button>
-  <button class="bulk-tab" id="bulkTabImage" type="button">🖼️ Bulk Image Upload</button>
+  <button class="bulk-tab active" id="bulkTabSite" type="button">📄 Site Upload</button>
+  <button class="bulk-tab" id="bulkTabImage" type="button">🖼️ Image Upload</button>
+  <button class="bulk-tab" id="bulkTabLogo" type="button">🏷️ Logo</button>
 </div>
 
 <!-- Tab 1: Bulk Site Upload -->
 <div class="bulk-tab-content active" id="bulkContentSite">
   <div class="bulk-info">
-    <b>CSV Format (columns):</b><br>
+    <b>CSV Format:</b><br>
     <code>area,site,siteCode,location,company,rate,from,to</code><br><br>
     <b>Example:</b><br>
-    <code>Chandigarh,CG01_Chandigarh,CG01,Delhi Counter,ABC Media,50000,01/01/2026,31/12/2026</code><br><br>
-    <b>Note:</b> Status auto-set hoga dates ke hisaab se
+    <code>Chandigarh,CG01_Chandigarh,CG01,Delhi Counter,ABC Media,50000,01/01/2026,31/12/2026</code>
   </div>
-  
   <div class="upload-dropzone" id="csvDropzone">
     <div class="dz-icon">📄</div>
     <div class="dz-title">Click to upload CSV file</div>
     <div class="dz-sub">or paste CSV below</div>
   </div>
   <input type="file" id="csvFile" accept=".csv,.txt" style="display:none">
-  
-  <label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:14px;margin-bottom:6px">Or paste CSV directly:</label>
-  <textarea id="csvText" placeholder="area,site,siteCode,location,company,rate,from,to&#10;Chandigarh,CG01,CG01,Sector 17,ABC Media,50000,01/01/2026,31/12/2026" style="width:100%;height:150px;padding:11px;border:1px solid #e2e8f0;border-radius:8px;font-family:monospace;font-size:12px;outline:none;resize:vertical"></textarea>
-  
+  <label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:14px;margin-bottom:6px">Or paste CSV:</label>
+  <textarea id="csvText" placeholder="area,site,siteCode,location,company,rate,from,to" style="width:100%;height:120px;padding:11px;border:1px solid #e2e8f0;border-radius:8px;font-family:monospace;font-size:12px;outline:none;resize:vertical"></textarea>
   <div id="csvPreview" style="margin-top:12px;display:none"></div>
-  
   <div class="modal-actions">
     <button class="secondary" id="cancelBulkSiteBtn" type="button">Cancel</button>
     <button id="processBulkSiteBtn" type="button" style="background:#10b981">✅ Process Sites</button>
@@ -400,25 +394,59 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="bulk-tab-content" id="bulkContentImage">
   <div class="bulk-info">
     <b>Bulk Image Upload Rules:</b><br>
-    • Image ka naam = Site Code (case-insensitive)<br>
-    • Example: <code>CG01.jpg</code> → <code>CG01</code> site me upload hoga<br>
-    • Multiple images ek saath select kar sakte ho<br>
-    • Supported: JPG, PNG, WEBP - Max 8 MB each<br>
-    • Image automatically compress hogi
+    • Image ka naam = Site Code<br>
+    • Example: <code>CG01.jpg</code> → <code>CG01</code> site me upload<br>
+    • Multiple images ek saath select karo<br>
+    • Supported: JPG, PNG, WEBP - Max 8 MB
   </div>
-  
   <div class="upload-dropzone" id="imageDropzone">
     <div class="dz-icon">🖼️</div>
     <div class="dz-title">Click to select images</div>
-    <div class="dz-sub">Multiple images select kar sakte ho</div>
+    <div class="dz-sub">Multiple selection allowed</div>
   </div>
   <input type="file" id="imageFiles" accept="image/*" multiple style="display:none">
-  
   <div id="imagePreviewList" style="margin-top:12px;max-height:250px;overflow-y:auto;display:none"></div>
-  
   <div class="modal-actions">
     <button class="secondary" id="cancelBulkImageBtn" type="button">Cancel</button>
     <button id="processBulkImageBtn" type="button" style="background:#10b981">🖼️ Process Images</button>
+  </div>
+</div>
+
+<!-- Tab 3: Logo Upload (NEW) -->
+<div class="bulk-tab-content" id="bulkContentLogo">
+  <div class="bulk-info">
+    <b>Company Logo:</b><br>
+    • Yeh logo PPT ke first page pe show hoga<br>
+    • Recommended: PNG with transparent background<br>
+    • Max size: 2 MB<br>
+    • Aspect ratio: 4:1 ya 3:1 (wide logo best)
+  </div>
+  
+  <div id="logoEmptyState">
+    <div class="upload-dropzone" id="logoDropzone">
+      <div class="dz-icon">🏷️</div>
+      <div class="dz-title">Click to upload logo</div>
+      <div class="dz-sub">PNG, JPG, SVG - Max 2 MB</div>
+    </div>
+    <input type="file" id="logoFile" accept="image/*" style="display:none">
+  </div>
+  
+  <div id="logoPreviewState" style="display:none">
+    <div class="logo-preview-box">
+      <img id="logoPreviewImg" src="" alt="Logo">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:13px;color:#0f172a">Current Logo</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px" id="logoInfo">Uploaded</div>
+      </div>
+      <div class="logo-actions">
+        <button id="changeLogoBtn" type="button" style="padding:8px 14px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:12px">Change</button>
+        <button id="deleteLogoBtn" type="button" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:12px">Delete</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-actions">
+    <button class="secondary" id="closeBulkLogoBtn" type="button">Close</button>
   </div>
 </div>
 
@@ -427,52 +455,60 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <!-- PPT OPTIONS MODAL -->
 <div class="modal" id="pptModal"><div class="box" style="width:min(600px,100%)">
 <h2>📊 Generate PPT</h2>
-<p style="color:#64748b;font-size:13px;margin-bottom:16px"><b id="pptCount">0</b> sites selected hain</p>
+<p style="color:#64748b;font-size:13px;margin-bottom:16px"><b id="pptCount">0</b> sites selected</p>
 
-<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-bottom:8px">PPT Layout Style:</label>
+<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-bottom:8px">PPT Layout:</label>
 <div id="pptStyleOptions">
   <label class="ppt-option selected" data-style="split">
     <input type="radio" name="pptStyle" value="split" checked>
     <div>
-      <div class="ppt-label">📋 Split Layout</div>
-      <div class="ppt-desc">Image left, details right side</div>
+      <div class="ppt-label">📋 Split</div>
+      <div class="ppt-desc">Image left, details right</div>
     </div>
   </label>
   <label class="ppt-option" data-style="cover">
     <input type="radio" name="pptStyle" value="cover">
     <div>
-      <div class="ppt-label">🖼️ Cover Layout</div>
-      <div class="ppt-desc">Full image fills the box</div>
+      <div class="ppt-label">🖼️ Cover</div>
+      <div class="ppt-desc">Full image fills box</div>
     </div>
   </label>
-  <label class="ppt-option" data-style="contain">
-    <input type="radio" name="pptStyle" value="contain">
+  <!-- NEW OPTIONS 5.1 & 5.2 -->
+  <label class="ppt-option" data-style="center-black">
+    <input type="radio" name="pptStyle" value="center-black">
     <div>
-      <div class="ppt-label">📦 Contain Layout</div>
-      <div class="ppt-desc">Full image with black background</div>
+      <div class="ppt-label">🖤 Original Center + Black Sides</div>
+      <div class="ppt-desc">Image center, black fill, details below</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="center-blur">
+    <input type="radio" name="pptStyle" value="center-blur">
+    <div>
+      <div class="ppt-label">🌫️ Original Center + Blur Sides</div>
+      <div class="ppt-desc">Image center, blur fill, details below</div>
     </div>
   </label>
   <label class="ppt-option" data-style="grid">
     <input type="radio" name="pptStyle" value="grid">
     <div>
-      <div class="ppt-label">▦ Grid Layout</div>
-      <div class="ppt-desc">4 sites per slide (2x2 grid)</div>
+      <div class="ppt-label">▦ Grid (4 per slide)</div>
+      <div class="ppt-desc">Compact view</div>
     </div>
   </label>
 </div>
 
-<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:16px;margin-bottom:8px">Include in PPT:</label>
+<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:16px;margin-bottom:8px">Include:</label>
 <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px">
   <input type="checkbox" id="pptIncludeImages" checked style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">
   <span style="font-weight:600;font-size:13px">Site images</span>
 </label>
 <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px">
   <input type="checkbox" id="pptIncludeCompany" checked style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">
-  <span style="font-weight:600;font-size:13px">Company & Rate info</span>
+  <span style="font-weight:600;font-size:13px">Company & Rate</span>
 </label>
 <label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px">
   <input type="checkbox" id="pptIncludeDates" checked style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">
-  <span style="font-weight:600;font-size:13px">Booking dates & duration</span>
+  <span style="font-weight:600;font-size:13px">Booking dates</span>
 </label>
 
 <div class="modal-actions">
@@ -489,7 +525,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <label>Chat ID<input id="tgChatId" type="text" placeholder="123456789" style="font-family:monospace;font-size:12px !important"></label>
   <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:8px;font-size:13px">
     <input type="checkbox" id="tgEnabled" style="width:20px;height:20px;cursor:pointer;accent-color:#0088cc">
-    <span style="font-weight:600;color:#0f172a">Enable Telegram Notifications</span>
+    <span style="font-weight:600;color:#0f172a">Enable</span>
   </label>
 </div>
 <div id="telegramStatus" style="margin-top:12px;padding:10px;border-radius:8px;font-size:12px;display:none"></div>
@@ -505,12 +541,10 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <h2>Manage Areas</h2>
 <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
   <input id="newAreaName" type="text" placeholder="New area name..." style="flex:1;min-width:180px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none">
-  <button id="addAreaBtn" type="button" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit">+ Add Area</button>
+  <button id="addAreaBtn" type="button" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit">+ Add</button>
 </div>
 <div id="areaList" style="max-height:50vh;overflow-y:auto"></div>
-<div class="modal-actions">
-  <button class="secondary" id="closeAreaBtn" type="button">Close</button>
-</div>
+<div class="modal-actions"><button class="secondary" id="closeAreaBtn" type="button">Close</button></div>
 </div></div>
 
 <div class="image-viewer" id="imageViewer">
@@ -545,6 +579,7 @@ let isRendering = false;
 let isReleasing = false;
 let csvParsedSites = [];
 let bulkImagesToUpload = [];
+let companyLogo = ""; // base64 of logo
 
 // ==================== TOAST ====================
 function showToast(title, message, type){
@@ -560,7 +595,7 @@ function showToast(title, message, type){
   setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 300); }, 6000);
 }
 
-// ==================== DATE / STATUS LOGIC ====================
+// ==================== DATE / STATUS ====================
 function todayMidnight(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
 
 function parseDDMMYYYY(s){
@@ -598,6 +633,54 @@ function calcDays(f, t){
   return Math.floor((td - fd) / 86400000) + 1;
 }
 
+// ✅ CHANGE 1: Date filter function - fix
+function siteMatchesDateFilter(site){
+  const fromInput = document.getElementById("dateFilterFrom").value.trim();
+  const toInput = document.getElementById("dateFilterTo").value.trim();
+  
+  if(!fromInput && !toInput) return true;
+  
+  const filterFrom = fromInput ? ddmmyyyyToISO(fromInput) : "";
+  const filterTo = toInput ? ddmmyyyyToISO(toInput) : "";
+  
+  // If filter is invalid, ignore it
+  if(fromInput && !filterFrom) return true;
+  if(toInput && !filterTo) return true;
+  
+  const siteFrom = site.fromDate ? ddmmyyyyToISO(site.fromDate) : "";
+  const siteTo = site.toDate ? ddmmyyyyToISO(site.toDate) : "";
+  
+  // Site without dates - show only if no filter
+  if(!siteFrom && !siteTo) return true;
+  
+  // Both filters applied - check overlap
+  if(filterFrom && filterTo){
+    if(siteFrom && siteTo){
+      if(siteFrom > filterTo) return false;
+      if(siteTo < filterFrom) return false;
+      return true;
+    }
+    if(siteFrom && !siteTo) return siteFrom <= filterTo;
+    if(!siteFrom && siteTo) return siteTo >= filterFrom;
+  }
+  
+  // Only "from" filter
+  if(filterFrom && !filterTo){
+    if(siteTo) return siteTo >= filterFrom;
+    if(siteFrom) return siteFrom >= filterFrom;
+    return true;
+  }
+  
+  // Only "to" filter
+  if(!filterFrom && filterTo){
+    if(siteFrom) return siteFrom <= filterTo;
+    if(siteTo) return siteTo <= filterTo;
+    return true;
+  }
+  
+  return true;
+}
+
 // ==================== UTILS ====================
 function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
@@ -612,7 +695,6 @@ async function apiGet(path){
     return await r.json();
   } catch(e){ return { success: false, error: e.message }; }
 }
-
 async function apiPost(path, body){
   try {
     const r = await fetch(API_URL + path, {
@@ -624,7 +706,6 @@ async function apiPost(path, body){
     return await r.json();
   } catch(e){ return { success: false, error: e.message }; }
 }
-
 async function apiDelete(path){
   try {
     const r = await fetch(API_URL + path, { method: "DELETE", cache: "no-store" });
@@ -675,18 +756,9 @@ async function showApp(){
   }
   showProgress("Loading...", "");
   loadTelegramConfig();
-  const loadOk = await loadCloudData();
+  await loadCloudData();
+  await loadCompanyLogo(); // NEW: Load logo
   hideProgress();
-  if(!loadOk){
-    document.getElementById("loginOverlay").classList.remove("hidden");
-    document.getElementById("app").classList.add("hidden");
-    const err = document.getElementById("loginError");
-    err.textContent = "Data load fail. Internet check karo.";
-    err.classList.add("show");
-    const btn = document.getElementById("loginBtn");
-    if(btn){ btn.disabled = false; btn.textContent = "Sign In"; }
-    return;
-  }
   populateAreaDropdowns();
   await autoReleaseExpiredSites();
   render();
@@ -716,13 +788,9 @@ async function loadCloudData(){
   try {
     const result = await apiGet("/data");
     if(!result || !result.success){ console.error("Data load fail:", result?.error); return false; }
-    const newSites = Array.isArray(result.sites) ? result.sites : [];
-    const newAreas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
-    const newHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
-    if(newSites.length === 0 && sites.length > 0){ return true; }
-    sites = newSites;
-    areas = newAreas;
-    bookingHistory = newHistory;
+    sites = Array.isArray(result.sites) ? result.sites : [];
+    areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
+    bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
     sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
     lastDataHash = JSON.stringify({ sites, areas, bookingHistory });
     return true;
@@ -741,6 +809,58 @@ async function persistNow(){
   } catch(e){ console.error("persistNow error:", e); return false; }
 }
 
+// ==================== LOGO (NEW - Change 3) ====================
+async function loadCompanyLogo(){
+  try {
+    const result = await apiGet("/logo");
+    if(result && result.success && result.data){
+      companyLogo = result.data;
+      updateLogoUI();
+    } else {
+      companyLogo = "";
+      updateLogoUI();
+    }
+  } catch(e){ companyLogo = ""; updateLogoUI(); }
+}
+
+async function saveCompanyLogo(dataUrl){
+  const result = await apiPost("/logo", { data: dataUrl });
+  if(result && result.success){
+    companyLogo = dataUrl;
+    updateLogoUI();
+    return true;
+  }
+  return false;
+}
+
+async function deleteCompanyLogo(){
+  const result = await apiPost("/logo", { data: "" });
+  if(result && result.success){
+    companyLogo = "";
+    updateLogoUI();
+    return true;
+  }
+  return false;
+}
+
+function updateLogoUI(){
+  const emptyState = document.getElementById("logoEmptyState");
+  const previewState = document.getElementById("logoPreviewState");
+  const img = document.getElementById("logoPreviewImg");
+  const info = document.getElementById("logoInfo");
+  
+  if(companyLogo){
+    emptyState.style.display = "none";
+    previewState.style.display = "block";
+    img.src = companyLogo;
+    if(info) info.textContent = "Active logo - PPT first page pe show hoga";
+  } else {
+    emptyState.style.display = "block";
+    previewState.style.display = "none";
+  }
+}
+
+// ==================== IMAGE ====================
 async function saveImage(key, dataUrl){
   const result = await apiPost("/image/" + encodeURIComponent(key), { data: dataUrl });
   if(result && result.success){ imageCache[key] = dataUrl; imageFailed.delete(key); }
@@ -983,7 +1103,7 @@ async function saveSite(){
   render();
 }
 
-// ==================== IMAGE ====================
+// ==================== IMAGE UPLOAD ====================
 function handleImageUpload(e){
   const file = e.target.files[0];
   if(!file) return;
@@ -1092,7 +1212,8 @@ async function render(){
     if(collapsedAreas === null) collapsedAreas = new Set(areas);
     const f = activeStatuses;
     const q = (document.getElementById("search").value || "").toLowerCase().trim();
-    const isFiltering = f.size > 0 || q;
+    const hasDateFilter = document.getElementById("dateFilterFrom").value.trim() || document.getElementById("dateFilterTo").value.trim();
+    const isFiltering = f.size > 0 || q || hasDateFilter;
     if(isFiltering) collapsedAreas.clear();
     const container = document.getElementById("areaContainer");
     container.innerHTML = "";
@@ -1106,6 +1227,7 @@ async function render(){
         const sArea = s.area || "Unassigned";
         if(sArea !== areaName) return false;
         if(f.size > 0 && !f.has(s.status)) return false;
+        if(hasDateFilter && !siteMatchesDateFilter(s)) return false;
         const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
         if(q && !hay.includes(q)) return false;
         return true;
@@ -1197,26 +1319,30 @@ async function loadVisibleImages(){
   }
 }
 
-// ✅ CHANGE 3: Status card click se saare same-status sites select honge
+// ✅ CHANGE 2: Status select properly works
 function filterByStatus(status){
-  // Toggle status filter
   if(activeStatuses.has(status)) activeStatuses.delete(status);
   else activeStatuses.add(status);
   
-  // Auto-select all sites with this status (across all areas)
+  // Auto-select sites with this status (across all areas)
   if(activeStatuses.has(status)){
+    let count = 0;
     sites.forEach(s => {
-      if(s.status === status) selectedSites.add(s.id);
+      if(s.status === status){
+        selectedSites.add(s.id);
+        count++;
+      }
     });
-    showToast("Selected", sites.filter(s => s.status === status).length + " '" + status + "' sites selected", "success");
+    if(count > 0) showToast("Selected", count + " '" + status + "' sites selected (all areas)", "success");
   } else {
-    // Deselect all sites with this status
     sites.forEach(s => {
       if(s.status === status) selectedSites.delete(s.id);
     });
   }
   
   document.querySelectorAll(".ms-cb").forEach(cb => { cb.checked = activeStatuses.has(cb.value); });
+  const allCb = document.getElementById("msAll");
+  if(allCb) allCb.checked = activeStatuses.size === 3;
   updateMultiStatusLabel();
   render();
 }
@@ -1281,13 +1407,12 @@ function onStatusCheckChange(){
   render();
 }
 
-// ==================== CHANGE 2: DATE INPUT FIX (Backspace works) ====================
+// ==================== CHANGE 1: DATE INPUT BACKSPACE FIX ====================
 function initDateFilterInputs(){
   const dFrom = document.getElementById("dateFilterFrom");
   const dTo = document.getElementById("dateFilterTo");
   
   [dFrom, dTo].forEach(inp => {
-    // Store previous value
     inp.dataset.lastLength = "0";
     
     inp.addEventListener("input", function(e){
@@ -1297,41 +1422,36 @@ function initDateFilterInputs(){
       
       this.dataset.lastLength = oldVal.length;
       
-      // If user is deleting, don't reformat - let them delete freely
       if(isDeleting){
-        // Only remove non-digit/non-slash chars
         this.value = oldVal.replace(/[^\d\/]/g, "");
         return;
       }
       
-      // Only auto-format when adding
       let v = oldVal.replace(/\D/g, "");
       if(v.length >= 2) v = v.slice(0,2) + "/" + v.slice(2);
       if(v.length >= 5) v = v.slice(0,5) + "/" + v.slice(5,9);
       this.value = v;
     });
     
-    // Handle keydown for backspace specifically
     inp.addEventListener("keydown", function(e){
       if(e.key === "Backspace"){
-        // Allow default backspace to work
         this.dataset.lastLength = this.value.length - 1;
       }
     });
   });
 }
 
-// ==================== CHANGE 4: BULK UPLOAD (2 categories) ====================
+// ==================== BULK UPLOAD ====================
 function openBulkUpload(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
   
-  // Reset tabs
   document.getElementById("bulkTabSite").classList.add("active");
   document.getElementById("bulkTabImage").classList.remove("active");
+  document.getElementById("bulkTabLogo").classList.remove("active");
   document.getElementById("bulkContentSite").classList.add("active");
   document.getElementById("bulkContentImage").classList.remove("active");
+  document.getElementById("bulkContentLogo").classList.remove("active");
   
-  // Reset states
   csvParsedSites = [];
   bulkImagesToUpload = [];
   document.getElementById("csvText").value = "";
@@ -1339,6 +1459,7 @@ function openBulkUpload(){
   document.getElementById("imagePreviewList").style.display = "none";
   document.getElementById("imagePreviewList").innerHTML = "";
   
+  updateLogoUI();
   document.getElementById("bulkModal").classList.add("show");
 }
 
@@ -1348,7 +1469,6 @@ function closeBulkModal(){
   bulkImagesToUpload = [];
 }
 
-// --- Bulk Site Upload ---
 function parseCSVLine(line){
   const res = []; let cur = ""; let inQ = false;
   for(let i=0; i<line.length; i++){
@@ -1363,9 +1483,9 @@ function parseCSVLine(line){
 
 function parseCSV(text){
   const lines = text.split(/\r?\n/).filter(l => l.trim());
-  if(lines.length < 2){ alert("CSV needs header + data"); return; }
+  if(lines.length < 2){ return; }
   const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().trim());
-  if(!headers.includes("site")){ alert("'site' column missing"); return; }
+  if(!headers.includes("site")){ return; }
   
   const idx = {};
   headers.forEach((h, i) => idx[h] = i);
@@ -1440,11 +1560,9 @@ async function processBulkSites(){
   showToast("Bulk Upload", "Added: " + added + ", Updated: " + updated, "success");
 }
 
-// --- Bulk Image Upload ---
 function handleBulkImageSelect(e){
   const files = Array.from(e.target.files || []);
   if(files.length === 0) return;
-  
   bulkImagesToUpload = files.filter(f => f.type.startsWith("image/"));
   showBulkImagePreview();
   e.target.value = "";
@@ -1454,10 +1572,10 @@ function showBulkImagePreview(){
   const list = document.getElementById("imagePreviewList");
   if(bulkImagesToUpload.length === 0){ list.style.display = "none"; return; }
   
-  let html = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>🖼️ ' + bulkImagesToUpload.length + ' images selected</b></div>';
-  html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px">';
+  let html = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>🖼️ ' + bulkImagesToUpload.length + ' images</b></div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px">';
   
-  bulkImagesToUpload.forEach((f, i) => {
+  bulkImagesToUpload.forEach(f => {
     const nameNoExt = f.name.replace(/\.[^.]+$/, "");
     const matchingSite = sites.find(s => s.siteCode && s.siteCode.toUpperCase() === nameNoExt.toUpperCase());
     const matchBadge = matchingSite ? '<div style="font-size:10px;color:#059669;font-weight:700;text-align:center;margin-top:2px">✅ ' + esc(matchingSite.siteCode) + '</div>' : '<div style="font-size:10px;color:#dc2626;font-weight:700;text-align:center;margin-top:2px">❌ No match</div>';
@@ -1516,7 +1634,42 @@ async function processBulkImages(){
   showToast("Bulk Images", "Uploaded: " + uploaded + ", Skipped: " + skipped, uploaded > 0 ? "success" : "warning");
 }
 
-// ==================== CHANGE 1: PPT GENERATION WITH OPTIONS ====================
+// ==================== LOGO UPLOAD (Change 3) ====================
+function handleLogoUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith("image/")){ alert("Only images"); return; }
+  if(file.size > 2*1024*1024){ alert("Max 2 MB"); return; }
+  
+  showProgress("Processing logo...", "");
+  const reader = new FileReader();
+  reader.onload = async (ev) => {
+    // Compress logo - keep transparency for PNG
+    const dataUrl = ev.target.result;
+    try {
+      const saved = await saveCompanyLogo(dataUrl);
+      hideProgress();
+      if(saved){
+        showToast("Logo Saved", "PPT me logo show hoga", "success");
+      } else {
+        alert("Logo save fail");
+      }
+    } catch(err){
+      hideProgress();
+      alert("Logo save fail: " + err.message);
+    }
+  };
+  reader.readAsDataURL(file);
+  e.target.value = "";
+}
+
+async function handleDeleteLogo(){
+  if(!confirm("Logo delete karein?")) return;
+  const ok = await deleteCompanyLogo();
+  if(ok) showToast("Deleted", "Logo removed", "success");
+}
+
+// ==================== PPT GENERATION (Updated with logo + new styles) ====================
 function openPPTFormatModal(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   document.getElementById("pptCount").textContent = selectedSites.size;
@@ -1527,9 +1680,36 @@ function closePPTModal(){
   document.getElementById("pptModal").classList.remove("show");
 }
 
+// Helper: Generate blur background image
+async function createBlurredImage(dataUrl){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1920;
+      canvas.height = 1080;
+      const ctx = canvas.getContext("2d");
+      
+      // Draw blurred fill
+      ctx.filter = "blur(40px)";
+      ctx.drawImage(img, -100, -100, canvas.width + 200, canvas.height + 200);
+      ctx.filter = "none";
+      
+      // Overlay dark
+      ctx.fillStyle = "rgba(0,0,0,0.4)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      resolve(canvas.toDataURL("image/jpeg", 0.7));
+    };
+    img.onerror = () => resolve(null);
+    img.src = dataUrl;
+  });
+}
+
 async function generatePPT(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
-  if(typeof PptxGenJS === "undefined"){ alert("PPT library load nahi hui. Internet check karo."); return; }
+  if(typeof PptxGenJS === "undefined"){ alert("PPT library load nahi hui"); return; }
   
   const style = document.querySelector('input[name="pptStyle"]:checked').value;
   const includeImages = document.getElementById("pptIncludeImages").checked;
@@ -1537,7 +1717,7 @@ async function generatePPT(){
   const includeDates = document.getElementById("pptIncludeDates").checked;
   
   const list = sites.filter(s => selectedSites.has(s.id));
-  if(list.length === 0){ alert("Koi site nahi mila"); return; }
+  if(list.length === 0){ alert("Koi site nahi"); return; }
   
   closePPTModal();
   showProgress("Generating PPT...", "Preparing");
@@ -1547,16 +1727,40 @@ async function generatePPT(){
     pptx.layout = "LAYOUT_WIDE";
     pptx.author = COMPANY_NAME;
     
-    // Cover slide
+    // ========== COVER SLIDE WITH LOGO (Change 4) ==========
     let slide = pptx.addSlide();
     slide.background = { color: "1E3A8A" };
-    slide.addText("Site Report", { x: 0.5, y: 2.3, w: 12.33, h: 1, fontSize: 48, bold: true, color: "FFFFFF", align: "center" });
-    slide.addText("Total Sites: " + list.length, { x: 0.5, y: 3.7, w: 12.33, h: 0.6, fontSize: 20, color: "93C5FD", align: "center" });
-    slide.addText("Generated: " + new Date().toLocaleDateString('en-GB'), { x: 0.5, y: 4.4, w: 12.33, h: 0.5, fontSize: 14, color: "FFFFFF", align: "center" });
     
-    // Individual slides (split, cover, contain) OR grid
+    // Logo (only if uploaded)
+    let logoTopY = 1.5;
+    if(companyLogo){
+      try {
+        slide.addImage({
+          data: companyLogo,
+          x: 5.17, y: 1.0, w: 3.0, h: 1.2,
+          sizing: { type: "contain", w: 3.0, h: 1.2 }
+        });
+        logoTopY = 2.5;
+      } catch(e){ console.warn("Logo add fail", e); }
+    }
+    
+    // Title - pushed down if logo present, centered if no logo
+    slide.addText("Site Report", {
+      x: 0.5, y: logoTopY, w: 12.33, h: 1,
+      fontSize: 48, bold: true, color: "FFFFFF", align: "center"
+    });
+    slide.addText("Total Sites: " + list.length, {
+      x: 0.5, y: logoTopY + 1.3, w: 12.33, h: 0.6,
+      fontSize: 20, color: "93C5FD", align: "center"
+    });
+    slide.addText("Generated: " + new Date().toLocaleDateString('en-GB'), {
+      x: 0.5, y: logoTopY + 2.0, w: 12.33, h: 0.5,
+      fontSize: 14, color: "FFFFFF", align: "center"
+    });
+    
+    // ========== INDIVIDUAL SLIDES ==========
     if(style === "grid"){
-      // Grid: 4 sites per slide (2x2)
+      // Grid mode - 4 sites per slide
       for(let i = 0; i < list.length; i += 4){
         showProgress("Generating PPT...", "Slide " + (Math.floor(i/4) + 1));
         slide = pptx.addSlide();
@@ -1577,29 +1781,20 @@ async function generatePPT(){
           if(x.status === "Not Available") stColor = "DC2626";
           else if(x.status === "Under Maintenance") stColor = "D97706";
           
-          // Card background
           slide.addShape(pptx.ShapeType.rect, { x: pos.x, y: pos.y, w: cellW, h: cellH, fill: { color: "F8FAFC" }, line: { color: "CBD5E1", width: 1 } });
           
-          // Image
           if(includeImages && x.hasImage){
             const imgData = imageCache[x.id] || await getImage(x.id);
             if(imgData){
-              try {
-                slide.addImage({ data: imgData, x: pos.x + 0.1, y: pos.y + 0.1, w: cellW - 0.2, h: 1.7, sizing: { type: "cover", w: cellW - 0.2, h: 1.7 } });
-              } catch(e){}
+              try { slide.addImage({ data: imgData, x: pos.x + 0.1, y: pos.y + 0.1, w: cellW - 0.2, h: 1.7, sizing: { type: "cover", w: cellW - 0.2, h: 1.7 } }); } catch(e){}
             }
           }
           
-          // Site name
           slide.addText(x.site.substring(0, 40), { x: pos.x + 0.1, y: pos.y + 1.85, w: cellW - 0.2, h: 0.3, fontSize: 10, bold: true, color: "0F172A" });
-          
-          // Status
           slide.addShape(pptx.ShapeType.roundRect, { x: pos.x + 0.1, y: pos.y + 2.15, w: 1.2, h: 0.25, fill: { color: stColor }, rectRadius: 0.1 });
           slide.addText(x.status.toUpperCase(), { x: pos.x + 0.1, y: pos.y + 2.15, w: 1.2, h: 0.25, fontSize: 7, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
           
-          // Info
-          let infoText = "";
-          if(x.area) infoText += x.area;
+          let infoText = x.area || "";
           if(includeCompany && x.customer) infoText += " • " + x.customer;
           if(includeDates && x.fromDate) infoText += "\n" + x.fromDate + " - " + x.toDate;
           slide.addText(infoText, { x: pos.x + 1.4, y: pos.y + 2.15, w: cellW - 1.5, h: 0.7, fontSize: 8, color: "64748B" });
@@ -1623,12 +1818,44 @@ async function generatePPT(){
         slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
         slide.addText(x.status.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
         
-        // Image section
+        // Get image
         let imgData = null;
         if(includeImages && x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
         
-        if(style === "split"){
-          // Left: image, Right: details
+        // ========== NEW STYLES (Change 5) ==========
+        if(style === "center-black"){
+          // Image center, black fill sides, details below
+          slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
+          if(imgData){
+            try {
+              // Center image with contain (maintains aspect ratio)
+              slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "contain", w: 13.33, h: 5.5 } });
+            } catch(e){}
+          } else {
+            slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+          }
+        } else if(style === "center-blur"){
+          // Image center, blurred background, details below
+          if(imgData){
+            try {
+              // Create blurred background
+              const blurredBg = await createBlurredImage(imgData);
+              if(blurredBg){
+                slide.addImage({ data: blurredBg, x: 0, y: 0.65, w: 13.33, h: 5.5 });
+              } else {
+                slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
+              }
+              // Overlay original image centered with contain
+              slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "contain", w: 13.33, h: 5.5 } });
+            } catch(e){
+              slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
+            }
+          } else {
+            slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "F1F5F9" } });
+            slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+          }
+        } else if(style === "split"){
+          // Split: image left, details right
           slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 6.5, h: 5.5, fill: { color: "F1F5F9" } });
           if(imgData){
             try { slide.addImage({ data: imgData, x: 0.1, y: 0.75, w: 6.3, h: 5.3, sizing: { type: "contain", w: 6.3, h: 5.3 } }); } catch(e){}
@@ -1636,7 +1863,6 @@ async function generatePPT(){
             slide.addText("📷 No Image", { x: 0.1, y: 3, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           }
           
-          // Right side info
           let infoY = 0.9;
           slide.addText("Site Details", { x: 6.8, y: infoY, w: 6.3, h: 0.4, fontSize: 16, bold: true, color: "1E40AF" });
           infoY += 0.6;
@@ -1652,8 +1878,8 @@ async function generatePPT(){
             rows.push(["Rate", x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/month" : "—"]);
           }
           if(includeDates){
-            rows.push(["From Date", x.fromDate || "—"]);
-            rows.push(["To Date", x.toDate || "—"]);
+            rows.push(["From", x.fromDate || "—"]);
+            rows.push(["To", x.toDate || "—"]);
             rows.push(["Duration", days > 0 ? days + " days" : "—"]);
           }
           rows.push(["Status", x.status]);
@@ -1663,13 +1889,11 @@ async function generatePPT(){
             slide.addText(String(val).substring(0, 50), { x: 8.6, y: infoY, w: 4.5, h: 0.35, fontSize: 11, color: "0F172A" });
             infoY += 0.42;
           });
-        } else if(style === "cover" || style === "contain"){
+        } else if(style === "cover"){
+          // Cover: full image fills
           slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
           if(imgData){
-            try {
-              const sizing = style === "cover" ? { type: "cover", w: 13.33, h: 5.5 } : { type: "contain", w: 13.33, h: 5.5 };
-              slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: sizing });
-            } catch(e){}
+            try { slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "cover", w: 13.33, h: 5.5 } }); } catch(e){}
           } else {
             slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
           }
@@ -1708,7 +1932,7 @@ async function generatePPT(){
     showToast("PPT Generated", "File: " + fileName, "success");
   } catch(e){
     hideProgress();
-    alert("PPT generation failed: " + e.message);
+    alert("PPT failed: " + e.message);
     console.error(e);
   }
 }
@@ -1725,9 +1949,7 @@ function loadTelegramConfig(){
     }
   } catch(e){}
 }
-function saveTelegramConfig(){
-  localStorage.setItem("sms_telegram_config", JSON.stringify(telegramConfig));
-}
+function saveTelegramConfig(){ localStorage.setItem("sms_telegram_config", JSON.stringify(telegramConfig)); }
 function openTelegramSettings(){
   document.getElementById("tgBotToken").value = telegramConfig.botToken || "";
   document.getElementById("tgChatId").value = telegramConfig.chatId || "";
@@ -1745,7 +1967,7 @@ function saveTelegramSettings(){
   telegramConfig.chatId = chatId;
   telegramConfig.enabled = enabled;
   saveTelegramConfig();
-  showTelegramStatus("✅ Settings saved!", "success");
+  showTelegramStatus("✅ Saved!", "success");
 }
 function showTelegramStatus(msg, type){
   const el = document.getElementById("telegramStatus");
@@ -1754,31 +1976,18 @@ function showTelegramStatus(msg, type){
   if(type === "success"){ el.style.background = "#ecfdf5"; el.style.color = "#065f46"; }
   else if(type === "error"){ el.style.background = "#fef2f2"; el.style.color = "#991b1b"; }
 }
-async function sendTelegramMessage(text){
-  if(!telegramConfig.enabled || !telegramConfig.botToken || !telegramConfig.chatId) return false;
-  try {
-    const url = "https://api.telegram.org/bot" + telegramConfig.botToken + "/sendMessage";
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: telegramConfig.chatId, text: text, parse_mode: "HTML" })
-    });
-    const data = await res.json();
-    return data.ok === true;
-  } catch(e){ return false; }
-}
 async function testTelegram(){
   const token = document.getElementById("tgBotToken").value.trim();
   const chatId = document.getElementById("tgChatId").value.trim();
   if(!token || !chatId){ showTelegramStatus("❌ Token aur Chat ID daalo", "error"); return; }
-  showTelegramStatus("⏳ Test bhej rahe hain...", "info");
-  const saved = telegramConfig.enabled;
-  telegramConfig.enabled = true;
-  telegramConfig.botToken = token;
-  telegramConfig.chatId = chatId;
-  const ok = await sendTelegramMessage("🧪 Test Message - Site Management");
-  if(!ok){ telegramConfig.enabled = saved; showTelegramStatus("❌ Fail! Settings check karo", "error"); }
-  else showTelegramStatus("✅ Test bhej diya!", "success");
+  showTelegramStatus("⏳ Testing...", "info");
+  try {
+    const url = "https://api.telegram.org/bot" + token + "/sendMessage";
+    const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: chatId, text: "🧪 Test Message - Site Management", parse_mode: "HTML" }) });
+    const data = await res.json();
+    if(data.ok) showTelegramStatus("✅ Test sent!", "success");
+    else showTelegramStatus("❌ Fail! Settings check karo", "error");
+  } catch(e){ showTelegramStatus("❌ Error: " + e.message, "error"); }
 }
 
 // ==================== HISTORY ====================
@@ -1834,7 +2043,7 @@ function exportCSV(){
 async function bulkDeleteSelected(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Sirf Admin"); return; }
   if(selectedSites.size === 0){ alert("Koi site select nahi"); return; }
-  if(!confirm(selectedSites.size + " sites delete karein?")) return;
+  if(!confirm(selectedSites.size + " sites delete?")) return;
   const ids = new Set([...selectedSites].map(String));
   const toDelete = sites.filter(s => ids.has(String(s.id)));
   for(const s of toDelete){ if(s.hasImage) await deleteImage(s.id); }
@@ -1842,7 +2051,7 @@ async function bulkDeleteSelected(){
   selectedSites.clear();
   await persistNow();
   render();
-  alert("✅ " + toDelete.length + " sites deleted");
+  alert("✅ " + toDelete.length + " deleted");
 }
 
 // ==================== BULK STATUS ====================
@@ -1859,7 +2068,7 @@ async function openBulkStatusModal(){
   await persistNow();
   render();
   clearSelection();
-  alert("✅ " + targets.length + " sites updated");
+  alert("✅ " + targets.length + " updated");
 }
 
 // ==================== AREA MANAGER ====================
@@ -1945,7 +2154,7 @@ function handleImportFile(e){
     try {
       const backup = JSON.parse(ev.target.result);
       if(!backup.sites || !Array.isArray(backup.sites)){ alert("Invalid backup"); return; }
-      if(!confirm("Import " + backup.sites.length + " sites? Current data replace ho jayega!")) return;
+      if(!confirm("Import " + backup.sites.length + " sites?")) return;
       sites = backup.sites || [];
       areas = backup.areas || [...DEFAULT_AREAS];
       bookingHistory = backup.bookingHistory || [];
@@ -1963,7 +2172,7 @@ function handleImportFile(e){
 // ==================== EVENT LISTENERS ====================
 window.addEventListener("DOMContentLoaded", () => {
   initDateDropdowns();
-  initDateFilterInputs(); // CHANGE 2: Date input backspace fix
+  initDateFilterInputs();
 
   document.getElementById("loginBtn").addEventListener("click", doLogin);
   document.getElementById("loginPass").addEventListener("keypress", e => { if(e.key === "Enter") doLogin(); });
@@ -1972,18 +2181,16 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("refreshBtn").addEventListener("click", async () => {
     imageFailed.clear(); imageCache = {}; selectedSites.clear();
     await loadCloudData();
+    await loadCompanyLogo();
     collapsedAreas = new Set(areas);
     render();
     showToast("Refreshed", "Data reloaded", "success");
   });
   
-  // CHANGE 4: Bulk button opens modal with tabs
   document.getElementById("bulkBtn").addEventListener("click", openBulkUpload);
-  
   document.getElementById("backupBtn").addEventListener("click", downloadBackup);
   document.getElementById("importBtn").addEventListener("click", triggerImport);
 
-  // CHANGE 3: Card click selects all same-status sites
   document.getElementById("cardTotal").addEventListener("click", () => {
     activeStatuses.clear();
     document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
@@ -2026,9 +2233,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("historyBtn").addEventListener("click", openHistoryModal);
   document.getElementById("exportBtn").addEventListener("click", exportCSV);
 
-  // CHANGE 1: PPT button opens options modal
   document.getElementById("pptBtn").addEventListener("click", openPPTFormatModal);
-  
   document.getElementById("bulkStatusBtn").addEventListener("click", openBulkStatusModal);
   document.getElementById("clearSelBtn").addEventListener("click", clearSelection);
   document.getElementById("deleteBtn").addEventListener("click", bulkDeleteSelected);
@@ -2046,18 +2251,31 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("closeHistoryBtn").addEventListener("click", closeHistoryModal);
   document.getElementById("downloadHistoryBtn").addEventListener("click", downloadHistoryCSV);
 
-  // Bulk modal tabs
+  // Bulk tabs
   document.getElementById("bulkTabSite").addEventListener("click", () => {
     document.getElementById("bulkTabSite").classList.add("active");
     document.getElementById("bulkTabImage").classList.remove("active");
+    document.getElementById("bulkTabLogo").classList.remove("active");
     document.getElementById("bulkContentSite").classList.add("active");
     document.getElementById("bulkContentImage").classList.remove("active");
+    document.getElementById("bulkContentLogo").classList.remove("active");
   });
   document.getElementById("bulkTabImage").addEventListener("click", () => {
     document.getElementById("bulkTabImage").classList.add("active");
     document.getElementById("bulkTabSite").classList.remove("active");
+    document.getElementById("bulkTabLogo").classList.remove("active");
     document.getElementById("bulkContentImage").classList.add("active");
     document.getElementById("bulkContentSite").classList.remove("active");
+    document.getElementById("bulkContentLogo").classList.remove("active");
+  });
+  document.getElementById("bulkTabLogo").addEventListener("click", () => {
+    document.getElementById("bulkTabLogo").classList.add("active");
+    document.getElementById("bulkTabSite").classList.remove("active");
+    document.getElementById("bulkTabImage").classList.remove("active");
+    document.getElementById("bulkContentLogo").classList.add("active");
+    document.getElementById("bulkContentSite").classList.remove("active");
+    document.getElementById("bulkContentImage").classList.remove("active");
+    updateLogoUI();
   });
   
   // Bulk CSV
@@ -2081,6 +2299,13 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("imageFiles").addEventListener("change", handleBulkImageSelect);
   document.getElementById("processBulkImageBtn").addEventListener("click", processBulkImages);
   document.getElementById("cancelBulkImageBtn").addEventListener("click", closeBulkModal);
+
+  // Logo
+  document.getElementById("logoDropzone").addEventListener("click", () => document.getElementById("logoFile").click());
+  document.getElementById("logoFile").addEventListener("change", handleLogoUpload);
+  document.getElementById("changeLogoBtn").addEventListener("click", () => document.getElementById("logoFile").click());
+  document.getElementById("deleteLogoBtn").addEventListener("click", handleDeleteLogo);
+  document.getElementById("closeBulkLogoBtn").addEventListener("click", closeBulkModal);
 
   // PPT modal
   document.querySelectorAll('input[name="pptStyle"]').forEach(radio => {
