@@ -3,48 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>Site Management System</title>
+<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Site Management</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/gh/gbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{max-width:100%}
-html{overflow-x:hidden}
-body{font-family:'Inter',-apple-system,sans-serif;background:#f8fafc;color:#0f172a;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
-.hidden{display:none !important}
-button{touch-action:manipulation}
-input,select,textarea{font-size:16px !important}
+body{font-family:'Inter',sans-serif;background:#f8fafc;color:#0f172a;font-size:14px;line-height:1.5;overflow-x:hidden}
+.hidden{display:none!important}
+button{touch-action:manipulation;font-family:inherit}
+input,select,textarea{font-size:16px!important;font-family:inherit}
 .login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a8a,#1d4ed8);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
-.login-box{background:#fff;border-radius:20px;padding:32px 24px;width:min(420px,100%);box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-box{background:#fff;border-radius:20px;padding:32px 24px;width:min(420px,100%);box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .login-box h1{font-size:22px;font-weight:700;text-align:center;margin-bottom:8px}
 .login-box .subtitle{text-align:center;color:#64748b;font-size:13px;margin-bottom:24px}
 .login-box label{display:block;font-size:12px;font-weight:600;color:#475569;margin-bottom:6px;margin-top:16px}
-.login-box input{width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;outline:none}
-.login-box button{width:100%;padding:15px;background:#1d4ed8;color:#fff;border:0;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:24px;min-height:48px}
+.login-box input{width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:10px;outline:none}
+.login-box button{width:100%;padding:15px;background:#1d4ed8;color:#fff;border:0;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-top:24px;min-height:48px}
 .login-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:12px;border-radius:8px;font-size:13px;margin-top:16px;display:none}
 .login-error.show{display:block}
-header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:fixed;top:0;left:0;right:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:fixed;top:0;left:0;right:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .header-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.header-left h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
-.header-left h1::before{content:'';display:inline-block;width:8px;height:8px;background:#fff;border-radius:2px;box-shadow:0 0 0 3px rgba(255,255,255,0.25)}
-.header-user{background:rgba(255,255,255,0.18);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap;border:1px solid rgba(255,255,255,0.2)}
+.header-left h1{font-size:17px;font-weight:700}
+.header-user{background:rgba(255,255,255,.18);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.2)}
 .header-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.header-actions button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;white-space:nowrap;min-height:36px}
+.header-actions button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;min-height:36px}
 .btn-yellow{background:#f59e0b;color:#fff}
 .btn-gray{background:#6b7280;color:#fff}
 .btn-red{background:#dc2626;color:#fff}
-.btn-light{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25)}
-.btn-refresh-header{background:#0ea5e9;color:#fff}
+.btn-light{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25)}
+.btn-refresh{background:#0ea5e9;color:#fff}
 #app{padding-top:70px}
 .container{max-width:1600px;margin:20px auto;padding:0 20px}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;position:relative;overflow:hidden;cursor:pointer;min-height:100px;display:flex;flex-direction:column;justify-content:center;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
-.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,0.08);border-color:#cbd5e1}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;position:relative;overflow:hidden;cursor:pointer;min-height:100px;display:flex;flex-direction:column;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.08)}
 .card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
-.card .card-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.7px;display:block;margin-bottom:6px}
-.card b{font-size:34px;font-weight:800;color:#0f172a;line-height:1;display:block;letter-spacing:-0.5px}
+.card .card-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px}
+.card b{font-size:34px;font-weight:800;color:#0f172a;line-height:1;display:block}
 .card.available::before{background:linear-gradient(180deg,#10b981,#059669)}
 .card.available b{color:#047857}
 .card.notavailable::before{background:linear-gradient(180deg,#ef4444,#dc2626)}
@@ -54,40 +53,40 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card.total::before{background:linear-gradient(180deg,#3b82f6,#1d4ed8)}
 .card.total b{color:#1e40af}
 .toolbar{background:#fff;padding:10px;border-radius:10px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border:1px solid #e2e8f0;align-items:center}
-.toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-family:inherit;background:#fff;outline:none;color:#0f172a;min-width:160px;flex:1;font-size:13px !important;height:36px}
-.toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;font-family:inherit;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;height:36px;white-space:nowrap}
-.filter-box{display:flex;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;flex-wrap:nowrap;height:36px}
+.toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;outline:none;min-width:160px;flex:1;font-size:13px!important;height:36px}
+.toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;gap:5px;min-height:36px;height:36px}
+.filter-box{display:flex;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;height:36px}
 .filter-box .date-group{display:flex;align-items:center;background:#fff;border-right:1px solid #cbd5e1;height:100%}
-.filter-box .date-input{padding:0 8px;border:0;font-family:inherit;font-size:12px !important;width:110px;background:#fff;color:#0f172a;outline:none;height:100%}
-.filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700;display:flex;align-items:center}
-.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-family:inherit;font-weight:700;font-size:11px;height:100%;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none;align-items:center}
+.filter-box .date-input{padding:0 8px;border:0;font-size:12px!important;width:110px;background:#fff;outline:none;height:100%}
+.filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700}
+.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;cursor:pointer;font-weight:700;font-size:11px;height:100%}
+.filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;cursor:pointer;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none}
 .multi-status-wrap{position:relative;height:36px;display:flex}
-.multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;white-space:nowrap;border-radius:6px;min-width:130px}
-.multi-status-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,0.15);z-index:100;min-width:220px;padding:6px}
+.multi-status-btn{padding:0 14px;border:1px solid #cbd5e1;background:#fff;cursor:pointer;font-weight:700;font-size:12px;height:100%;display:flex;align-items:center;gap:6px;border-radius:6px;min-width:130px}
+.multi-status-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 30px rgba(15,23,42,.15);z-index:100;min-width:220px;padding:6px}
 .multi-status-panel.show{display:block}
 .multi-status-panel label{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
 .multi-status-panel label input{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6}
 .select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:8px 10px;border-radius:8px;margin-bottom:12px;display:none;gap:6px;flex-wrap:wrap;align-items:stretch}
 .select-bar.show{display:flex}
-.select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 12px;border-radius:5px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;min-height:36px;min-width:90px}
-.select-bar button{padding:0 12px;font-size:12px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;border:0;color:#fff;min-height:36px;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:110px}
+.select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 12px;border-radius:5px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;min-height:36px;min-width:90px}
+.select-bar button{padding:0 12px;font-size:12px;border-radius:5px;font-weight:600;cursor:pointer;border:0;color:#fff;min-height:36px;display:inline-flex;align-items:center;gap:5px}
 .select-bar .ppt-sel{background:#7c3aed}
 .select-bar .bulk-status-sel{background:#0ea5e9}
 .select-bar .clear-sel{background:#fff;color:#334155;border:1px solid #cbd5e1}
 .select-bar .delete-sel{background:#dc2626}
 #areaContainer{display:grid;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:12px;align-items:start}
 .area-block{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;height:fit-content}
-.area-header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:8px;border-radius:14px 14px 0 0}
+.area-header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:8px}
 .area-header .area-name{font-size:13px;font-weight:700}
-.area-header .area-count{background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.area-header .area-count{background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
 .area-block.collapsed .area-content{display:none}
-.empty-area{padding:18px;text-align:center;color:#94a3b8;font-style:italic;font-size:12px}
+.empty-area{padding:18px;text-align:center;color:#94a3b8;font-size:12px}
 .site-cards-grid{display:grid;grid-template-columns:1fr;gap:4px;padding:6px}
 .site-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px;display:flex;align-items:flex-start;gap:12px}
 .site-card.not-card{background:#fef2f2;border-color:#fecaca}
 .site-card.maint-card{background:#fffbeb;border-color:#fcd34d}
-.site-card.selected-card{background:#fef3c7;border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.2)}
+.site-card.selected-card{background:#fef3c7;border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.2)}
 .site-card-top{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .site-card-cb{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6}
 .site-card-num{font-size:10px;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:2px 6px;border-radius:3px;min-width:28px;text-align:center}
@@ -106,24 +105,24 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .s-not{background:#fee2e2;color:#991b1b}
 .s-maintenance{background:#fef3c7;color:#92400e}
 .site-card-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
-.site-card-actions button{padding:6px 12px;font-size:11px;border-radius:5px;font-weight:600;cursor:pointer;font-family:inherit;background:#f1f5f9;color:#334155;border:0;min-height:32px}
+.site-card-actions button{padding:6px 12px;font-size:11px;border-radius:5px;font-weight:600;cursor:pointer;background:#f1f5f9;color:#334155;border:0;min-height:32px}
 .site-card-actions button.map-btn{background:#cffafe;color:#0e7490}
-.modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;z-index:2000;overflow-y:auto}
+.modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;z-index:2000;overflow-y:auto}
 .modal.show{display:flex}
-.box{background:#fff;border-radius:16px;padding:24px;width:min(700px,100%);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,0.3);margin:auto}
+.box{background:#fff;border-radius:16px;padding:24px;width:min(700px,100%);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,.3);margin:auto}
 .box h2{margin:0 0 18px 0;font-size:19px;font-weight:700}
 .formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .formgrid label{font-size:12px;color:#475569;font-weight:600}
-.formgrid input,.formgrid select{width:100%;margin-top:6px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none}
+.formgrid input,.formgrid select{width:100%;margin-top:6px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;outline:none}
 .full-width{grid-column:1/-1}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px;padding-top:18px;border-top:1px solid #f1f5f9;flex-wrap:wrap}
-.modal-actions button{padding:11px 18px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;font-family:inherit;border:0;min-height:44px}
+.modal-actions button{padding:11px 18px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;border:0;min-height:44px}
 .modal-actions button.secondary{background:#fff;color:#334155;border:1px solid #e2e8f0}
 .modal-actions button:not(.secondary){background:#3b82f6;color:#fff}
 .gps-box{background:#fef2f2;border:1.5px dashed #fca5a5;border-radius:10px;padding:10px;margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .gps-box .gps-status{font-size:12px;color:#991b1b;font-weight:600;flex:1;min-width:140px}
 .gps-box .gps-status.ok{color:#065f46}
-.gps-box .gps-btn{background:#dc2626;color:#fff;padding:9px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;border:0}
+.gps-box .gps-btn{background:#dc2626;color:#fff;padding:9px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:0}
 .image-upload-box{background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px;padding:16px;margin-top:10px;text-align:center;cursor:pointer}
 .image-upload-box .iu-icon{font-size:28px;margin-bottom:6px}
 .image-upload-box .iu-title{font-size:13px;font-weight:600;color:#334155}
@@ -136,17 +135,17 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .calc-preview{background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-top:12px;font-size:12px;color:#0c4a6e}
 .history-item{background:#f8fafc;border-left:3px solid #7c3aed;padding:12px;margin-bottom:10px;border-radius:8px;font-size:13px;border:1px solid #e2e8f0}
 .empty-history{text-align:center;color:#94a3b8;padding:40px;font-style:italic}
-.image-viewer{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.95);z-index:3000;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
+.image-viewer{display:none;position:fixed;inset:0;background:rgba(15,23,42,.95);z-index:3000;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
 .image-viewer.show{display:flex}
 .image-viewer img{max-width:100%;max-height:95vh;border-radius:12px}
 .image-viewer .close-viewer{position:absolute;top:16px;right:16px;background:#fff;color:#0f172a;width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:20px;font-weight:700}
-.progress-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:4000;align-items:center;justify-content:center;flex-direction:column;gap:20px;color:#fff;padding:20px;text-align:center}
+.progress-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:4000;align-items:center;justify-content:center;flex-direction:column;gap:20px;color:#fff;padding:20px;text-align:center}
 .progress-overlay.show{display:flex}
-.progress-overlay .spinner{width:56px;height:56px;border:4px solid rgba(255,255,255,0.2);border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite}
+.progress-overlay .spinner{width:56px;height:56px;border:4px solid rgba(255,255,255,.2);border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .area-list-item{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px;background:#f8fafc;flex-wrap:wrap}
 .area-list-item .name{flex:1;font-weight:600;color:#0f172a;min-width:120px}
-.toast{position:fixed;top:80px;right:20px;background:#0f172a;color:#fff;padding:14px 18px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:5000;display:flex;gap:10px;align-items:flex-start;max-width:380px;transform:translateX(450px);transition:transform 0.3s ease;font-size:13px}
+.toast{position:fixed;top:80px;right:20px;background:#0f172a;color:#fff;padding:14px 18px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:5000;display:flex;gap:10px;align-items:flex-start;max-width:380px;transform:translateX(450px);transition:transform .3s;font-size:13px}
 .toast.show{transform:translateX(0)}
 .toast.success{border-left:4px solid #10b981}
 .toast.info{border-left:4px solid #3b82f6}
@@ -155,21 +154,21 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .toast .toast-icon{font-size:20px;flex-shrink:0}
 .toast .toast-body{flex:1;min-width:0}
 .toast .toast-title{font-weight:700;margin-bottom:2px;font-size:13px}
-.toast .toast-msg{font-size:12px;opacity:0.85;word-break:break-word}
-.toast .toast-close{background:transparent;border:0;color:#fff;cursor:pointer;font-size:16px;opacity:0.6;padding:0;flex-shrink:0}
+.toast .toast-msg{font-size:12px;opacity:.85;word-break:break-word}
+.toast .toast-close{background:transparent;border:0;color:#fff;cursor:pointer;font-size:16px;opacity:.6;padding:0}
 .bulk-tab-bar{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #e2e8f0;overflow-x:auto}
-.bulk-tab{flex:1;padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;font-family:inherit;min-width:140px;white-space:nowrap;margin-bottom:-2px}
+.bulk-tab{flex:1;padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;min-width:140px;margin-bottom:-2px}
 .bulk-tab.active{color:#3b82f6;border-bottom-color:#3b82f6}
 .bulk-tab-content{display:none}
 .bulk-tab-content.active{display:block}
 .bulk-info{background:#fffbeb;border:1px solid #fcd34d;padding:12px;border-radius:8px;margin-bottom:12px;font-size:12px;color:#92400e;line-height:1.6}
 .bulk-info code{background:#fff;padding:2px 6px;border-radius:4px;font-family:monospace;color:#1e40af;font-size:11px}
-.upload-dropzone{border:2px dashed #cbd5e1;border-radius:12px;padding:24px 16px;text-align:center;background:#f8fafc;cursor:pointer;margin-bottom:12px;transition:all 0.2s}
+.upload-dropzone{border:2px dashed #cbd5e1;border-radius:12px;padding:24px 16px;text-align:center;background:#f8fafc;cursor:pointer;margin-bottom:12px;transition:all .2s}
 .upload-dropzone:hover{border-color:#3b82f6;background:#eff6ff}
 .upload-dropzone .dz-icon{font-size:36px;margin-bottom:8px}
 .upload-dropzone .dz-title{font-size:14px;font-weight:600;color:#334155;margin-bottom:4px}
 .upload-dropzone .dz-sub{font-size:11px;color:#94a3b8}
-.ppt-option{display:flex;align-items:center;gap:10px;padding:12px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:8px;transition:all 0.2s}
+.ppt-option{display:flex;align-items:center;gap:10px;padding:12px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:8px;transition:all .2s}
 .ppt-option:hover{border-color:#3b82f6;background:#eff6ff}
 .ppt-option.selected{border-color:#3b82f6;background:#dbeafe}
 .ppt-option input{width:20px;height:20px;cursor:pointer;accent-color:#3b82f6}
@@ -217,9 +216,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <div class="login-box">
     <h1>Site Management</h1>
     <p class="subtitle">Sign in to continue</p>
-    <label for="loginUser">Username</label>
+    <label>Username</label>
     <input id="loginUser" type="text" placeholder="Enter username" autocomplete="off">
-    <label for="loginPass">Password</label>
+    <label>Password</label>
     <input id="loginPass" type="password" placeholder="Enter password" autocomplete="off">
     <button id="loginBtn" type="button">Sign In</button>
     <div class="login-error" id="loginError"></div>
@@ -233,7 +232,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <span class="header-user" id="userInfo">Loading...</span>
   </div>
   <div class="header-actions">
-    <button class="btn-refresh-header" id="refreshBtn" type="button">🔄 Refresh</button>
+    <button class="btn-refresh" id="refreshBtn" type="button">🔄 Refresh</button>
     <button class="btn-yellow admin-only" id="bulkBtn" type="button">📦 Bulk</button>
     <button class="btn-gray admin-only" id="backupBtn" type="button">Backup</button>
     <button class="btn-light admin-only" id="importBtn" type="button">Import</button>
@@ -253,8 +252,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <input id="search" type="text" placeholder="Search sites...">
   <div class="multi-status-wrap" id="multiStatusWrap">
     <button type="button" class="multi-status-btn" id="multiStatusBtn">
-      <span id="multiStatusLabel">Status: All</span>
-      <span>▼</span>
+      <span id="multiStatusLabel">Status: All</span><span>▼</span>
     </button>
     <div class="multi-status-panel" id="multiStatusPanel">
       <label><input type="checkbox" id="msAll"> Select All</label>
@@ -287,12 +285,12 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 
 <div id="areaContainer"></div>
-
 </div>
+
 <div class="progress-overlay" id="progressOverlay">
   <div class="spinner"></div>
   <div id="progressText">Working...</div>
-  <div id="progressSub" style="font-size:13px;opacity:0.7">Please wait</div>
+  <div id="progressSub" style="font-size:13px;opacity:.7">Please wait</div>
 </div>
 
 <div class="modal" id="modal"><div class="box">
@@ -325,7 +323,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
 </div>
 <div class="calc-preview" id="calcPreview">Enter dates</div>
-<div id="statusHint" style="font-size:12px;color:#0c4a6e;margin-top:8px;background:#f0f9ff;padding:10px 12px;border-radius:6px;border:1px solid #bae6fd;font-weight:600">💡 Status dates ke hisaab se automatically set hoga</div>
+<div id="statusHint" style="font-size:12px;color:#0c4a6e;margin-top:8px;background:#f0f9ff;padding:10px 12px;border-radius:6px;border:1px solid #bae6fd;font-weight:600">💡 Status dates ke hisaab se auto set hoga</div>
 <div class="modal-actions"><button class="secondary" id="cancelModalBtn" type="button">Cancel</button><button id="saveSiteBtn" type="button">Save Site</button></div>
 </div></div>
 
@@ -345,56 +343,38 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <button class="bulk-tab" id="bulkTabImage" type="button">🖼️ Image Upload</button>
   <button class="bulk-tab" id="bulkTabLogo" type="button">🏷️ Logo</button>
 </div>
-
 <div class="bulk-tab-content active" id="bulkContentSite">
   <div class="bulk-info"><b>CSV Format:</b><br><code>area,site,siteCode,location,company,rate,from,to</code></div>
   <div class="upload-dropzone" id="csvDropzone"><div class="dz-icon">📄</div><div class="dz-title">Click to upload CSV</div></div>
   <input type="file" id="csvFile" accept=".csv,.txt" style="display:none">
-  <textarea id="csvText" placeholder="Paste CSV here..." style="width:100%;height:120px;padding:11px;border:1px solid #e2e8f0;border-radius:8px;font-family:monospace;font-size:12px;outline:none;resize:vertical;margin-top:14px"></textarea>
+  <textarea id="csvText" placeholder="Paste CSV here..." style="width:100%;height:120px;padding:11px;border:1px solid #e2e8f0;border-radius:8px;font-family:monospace;font-size:12px;outline:none;margin-top:14px"></textarea>
   <div id="csvPreview" style="margin-top:12px;display:none"></div>
-  <div class="modal-actions">
-    <button class="secondary" id="cancelBulkSiteBtn" type="button">Cancel</button>
-    <button id="processBulkSiteBtn" type="button" style="background:#10b981">✅ Process</button>
-  </div>
+  <div class="modal-actions"><button class="secondary" id="cancelBulkSiteBtn" type="button">Cancel</button><button id="processBulkSiteBtn" type="button" style="background:#10b981">✅ Process</button></div>
 </div>
-
 <div class="bulk-tab-content" id="bulkContentImage">
   <div class="bulk-info"><b>Image name = Site Code</b><br>Example: <code>CG01.jpg</code></div>
   <div class="upload-dropzone" id="imageDropzone"><div class="dz-icon">🖼️</div><div class="dz-title">Click to select images</div></div>
   <input type="file" id="imageFiles" accept="image/*" multiple style="display:none">
   <div id="imagePreviewList" style="margin-top:12px;max-height:250px;overflow-y:auto;display:none"></div>
-  <div class="modal-actions">
-    <button class="secondary" id="cancelBulkImageBtn" type="button">Cancel</button>
-    <button id="processBulkImageBtn" type="button" style="background:#10b981">🖼️ Process</button>
-  </div>
+  <div class="modal-actions"><button class="secondary" id="cancelBulkImageBtn" type="button">Cancel</button><button id="processBulkImageBtn" type="button" style="background:#10b981">🖼️ Process</button></div>
 </div>
-
 <div class="bulk-tab-content" id="bulkContentLogo">
   <div class="bulk-info"><b>Company Logo:</b><br>PPT first page pe show hoga<br>Max 2 MB</div>
   <div id="logoEmptyState">
-    <div class="upload-dropzone" id="logoDropzone">
-      <div class="dz-icon">🏷️</div>
-      <div class="dz-title">Click to upload logo</div>
-      <div class="dz-sub">PNG, JPG, SVG</div>
-    </div>
+    <div class="upload-dropzone" id="logoDropzone"><div class="dz-icon">🏷️</div><div class="dz-title">Click to upload logo</div><div class="dz-sub">PNG, JPG, SVG</div></div>
     <input type="file" id="logoFile" accept="image/*" style="display:none">
   </div>
   <div id="logoPreviewState" style="display:none">
     <div class="logo-preview-box">
       <img id="logoPreviewImg" src="" alt="Logo">
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:600;font-size:13px;color:#0f172a">Current Logo</div>
-        <div style="font-size:11px;color:#64748b;margin-top:2px" id="logoInfo">Uploaded</div>
-      </div>
+      <div style="flex:1"><div style="font-weight:600;font-size:13px">Current Logo</div><div style="font-size:11px;color:#64748b" id="logoInfo">Uploaded</div></div>
       <div class="logo-actions">
-        <button id="changeLogoBtn" type="button" style="padding:8px 14px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:12px">Change</button>
-        <button id="deleteLogoBtn" type="button" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-family:inherit;font-size:12px">Delete</button>
+        <button id="changeLogoBtn" type="button" style="padding:8px 14px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-size:12px">Change</button>
+        <button id="deleteLogoBtn" type="button" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-weight:600;cursor:pointer;font-size:12px">Delete</button>
       </div>
     </div>
   </div>
-  <div class="modal-actions">
-    <button class="secondary" id="closeBulkLogoBtn" type="button">Close</button>
-  </div>
+  <div class="modal-actions"><button class="secondary" id="closeBulkLogoBtn" type="button">Close</button></div>
 </div>
 </div></div>
 
@@ -404,70 +384,47 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-bottom:8px">Layout:</label>
 <div id="pptStyleOptions">
-  <label class="ppt-option selected" data-style="split">
-    <input type="radio" name="pptStyle" value="split" checked>
-    <div><div class="ppt-label">📋 Split</div><div class="ppt-desc">Image left, details right</div></div>
-  </label>
-  <label class="ppt-option" data-style="cover">
-    <input type="radio" name="pptStyle" value="cover">
-    <div><div class="ppt-label">🖼️ Cover</div><div class="ppt-desc">Full image</div></div>
-  </label>
-  <label class="ppt-option" data-style="center-black">
-    <input type="radio" name="pptStyle" value="center-black">
-    <div><div class="ppt-label">🖤 Center + Black Sides</div><div class="ppt-desc">Image center, black fill</div></div>
-  </label>
-  <label class="ppt-option" data-style="center-blur">
-    <input type="radio" name="pptStyle" value="center-blur">
-    <div><div class="ppt-label">🌫️ Center + Blur Sides</div><div class="ppt-desc">Image center, blur fill</div></div>
-  </label>
-  <label class="ppt-option" data-style="grid">
-    <input type="radio" name="pptStyle" value="grid">
-    <div><div class="ppt-label">▦ Grid (4/slide)</div><div class="ppt-desc">Compact</div></div>
-  </label>
+  <label class="ppt-option selected" data-style="split"><input type="radio" name="pptStyle" value="split" checked><div><div class="ppt-label">📋 Split</div><div class="ppt-desc">Image left, details right</div></div></label>
+  <label class="ppt-option" data-style="cover"><input type="radio" name="pptStyle" value="cover"><div><div class="ppt-label">🖼️ Cover</div><div class="ppt-desc">Full image</div></div></label>
+  <label class="ppt-option" data-style="center-black"><input type="radio" name="pptStyle" value="center-black"><div><div class="ppt-label">🖤 Center + Black Sides</div><div class="ppt-desc">Image center, black sides</div></div></label>
+  <label class="ppt-option" data-style="center-blur"><input type="radio" name="pptStyle" value="center-blur"><div><div class="ppt-label">🌫️ Center + Blur Sides</div><div class="ppt-desc">Image center, blur sides</div></div></label>
+  <label class="ppt-option" data-style="grid"><input type="radio" name="pptStyle" value="grid"><div><div class="ppt-label">▦ Grid (4/slide)</div><div class="ppt-desc">Compact</div></div></label>
 </div>
 
-<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:16px;margin-bottom:8px">🎨 PPT Theme Color:</label>
+<label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:16px;margin-bottom:8px">🎨 Theme:</label>
 <label class="ppt-option selected" data-theme="dark-navy">
   <input type="radio" name="pptTheme" value="dark-navy" checked>
   <span class="theme-preview" style="background:linear-gradient(135deg,#0F172A,#1E293B)"></span>
-  <div><div class="ppt-label">🌑 Dark Navy</div><div class="ppt-desc">Deep navy blue (current)</div></div>
+  <div><div class="ppt-label">🌑 Dark Navy</div><div class="ppt-desc">Deep navy blue</div></div>
 </label>
 <label class="ppt-option" data-theme="royal-blue">
   <input type="radio" name="pptTheme" value="royal-blue">
   <span class="theme-preview" style="background:linear-gradient(135deg,#1E40AF,#1D4ED8)"></span>
-  <div><div class="ppt-label">💙 Royal Blue</div><div class="ppt-desc">Bright royal blue (new)</div></div>
+  <div><div class="ppt-label">💙 Royal Blue</div><div class="ppt-desc">Bright royal blue</div></div>
 </label>
 
 <label style="display:block;font-size:12px;color:#475569;font-weight:600;margin-top:16px;margin-bottom:8px">Include:</label>
-<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px">
-  <input type="checkbox" id="pptIncludeImages" checked style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">
-  <span style="font-weight:600;font-size:13px">Site images</span>
-</label>
-<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px">
-  <input type="checkbox" id="pptIncludeCompany" checked style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">
-  <span style="font-weight:600;font-size:13px">Company & Rate</span>
-</label>
-<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px">
-  <input type="checkbox" id="pptIncludeDates" checked style="width:18px;height:18px;cursor:pointer;accent-color:#3b82f6">
-  <span style="font-weight:600;font-size:13px">Dates</span>
-</label>
+<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px"><input type="checkbox" id="pptIncludeImages" checked style="width:18px;height:18px;accent-color:#3b82f6"><span style="font-weight:600;font-size:13px">Site images</span></label>
+<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px"><input type="checkbox" id="pptIncludeCompany" checked style="width:18px;height:18px;accent-color:#3b82f6"><span style="font-weight:600;font-size:13px">Company & Rate</span></label>
+<label style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;margin-bottom:6px"><input type="checkbox" id="pptIncludeDates" checked style="width:18px;height:18px;accent-color:#3b82f6"><span style="font-weight:600;font-size:13px">Dates</span></label>
 
-<div class="modal-actions">
-  <button class="secondary" id="cancelPptBtn" type="button">Cancel</button>
-  <button id="generatePptBtn" type="button" style="background:#7c3aed">📊 Generate</button>
-</div>
+<div class="modal-actions"><button class="secondary" id="cancelPptBtn" type="button">Cancel</button><button id="generatePptBtn" type="button" style="background:#7c3aed">📊 Generate</button></div>
 </div></div>
 
 <div class="modal" id="areaModal"><div class="box" style="width:min(600px,100%)">
 <h2>Manage Areas</h2>
 <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-  <input id="newAreaName" type="text" placeholder="New area name..." style="flex:1;min-width:180px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit;outline:none">
-  <button id="addAreaBtn" type="button" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit">+ Add</button>
+  <input id="newAreaName" type="text" placeholder="New area name..." style="flex:1;min-width:180px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;outline:none">
+  <button id="addAreaBtn" type="button" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-weight:600;cursor:pointer">+ Add</button>
 </div>
 <div id="areaList" style="max-height:50vh;overflow-y:auto"></div>
 <div class="modal-actions"><button class="secondary" id="closeAreaBtn" type="button">Close</button></div>
 </div></div>
 
+<div class="image-viewer" id="imageViewer">
+  <button class="close-viewer" id="closeViewerBtn">×</button>
+  <img id="viewerImage" src="" alt="">
+</div>
 <input type="file" id="importFile" accept=".json" style="display:none">
 <div id="toastContainer"></div>
 
@@ -476,6 +433,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 const API_URL = "https://api.dsent.workers.dev";
 const DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
 const COMPANY_NAME = "DS Outdoor Media";
+const APP_VERSION = "2026-10-07-v3";
 
 // ==================== STATE ====================
 let currentUser = null;
@@ -499,19 +457,20 @@ let companyLogo = "";
 
 // ==================== TOAST ====================
 function showToast(title, message, type){
-  const container = document.getElementById("toastContainer");
-  if(!container) return;
-  const toast = document.createElement("div");
-  toast.className = "toast " + (type || "info");
+  const c = document.getElementById("toastContainer");
+  if(!c) return;
+  const t = document.createElement("div");
+  t.className = "toast " + (type || "info");
   const icons = { success: "✅", info: "ℹ️", warning: "⚠️", danger: "🚨" };
-  toast.innerHTML = '<div class="toast-icon">' + (icons[type] || "ℹ️") + '</div><div class="toast-body"><div class="toast-title">' + esc(title) + '</div><div class="toast-msg">' + esc(message) + '</div></div><button class="toast-close" type="button">×</button>';
-  toast.querySelector('.toast-close').onclick = () => toast.remove();
-  container.appendChild(toast);
-  setTimeout(() => toast.classList.add("show"), 10);
-  setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 300); }, 6000);
+  t.innerHTML = '<div class="toast-icon">' + (icons[type] || "ℹ️") + '</div><div class="toast-body"><div class="toast-title">' + esc(title) + '</div><div class="toast-msg">' + esc(message) + '</div></div><button class="toast-close" type="button">×</button>';
+  t.querySelector(".toast-close").onclick = () => t.remove();
+  c.appendChild(t);
+  setTimeout(() => t.classList.add("show"), 10);
+  setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 300); }, 6000);
 }
 
-// ==================== DATE HELPERS ====================
+// ==================== HELPERS ====================
+function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function todayMidnight(){ const t = new Date(); t.setHours(0,0,0,0); return t; }
 function parseDDMMYYYY(s){
   if(!s) return null;
@@ -544,67 +503,16 @@ function calcDays(f, t){
   if(!fd || !td || td < fd) return 0;
   return Math.floor((td - fd) / 86400000) + 1;
 }
-function siteMatchesDateFilter(site){
-  const fromInput = document.getElementById("dateFilterFrom").value.trim();
-  const toInput = document.getElementById("dateFilterTo").value.trim();
-  if(!fromInput && !toInput) return true;
-  const filterFrom = fromInput ? ddmmyyyyToISO(fromInput) : "";
-  const filterTo = toInput ? ddmmyyyyToISO(toInput) : "";
-  if(fromInput && !filterFrom) return true;
-  if(toInput && !filterTo) return true;
-  const siteFrom = site.fromDate ? ddmmyyyyToISO(site.fromDate) : "";
-  const siteTo = site.toDate ? ddmmyyyyToISO(site.toDate) : "";
-  if(!siteFrom && !siteTo) return true;
-  if(filterFrom && filterTo){
-    if(siteFrom && siteTo){ if(siteFrom > filterTo) return false; if(siteTo < filterFrom) return false; return true; }
-    if(siteFrom && !siteTo) return siteFrom <= filterTo;
-    if(!siteFrom && siteTo) return siteTo >= filterFrom;
-  }
-  if(filterFrom && !filterTo){ if(siteTo) return siteTo >= filterFrom; if(siteFrom) return siteFrom >= filterFrom; return true; }
-  if(!filterFrom && filterTo){ if(siteFrom) return siteFrom <= filterTo; if(siteTo) return siteTo <= filterTo; return true; }
-  return true;
-}
-
-// ✅ NEW: Status based on date filter (for stats cards)
-function getStatusForDateRange(site, filterFrom, filterTo){
-  // If no date filter, use site's current status
-  if(!filterFrom && !filterTo) return site.status;
-  
-  const siteFrom = site.fromDate ? ddmmyyyyToISO(site.fromDate) : "";
-  const siteTo = site.toDate ? ddmmyyyyToISO(site.toDate) : "";
-  if(!siteFrom && !siteTo) return "Available";
-  
-  // Check if booking overlaps with filter range
-  let overlaps = false;
-  if(filterFrom && filterTo){
-    if(siteFrom && siteTo){ if(siteFrom <= filterTo && siteTo >= filterFrom) overlaps = true; }
-    else if(siteFrom) { if(siteFrom <= filterTo) overlaps = true; }
-    else if(siteTo) { if(siteTo >= filterFrom) overlaps = true; }
-  } else if(filterFrom){
-    if(siteTo && siteTo >= filterFrom) overlaps = true;
-    if(siteFrom && siteFrom >= filterFrom) overlaps = true;
-  } else if(filterTo){
-    if(siteFrom && siteFrom <= filterTo) overlaps = true;
-    if(siteTo && siteTo <= filterTo) overlaps = true;
-  }
-  
-  if(overlaps) return "Not Available";
-  return "Available";
-}
-
-// ==================== UTILS ====================
-function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
-function formatINR(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN'); }
-// ✅ NEW: Format rate with /PM
 function formatRate(v){ const n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN') + "/PM"; }
-function showProgress(t, s){ document.getElementById("progressText").textContent = t || "Working..."; document.getElementById("progressSub").textContent = s || ""; document.getElementById("progressOverlay").classList.add("show"); }
-function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
-function debounce(fn, ms){ let timer; return function(){ clearTimeout(timer); timer = setTimeout(() => fn.apply(this, arguments), ms); }; }
 
 // ==================== API ====================
 async function apiGet(path){ try { const r = await fetch(API_URL + path, { cache: "no-store" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 async function apiPost(path, body){ try { const r = await fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), cache: "no-store" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
 async function apiDelete(path){ try { const r = await fetch(API_URL + path, { method: "DELETE", cache: "no-store" }); return await r.json(); } catch(e){ return { success: false, error: e.message }; } }
+
+function showProgress(t, s){ document.getElementById("progressText").textContent = t || "Working..."; document.getElementById("progressSub").textContent = s || ""; document.getElementById("progressOverlay").classList.add("show"); }
+function hideProgress(){ document.getElementById("progressOverlay").classList.remove("show"); }
+function debounce(fn, ms){ let timer; return function(){ clearTimeout(timer); timer = setTimeout(() => fn.apply(this, arguments), ms); }; }
 
 // ==================== LOGIN ====================
 async function doLogin(){
@@ -618,20 +526,11 @@ async function doLogin(){
   try {
     const res = await fetch(API_URL + "/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, password }), cache: "no-store" });
     const data = await res.json();
-    if(!data.success){
-      err.textContent = data.error || "Login failed";
-      err.classList.add("show");
-      btn.disabled = false; btn.textContent = "Sign In";
-      return;
-    }
+    if(!data.success){ err.textContent = data.error || "Login failed"; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; return; }
     currentUser = data.user;
     sessionStorage.setItem("sms_user", JSON.stringify(currentUser));
     await showApp();
-  } catch(e){
-    err.textContent = "Server fail: " + e.message;
-    err.classList.add("show");
-    btn.disabled = false; btn.textContent = "Sign In";
-  }
+  } catch(e){ err.textContent = "Server fail: " + e.message; err.classList.add("show"); btn.disabled = false; btn.textContent = "Sign In"; }
 }
 async function showApp(){
   if(!currentUser) return;
@@ -664,7 +563,7 @@ function checkSession(){
 async function loadCloudData(){
   try {
     const result = await apiGet("/data");
-    if(!result || !result.success){ return false; }
+    if(!result || !result.success) return false;
     sites = Array.isArray(result.sites) ? result.sites : [];
     areas = (Array.isArray(result.areas) && result.areas.length > 0) ? result.areas : [...DEFAULT_AREAS];
     bookingHistory = Array.isArray(result.bookingHistory) ? result.bookingHistory : [];
@@ -677,7 +576,7 @@ async function persistNow(){
   try {
     const result = await apiPost("/data", { sites, areas, bookingHistory });
     if(result && result.success){ lastDataHash = JSON.stringify({ sites, areas, bookingHistory }); return true; }
-    if(result && result.error){ alert("⚠️ " + result.error); }
+    if(result && result.error) alert("⚠️ " + result.error);
     return false;
   } catch(e){ return false; }
 }
@@ -686,34 +585,17 @@ async function persistNow(){
 async function loadCompanyLogo(){
   try {
     const result = await apiGet("/logo");
-    if(result && result.success && result.data){ companyLogo = result.data; }
-    else { companyLogo = ""; }
+    if(result && result.success && result.data){ companyLogo = result.data; } else { companyLogo = ""; }
     updateLogoUI();
   } catch(e){ companyLogo = ""; updateLogoUI(); }
 }
-async function saveCompanyLogo(dataUrl){
-  const result = await apiPost("/logo", { data: dataUrl });
-  if(result && result.success){ companyLogo = dataUrl; updateLogoUI(); return true; }
-  return false;
-}
-async function deleteCompanyLogo(){
-  const result = await apiPost("/logo", { data: "" });
-  if(result && result.success){ companyLogo = ""; updateLogoUI(); return true; }
-  return false;
-}
 function updateLogoUI(){
-  const emptyState = document.getElementById("logoEmptyState");
-  const previewState = document.getElementById("logoPreviewState");
+  const empty = document.getElementById("logoEmptyState");
+  const preview = document.getElementById("logoPreviewState");
   const img = document.getElementById("logoPreviewImg");
-  if(!emptyState || !previewState) return;
-  if(companyLogo){
-    emptyState.style.display = "none";
-    previewState.style.display = "block";
-    img.src = companyLogo;
-  } else {
-    emptyState.style.display = "block";
-    previewState.style.display = "none";
-  }
+  if(!empty || !preview) return;
+  if(companyLogo){ empty.style.display = "none"; preview.style.display = "block"; img.src = companyLogo; }
+  else { empty.style.display = "block"; preview.style.display = "none"; }
 }
 
 // ==================== IMAGE ====================
@@ -735,7 +617,7 @@ async function deleteImage(key){
   return await apiDelete("/image/" + encodeURIComponent(key));
 }
 
-// ==================== AUTO REFRESH ====================
+// ==================== AUTO ====================
 function startAutoRefresh(){
   if(autoRefreshTimer) clearInterval(autoRefreshTimer);
   autoRefreshTimer = setInterval(async () => {
@@ -754,8 +636,6 @@ function startAutoRefresh(){
     }
   }, 20000);
 }
-
-// ==================== AUTO RELEASE ====================
 async function autoReleaseExpiredSites(){
   if(isReleasing) return false;
   isReleasing = true;
@@ -768,12 +648,7 @@ async function autoReleaseExpiredSites(){
         if(!toD) return;
         toD.setHours(0,0,0,0);
         if(toD < today && (x.status === "Not Available" || x.status === "Under Maintenance")){
-          bookingHistory.push({
-            site: x.site, siteCode: x.siteCode || "", area: x.area || "Unassigned",
-            customer: x.customer || "", fromDate: x.fromDate || "", toDate: x.toDate || "",
-            days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'),
-            status: x.status, location: x.location || "", rate: x.rate || ""
-          });
+          bookingHistory.push({ site: x.site, siteCode: x.siteCode || "", area: x.area || "Unassigned", customer: x.customer || "", fromDate: x.fromDate || "", toDate: x.toDate || "", days: calcDays(x.fromDate, x.toDate), endedOn: today.toLocaleDateString('en-GB'), status: x.status, location: x.location || "", rate: x.rate || "" });
           x.status = "Available"; x.customer = ""; x.fromDate = ""; x.toDate = "";
           changed = true;
         }
@@ -784,15 +659,13 @@ async function autoReleaseExpiredSites(){
   } finally { isReleasing = false; }
 }
 
-// ==================== POPULATE ====================
+// ==================== AREA DROPDOWNS ====================
 function populateAreaDropdowns(){
-  const formSel = document.getElementById("farea");
-  if(!formSel) return;
-  formSel.innerHTML = '';
-  areas.forEach(a => { formSel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
+  const sel = document.getElementById("farea");
+  if(!sel) return;
+  sel.innerHTML = "";
+  areas.forEach(a => { sel.innerHTML += '<option value="'+esc(a)+'">'+esc(a)+'</option>'; });
 }
-
-// ==================== DATE DROPDOWNS ====================
 const YEARS = [];
 const CUR_YEAR = new Date().getFullYear();
 for(let y = CUR_YEAR - 2; y <= 2050; y++) YEARS.push(y);
@@ -824,9 +697,7 @@ function setDateDropdowns(prefix, val){
   const p = val.split("/");
   d.value = p[0]; m.value = p[1];
   if(!Array.from(y.options).some(o => o.value === p[2])){
-    const opt = document.createElement("option");
-    opt.value = p[2]; opt.textContent = p[2];
-    y.appendChild(opt);
+    const opt = document.createElement("option"); opt.value = p[2]; opt.textContent = p[2]; y.appendChild(opt);
   }
   y.value = p[2];
 }
@@ -834,14 +705,12 @@ function updateCalcPreview(){
   const from = getDateFromDropdowns("ffrom");
   const to = getDateFromDropdowns("fto");
   const days = calcDays(from, to);
-  document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " | <b>To:</b> " + (to||"—") + " | <b>Days:</b> " + days;
-  
-  // ✅ NEW: Show status hint (no status dropdown)
   const status = calcStatusFromDates(from, to);
+  document.getElementById("calcPreview").innerHTML = "<b>From:</b> " + (from||"—") + " | <b>To:</b> " + (to||"—") + " | <b>Days:</b> " + days + " | <b>Status:</b> " + status;
   const hint = document.getElementById("statusHint");
   if(!hint) return;
   if(status === "Not Available"){
-    hint.innerHTML = "🚨 Booking active hoga — <b>Not Available</b> me save hoga";
+    hint.innerHTML = "🚨 Future booking — <b>Not Available</b> me save hoga";
     hint.style.background = "#fef2f2"; hint.style.borderColor = "#fecaca"; hint.style.color = "#991b1b";
   } else {
     hint.innerHTML = "✅ Booking past me hai — <b>Available</b> me save hoga";
@@ -903,16 +772,7 @@ async function saveSite(){
   const fromVal = getDateFromDropdowns("ffrom"), toVal = getDateFromDropdowns("fto");
   const areaVal = document.getElementById("farea").value;
   if(!areaVal){ alert("Area select karein"); return; }
-  
-  // ✅ NEW: Validate future date — Not Available hona chahiye
   const statusVal = calcStatusFromDates(fromVal, toVal);
-  
-  // ✅ If booking is future (Not Available) but user tries to make it Available — force Not Available
-  if(statusVal === "Not Available"){
-    // Auto-set to Not Available, no exception
-    // This is automatic
-  }
-  
   const id = editIndex < 0 ? "id_"+Math.random().toString(36).slice(2,10) : sites[editIndex].id;
   const hadImage = editIndex < 0 ? false : sites[editIndex].hasImage;
   const loc = document.getElementById("flocation");
@@ -931,8 +791,8 @@ async function saveSite(){
   };
   showProgress("Saving...", "");
   try {
-    if(currentImageData){ await saveImage(id, currentImageData); }
-    else if(hadImage){ await deleteImage(id); }
+    if(currentImageData) await saveImage(id, currentImageData);
+    else if(hadImage) await deleteImage(id);
     if(editIndex < 0) sites.push(newSite);
     else sites[editIndex] = newSite;
     await persistNow();
@@ -942,7 +802,7 @@ async function saveSite(){
   render();
 }
 
-// ==================== IMAGE UPLOAD ====================
+// ==================== IMAGE ====================
 function handleImageUpload(e){
   const file = e.target.files[0];
   if(!file) return;
@@ -965,41 +825,24 @@ function compressImageSmart(dataUrl, cb){
   img.onload = () => {
     const MAX_W = 1920, MAX_H = 1920, MAX_B = 1200 * 1024;
     let w = img.width, h = img.height;
-    if(w > MAX_W || h > MAX_H){
-      const r = Math.min(MAX_W / w, MAX_H / h);
-      w = Math.round(w * r); h = Math.round(h * r);
-    }
+    if(w > MAX_W || h > MAX_H){ const r = Math.min(MAX_W / w, MAX_H / h); w = Math.round(w * r); h = Math.round(h * r); }
     const canvas = document.createElement("canvas");
     canvas.width = w; canvas.height = h;
     const ctx = canvas.getContext("2d", { alpha: false });
     ctx.imageSmoothingQuality = "high";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h);
     ctx.drawImage(img, 0, 0, w, h);
     let quality = 0.9;
     let result = canvas.toDataURL("image/jpeg", quality);
     let attempts = 0;
-    while(result.length > MAX_B && quality > 0.6 && attempts < 10){
-      quality -= 0.05;
-      result = canvas.toDataURL("image/jpeg", quality);
-      attempts++;
-    }
+    while(result.length > MAX_B && quality > 0.6 && attempts < 10){ quality -= 0.05; result = canvas.toDataURL("image/jpeg", quality); attempts++; }
     cb(result);
   };
-  img.onerror = () => { cb(dataUrl); };
+  img.onerror = () => cb(dataUrl);
   img.src = dataUrl;
 }
-function showImagePreview(data){
-  document.getElementById("imagePreview").src = data;
-  document.getElementById("imagePreviewWrap").style.display = "block";
-  document.getElementById("imageUploadBox").style.display = "none";
-}
-function removeImage(){
-  currentImageData = "";
-  document.getElementById("imagePreview").src = "";
-  document.getElementById("imagePreviewWrap").style.display = "none";
-  document.getElementById("imageUploadBox").style.display = "block";
-}
+function showImagePreview(data){ document.getElementById("imagePreview").src = data; document.getElementById("imagePreviewWrap").style.display = "block"; document.getElementById("imageUploadBox").style.display = "none"; }
+function removeImage(){ currentImageData = ""; document.getElementById("imagePreview").src = ""; document.getElementById("imagePreviewWrap").style.display = "none"; document.getElementById("imageUploadBox").style.display = "block"; }
 
 // ==================== RENDER ====================
 async function render(){
@@ -1025,7 +868,6 @@ async function render(){
         const sArea = s.area || "Unassigned";
         if(sArea !== areaName) return false;
         if(f.size > 0 && !f.has(s.status)) return false;
-        if(hasDateFilter && !siteMatchesDateFilter(s)) return false;
         const hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + s.status).toLowerCase();
         if(q && !hay.includes(q)) return false;
         return true;
@@ -1040,14 +882,14 @@ async function render(){
       const areaAvail = areaSites.filter(s => s.status === "Available").length;
       const areaNot = areaSites.filter(s => s.status === "Not Available").length;
       const areaMaint = areaSites.filter(s => s.status === "Under Maintenance").length;
-      let headerHTML = '<div class="area-name">' + esc(areaName) + '</div>';
-      headerHTML += '<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">';
-      headerHTML += '<span class="area-count" style="background:#fff;color:#1f2937">' + areaSites.length + '</span>';
-      headerHTML += '<span class="area-count" style="background:#16a34a;color:#fff">' + areaAvail + '</span>';
-      headerHTML += '<span class="area-count" style="background:#dc2626;color:#fff">' + areaNot + '</span>';
-      headerHTML += '<span class="area-count" style="background:#facc15;color:#111827">' + areaMaint + '</span>';
-      headerHTML += '<span>' + (isCollapsed ? '▶' : '▼') + '</span></div>';
-      header.innerHTML = headerHTML;
+      let html = '<div class="area-name">' + esc(areaName) + '</div>';
+      html += '<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">';
+      html += '<span class="area-count" style="background:#fff;color:#1f2937">' + areaSites.length + '</span>';
+      html += '<span class="area-count" style="background:#16a34a;color:#fff">' + areaAvail + '</span>';
+      html += '<span class="area-count" style="background:#dc2626;color:#fff">' + areaNot + '</span>';
+      html += '<span class="area-count" style="background:#facc15;color:#111827">' + areaMaint + '</span>';
+      html += '<span>' + (isCollapsed ? '▶' : '▼') + '</span></div>';
+      header.innerHTML = html;
       header.onclick = () => toggleAreaCollapse(areaName);
       block.appendChild(header);
       const content = document.createElement("div");
@@ -1068,9 +910,7 @@ async function render(){
           else if(x.status === "Under Maintenance") cardCls += " maint-card";
           if(isSel) cardCls += " selected-card";
           let imgHTML = '<div class="site-card-img no-img">📷</div>';
-          if(x.hasImage && !imageFailed.has(x.id)){
-            imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site">';
-          }
+          if(x.hasImage && !imageFailed.has(x.id)){ imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site">'; }
           const canEdit = currentUser && currentUser.role === "Admin";
           const editBtn = canEdit ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' : '';
           const mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
@@ -1079,7 +919,6 @@ async function render(){
           cardsHTML += '<div class="site-card-body"><div class="site-card-name">' + esc(x.site) + (x.siteCode ? ' <span style="background:#1e40af;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;margin-left:6px">' + esc(x.siteCode) + '</span>' : '') + '</div>';
           cardsHTML += '<div class="site-card-meta">';
           if(x.customer) cardsHTML += '<span class="site-card-comp">' + esc(x.customer) + '</span>';
-          // ✅ NEW: /PM instead of /month
           if(x.rate) cardsHTML += '<span class="site-card-rate">' + formatRate(x.rate) + '</span>';
           if(x.status !== "Available" && (x.fromDate || x.toDate)) cardsHTML += '<span class="site-card-dates">' + esc(x.fromDate || "") + ' - ' + esc(x.toDate || "") + (days > 0 ? ' <span class="days-badge">' + days + 'd</span>' : '') + '</span>';
           cardsHTML += '</div></div>';
@@ -1093,31 +932,25 @@ async function render(){
       block.appendChild(content);
       container.appendChild(block);
     }
-    if(totalShown === 0 && isFiltering){
-      container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match</div>';
-    }
-    document.querySelectorAll('.site-card-cb').forEach(cb => {
-      cb.addEventListener('change', function(){ toggleSelect(this.dataset.id); });
-    });
+    if(totalShown === 0 && isFiltering) container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;font-style:italic">No sites match</div>';
+    document.querySelectorAll('.site-card-cb').forEach(cb => { cb.addEventListener('change', function(){ toggleSelect(this.dataset.id); }); });
     loadVisibleImages();
     updateSelectBar();
   } finally { isRendering = false; }
 }
-
 async function loadVisibleImages(){
   const imgs = document.querySelectorAll("img.site-card-img[data-img-id]");
   for(const img of imgs){
     const id = img.dataset.imgId;
     if(!id) continue;
-    if(imageCache[id]){ img.src = imageCache[id]; }
+    if(imageCache[id]) img.src = imageCache[id];
     else {
       const data = await getImage(id);
       if(data) img.src = data;
-      else { img.outerHTML = '<div class="site-card-img no-img">📷</div>'; }
+      else img.outerHTML = '<div class="site-card-img no-img">📷</div>';
     }
   }
 }
-
 function filterByStatus(status){
   if(activeStatuses.has(status)) activeStatuses.delete(status);
   else activeStatuses.add(status);
@@ -1132,7 +965,6 @@ function filterByStatus(status){
   updateMultiStatusLabel();
   render();
 }
-
 function toggleSelect(id){
   if(selectedSites.has(id)) selectedSites.delete(id);
   else selectedSites.add(id);
@@ -1146,48 +978,69 @@ function toggleSelect(id){
     }
   });
 }
-
 function clearSelection(){ selectedSites.clear(); render(); }
-
 function updateSelectBar(){
   const bar = document.getElementById("selectBar");
   document.getElementById("selCount").textContent = selectedSites.size + " selected";
   if(selectedSites.size > 0) bar.classList.add("show");
   else bar.classList.remove("show");
   const delBtn = document.getElementById("deleteBtn");
-  if(delBtn){
-    if(currentUser && currentUser.role === "Admin") delBtn.style.display = "inline-flex";
-    else delBtn.style.display = "none";
-  }
+  if(delBtn){ if(currentUser && currentUser.role === "Admin") delBtn.style.display = "inline-flex"; else delBtn.style.display = "none"; }
 }
-
 function toggleAreaCollapse(areaName){
   if(collapsedAreas.has(areaName)) collapsedAreas.delete(areaName);
   else collapsedAreas.add(areaName);
   render();
 }
 
-// ✅ NEW: Cards based on date filter
+// ✅ CHANGED 3: Cards update with date filter
 function updateCards(){
-  const filterFrom = document.getElementById("dateFilterFrom").value.trim();
-  const filterTo = document.getElementById("dateFilterTo").value.trim();
-  const fromISO = filterFrom ? ddmmyyyyToISO(filterFrom) : "";
-  const toISO = filterTo ? ddmmyyyyToISO(filterTo) : "";
+  const fromInput = document.getElementById("dateFilterFrom").value.trim();
+  const toInput = document.getElementById("dateFilterTo").value.trim();
+  const fromISO = fromInput ? ddmmyyyyToISO(fromInput) : "";
+  const toISO = toInput ? ddmmyyyyToISO(toInput) : "";
+  const hasFilter = !!(fromISO || toISO);
   
   const counts = { Available: 0, "Not Available": 0, "Under Maintenance": 0 };
-  let totalCount = 0;
+  let total = 0;
   
   sites.forEach(s => {
-    // Check if site matches date filter
-    const matchesDate = siteMatchesDateFilter(s);
-    if(!matchesDate) return;
-    
-    totalCount++;
-    const status = getStatusForDateRange(s, fromISO, toISO);
-    counts[status] = (counts[status] || 0) + 1;
+    // If filter active, only count sites whose booking overlaps
+    if(hasFilter){
+      const sFrom = s.fromDate ? ddmmyyyyToISO(s.fromDate) : "";
+      const sTo = s.toDate ? ddmmyyyyToISO(s.toDate) : "";
+      if(!sFrom && !sTo){ counts.Available++; total++; return; }
+      
+      let overlaps = false;
+      if(fromISO && toISO){
+        if(sFrom && sTo){ if(sFrom <= toISO && sTo >= fromISO) overlaps = true; }
+        else if(sFrom) { if(sFrom <= toISO) overlaps = true; }
+        else if(sTo) { if(sTo >= fromISO) overlaps = true; }
+      } else if(fromISO){
+        if(sTo && sTo >= fromISO) overlaps = true;
+        else if(sFrom && sFrom >= fromISO) overlaps = true;
+      } else if(toISO){
+        if(sFrom && sFrom <= toISO) overlaps = true;
+        else if(sTo && sTo <= toISO) overlaps = true;
+      }
+      
+      if(overlaps){
+        // During filter, overlapping = Not Available
+        counts["Not Available"]++;
+        total++;
+      } else {
+        counts.Available++;
+        total++;
+      }
+    } else {
+      // No filter — show actual status
+      const st = s.status || "Available";
+      counts[st] = (counts[st] || 0) + 1;
+      total++;
+    }
   });
   
-  document.getElementById("total").textContent = totalCount;
+  document.getElementById("total").textContent = total;
   document.getElementById("avail").textContent = counts.Available;
   document.getElementById("notavail").textContent = counts["Not Available"];
   document.getElementById("maintenance").textContent = counts["Under Maintenance"];
@@ -1200,7 +1053,6 @@ function updateMultiStatusLabel(){
   else if(activeStatuses.size === 1) label.textContent = "Status: " + [...activeStatuses][0];
   else label.textContent = "Status (" + activeStatuses.size + ")";
 }
-
 function onStatusCheckChange(){
   activeStatuses.clear();
   document.querySelectorAll(".ms-cb:checked").forEach(cb => activeStatuses.add(cb.value));
@@ -1208,7 +1060,7 @@ function onStatusCheckChange(){
   render();
 }
 
-// ==================== DATE INPUT FIX ====================
+// ==================== DATE INPUT BACKSPACE FIX ====================
 function initDateFilterInputs(){
   const dFrom = document.getElementById("dateFilterFrom");
   const dTo = document.getElementById("dateFilterTo");
@@ -1226,12 +1078,12 @@ function initDateFilterInputs(){
       this.value = v;
     });
     inp.addEventListener("keydown", function(e){
-      if(e.key === "Backspace"){ this.dataset.lastLength = this.value.length - 1; }
+      if(e.key === "Backspace") this.dataset.lastLength = this.value.length - 1;
     });
   });
 }
 
-// ==================== BULK UPLOAD ====================
+// ==================== BULK ====================
 function openBulkUpload(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
   document.getElementById("bulkTabSite").classList.add("active");
@@ -1240,8 +1092,7 @@ function openBulkUpload(){
   document.getElementById("bulkContentSite").classList.add("active");
   document.getElementById("bulkContentImage").classList.remove("active");
   document.getElementById("bulkContentLogo").classList.remove("active");
-  csvParsedSites = [];
-  bulkImagesToUpload = [];
+  csvParsedSites = []; bulkImagesToUpload = [];
   document.getElementById("csvText").value = "";
   document.getElementById("csvPreview").style.display = "none";
   document.getElementById("imagePreviewList").style.display = "none";
@@ -1249,11 +1100,7 @@ function openBulkUpload(){
   updateLogoUI();
   document.getElementById("bulkModal").classList.add("show");
 }
-function closeBulkModal(){
-  document.getElementById("bulkModal").classList.remove("show");
-  csvParsedSites = [];
-  bulkImagesToUpload = [];
-}
+function closeBulkModal(){ document.getElementById("bulkModal").classList.remove("show"); csvParsedSites = []; bulkImagesToUpload = []; }
 function parseCSVLine(line){
   const res = []; let cur = ""; let inQ = false;
   for(let i=0; i<line.length; i++){
@@ -1267,9 +1114,9 @@ function parseCSVLine(line){
 }
 function parseCSV(text){
   const lines = text.split(/\r?\n/).filter(l => l.trim());
-  if(lines.length < 2){ return; }
+  if(lines.length < 2) return;
   const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().trim());
-  if(!headers.includes("site")){ return; }
+  if(!headers.includes("site")) return;
   const idx = {};
   headers.forEach((h, i) => idx[h] = i);
   csvParsedSites = [];
@@ -1283,23 +1130,14 @@ function parseCSV(text){
     const fromD = idx.from !== undefined ? (cells[idx.from]||"") : "";
     const toD = idx.to !== undefined ? (cells[idx.to]||"") : "";
     const autoStatus = calcStatusFromDates(fromD, toD);
-    csvParsedSites.push({
-      id: "id_" + Math.random().toString(36).slice(2,10),
-      area: areaVal, site: siteName, siteCode: siteCode,
-      location: idx.location !== undefined ? (cells[idx.location]||"") : "",
-      customer: idx.company !== undefined ? (cells[idx.company]||"") : "",
-      rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "",
-      status: autoStatus, fromDate: fromD, toDate: toD,
-      lat: "", lng: "", hasImage: false
-    });
+    csvParsedSites.push({ id: "id_" + Math.random().toString(36).slice(2,10), area: areaVal, site: siteName, siteCode: siteCode, location: idx.location !== undefined ? (cells[idx.location]||"") : "", customer: idx.company !== undefined ? (cells[idx.company]||"") : "", rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "", status: autoStatus, fromDate: fromD, toDate: toD, lat: "", lng: "", hasImage: false });
   }
   showCSVPreview();
 }
 function showCSVPreview(){
   const preview = document.getElementById("csvPreview");
   if(csvParsedSites.length === 0){ preview.style.display = "none"; return; }
-  let html = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>✅ ' + csvParsedSites.length + ' sites parsed</b></div>';
-  preview.innerHTML = html;
+  preview.innerHTML = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>✅ ' + csvParsedSites.length + ' sites parsed</b></div>';
   preview.style.display = "block";
 }
 async function processBulkSites(){
@@ -1308,10 +1146,8 @@ async function processBulkSites(){
   csvParsedSites.forEach(newSite => {
     if(newSite.area && newSite.area !== "Unassigned" && !areas.includes(newSite.area)) areas.push(newSite.area);
     const existing = sites.findIndex(s => s.site === newSite.site);
-    if(existing >= 0){
-      sites[existing] = { ...sites[existing], ...newSite, id: sites[existing].id, hasImage: sites[existing].hasImage };
-      updated++;
-    } else { sites.push(newSite); added++; }
+    if(existing >= 0){ sites[existing] = { ...sites[existing], ...newSite, id: sites[existing].id, hasImage: sites[existing].hasImage }; updated++; }
+    else { sites.push(newSite); added++; }
   });
   showProgress("Saving...", "");
   await persistNow();
@@ -1331,8 +1167,7 @@ function handleBulkImageSelect(e){
 function showBulkImagePreview(){
   const list = document.getElementById("imagePreviewList");
   if(bulkImagesToUpload.length === 0){ list.style.display = "none"; return; }
-  let html = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>🖼️ ' + bulkImagesToUpload.length + ' images</b></div>';
-  list.innerHTML = html;
+  list.innerHTML = '<div class="bulk-info" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46"><b>🖼️ ' + bulkImagesToUpload.length + ' images</b></div>';
   list.style.display = "block";
 }
 async function processBulkImages(){
@@ -1346,12 +1181,7 @@ async function processBulkImages(){
     if(!matchingSite){ skipped++; continue; }
     showProgress("Uploading...", (i+1) + "/" + bulkImagesToUpload.length);
     try {
-      const dataUrl = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (ev) => resolve(ev.target.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
+      const dataUrl = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = (ev) => resolve(ev.target.result); reader.onerror = reject; reader.readAsDataURL(file); });
       const compressed = await new Promise((resolve) => { compressImageSmart(dataUrl, resolve); });
       await saveImage(matchingSite.id, compressed);
       matchingSite.hasImage = true;
@@ -1365,7 +1195,7 @@ async function processBulkImages(){
   showToast("Bulk Images", "Uploaded: " + uploaded + ", Skipped: " + skipped, "success");
 }
 
-// ==================== LOGO UPLOAD ====================
+// ==================== LOGO ====================
 function handleLogoUpload(e){
   const file = e.target.files[0];
   if(!file) return;
@@ -1375,24 +1205,13 @@ function handleLogoUpload(e){
   const reader = new FileReader();
   reader.onload = async (ev) => {
     try {
-      const compressed = await new Promise((resolve) => {
-        compressLogoSmart(ev.target.result, resolve);
-      });
+      const compressed = await new Promise((resolve) => { compressLogoSmart(ev.target.result, resolve); });
       showProgress("Uploading logo...", "Saving");
       const result = await apiPost("/logo", { data: compressed });
       hideProgress();
-      if(result && result.success){
-        companyLogo = compressed;
-        updateLogoUI();
-        showToast("✅ Logo Saved", "PPT me show hoga", "success");
-      } else {
-        const errMsg = result && result.error ? result.error : "Unknown";
-        alert("❌ Logo save fail: " + errMsg);
-      }
-    } catch(err){
-      hideProgress();
-      alert("❌ Error: " + err.message);
-    }
+      if(result && result.success){ companyLogo = compressed; updateLogoUI(); showToast("✅ Logo Saved", "PPT me show hoga", "success"); }
+      else alert("❌ Logo save fail: " + (result && result.error ? result.error : "Unknown"));
+    } catch(err){ hideProgress(); alert("❌ Error: " + err.message); }
   };
   reader.readAsDataURL(file);
   e.target.value = "";
@@ -1403,10 +1222,7 @@ function compressLogoSmart(dataUrl, cb){
     try {
       const MAX_W = 1000, MAX_H = 500;
       let w = img.width, h = img.height;
-      if(w > MAX_W || h > MAX_H){
-        const r = Math.min(MAX_W / w, MAX_H / h);
-        w = Math.round(w * r); h = Math.round(h * r);
-      }
+      if(w > MAX_W || h > MAX_H){ const r = Math.min(MAX_W / w, MAX_H / h); w = Math.round(w * r); h = Math.round(h * r); }
       const canvas = document.createElement("canvas");
       canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext("2d");
@@ -1418,8 +1234,7 @@ function compressLogoSmart(dataUrl, cb){
         const canvas2 = document.createElement("canvas");
         canvas2.width = w; canvas2.height = h;
         const ctx2 = canvas2.getContext("2d", { alpha: false });
-        ctx2.fillStyle = "#ffffff";
-        ctx2.fillRect(0, 0, w, h);
+        ctx2.fillStyle = "#ffffff"; ctx2.fillRect(0, 0, w, h);
         ctx2.drawImage(img, 0, 0, w, h);
         result = canvas2.toDataURL("image/jpeg", 0.85);
       }
@@ -1431,8 +1246,8 @@ function compressLogoSmart(dataUrl, cb){
 }
 async function handleDeleteLogo(){
   if(!confirm("Logo delete?")) return;
-  const ok = await deleteCompanyLogo();
-  if(ok) showToast("Deleted", "Logo removed", "success");
+  const result = await apiPost("/logo", { data: "" });
+  if(result && result.success){ companyLogo = ""; updateLogoUI(); showToast("Deleted", "Logo removed", "success"); }
 }
 
 // ==================== PPT ====================
@@ -1441,11 +1256,9 @@ function openPPTFormatModal(){
   document.getElementById("pptCount").textContent = selectedSites.size;
   document.getElementById("pptModal").classList.add("show");
 }
-function closePPTModal(){
-  document.getElementById("pptModal").classList.remove("show");
-}
+function closePPTModal(){ document.getElementById("pptModal").classList.remove("show"); }
 
-// ✅ IMPROVED: More black sides visible
+// ✅ CHANGED 2: Bigger sides — image 82% of canvas
 async function createCenterBlackImage(dataUrl, targetW = 2560, targetH = 1440){
   return new Promise((resolve) => {
     const img = new Image();
@@ -1453,39 +1266,24 @@ async function createCenterBlackImage(dataUrl, targetW = 2560, targetH = 1440){
     img.onload = () => {
       try {
         const canvas = document.createElement("canvas");
-        canvas.width = targetW;
-        canvas.height = targetH;
+        canvas.width = targetW; canvas.height = targetH;
         const ctx = canvas.getContext("2d");
-        
-        // Solid black background
         ctx.fillStyle = "#000000";
         ctx.fillRect(0, 0, targetW, targetH);
-        
-        // ✅ Scale image DOWN slightly to show more black sides
-        // Use 88% of available space for image → 12% black visible
         const imgRatio = img.width / img.height;
         const canvasRatio = targetW / targetH;
-        const paddingFactor = 0.88; // Image takes 88% of canvas
-        
+        const pad = 0.82;
         let drawW, drawH, drawX, drawY;
         if(imgRatio > canvasRatio){
-          // Wider image - fit width (with padding)
-          drawW = targetW * paddingFactor;
-          drawH = drawW / imgRatio;
-          drawX = (targetW - drawW) / 2;
-          drawY = (targetH - drawH) / 2;
+          drawW = targetW * pad; drawH = drawW / imgRatio;
+          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
         } else {
-          // Taller image - fit height (with padding)
-          drawH = targetH * paddingFactor;
-          drawW = drawH * imgRatio;
-          drawX = (targetW - drawW) / 2;
-          drawY = (targetH - drawH) / 2;
+          drawH = targetH * pad; drawW = drawH * imgRatio;
+          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
         }
-        
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
         ctx.drawImage(img, drawX, drawY, drawW, drawH);
-        
         resolve(canvas.toDataURL("image/jpeg", 0.95));
       } catch(e){ resolve(null); }
     };
@@ -1494,7 +1292,6 @@ async function createCenterBlackImage(dataUrl, targetW = 2560, targetH = 1440){
   });
 }
 
-// ✅ IMPROVED: More blur sides visible
 async function createCenterBlurImage(dataUrl, targetW = 2560, targetH = 1440){
   return new Promise((resolve) => {
     const img = new Image();
@@ -1502,56 +1299,34 @@ async function createCenterBlurImage(dataUrl, targetW = 2560, targetH = 1440){
     img.onload = () => {
       try {
         const canvas = document.createElement("canvas");
-        canvas.width = targetW;
-        canvas.height = targetH;
+        canvas.width = targetW; canvas.height = targetH;
         const ctx = canvas.getContext("2d");
         const imgRatio = img.width / img.height;
         const canvasRatio = targetW / targetH;
-        
-        // ✅ STEP 1: Blurred background (COVER, fills entire canvas)
         let bgW, bgH, bgX, bgY;
-        if(imgRatio > canvasRatio){
-          bgH = targetH; bgW = img.width * (targetH / img.height); bgX = (targetW - bgW) / 2; bgY = 0;
-        } else {
-          bgW = targetW; bgH = img.height * (targetW / img.width); bgX = 0; bgY = (targetH - bgH) / 2;
-        }
+        if(imgRatio > canvasRatio){ bgH = targetH; bgW = img.width * (targetH / img.height); bgX = (targetW - bgW) / 2; bgY = 0; }
+        else { bgW = targetW; bgH = img.height * (targetW / img.width); bgX = 0; bgY = (targetH - bgH) / 2; }
         const scale = 1.2;
         ctx.filter = "blur(80px)";
         ctx.drawImage(img, bgX - (bgW * (scale - 1) / 2), bgY - (bgH * (scale - 1) / 2), bgW * scale, bgH * scale);
         ctx.filter = "none";
-        
-        // Dark overlay
         ctx.fillStyle = "rgba(0,0,0,0.55)";
         ctx.fillRect(0, 0, targetW, targetH);
-        
-        // ✅ STEP 2: Center image SHARP (with padding so blur shows more)
-        const paddingFactor = 0.88; // Image takes 88% → blur shows on 12% edges
+        const pad = 0.82;
         let drawW, drawH, drawX, drawY;
         if(imgRatio > canvasRatio){
-          drawW = targetW * paddingFactor;
-          drawH = drawW / imgRatio;
-          drawX = (targetW - drawW) / 2;
-          drawY = (targetH - drawH) / 2;
+          drawW = targetW * pad; drawH = drawW / imgRatio;
+          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
         } else {
-          drawH = targetH * paddingFactor;
-          drawW = drawH * imgRatio;
-          drawX = (targetW - drawW) / 2;
-          drawY = (targetH - drawH) / 2;
+          drawH = targetH * pad; drawW = drawH * imgRatio;
+          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
         }
-        
-        // Shadow for depth
         ctx.shadowColor = "rgba(0,0,0,0.85)";
         ctx.shadowBlur = 40;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-        
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
         ctx.drawImage(img, drawX, drawY, drawW, drawH);
-        
-        ctx.shadowColor = "transparent";
-        ctx.shadowBlur = 0;
-        
+        ctx.shadowColor = "transparent"; ctx.shadowBlur = 0;
         resolve(canvas.toDataURL("image/jpeg", 0.95));
       } catch(e){ resolve(null); }
     };
@@ -1563,34 +1338,28 @@ async function createCenterBlurImage(dataUrl, targetW = 2560, targetH = 1440){
 async function generatePPT(){
   if(selectedSites.size === 0){ alert("Pehle sites select karein"); return; }
   if(typeof PptxGenJS === "undefined"){ alert("PPT library load nahi hui"); return; }
-  
   const style = document.querySelector('input[name="pptStyle"]:checked').value;
   const theme = document.querySelector('input[name="pptTheme"]:checked').value;
   const includeImages = document.getElementById("pptIncludeImages").checked;
   const includeCompany = document.getElementById("pptIncludeCompany").checked;
   const includeDates = document.getElementById("pptIncludeDates").checked;
-  
   const THEMES = {
     "dark-navy": { bg: "0F172A", card: "1E293B", accent: "3B82F6", accentDark: "1E40AF", subtitle: "93C5FD", bodyText: "CBD5E1" },
     "royal-blue": { bg: "1E3A8A", card: "1E40AF", accent: "60A5FA", accentDark: "1E3A8A", subtitle: "BFDBFE", bodyText: "E0E7FF" }
   };
   const T = THEMES[theme] || THEMES["dark-navy"];
-  
   const list = sites.filter(s => selectedSites.has(s.id));
   if(list.length === 0){ alert("Koi site nahi"); return; }
-  
   closePPTModal();
   showProgress("Generating PPT...", "Preparing");
-  
   try {
     const pptx = new PptxGenJS();
     pptx.layout = "LAYOUT_WIDE";
     pptx.author = COMPANY_NAME;
     
-    // ========== PROFESSIONAL COVER SLIDE ==========
+    // COVER SLIDE
     let slide = pptx.addSlide();
     slide.background = { color: T.bg };
-    
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.15, fill: { color: T.accent } });
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 7.35, w: 13.33, h: 0.15, fill: { color: T.accent } });
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.15, w: 0.35, h: 7.2, fill: { color: T.accentDark } });
@@ -1599,20 +1368,14 @@ async function generatePPT(){
     
     let currentY = 0.5;
     if(companyLogo){
-      try {
-        slide.addImage({ data: companyLogo, x: 4.92, y: currentY, w: 3.5, h: 1.3, sizing: { type: "contain", w: 3.5, h: 1.3 } });
-        currentY += 1.55;
-      } catch(e){ currentY = 1.2; }
-    } else {
-      currentY = 1.3;
-    }
+      try { slide.addImage({ data: companyLogo, x: 4.92, y: currentY, w: 3.5, h: 1.3, sizing: { type: "contain", w: 3.5, h: 1.3 } }); currentY += 1.55; }
+      catch(e){ currentY = 1.2; }
+    } else currentY = 1.3;
     
     slide.addText("DS OUTDOOR MEDIA", { x: 0.5, y: currentY, w: 12.33, h: 0.35, fontSize: 11, bold: true, color: T.subtitle, align: "center", charSpacing: 4 });
     currentY += 0.5;
-    
     slide.addShape(pptx.ShapeType.rect, { x: 5.92, y: currentY, w: 1.5, h: 0.03, fill: { color: T.accent } });
     currentY += 0.35;
-    
     slide.addText("SITE REPORT", { x: 0.5, y: currentY, w: 12.33, h: 0.9, fontSize: 48, bold: true, color: "FFFFFF", align: "center", charSpacing: 3 });
     currentY += 1.0;
     
@@ -1621,186 +1384,124 @@ async function generatePPT(){
     slide.addText(dateStr, { x: 0.5, y: currentY, w: 12.33, h: 0.35, fontSize: 13, color: T.bodyText, align: "center" });
     currentY += 0.7;
     
-    // AREA NAMES
+    // AREAS
     const areaCounts = {};
-    list.forEach(s => {
-      const areaName = s.area || "Unassigned";
-      areaCounts[areaName] = (areaCounts[areaName] || 0) + 1;
-    });
+    list.forEach(s => { const a = s.area || "Unassigned"; areaCounts[a] = (areaCounts[a] || 0) + 1; });
     const areaNames = Object.keys(areaCounts);
-    
-    slide.addText("AREAS IN THIS REPORT", { 
-      x: 0.5, y: currentY, w: 12.33, h: 0.3, 
-      fontSize: 10, bold: true, color: T.subtitle, 
-      align: "center", charSpacing: 3 
-    });
+    slide.addText("AREAS IN THIS REPORT", { x: 0.5, y: currentY, w: 12.33, h: 0.3, fontSize: 10, bold: true, color: T.subtitle, align: "center", charSpacing: 3 });
     currentY += 0.45;
     
     const areaCardW = Math.min(2.6, (12.33 - (Math.min(areaNames.length, 5) - 1) * 0.2) / Math.min(areaNames.length, 5));
-    const areaCardH = 0.9;
-    const areaGap = 0.2;
-    const maxPerRow = 5;
-    
+    const areaCardH = 0.9, areaGap = 0.2, maxPerRow = 5;
     const rows = [];
-    for(let i = 0; i < areaNames.length; i += maxPerRow){
-      rows.push(areaNames.slice(i, i + maxPerRow));
-    }
-    
+    for(let i = 0; i < areaNames.length; i += maxPerRow) rows.push(areaNames.slice(i, i + maxPerRow));
     rows.forEach((rowAreas, rowIdx) => {
       const rowY = currentY + rowIdx * (areaCardH + areaGap);
       const totalW = rowAreas.length * areaCardW + (rowAreas.length - 1) * areaGap;
       const startX = (13.33 - totalW) / 2;
-      
       rowAreas.forEach((areaName, i) => {
         const cx = startX + (areaCardW + areaGap) * i;
         const count = areaCounts[areaName];
-        
-        slide.addShape(pptx.ShapeType.roundRect, { 
-          x: cx, y: rowY, w: areaCardW, h: areaCardH, 
-          fill: { color: T.card }, 
-          line: { color: T.accent, width: 1.5 }, 
-          rectRadius: 0.1 
-        });
-        
-        slide.addShape(pptx.ShapeType.rect, { 
-          x: cx, y: rowY, w: areaCardW, h: 0.06, 
-          fill: { color: T.accent } 
-        });
-        
-        slide.addText(String(areaName).substring(0, 18), { 
-          x: cx + 0.1, y: rowY + 0.15, 
-          w: areaCardW - 0.2, h: 0.35, 
-          fontSize: 12, bold: true, color: "FFFFFF", 
-          align: "center" 
-        });
-        
-        slide.addText(count + " site" + (count > 1 ? "s" : ""), { 
-          x: cx + 0.1, y: rowY + 0.52, 
-          w: areaCardW - 0.2, h: 0.3, 
-          fontSize: 9, color: T.subtitle, 
-          align: "center" 
-        });
+        slide.addShape(pptx.ShapeType.roundRect, { x: cx, y: rowY, w: areaCardW, h: areaCardH, fill: { color: T.card }, line: { color: T.accent, width: 1.5 }, rectRadius: 0.1 });
+        slide.addShape(pptx.ShapeType.rect, { x: cx, y: rowY, w: areaCardW, h: 0.06, fill: { color: T.accent } });
+        slide.addText(String(areaName).substring(0, 18), { x: cx + 0.1, y: rowY + 0.15, w: areaCardW - 0.2, h: 0.35, fontSize: 12, bold: true, color: "FFFFFF", align: "center" });
+        slide.addText(count + " site" + (count > 1 ? "s" : ""), { x: cx + 0.1, y: rowY + 0.52, w: areaCardW - 0.2, h: 0.3, fontSize: 9, color: T.subtitle, align: "center" });
       });
     });
     
-    // ========== INDIVIDUAL SLIDES ==========
+    // INDIVIDUAL SLIDES
     if(style === "grid"){
       for(let i = 0; i < list.length; i += 4){
-        showProgress("Generating PPT...", "Slide " + (Math.floor(i/4) + 1));
+        showProgress("Generating...", "Slide " + (Math.floor(i/4) + 1));
         slide = pptx.addSlide();
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.5, fill: { color: T.accentDark } });
         slide.addText("Grid — " + (i+1) + " to " + Math.min(i+4, list.length), { x: 0.3, y: 0.05, w: 12.7, h: 0.4, fontSize: 14, bold: true, color: "FFFFFF" });
-        const gridSites = list.slice(i, i+4);
-        const cellW = 6.5, cellH = 3.1;
-        const positions = [{ x: 0.15, y: 0.6 }, { x: 6.85, y: 0.6 }, { x: 0.15, y: 3.8 }, { x: 6.85, y: 3.8 }];
-        for(let j = 0; j < gridSites.length; j++){
-          const x = gridSites[j];
-          const pos = positions[j];
+        const gs = list.slice(i, i+4);
+        const cW = 6.5, cH = 3.1;
+        const pos = [{ x: 0.15, y: 0.6 }, { x: 6.85, y: 0.6 }, { x: 0.15, y: 3.8 }, { x: 6.85, y: 3.8 }];
+        for(let j = 0; j < gs.length; j++){
+          const x = gs[j], p = pos[j];
           let stColor = "059669";
           if(x.status === "Not Available") stColor = "DC2626";
           else if(x.status === "Under Maintenance") stColor = "D97706";
-          slide.addShape(pptx.ShapeType.rect, { x: pos.x, y: pos.y, w: cellW, h: cellH, fill: { color: "F8FAFC" }, line: { color: "CBD5E1", width: 1 } });
+          slide.addShape(pptx.ShapeType.rect, { x: p.x, y: p.y, w: cW, h: cH, fill: { color: "F8FAFC" }, line: { color: "CBD5E1", width: 1 } });
           if(includeImages && x.hasImage){
             const imgData = imageCache[x.id] || await getImage(x.id);
-            if(imgData){
-              try { slide.addImage({ data: imgData, x: pos.x + 0.1, y: pos.y + 0.1, w: cellW - 0.2, h: 1.7, sizing: { type: "cover", w: cellW - 0.2, h: 1.7 } }); } catch(e){}
-            }
+            if(imgData){ try { slide.addImage({ data: imgData, x: p.x + 0.1, y: p.y + 0.1, w: cW - 0.2, h: 1.7, sizing: { type: "cover", w: cW - 0.2, h: 1.7 } }); } catch(e){} }
           }
-          slide.addText(x.site.substring(0, 40), { x: pos.x + 0.1, y: pos.y + 1.85, w: cellW - 0.2, h: 0.3, fontSize: 10, bold: true, color: "0F172A" });
-          slide.addShape(pptx.ShapeType.roundRect, { x: pos.x + 0.1, y: pos.y + 2.15, w: 1.2, h: 0.25, fill: { color: stColor }, rectRadius: 0.1 });
-          slide.addText(x.status.toUpperCase(), { x: pos.x + 0.1, y: pos.y + 2.15, w: 1.2, h: 0.25, fontSize: 7, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-          let infoText = x.area || "";
-          if(includeCompany && x.customer) infoText += " • " + x.customer;
-          if(includeDates && x.fromDate) infoText += "\n" + x.fromDate + " - " + x.toDate;
-          slide.addText(infoText, { x: pos.x + 1.4, y: pos.y + 2.15, w: cellW - 1.5, h: 0.7, fontSize: 8, color: "64748B" });
+          slide.addText(x.site.substring(0, 40), { x: p.x + 0.1, y: p.y + 1.85, w: cW - 0.2, h: 0.3, fontSize: 10, bold: true, color: "0F172A" });
+          slide.addShape(pptx.ShapeType.roundRect, { x: p.x + 0.1, y: p.y + 2.15, w: 1.2, h: 0.25, fill: { color: stColor }, rectRadius: 0.1 });
+          slide.addText(x.status.toUpperCase(), { x: p.x + 0.1, y: p.y + 2.15, w: 1.2, h: 0.25, fontSize: 7, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+          let info = x.area || "";
+          if(includeCompany && x.customer) info += " • " + x.customer;
+          if(includeDates && x.fromDate) info += "\n" + x.fromDate + " - " + x.toDate;
+          slide.addText(info, { x: p.x + 1.4, y: p.y + 2.15, w: cW - 1.5, h: 0.7, fontSize: 8, color: "64748B" });
         }
       }
     } else {
       for(let i = 0; i < list.length; i++){
         const x = list[i];
-        showProgress("Generating PPT...", "Slide " + (i+1) + " / " + list.length);
+        showProgress("Generating...", "Slide " + (i+1) + " / " + list.length);
         const days = calcDays(x.fromDate, x.toDate);
         let stColor = "059669";
         if(x.status === "Not Available") stColor = "DC2626";
         else if(x.status === "Under Maintenance") stColor = "D97706";
-        
         slide = pptx.addSlide();
-        
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.65, fill: { color: T.accentDark } });
         slide.addText(x.site, { x: 0.3, y: 0.1, w: 9, h: 0.45, fontSize: 14, bold: true, color: "FFFFFF" });
         slide.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
         slide.addText(x.status.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-        
         let imgData = null;
         if(includeImages && x.hasImage){ try { imgData = imageCache[x.id] || await getImage(x.id); } catch(e){} }
         
         if(style === "center-black"){
           if(imgData){
-            try {
-              const processed = await createCenterBlackImage(imgData, 2560, 1440);
-              if(processed){ slide.addImage({ data: processed, x: 0, y: 0.65, w: 13.33, h: 5.5 }); }
-            } catch(e){ slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } }); }
+            try { const p = await createCenterBlackImage(imgData, 2560, 1440); if(p) slide.addImage({ data: p, x: 0, y: 0.65, w: 13.33, h: 5.5 }); }
+            catch(e){ slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } }); }
           } else {
             slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
             slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
           }
         } else if(style === "center-blur"){
           if(imgData){
-            try {
-              const processed = await createCenterBlurImage(imgData, 2560, 1440);
-              if(processed){ slide.addImage({ data: processed, x: 0, y: 0.65, w: 13.33, h: 5.5 }); }
-            } catch(e){ slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } }); }
+            try { const p = await createCenterBlurImage(imgData, 2560, 1440); if(p) slide.addImage({ data: p, x: 0, y: 0.65, w: 13.33, h: 5.5 }); }
+            catch(e){ slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } }); }
           } else {
             slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "F1F5F9" } });
             slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
           }
         } else if(style === "split"){
           slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 6.5, h: 5.5, fill: { color: "F1F5F9" } });
-          if(imgData){
-            try { slide.addImage({ data: imgData, x: 0.1, y: 0.75, w: 6.3, h: 5.3, sizing: { type: "contain", w: 6.3, h: 5.3 } }); } catch(e){}
-          } else {
-            slide.addText("📷 No Image", { x: 0.1, y: 3, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
-          }
+          if(imgData){ try { slide.addImage({ data: imgData, x: 0.1, y: 0.75, w: 6.3, h: 5.3, sizing: { type: "contain", w: 6.3, h: 5.3 } }); } catch(e){} }
+          else slide.addText("📷 No Image", { x: 0.1, y: 3, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           let infoY = 0.9;
           slide.addText("Site Details", { x: 6.8, y: infoY, w: 6.3, h: 0.4, fontSize: 16, bold: true, color: T.accentDark });
           infoY += 0.6;
           const rows = [["Site Name", x.site], ["Site Code", x.siteCode || "—"], ["Area", x.area || "—"], ["Location", x.location || "—"]];
           if(includeCompany){
             rows.push(["Company", x.customer || "—"]);
-            // ✅ NEW: /PM in PPT
             rows.push(["Rate", x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—"]);
           }
-          if(includeDates){
-            rows.push(["From", x.fromDate || "—"]);
-            rows.push(["To", x.toDate || "—"]);
-            rows.push(["Duration", days > 0 ? days + " days" : "—"]);
-          }
+          if(includeDates){ rows.push(["From", x.fromDate || "—"]); rows.push(["To", x.toDate || "—"]); rows.push(["Duration", days > 0 ? days + " days" : "—"]); }
           rows.push(["Status", x.status]);
-          rows.forEach(([label, val]) => {
-            slide.addText(label + ":", { x: 6.8, y: infoY, w: 1.8, h: 0.35, fontSize: 10, bold: true, color: "64748B" });
-            slide.addText(String(val).substring(0, 50), { x: 8.6, y: infoY, w: 4.5, h: 0.35, fontSize: 11, color: "0F172A" });
+          rows.forEach(([l, v]) => {
+            slide.addText(l + ":", { x: 6.8, y: infoY, w: 1.8, h: 0.35, fontSize: 10, bold: true, color: "64748B" });
+            slide.addText(String(v).substring(0, 50), { x: 8.6, y: infoY, w: 4.5, h: 0.35, fontSize: 11, color: "0F172A" });
             infoY += 0.42;
           });
         } else if(style === "cover"){
           slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
-          if(imgData){
-            try { slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "cover", w: 13.33, h: 5.5 } }); } catch(e){}
-          } else {
-            slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
-          }
+          if(imgData){ try { slide.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "cover", w: 13.33, h: 5.5 } }); } catch(e){} }
+          else slide.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
         }
         
         slide.addShape(pptx.ShapeType.rect, { x: 0, y: 6.15, w: 13.33, h: 1.25, fill: { color: "F8FAFC" } });
-        const cols = [];
-        cols.push({ label: "AREA", value: x.area || "—" });
+        const cols = [{ label: "AREA", value: x.area || "—" }];
         if(includeCompany){
           cols.push({ label: "COMPANY", value: x.customer || "—" });
-          // ✅ NEW: /PM in PPT footer
           cols.push({ label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—" });
         }
-        if(includeDates){
-          cols.push({ label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—" });
-        }
+        if(includeDates) cols.push({ label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—" });
         const colW = 13.33 / cols.length;
         cols.forEach((f, idx) => {
           const cx = idx * colW;
@@ -1810,6 +1511,7 @@ async function generatePPT(){
       }
     }
     
+    // Thank you
     slide = pptx.addSlide();
     slide.background = { color: T.bg };
     slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.15, fill: { color: T.accent } });
@@ -1821,11 +1523,7 @@ async function generatePPT(){
     await pptx.writeFile({ fileName: fileName });
     hideProgress();
     showToast("PPT Generated", fileName, "success");
-  } catch(e){
-    hideProgress();
-    alert("PPT failed: " + e.message);
-    console.error(e);
-  }
+  } catch(e){ hideProgress(); alert("PPT failed: " + e.message); console.error(e); }
 }
 
 // ==================== HISTORY ====================
@@ -1850,14 +1548,9 @@ function downloadHistoryCSV(){
   if(bookingHistory.length === 0){ alert("No history"); return; }
   const headers = ["Site", "Site Code", "Area", "Company", "From", "To", "Days", "Ended On", "Status"];
   let csv = headers.join(",") + "\n";
-  bookingHistory.forEach(h => {
-    csv += [h.site, h.siteCode || "", h.area || "", h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n";
-  });
+  bookingHistory.forEach(h => { csv += [h.site, h.siteCode || "", h.area || "", h.customer, h.fromDate, h.toDate, h.days, h.endedOn, h.status].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n"; });
   const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "history_" + new Date().toISOString().slice(0,10) + ".csv";
-  a.click();
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "history_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
 }
 
 // ==================== EXPORT ====================
@@ -1865,14 +1558,9 @@ function exportCSV(){
   if(sites.length === 0){ alert("No sites"); return; }
   const headers = ["Area", "Site", "Site Code", "Location", "Company", "Rate", "Status", "From", "To"];
   let csv = headers.join(",") + "\n";
-  sites.forEach(s => {
-    csv += [s.area, s.site, s.siteCode||"", s.location, s.customer, s.rate, s.status, s.fromDate, s.toDate].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n";
-  });
+  sites.forEach(s => { csv += [s.area, s.site, s.siteCode||"", s.location, s.customer, s.rate, s.status, s.fromDate, s.toDate].map(v => '"' + String(v || "").replace(/"/g, '""') + '"').join(",") + "\n"; });
   const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "sites_" + new Date().toISOString().slice(0,10) + ".csv";
-  a.click();
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sites_" + new Date().toISOString().slice(0,10) + ".csv"; a.click();
 }
 
 // ==================== BULK DELETE / STATUS ====================
@@ -1889,7 +1577,6 @@ async function bulkDeleteSelected(){
   render();
   alert("✅ " + toDelete.length + " deleted");
 }
-
 async function openBulkStatusModal(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
   if(selectedSites.size === 0){ alert("Pehle select karein"); return; }
@@ -1900,9 +1587,7 @@ async function openBulkStatusModal(){
   const ids = new Set([...selectedSites].map(String));
   const targets = sites.filter(s => ids.has(String(s.id)));
   targets.forEach(s => { s.status = newStatus; });
-  await persistNow();
-  render();
-  clearSelection();
+  await persistNow(); render(); clearSelection();
   alert("✅ " + targets.length + " updated");
 }
 
@@ -1931,12 +1616,9 @@ async function addNewArea(){
   const name = document.getElementById("newAreaName").value.trim();
   if(!name){ alert("Naam likhein"); return; }
   if(areas.includes(name)){ alert("Exists"); return; }
-  areas.push(name);
-  await persistNow();
+  areas.push(name); await persistNow();
   document.getElementById("newAreaName").value = "";
-  renderAreaList();
-  populateAreaDropdowns();
-  render();
+  renderAreaList(); populateAreaDropdowns(); render();
 }
 async function renameArea(index){
   const oldName = areas[index];
@@ -1946,10 +1628,7 @@ async function renameArea(index){
   const trimmed = newName.trim();
   areas[index] = trimmed;
   sites.forEach(s => { if(s.area === oldName) s.area = trimmed; });
-  await persistNow();
-  renderAreaList();
-  populateAreaDropdowns();
-  render();
+  await persistNow(); renderAreaList(); populateAreaDropdowns(); render();
 }
 async function deleteArea(index){
   const areaName = areas[index];
@@ -1961,26 +1640,18 @@ async function deleteArea(index){
     if(!confirm("Delete '" + areaName + "'?")) return;
   }
   areas.splice(index, 1);
-  await persistNow();
-  renderAreaList();
-  populateAreaDropdowns();
-  render();
+  await persistNow(); renderAreaList(); populateAreaDropdowns(); render();
 }
 
-// ==================== BACKUP / IMPORT ====================
+// ==================== BACKUP ====================
 async function downloadBackup(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
   const backup = { version: "1.0", exportedAt: new Date().toISOString(), sites, areas, bookingHistory };
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "sms_backup_" + new Date().toISOString().slice(0,19).replace(/[:T]/g, "-") + ".json";
-  a.click();
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = "sms_backup_" + new Date().toISOString().slice(0,19).replace(/[:T]/g, "-") + ".json"; a.click();
 }
-function triggerImport(){
-  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; }
-  document.getElementById("importFile").click();
-}
+function triggerImport(){ if(!currentUser || currentUser.role !== "Admin"){ alert("Admin only"); return; } document.getElementById("importFile").click(); }
 function handleImportFile(e){
   const file = e.target.files[0];
   if(!file) return;
@@ -1994,9 +1665,7 @@ function handleImportFile(e){
       areas = backup.areas || [...DEFAULT_AREAS];
       bookingHistory = backup.bookingHistory || [];
       sites.forEach((s, i) => { if(!s.id) s.id = "id_" + Math.random().toString(36).slice(2,10) + "_" + i; });
-      await persistNow();
-      populateAreaDropdowns();
-      render();
+      await persistNow(); populateAreaDropdowns(); render();
       alert("✅ Import done!");
     } catch(err){ alert("Fail: " + err.message); }
   };
@@ -2018,53 +1687,43 @@ function openMap(i){
 window.addEventListener("DOMContentLoaded", () => {
   initDateDropdowns();
   initDateFilterInputs();
-
   document.getElementById("loginBtn").addEventListener("click", doLogin);
   document.getElementById("loginPass").addEventListener("keypress", e => { if(e.key === "Enter") doLogin(); });
   document.getElementById("logoutBtn").addEventListener("click", doLogout);
-
   document.getElementById("refreshBtn").addEventListener("click", async () => {
     imageFailed.clear(); imageCache = {}; selectedSites.clear();
-    await loadCloudData();
-    await loadCompanyLogo();
+    await loadCloudData(); await loadCompanyLogo();
     collapsedAreas = new Set(areas);
+    updateCards();
     render();
     showToast("Refreshed", "Data reloaded", "success");
   });
-  
   document.getElementById("bulkBtn").addEventListener("click", openBulkUpload);
   document.getElementById("backupBtn").addEventListener("click", downloadBackup);
   document.getElementById("importBtn").addEventListener("click", triggerImport);
-
   document.getElementById("cardTotal").addEventListener("click", () => {
     activeStatuses.clear();
     document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = false);
-    updateMultiStatusLabel();
-    render();
+    updateMultiStatusLabel(); render();
   });
   document.getElementById("cardAvailable").addEventListener("click", () => filterByStatus("Available"));
   document.getElementById("cardNotAvailable").addEventListener("click", () => filterByStatus("Not Available"));
   document.getElementById("cardMaintenance").addEventListener("click", () => filterByStatus("Under Maintenance"));
-
   document.getElementById("search").addEventListener("input", debounce(render, 200));
-
   document.getElementById("multiStatusBtn").addEventListener("click", (e) => {
     e.stopPropagation();
     document.getElementById("multiStatusPanel").classList.toggle("show");
   });
   document.addEventListener("click", (e) => {
-    const wrap = document.getElementById("multiStatusWrap");
-    if(wrap && !wrap.contains(e.target)){
-      document.getElementById("multiStatusPanel").classList.remove("show");
-    }
+    const w = document.getElementById("multiStatusWrap");
+    if(w && !w.contains(e.target)) document.getElementById("multiStatusPanel").classList.remove("show");
   });
   document.getElementById("msAll").addEventListener("change", function(){
     document.querySelectorAll(".ms-cb").forEach(cb => cb.checked = this.checked);
     onStatusCheckChange();
   });
   document.querySelectorAll(".ms-cb").forEach(cb => cb.addEventListener("change", onStatusCheckChange));
-
-  // ✅ NEW: Update cards when date filter applied
+  
   document.getElementById("applyFilterBtn").addEventListener("click", () => {
     updateCards();
     render();
@@ -2077,17 +1736,15 @@ window.addEventListener("DOMContentLoaded", () => {
     updateCards();
     render();
   });
-
+  
   document.getElementById("manageAreasBtn").addEventListener("click", openAreaManager);
   document.getElementById("addSiteBtn").addEventListener("click", openAdd);
   document.getElementById("historyBtn").addEventListener("click", openHistoryModal);
   document.getElementById("exportBtn").addEventListener("click", exportCSV);
-
   document.getElementById("pptBtn").addEventListener("click", openPPTFormatModal);
   document.getElementById("bulkStatusBtn").addEventListener("click", openBulkStatusModal);
   document.getElementById("clearSelBtn").addEventListener("click", clearSelection);
   document.getElementById("deleteBtn").addEventListener("click", bulkDeleteSelected);
-
   document.getElementById("cancelModalBtn").addEventListener("click", closeModal);
   document.getElementById("saveSiteBtn").addEventListener("click", saveSite);
   document.getElementById("imageUploadBox").addEventListener("click", () => document.getElementById("fimage").click());
@@ -2107,10 +1764,9 @@ window.addEventListener("DOMContentLoaded", () => {
   ["ffrom_d","ffrom_m","ffrom_y","fto_d","fto_m","fto_y"].forEach(id => {
     document.getElementById(id).addEventListener("change", updateCalcPreview);
   });
-
   document.getElementById("closeHistoryBtn").addEventListener("click", closeHistoryModal);
   document.getElementById("downloadHistoryBtn").addEventListener("click", downloadHistoryCSV);
-
+  
   document.getElementById("bulkTabSite").addEventListener("click", () => {
     document.getElementById("bulkTabSite").classList.add("active");
     document.getElementById("bulkTabImage").classList.remove("active");
@@ -2147,45 +1803,40 @@ window.addEventListener("DOMContentLoaded", () => {
     e.target.value = "";
   });
   document.getElementById("csvText").addEventListener("input", function(){
-    if(this.value.trim().length > 20){ parseCSV(this.value); }
+    if(this.value.trim().length > 20) parseCSV(this.value);
   });
   document.getElementById("processBulkSiteBtn").addEventListener("click", processBulkSites);
   document.getElementById("cancelBulkSiteBtn").addEventListener("click", closeBulkModal);
-  
   document.getElementById("imageDropzone").addEventListener("click", () => document.getElementById("imageFiles").click());
   document.getElementById("imageFiles").addEventListener("change", handleBulkImageSelect);
   document.getElementById("processBulkImageBtn").addEventListener("click", processBulkImages);
   document.getElementById("cancelBulkImageBtn").addEventListener("click", closeBulkModal);
-
   document.getElementById("logoDropzone").addEventListener("click", () => document.getElementById("logoFile").click());
   document.getElementById("logoFile").addEventListener("change", handleLogoUpload);
   document.getElementById("changeLogoBtn").addEventListener("click", () => document.getElementById("logoFile").click());
   document.getElementById("deleteLogoBtn").addEventListener("click", handleDeleteLogo);
   document.getElementById("closeBulkLogoBtn").addEventListener("click", closeBulkModal);
-
-  document.querySelectorAll('input[name="pptStyle"]').forEach(radio => {
-    radio.addEventListener("change", function(){
-      const parent = this.closest("#pptStyleOptions");
-      if(parent) parent.querySelectorAll(".ppt-option").forEach(opt => opt.classList.remove("selected"));
+  
+  document.querySelectorAll('input[name="pptStyle"]').forEach(r => {
+    r.addEventListener("change", function(){
+      const p = this.closest("#pptStyleOptions");
+      if(p) p.querySelectorAll(".ppt-option").forEach(o => o.classList.remove("selected"));
       this.closest(".ppt-option").classList.add("selected");
     });
   });
-  document.querySelectorAll('input[name="pptTheme"]').forEach(radio => {
-    radio.addEventListener("change", function(){
-      document.querySelectorAll('input[name="pptTheme"]').forEach(r => {
-        r.closest(".ppt-option").classList.remove("selected");
-      });
+  document.querySelectorAll('input[name="pptTheme"]').forEach(r => {
+    r.addEventListener("change", function(){
+      document.querySelectorAll('input[name="pptTheme"]').forEach(x => x.closest(".ppt-option").classList.remove("selected"));
       this.closest(".ppt-option").classList.add("selected");
     });
   });
   document.getElementById("generatePptBtn").addEventListener("click", generatePPT);
   document.getElementById("cancelPptBtn").addEventListener("click", closePPTModal);
-
   document.getElementById("closeAreaBtn").addEventListener("click", closeAreaModal);
   document.getElementById("addAreaBtn").addEventListener("click", addNewArea);
-
+  document.getElementById("closeViewerBtn").addEventListener("click", () => document.getElementById("imageViewer").classList.remove("show"));
+  document.getElementById("imageViewer").addEventListener("click", (e) => { if(e.target.id === "imageViewer") document.getElementById("imageViewer").classList.remove("show"); });
   document.getElementById("importFile").addEventListener("change", handleImportFile);
-
   checkSession();
 });
 </script>
