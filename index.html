@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>Site Management v8</title>
+<title>Site Management v9</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
@@ -175,7 +175,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .ppt-section-label{font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .ppt-section-label::before{content:'';width:3px;height:14px;background:linear-gradient(180deg,#7c3aed,#6366f1);border-radius:2px}
 .ppt-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ppt-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .ppt-option{display:flex;align-items:center;gap:10px;padding:12px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all .2s;background:#fff;position:relative;overflow:hidden}
 .ppt-option:hover{border-color:#a78bfa;background:#faf5ff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,.1)}
 .ppt-option.selected{border-color:#7c3aed;background:linear-gradient(135deg,#faf5ff,#f3e8ff);box-shadow:0 4px 16px rgba(124,58,237,.2)}
@@ -229,7 +228,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions button{width:100%}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
   .bulk-tab{font-size:11px;padding:10px 12px;min-width:110px}
-  .ppt-grid-2,.ppt-grid-3{grid-template-columns:1fr}
+  .ppt-grid-2{grid-template-columns:1fr}
   .ppt-header{padding:16px 20px}
   .ppt-header h2{font-size:17px}
   .ppt-body{padding:16px 20px}
@@ -402,16 +401,13 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 </div></div>
 
-<!-- PROFESSIONAL PPT MODAL -->
 <div class="modal" id="pptModal"><div class="ppt-modal-box">
 <div class="ppt-header">
   <h2>📊 Generate PPT Report <span class="ppt-count-badge" id="pptCount">0</span></h2>
   <p>Sites selected — choose layout, theme, and options</p>
 </div>
-
 <div class="ppt-body">
-
-<div class="ppt-section-label">Layout Style (8 Options)</div>
+<div class="ppt-section-label">Layout Style</div>
 <div class="ppt-grid-2" id="pptStyleOptions">
   <label class="ppt-option selected" data-style="split">
     <input type="radio" name="pptStyle" value="split" checked>
@@ -466,7 +462,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <div class="ppt-icon">📊</div>
     <div class="ppt-info">
       <div class="ppt-label">Full Detail</div>
-      <div class="ppt-desc">Image top + all details below</div>
+      <div class="ppt-desc">Image top + details below</div>
     </div>
   </label>
   <label class="ppt-option" data-style="split-detail">
@@ -474,11 +470,10 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <div class="ppt-icon">📑</div>
     <div class="ppt-info">
       <div class="ppt-label">Split Detail</div>
-      <div class="ppt-desc">Image left + full details right</div>
+      <div class="ppt-desc">Image left + details right</div>
     </div>
   </label>
 </div>
-
 <div class="ppt-section-label" style="margin-top:20px">Color Theme</div>
 <div class="ppt-grid-2">
   <label class="theme-card selected" data-theme="dark-navy">
@@ -498,7 +493,6 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     </div>
   </label>
 </div>
-
 <div class="ppt-section-label" style="margin-top:20px">Include in Slides</div>
 <label class="include-row">
   <input type="checkbox" id="pptIncludeImages" checked>
@@ -512,14 +506,11 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <input type="checkbox" id="pptIncludeDates" checked>
   <span>📅 Booking Dates & Duration</span>
 </label>
-
 </div>
-
 <div class="ppt-footer">
   <button class="btn-cancel" id="cancelPptBtn" type="button">Cancel</button>
   <button class="btn-generate" id="generatePptBtn" type="button">✨ Generate PPT</button>
 </div>
-
 </div></div>
 
 <div class="modal" id="areaModal"><div class="box" style="width:min(600px,100%)">
@@ -942,13 +933,11 @@ function handleImageUpload(e){
   reader.readAsDataURL(file);
   e.target.value = "";
 }
-// ✅ HIGHER QUALITY: 2400px max, 0.95 quality, 1500KB limit
 function compressImageSmart(dataUrl, cb){
   var img = new Image();
   img.onload = function(){
     var MAX_W = 2400, MAX_H = 2400, MAX_B = 1500 * 1024;
     var w = img.width, h = img.height;
-    // Don't upscale small images
     if(w > MAX_W || h > MAX_H){
       var r = Math.min(MAX_W / w, MAX_H / h);
       w = Math.round(w * r); h = Math.round(h * r);
@@ -1496,7 +1485,7 @@ function generatePPT(){
   var now = new Date();
   var dateOnly = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
   
-  // ========== COVER SLIDE ==========
+  // ========== COVER SLIDE (✅ AREA CARDS REMOVED) ==========
   var slide = pptx.addSlide();
   slide.background = { color: T.bg };
   slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.15, fill: { color: T.accent } });
@@ -1505,66 +1494,39 @@ function generatePPT(){
   slide.addShape(pptx.ShapeType.ellipse, { x: 10.5, y: -2.0, w: 4.5, h: 4.5, fill: { color: T.accentDark, transparency: 75 } });
   slide.addShape(pptx.ShapeType.ellipse, { x: -1.5, y: 6.0, w: 3, h: 3, fill: { color: T.accent, transparency: 80 } });
   
-  var currentY = 0.5;
+  var currentY = 0.7;
   if(companyLogo){
-    try { slide.addImage({ data: companyLogo, x: 4.92, y: currentY, w: 3.5, h: 1.3, sizing: { type: "contain", w: 3.5, h: 1.3 } }); currentY += 1.55; }
-    catch(e){ currentY = 1.2; }
-  } else currentY = 1.3;
+    try { slide.addImage({ data: companyLogo, x: 4.92, y: currentY, w: 3.5, h: 1.3, sizing: { type: "contain", w: 3.5, h: 1.3 } }); currentY += 1.7; }
+    catch(e){ currentY = 1.5; }
+  } else currentY = 1.5;
   
-  slide.addText("DS OUTDOOR MEDIA", { x: 0.5, y: currentY, w: 12.33, h: 0.35, fontSize: 11, bold: true, color: T.subtitle, align: "center", charSpacing: 4 });
-  currentY += 0.5;
+  slide.addText("DS OUTDOOR MEDIA", { x: 0.5, y: currentY, w: 12.33, h: 0.4, fontSize: 12, bold: true, color: T.subtitle, align: "center", charSpacing: 5 });
+  currentY += 0.6;
   slide.addShape(pptx.ShapeType.rect, { x: 5.92, y: currentY, w: 1.5, h: 0.03, fill: { color: T.accent } });
-  currentY += 0.35;
-  slide.addText("SITE REPORT", { x: 0.5, y: currentY, w: 12.33, h: 0.9, fontSize: 48, bold: true, color: "FFFFFF", align: "center", charSpacing: 3 });
-  currentY += 1.0;
+  currentY += 0.5;
+  slide.addText("SITE REPORT", { x: 0.5, y: currentY, w: 12.33, h: 1.1, fontSize: 56, bold: true, color: "FFFFFF", align: "center", charSpacing: 4 });
+  currentY += 1.3;
+  slide.addText(dateOnly, { x: 0.5, y: currentY, w: 12.33, h: 0.4, fontSize: 15, color: T.bodyText, align: "center" });
   
-  slide.addText(dateOnly, { x: 0.5, y: currentY, w: 12.33, h: 0.35, fontSize: 13, color: T.bodyText, align: "center" });
-  currentY += 0.7;
+  // ✅ BOTTOM INFO BAR (Prepared by | Date | Total Sites | Generated)
+  var bottomY = 6.5;
+  slide.addShape(pptx.ShapeType.rect, { x: 0.5, y: bottomY - 0.15, w: 12.33, h: 0.01, fill: { color: T.accent, transparency: 50 } });
   
-  // AREA CARDS
-  var areaCounts = {};
-  list.forEach(function(s){ var a = s.area || "Unassigned"; areaCounts[a] = (areaCounts[a] || 0) + 1; });
-  var areaNames = Object.keys(areaCounts);
-  slide.addText("AREAS IN THIS REPORT", { x: 0.5, y: currentY, w: 12.33, h: 0.3, fontSize: 10, bold: true, color: T.subtitle, align: "center", charSpacing: 3 });
-  currentY += 0.45;
+  // Item 1: Prepared By
+  slide.addText("PREPARED BY", { x: 0.65, y: bottomY, w: 2.8, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
+  slide.addText(COMPANY_NAME, { x: 0.65, y: bottomY + 0.24, w: 3.2, h: 0.3, fontSize: 12, bold: true, color: "FFFFFF" });
   
-  var areaCardW = Math.min(2.6, (12.33 - (Math.min(areaNames.length, 5) - 1) * 0.2) / Math.min(areaNames.length, 5));
-  var areaCardH = 0.9, areaGap = 0.2, maxPerRow = 5;
-  var rows = [];
-  for(var i = 0; i < areaNames.length; i += maxPerRow) rows.push(areaNames.slice(i, i + maxPerRow));
-  rows.forEach(function(rowAreas, rowIdx){
-    var rowY = currentY + rowIdx * (areaCardH + areaGap);
-    var totalW = rowAreas.length * areaCardW + (rowAreas.length - 1) * areaGap;
-    var startX = (13.33 - totalW) / 2;
-    rowAreas.forEach(function(areaName, i){
-      var cx = startX + (areaCardW + areaGap) * i;
-      var count = areaCounts[areaName];
-      slide.addShape(pptx.ShapeType.roundRect, { x: cx, y: rowY, w: areaCardW, h: areaCardH, fill: { color: T.card }, line: { color: T.accent, width: 1.5 }, rectRadius: 0.1 });
-      slide.addShape(pptx.ShapeType.rect, { x: cx, y: rowY, w: areaCardW, h: 0.06, fill: { color: T.accent } });
-      slide.addText(String(areaName).substring(0, 18), { x: cx + 0.1, y: rowY + 0.15, w: areaCardW - 0.2, h: 0.35, fontSize: 12, bold: true, color: "FFFFFF", align: "center" });
-      slide.addText(count + " site" + (count > 1 ? "s" : ""), { x: cx + 0.1, y: rowY + 0.52, w: areaCardW - 0.2, h: 0.3, fontSize: 9, color: T.subtitle, align: "center" });
-    });
-  });
-  
-  // ✅ BOTTOM INFO: Prepared by + Date + Total Sites + Generated
-  var bottomY = 6.4;
-  slide.addShape(pptx.ShapeType.rect, { x: 0.5, y: bottomY - 0.15, w: 12.33, h: 0.01, fill: { color: T.accent, transparency: 60 } });
-  
-  // Left: Prepared by
-  slide.addText("PREPARED BY", { x: 0.65, y: bottomY, w: 2.5, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
-  slide.addText(COMPANY_NAME, { x: 0.65, y: bottomY + 0.22, w: 3, h: 0.3, fontSize: 11, bold: true, color: "FFFFFF" });
-  
-  // Center-left: Date
+  // Item 2: Date
   slide.addText("DATE", { x: 4.2, y: bottomY, w: 2, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
-  slide.addText(dateOnly, { x: 4.2, y: bottomY + 0.22, w: 2.5, h: 0.3, fontSize: 11, bold: true, color: "FFFFFF" });
+  slide.addText(dateOnly, { x: 4.2, y: bottomY + 0.24, w: 2.8, h: 0.3, fontSize: 12, bold: true, color: "FFFFFF" });
   
-  // Center-right: Total Sites
-  slide.addText("TOTAL SITES", { x: 7.0, y: bottomY, w: 2, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
-  slide.addText(String(list.length), { x: 7.0, y: bottomY + 0.22, w: 2, h: 0.3, fontSize: 11, bold: true, color: T.accent });
+  // Item 3: Total Sites
+  slide.addText("TOTAL SITES", { x: 7.3, y: bottomY, w: 2, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
+  slide.addText(String(list.length), { x: 7.3, y: bottomY + 0.24, w: 1.5, h: 0.3, fontSize: 14, bold: true, color: T.accent });
   
-  // Right: Generated
-  slide.addText("GENERATED", { x: 9.7, y: bottomY, w: 3, h: 0.25, fontSize: 8, bold: true, color: "64748B", align: "right", charSpacing: 2 });
-  slide.addText(dateOnly, { x: 8.7, y: bottomY + 0.22, w: 4, h: 0.3, fontSize: 11, bold: true, color: "FFFFFF", align: "right" });
+  // Item 4: Generated
+  slide.addText("GENERATED", { x: 9.9, y: bottomY, w: 3, h: 0.25, fontSize: 8, bold: true, color: "64748B", align: "right", charSpacing: 2 });
+  slide.addText(dateOnly, { x: 8.9, y: bottomY + 0.24, w: 4, h: 0.3, fontSize: 12, bold: true, color: "FFFFFF", align: "right" });
   
   // ========== INDIVIDUAL SLIDES ==========
   var chain = Promise.resolve();
@@ -1589,35 +1551,41 @@ function generatePPT(){
       var imgPromise = (includeImages && x.hasImage) ? (imageCache[x.id] ? Promise.resolve(imageCache[x.id]) : getImage(x.id)) : Promise.resolve(null);
       
       return imgPromise.then(function(imgData){
-        // ========== LAYOUT: full-detail (NEW) ==========
+        // ========== FULL DETAIL (✅ ALL DETAILS BELOW IMAGE) ==========
         if(style === "full-detail"){
-          // Image top 60% (4.0 inch)
-          var imgH = 4.0;
+          var imgH = 3.9;
           if(imgData){
-            return createFitBlackImage(imgData, 2560, 1100).then(function(p){
+            return createFitBlackImage(imgData, 2560, 1080).then(function(p){
               if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: imgH });
             });
           } else {
             s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: imgH, fill: { color: "1E293B" } });
             s.addText("📷 No Image Available", { x: 0, y: 2.2, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           }
-          // Details section 40%
           return new Promise(function(resolve){
             var detY = 0.55 + imgH;
             var detH = 7.5 - detY;
             s.addShape(pptx.ShapeType.rect, { x: 0, y: detY, w: 13.33, h: detH, fill: { color: "F8FAFC" } });
             
             // Row 1: Site Name (big)
-            s.addText(x.site, { x: 0.3, y: detY + 0.1, w: 12.7, h: 0.35, fontSize: 15, bold: true, color: "0F172A" });
+            s.addText(x.site, { x: 0.3, y: detY + 0.08, w: 9.5, h: 0.35, fontSize: 14, bold: true, color: "0F172A" });
+            // Site Code badge on right
+            if(x.siteCode){
+              s.addShape(pptx.ShapeType.roundRect, { x: 11.8, y: detY + 0.08, w: 1.3, h: 0.32, fill: { color: T.accentDark }, rectRadius: 0.06 });
+              s.addText(x.siteCode, { x: 11.8, y: detY + 0.08, w: 1.3, h: 0.32, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+            }
             
-            // Row 2: 4 columns of details
+            // Row 2: 4 columns
             var detailRowY = detY + 0.55;
             var colW = 13.33 / 4;
             
             // Column 1: AREA + Location
             s.addText("AREA", { x: 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
             s.addText(x.area || "—", { x: 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark });
-            if(x.location) s.addText(x.location.substring(0, 40), { x: 0.3, y: detailRowY + 0.55, w: colW - 0.4, h: 0.35, fontSize: 9, color: "64748B" });
+            if(x.location){
+              s.addText("📍 LOCATION", { x: 0.3, y: detailRowY + 0.62, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+              s.addText(x.location.substring(0, 45), { x: 0.3, y: detailRowY + 0.84, w: colW - 0.4, h: 0.5, fontSize: 9, color: "475569" });
+            }
             
             // Column 2: COMPANY
             s.addText("COMPANY", { x: colW + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
@@ -1632,20 +1600,11 @@ function generatePPT(){
             var durText = (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—";
             s.addText(durText, { x: colW * 3 + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 10, bold: true, color: "6D28D9" });
             
-            // Row 3: Site Code + Status badge info
-            var row3Y = detailRowY + 1.05;
-            if(x.siteCode){
-              s.addShape(pptx.ShapeType.roundRect, { x: 0.3, y: row3Y, w: 1.3, h: 0.3, fill: { color: T.accentDark }, rectRadius: 0.08 });
-              s.addText(x.siteCode, { x: 0.3, y: row3Y, w: 1.3, h: 0.3, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-            }
-            s.addText("📍 " + (x.location || "No location").substring(0, 60), { x: 1.8, y: row3Y, w: 11.2, h: 0.3, fontSize: 9, color: "475569" });
-            
             resolve();
           });
         }
-        // ========== LAYOUT: split-detail (NEW) ==========
+        // ========== SPLIT DETAIL (✅ CLICKABLE LOCATION) ==========
         else if(style === "split-detail"){
-          // Left 55% image, right 45% full details
           var leftW = 7.3;
           var rightX = 7.3;
           var rightW = 13.33 - leftW;
@@ -1658,12 +1617,11 @@ function generatePPT(){
           } else {
             s.addText("📷 No Image", { x: 0, y: 3.5, w: leftW, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           }
-          // Right details panel
           return new Promise(function(resolve){
             s.addShape(pptx.ShapeType.rect, { x: rightX, y: 0.55, w: rightW, h: 6.95, fill: { color: "F8FAFC" } });
             s.addShape(pptx.ShapeType.rect, { x: rightX, y: 0.55, w: rightW, h: 0.05, fill: { color: T.accent } });
             
-            var ry = 0.75;
+            var ry = 0.7;
             s.addText("SITE DETAILS", { x: rightX + 0.2, y: ry, w: rightW - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark, charSpacing: 2 });
             ry += 0.5;
             
@@ -1683,37 +1641,37 @@ function generatePPT(){
               if(ry > 7.0) return;
               s.addText(d.icon + " " + d.label, { x: rightX + 0.2, y: ry, w: rightW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1 });
               s.addText(String(d.value), { x: rightX + 0.2, y: ry + 0.22, w: rightW - 0.4, h: 0.35, fontSize: 11, bold: true, color: "0F172A" });
-              ry += 0.65;
+              ry += 0.62;
             });
             
             resolve();
           });
         }
-        // ========== EXISTING LAYOUTS ==========
+        // ========== EXISTING LAYOUTS (✅ LOCATION CLICKABLE + ALL DETAILS IN FOOTER) ==========
         else if(style === "center-black" || style === "fit-black"){
           var fn = style === "center-black" ? createCenterBlackImage : createFitBlackImage;
           if(imgData){
             return fn(imgData, 2560, 1440).then(function(p){
-              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: 5.95 });
+              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: 4.7 });
             });
           } else {
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: 5.95, fill: { color: "000000" } });
-            s.addText("📷 No Image Available", { x: 0, y: 3.2, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: 4.7, fill: { color: "000000" } });
+            s.addText("📷 No Image Available", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
           }
         } else if(style === "center-blur" || style === "fit-blur"){
           var fn2 = style === "center-blur" ? createCenterBlurImage : createFitBlurImage;
           if(imgData){
             return fn2(imgData, 2560, 1440).then(function(p){
-              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: 5.95 });
+              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: 4.7 });
             });
           } else {
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: 5.95, fill: { color: "1E293B" } });
-            s.addText("📷 No Image Available", { x: 0, y: 3.2, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: 4.7, fill: { color: "1E293B" } });
+            s.addText("📷 No Image Available", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
           }
         } else if(style === "split"){
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 6.5, h: 5.95, fill: { color: "F1F5F9" } });
-          if(imgData){ try { s.addImage({ data: imgData, x: 0.1, y: 0.65, w: 6.3, h: 5.75, sizing: { type: "contain", w: 6.3, h: 5.75 } }); } catch(e){} }
-          else s.addText("📷 No Image", { x: 0.1, y: 3.5, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 6.5, h: 6.95, fill: { color: "F1F5F9" } });
+          if(imgData){ try { s.addImage({ data: imgData, x: 0.1, y: 0.65, w: 6.3, h: 6.75, sizing: { type: "contain", w: 6.3, h: 6.75 } }); } catch(e){} }
+          else s.addText("📷 No Image", { x: 0.1, y: 3.8, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           var infoY = 0.8;
           s.addText("Site Details", { x: 6.8, y: infoY, w: 6.3, h: 0.4, fontSize: 16, bold: true, color: T.accentDark });
           infoY += 0.6;
@@ -1726,35 +1684,63 @@ function generatePPT(){
           rows2.push(["Status", x.status]);
           rows2.forEach(function(row){
             s.addText(row[0] + ":", { x: 6.8, y: infoY, w: 1.8, h: 0.35, fontSize: 10, bold: true, color: "64748B" });
-            s.addText(String(row[1]).substring(0, 50), { x: 8.6, y: infoY, w: 4.5, h: 0.35, fontSize: 11, color: "0F172A" });
+            var isLocation = (row[0] === "Location" && x.location);
+            s.addText(String(row[1]).substring(0, 50), { 
+              x: 8.6, y: infoY, w: 4.5, h: 0.35, fontSize: 11, 
+              color: isLocation ? "0891B2" : "0F172A",
+              underline: isLocation ? true : false,
+              hyperlink: isLocation ? { url: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location) } : undefined
+            });
             infoY += 0.42;
           });
         } else if(style === "cover"){
-          if(imgData){ try { s.addImage({ data: imgData, x: 0, y: 0.55, w: 13.33, h: 5.95, sizing: { type: "cover", w: 13.33, h: 5.95 } }); } catch(e){} }
-          else s.addText("📷 No Image", { x: 0, y: 3.2, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+          if(imgData){ try { s.addImage({ data: imgData, x: 0, y: 0.55, w: 13.33, h: 4.7, sizing: { type: "cover", w: 13.33, h: 4.7 } }); } catch(e){} }
+          else s.addText("📷 No Image", { x: 0, y: 2.7, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
         }
         
-        // Footer for non-detail styles
+        // ✅ FOOTER with all details + CLICKABLE LOCATION (for non-detail styles)
         if(style !== "full-detail" && style !== "split-detail"){
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: 6.5, w: 13.33, h: 1.0, fill: { color: "F8FAFC" } });
-          var cols = [{ label: "AREA", value: x.area || "—" }];
-          if(includeCompany){
-            cols.push({ label: "COMPANY", value: x.customer || "—" });
-            cols.push({ label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—" });
-          }
-          if(includeDates) cols.push({ label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—" });
-          var colW = 13.33 / cols.length;
+          var footerY = 5.4;
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: footerY, w: 13.33, h: 2.1, fill: { color: "F8FAFC" } });
+          
+          // Row 1: Area | Company | Rate | Duration
+          var cols = [
+            { label: "AREA", value: x.area || "—" },
+            { label: "COMPANY", value: x.customer || "—" },
+            { label: "RATE", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—" },
+            { label: "DURATION", value: (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—" }
+          ];
+          var colW = 13.33 / 4;
           cols.forEach(function(f, idx){
             var cx = idx * colW;
-            s.addText(f.label, { x: cx+0.1, y: 6.58, w: colW-0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
-            s.addText(String(f.value).substring(0, 30), { x: cx+0.1, y: 6.83, w: colW-0.2, h: 0.4, fontSize: 11, bold: true, color: T.accentDark });
+            s.addText(f.label, { x: cx+0.15, y: footerY + 0.12, w: colW-0.3, h: 0.22, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+            s.addText(String(f.value).substring(0, 30), { x: cx+0.15, y: footerY + 0.36, w: colW-0.3, h: 0.35, fontSize: 11, bold: true, color: T.accentDark });
           });
+          
+          // Row 2: Location (clickable)
+          if(x.location){
+            s.addText("📍 LOCATION", { x: 0.15, y: footerY + 0.9, w: 3, h: 0.22, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+            var mapUrl = (x.lat && x.lng) 
+              ? "https://www.google.com/maps?q=" + x.lat + "," + x.lng 
+              : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location);
+            s.addText(x.location.substring(0, 100), { 
+              x: 0.15, y: footerY + 1.15, w: 12.5, h: 0.35, fontSize: 11, 
+              color: "0891B2", underline: true, 
+              hyperlink: { url: mapUrl }
+            });
+            s.addText("🗺️ Click to open in Maps", { x: 0.15, y: footerY + 1.55, w: 5, h: 0.25, fontSize: 8, italic: true, color: "94A3B8" });
+          }
+          
+          // Row 3: Site Code badge (if exists)
+          if(x.siteCode){
+            s.addShape(pptx.ShapeType.roundRect, { x: 11.5, y: footerY + 0.9, w: 1.6, h: 0.35, fill: { color: T.accentDark }, rectRadius: 0.06 });
+            s.addText(x.siteCode, { x: 11.5, y: footerY + 0.9, w: 1.6, h: 0.35, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+          }
         }
       });
     });
   });
   
-  // Thank you slide
   chain.then(function(){
     var s2 = pptx.addSlide();
     s2.background = { color: T.bg };
