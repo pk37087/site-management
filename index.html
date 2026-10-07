@@ -1,491 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
-<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>Site Management System</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#f8fafc;color:#0f172a;font-size:14px;line-height:1.5;overflow-x:hidden}
-.hidden{display:none!important}
-button{touch-action:manipulation;font-family:inherit;cursor:pointer}
-input,select,textarea{font-size:16px!important;font-family:inherit}
-.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a8a,#1d4ed8);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
-.login-box{background:#fff;border-radius:20px;padding:32px 24px;width:min(420px,100%);box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.login-box h1{font-size:22px;font-weight:700;text-align:center;margin-bottom:8px}
-.login-box .subtitle{text-align:center;color:#64748b;font-size:13px;margin-bottom:24px}
-.login-box label{display:block;font-size:12px;font-weight:600;color:#475569;margin-bottom:6px;margin-top:16px}
-.login-box input{width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:10px;outline:none}
-.login-box button{width:100%;padding:15px;background:#1d4ed8;color:#fff;border:0;border-radius:10px;font-size:15px;font-weight:600;margin-top:24px;min-height:48px}
-.login-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:12px;border-radius:8px;font-size:13px;margin-top:16px;display:none}
-.login-error.show{display:block}
-header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:fixed;top:0;left:0;right:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-.header-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.header-left h1{font-size:17px;font-weight:700}
-.header-user{background:rgba(255,255,255,.18);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.2)}
-.header-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.header-actions button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:8px;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;min-height:36px}
-.btn-yellow{background:#f59e0b;color:#fff}
-.btn-gray{background:#6b7280;color:#fff}
-.btn-red{background:#dc2626;color:#fff}
-.btn-light{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25)}
-.btn-refresh{background:#0ea5e9;color:#fff}
-#app{padding-top:70px}
-.container{max-width:1600px;margin:20px auto;padding:0 20px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;position:relative;overflow:hidden;cursor:pointer;min-height:100px;display:flex;flex-direction:column;justify-content:center;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.08);border-color:#cbd5e1}
-.card:active{transform:translateY(0)}
-.card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#94a3b8}
-.card .card-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px}
-.card b{font-size:34px;font-weight:800;color:#0f172a;line-height:1;display:block}
-.card.available::before{background:linear-gradient(180deg,#10b981,#059669)}
-.card.available b{color:#047857}
-.card.notavailable::before{background:linear-gradient(180deg,#ef4444,#dc2626)}
-.card.notavailable b{color:#b91c1c}
-.card.maintenance::before{background:linear-gradient(180deg,#f59e0b,#d97706)}
-.card.maintenance b{color:#b45309}
-.card.total::before{background:linear-gradient(180deg,#3b82f6,#1d4ed8)}
-.card.total b{color:#1e40af}
-.card.card-active{box-shadow:0 0 0 3px rgba(59,130,246,0.3),0 8px 20px rgba(15,23,42,0.1);border-color:#3b82f6}
-.toolbar{background:#fff;padding:10px;border-radius:10px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border:1px solid #e2e8f0;align-items:center}
-.toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;outline:none;min-width:160px;flex:1;font-size:13px!important;height:36px}
-.toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;gap:5px;min-height:36px;height:36px}
-.filter-box{display:flex;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;height:36px}
-.filter-box .date-group{display:flex;align-items:center;background:#fff;border-right:1px solid #cbd5e1;height:100%}
-.filter-box .date-input{padding:0 8px;border:0;font-size:12px!important;width:110px;background:#fff;outline:none;height:100%}
-.filter-box .date-sep{padding:0 4px;font-size:11px;color:#94a3b8;background:#fff;font-weight:700}
-.filter-box .apply-btn{padding:0 12px;border:0;background:#3b82f6;color:#fff;font-weight:700;font-size:11px;height:100%;cursor:pointer}
-.filter-box .apply-btn:hover{background:#2563eb}
-.filter-box .clear-btn{padding:0 10px;border:0;background:#fff;color:#dc2626;font-weight:700;font-size:14px;height:100%;border-left:1px solid #cbd5e1;display:none;cursor:pointer}
-.select-bar{background:#fffbeb;border:1px solid #fcd34d;padding:8px 10px;border-radius:8px;margin-bottom:12px;display:none;gap:6px;flex-wrap:wrap;align-items:stretch}
-.select-bar.show{display:flex}
-.select-bar .count-badge{background:#f59e0b;color:#fff;padding:0 12px;border-radius:5px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;min-height:36px;min-width:90px}
-.select-bar button{padding:0 12px;font-size:12px;border-radius:5px;font-weight:600;border:0;color:#fff;min-height:36px;display:inline-flex;align-items:center;gap:5px}
-.select-bar .ppt-sel{background:#7c3aed}
-.select-bar .bulk-status-sel{background:#0ea5e9}
-.select-bar .clear-sel{background:#fff;color:#334155;border:1px solid #cbd5e1}
-.select-bar .delete-sel{background:#dc2626}
-#areaContainer{display:grid;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:12px;align-items:start}
-.area-block{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;height:fit-content}
-.area-header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:8px}
-.area-header .area-name{font-size:13px;font-weight:700}
-.area-header .area-count{background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
-.area-block.collapsed .area-content{display:none}
-.empty-area{padding:18px;text-align:center;color:#94a3b8;font-size:12px}
-.site-cards-grid{display:grid;grid-template-columns:1fr;gap:4px;padding:6px}
-.site-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px;display:flex;align-items:flex-start;gap:12px}
-.site-card.not-card{background:#fef2f2;border-color:#fecaca}
-.site-card.maint-card{background:#fffbeb;border-color:#fcd34d}
-.site-card.selected-card{background:#fef3c7;border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.2)}
-.site-card-top{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.site-card-cb{width:18px;height:18px;cursor:pointer;accent-color:#3b82f6}
-.site-card-num{font-size:10px;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:2px 6px;border-radius:3px;min-width:28px;text-align:center}
-.site-card-img{width:80px;height:80px;border-radius:8px;object-fit:cover;border:1px solid #e2e8f0;cursor:pointer;flex-shrink:0}
-.site-card-img.no-img{display:flex;align-items:center;justify-content:center;font-size:26px;color:#94a3b8;background:#f8fafc;border:2px dashed #cbd5e1;cursor:pointer}
-.site-card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
-.site-card-name{font-size:14px;font-weight:700;color:#0f172a;line-height:1.4;word-break:break-word}
-.site-card-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:#64748b}
-.site-card-comp{color:#334155;font-weight:500}
-.site-card-rate{color:#059669;font-weight:700;background:#ecfdf5;padding:2px 8px;border-radius:4px;border:1px solid #a7f3d0}
-.site-card-size{color:#7c3aed;font-weight:700;background:#f3e8ff;padding:2px 8px;border-radius:4px;border:1px solid #c4b5fd}
-.site-card-dates{color:#64748b}
-.days-badge{background:#eef2ff;color:#4338ca;font-weight:600;padding:1px 5px;border-radius:3px;font-size:9px;border:1px solid #c7d2fe}
-.site-card-status{flex-shrink:0}
-.status{font-weight:600;padding:4px 10px;border-radius:20px;font-size:9px;text-transform:uppercase}
-.s-available{background:#d1fae5;color:#065f46}
-.s-not{background:#fee2e2;color:#991b1b}
-.s-maintenance{background:#fef3c7;color:#92400e}
-.site-card-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
-.site-card-actions button{padding:6px 12px;font-size:11px;border-radius:5px;font-weight:600;background:#f1f5f9;color:#334155;border:0;min-height:32px}
-.site-card-actions button.map-btn{background:#cffafe;color:#0e7490}
-.modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;z-index:2000;overflow-y:auto}
-.modal.show{display:flex}
-.box{background:#fff;border-radius:16px;padding:24px;width:min(700px,100%);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,.3);margin:auto}
-.box h2{margin:0 0 18px 0;font-size:19px;font-weight:700}
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.formgrid label{font-size:12px;color:#475569;font-weight:600}
-.formgrid input,.formgrid select{width:100%;margin-top:6px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;outline:none}
-.full-width{grid-column:1/-1}
-.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px;padding-top:18px;border-top:1px solid #f1f5f9;flex-wrap:wrap}
-.modal-actions button{padding:11px 18px;font-size:13px;font-weight:600;border-radius:8px;border:0;min-height:44px}
-.modal-actions button.secondary{background:#fff;color:#334155;border:1px solid #e2e8f0}
-.modal-actions button:not(.secondary){background:#3b82f6;color:#fff}
-.gps-box{background:#fef2f2;border:1.5px dashed #fca5a5;border-radius:10px;padding:10px;margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.gps-box .gps-status{font-size:12px;color:#991b1b;font-weight:600;flex:1;min-width:140px}
-.gps-box .gps-status.ok{color:#065f46}
-.gps-box .gps-btn{background:#dc2626;color:#fff;padding:9px 14px;border-radius:6px;font-size:12px;font-weight:600;border:0}
-.image-upload-box{background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px;padding:16px;margin-top:10px;text-align:center;cursor:pointer}
-.image-upload-box .iu-icon{font-size:28px;margin-bottom:6px}
-.image-upload-box .iu-title{font-size:13px;font-weight:600;color:#334155}
-.image-upload-box .iu-sub{font-size:11px;color:#94a3b8}
-.image-preview-wrap{position:relative;display:inline-block;margin-top:12px}
-.image-preview-wrap img{max-width:400px;max-height:400px;border-radius:10px;border:2px solid #e2e8f0;display:block}
-.image-preview-wrap .remove-img{position:absolute;top:-8px;right:-8px;background:#dc2626;color:#fff;width:32px;height:32px;border-radius:50%;border:2px solid #fff;font-size:16px;font-weight:700}
-.date-row{display:flex;gap:6px}
-.date-row select{flex:1;padding:11px 6px}
-.calc-preview{background:#f0f9ff;border:1px solid #bae6fd;padding:12px;border-radius:8px;margin-top:12px;font-size:12px;color:#0c4a6e}
-.history-item{background:#f8fafc;border-left:3px solid #7c3aed;padding:12px;margin-bottom:10px;border-radius:8px;font-size:13px;border:1px solid #e2e8f0}
-.empty-history{text-align:center;color:#94a3b8;padding:40px;font-style:italic}
-.image-viewer{display:none;position:fixed;inset:0;background:rgba(15,23,42,.95);z-index:3000;align-items:center;justify-content:center;padding:16px;cursor:zoom-out}
-.image-viewer.show{display:flex}
-.image-viewer img{max-width:100%;max-height:95vh;border-radius:12px}
-.image-viewer .close-viewer{position:absolute;top:16px;right:16px;background:#fff;color:#0f172a;width:44px;height:44px;border-radius:50%;border:0;font-size:20px;font-weight:700}
-.progress-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:4000;align-items:center;justify-content:center;flex-direction:column;gap:20px;color:#fff;padding:20px;text-align:center}
-.progress-overlay.show{display:flex}
-.progress-overlay .spinner{width:56px;height:56px;border:4px solid rgba(255,255,255,.2);border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.area-list-item{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px;background:#f8fafc;flex-wrap:wrap}
-.area-list-item .name{flex:1;font-weight:600;color:#0f172a;min-width:120px}
-.toast{position:fixed;top:80px;right:20px;background:#0f172a;color:#fff;padding:14px 18px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:5000;display:flex;gap:10px;align-items:flex-start;max-width:380px;transform:translateX(450px);transition:transform .3s;font-size:13px}
-.toast.show{transform:translateX(0)}
-.toast.success{border-left:4px solid #10b981}
-.toast.info{border-left:4px solid #3b82f6}
-.toast.warning{border-left:4px solid #f59e0b}
-.toast.danger{border-left:4px solid #dc2626}
-.toast .toast-icon{font-size:20px;flex-shrink:0}
-.toast .toast-body{flex:1;min-width:0}
-.toast .toast-title{font-weight:700;margin-bottom:2px;font-size:13px}
-.toast .toast-msg{font-size:12px;opacity:.85;word-break:break-word}
-.toast .toast-close{background:transparent;border:0;color:#fff;font-size:16px;opacity:.6;padding:0}
-.bulk-tab-bar{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #e2e8f0;overflow-x:auto}
-.bulk-tab{flex:1;padding:12px 16px;font-size:13px;font-weight:600;background:transparent;border:0;border-bottom:3px solid transparent;color:#64748b;min-width:140px;margin-bottom:-2px}
-.bulk-tab.active{color:#3b82f6;border-bottom-color:#3b82f6}
-.bulk-tab-content{display:none}
-.bulk-tab-content.active{display:block}
-.bulk-info{background:#fffbeb;border:1px solid #fcd34d;padding:12px;border-radius:8px;margin-bottom:12px;font-size:12px;color:#92400e;line-height:1.6}
-.bulk-info code{background:#fff;padding:2px 6px;border-radius:4px;font-family:monospace;color:#1e40af;font-size:11px}
-.upload-dropzone{border:2px dashed #cbd5e1;border-radius:12px;padding:24px 16px;text-align:center;background:#f8fafc;cursor:pointer;margin-bottom:12px;transition:all .2s}
-.upload-dropzone:hover{border-color:#3b82f6;background:#eff6ff}
-.upload-dropzone .dz-icon{font-size:36px;margin-bottom:8px}
-.upload-dropzone .dz-title{font-size:14px;font-weight:600;color:#334155;margin-bottom:4px}
-.upload-dropzone .dz-sub{font-size:11px;color:#94a3b8}
-.logo-preview-box{display:flex;align-items:center;gap:14px;padding:14px;border:2px solid #e2e8f0;border-radius:10px;background:#f8fafc;margin-top:10px}
-.logo-preview-box img{max-width:120px;max-height:60px;object-fit:contain;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:4px}
-.logo-preview-box .logo-actions{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
-.ppt-modal-box{background:#fff;border-radius:20px;padding:0;width:min(760px,100%);max-height:90vh;box-shadow:0 20px 80px rgba(15,23,42,.4);margin:auto;display:flex;flex-direction:column;overflow:hidden}
-.ppt-header{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;padding:20px 26px;position:relative;overflow:hidden;flex-shrink:0}
-.ppt-header::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.08)}
-.ppt-header::after{content:'';position:absolute;bottom:-30px;left:-30px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.06)}
-.ppt-header h2{font-size:20px;font-weight:800;margin-bottom:4px;position:relative;z-index:1;letter-spacing:-.3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.ppt-header p{font-size:12px;opacity:.9;position:relative;z-index:1}
-.ppt-header .ppt-count-badge{display:inline-block;background:rgba(255,255,255,.25);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.3)}
-.ppt-body{padding:20px 26px;overflow-y:auto;flex:1;min-height:0}
-.ppt-section-label{font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.ppt-section-label::before{content:'';width:3px;height:14px;background:linear-gradient(180deg,#7c3aed,#6366f1);border-radius:2px}
-.ppt-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ppt-option{display:flex;align-items:center;gap:10px;padding:12px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all .2s;background:#fff;position:relative;overflow:hidden}
-.ppt-option:hover{border-color:#a78bfa;background:#faf5ff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,.1)}
-.ppt-option.selected{border-color:#7c3aed;background:linear-gradient(135deg,#faf5ff,#f3e8ff);box-shadow:0 4px 16px rgba(124,58,237,.2)}
-.ppt-option.selected::after{content:'✓';position:absolute;top:6px;right:8px;width:20px;height:20px;background:#7c3aed;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
-.ppt-option input[type="radio"]{display:none}
-.ppt-option .ppt-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;background:#f1f5f9;color:#64748b}
-.ppt-option.selected .ppt-icon{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff}
-.ppt-option .ppt-info{flex:1;min-width:0}
-.ppt-option .ppt-label{font-weight:700;color:#0f172a;font-size:12.5px;line-height:1.2}
-.ppt-option .ppt-desc{font-size:10.5px;color:#64748b;margin-top:3px;line-height:1.3}
-.theme-card{display:flex;align-items:center;gap:10px;padding:11px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all .2s;position:relative}
-.theme-card:hover{border-color:#a78bfa;transform:translateY(-1px)}
-.theme-card.selected{border-color:#7c3aed;box-shadow:0 4px 16px rgba(124,58,237,.2)}
-.theme-card.selected::after{content:'✓';position:absolute;top:6px;right:8px;width:18px;height:18px;background:#7c3aed;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
-.theme-card input[type="radio"]{display:none}
-.theme-swatch{width:38px;height:38px;border-radius:10px;flex-shrink:0;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-.theme-card .ppt-label{font-weight:700;color:#0f172a;font-size:12.5px}
-.theme-card .ppt-desc{font-size:10.5px;color:#64748b;margin-top:2px}
-.include-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;margin-bottom:8px;transition:all .2s}
-.include-row:hover{border-color:#a78bfa;background:#faf5ff}
-.include-row input[type="checkbox"]{width:20px;height:20px;accent-color:#7c3aed;cursor:pointer}
-.include-row span{font-weight:600;font-size:13px;color:#334155}
-.ppt-footer{padding:16px 26px 20px;background:#f8fafc;border-top:1px solid #e2e8f0;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;flex-shrink:0}
-.ppt-footer button{padding:12px 24px;font-size:14px;font-weight:700;border-radius:10px;border:0;min-height:46px;transition:all .2s}
-.ppt-footer .btn-cancel{background:#fff;color:#475569;border:2px solid #e2e8f0}
-.ppt-footer .btn-cancel:hover{background:#f1f5f9}
-.ppt-footer .btn-generate{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.35);display:inline-flex;align-items:center;gap:8px}
-.ppt-footer .btn-generate:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.45)}
-@media (max-width:768px){
-  .header-actions{width:100%;justify-content:flex-start;gap:5px}
-  .header-actions button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center}
-  #app{padding-top:130px}
-  .container{padding:0 12px}
-  .cards{grid-template-columns:1fr 1fr;gap:10px}
-  .card b{font-size:28px}
-  .toolbar #search{min-width:100%;flex:1 1 100%}
-  .toolbar button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px}
-  .filter-box{width:100%;flex:1 1 100%;flex-wrap:wrap;height:auto}
-  .filter-box .date-group{flex:1 1 100%;border-right:0;border-bottom:1px solid #cbd5e1;height:36px}
-  .filter-box .date-input{flex:1;min-width:90px}
-  .filter-box .apply-btn{flex:1;min-width:100%;height:36px;justify-content:center}
-  .select-bar button{flex:1;min-width:calc(50% - 3px)}
-  .site-card{padding:10px;flex-wrap:wrap;position:relative}
-  .site-card-body{flex:1 1 100%;order:3}
-  .site-card-status{position:absolute;top:10px;right:10px}
-  .site-card-actions{flex-direction:row;flex-wrap:wrap;width:100%;order:4;gap:6px}
-  .site-card-actions button{flex:1;min-width:calc(33% - 4px);padding:8px 6px;font-size:11px}
-  .box{padding:20px 16px}
-  .formgrid{grid-template-columns:1fr}
-  .modal-actions{flex-direction:column-reverse}
-  .modal-actions button{width:100%}
-  .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
-  .bulk-tab{font-size:11px;padding:10px 12px;min-width:110px}
-  .ppt-grid-2{grid-template-columns:1fr}
-  .ppt-header{padding:16px 20px}
-  .ppt-header h2{font-size:17px}
-  .ppt-body{padding:16px 20px}
-  .ppt-footer{padding:14px 20px;flex-direction:column-reverse}
-  .ppt-footer button{width:100%}
-}
-</style>
-</head>
-<body>
-
-<div class="login-overlay" id="loginOverlay">
-  <div class="login-box">
-    <h1>Site Management</h1>
-    <p class="subtitle">Sign in to continue</p>
-    <label>Username</label>
-    <input id="loginUser" type="text" placeholder="Enter username" autocomplete="off">
-    <label>Password</label>
-    <input id="loginPass" type="password" placeholder="Enter password" autocomplete="off">
-    <button id="loginBtn" type="button">Sign In</button>
-    <div class="login-error" id="loginError"></div>
-  </div>
-</div>
-
-<div id="app" class="hidden">
-<header>
-  <div class="header-left">
-    <h1>Site Management</h1>
-    <span class="header-user" id="userInfo">Loading...</span>
-  </div>
-  <div class="header-actions">
-    <button class="btn-refresh" id="refreshBtn" type="button">🔄 Refresh</button>
-    <button class="btn-yellow admin-only" id="bulkBtn" type="button">📦 Bulk</button>
-    <button class="btn-gray admin-only" id="backupBtn" type="button">Backup</button>
-    <button class="btn-light admin-only" id="importBtn" type="button">Import</button>
-    <button class="btn-red" id="logoutBtn" type="button">Logout</button>
-  </div>
-</header>
-<div class="container">
-
-<div class="cards">
-  <div class="card total" id="cardTotal"><span class="card-label">Total Sites</span><b id="total">0</b></div>
-  <div class="card available" id="cardAvailable"><span class="card-label">Available</span><b id="avail">0</b></div>
-  <div class="card notavailable" id="cardNotAvailable"><span class="card-label">Not Available</span><b id="notavail">0</b></div>
-  <div class="card maintenance" id="cardMaintenance"><span class="card-label">Under Maintenance</span><b id="maintenance">0</b></div>
-</div>
-
-<div class="toolbar">
-  <input id="search" type="text" placeholder="Search sites...">
-  <div class="filter-box">
-    <div class="date-group">
-      <input type="text" class="date-input" id="dateFilterFrom" placeholder="dd/mm/yyyy" maxlength="10">
-      <span class="date-sep">→</span>
-      <input type="text" class="date-input" id="dateFilterTo" placeholder="dd/mm/yyyy" maxlength="10">
-    </div>
-    <button type="button" class="apply-btn" id="applyFilterBtn">🔍 Apply</button>
-    <button type="button" class="clear-btn" id="clearFilterBtn">✕</button>
-  </div>
-  <button class="admin-only" id="manageAreasBtn" type="button">Manage Areas</button>
-  <button id="addSiteBtn" type="button">+ Add Site</button>
-  <button id="historyBtn" type="button">History</button>
-  <button id="exportBtn" type="button">Export</button>
-</div>
-
-<div class="select-bar" id="selectBar">
-  <span class="count-badge" id="selCount">0 selected</span>
-  <button class="ppt-sel" id="pptBtn" type="button">📊 Generate PPT</button>
-  <button class="bulk-status-sel" id="bulkStatusBtn" type="button">Bulk Status</button>
-  <button class="clear-sel" id="clearSelBtn" type="button">Clear</button>
-  <button class="delete-sel" id="deleteBtn" type="button" style="display:none">Delete</button>
-</div>
-
-<div id="areaContainer"></div>
-</div>
-
-<div class="progress-overlay" id="progressOverlay">
-  <div class="spinner"></div>
-  <div id="progressText">Working...</div>
-  <div id="progressSub" style="font-size:13px;opacity:.7">Please wait</div>
-</div>
-
-<div class="modal" id="modal"><div class="box">
-<h2 id="modalTitle">Add Site</h2>
-<div class="formgrid">
-<label class="full-width">Area<select id="farea"></select></label>
-<label class="full-width">Site Code / ID
-  <div style="display:flex;gap:8px">
-    <input id="fsitecode" placeholder="e.g. CG01" style="flex:0 0 140px;font-family:monospace;font-weight:700;text-transform:uppercase">
-    <input id="fsite" placeholder="Full site name (optional)" style="flex:1">
-  </div>
-</label>
-<label class="full-width">Site Size (dimensions)
-  <input id="fsitesize" placeholder="e.g. 20x10, 10x8, 14x4.6">
-</label>
-<label class="full-width">Location / Address
-  <div><input id="flocation" placeholder="Address or GPS location"></div>
-  <div class="gps-box">
-    <span class="gps-status" id="gpsStatus">GPS not captured</span>
-    <button type="button" class="gps-btn" id="gpsBtn">Use GPS</button>
-  </div>
-</label>
-<label class="full-width">Site Image (optional)
-  <div class="image-upload-box" id="imageUploadBox">
-    <div class="iu-icon">📷</div><div class="iu-title">Click to upload image</div><div class="iu-sub">JPG, PNG - Max 8 MB (Auto high-res)</div>
-  </div>
-  <input type="file" id="fimage" accept="image/*" style="display:none">
-  <div id="imagePreviewWrap" style="display:none;text-align:center"><div class="image-preview-wrap"><img id="imagePreview" src="" alt="preview"><button type="button" class="remove-img" id="removeImgBtn">×</button></div></div>
-</label>
-<label>Company<div><input id="fcustomer"></div></label>
-<label>Monthly Rate (₹)<div><input id="frate" type="number" min="0"></div></label>
-<label class="full-width">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-    <span>Status</span>
-    <span style="font-weight:600;color:#0ea5e9;font-size:11px">⚡ Auto from dates</span>
-  </div>
-  <select id="fstatus" style="margin-top:6px;font-weight:700"><option>Available</option><option>Not Available</option><option>Under Maintenance</option></select>
-  <div id="statusHint" style="font-size:12px;color:#0c4a6e;margin-top:6px;background:#f0f9ff;padding:8px 12px;border-radius:6px;border:1px solid #bae6fd;font-weight:600">💡 Status will be auto-set based on dates</div>
-</label>
-<label>Booking From<div class="date-row"><select id="ffrom_d"></select><select id="ffrom_m"></select><select id="ffrom_y"></select></div></label>
-<label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
-</div>
-<div class="calc-preview" id="calcPreview">Enter dates</div>
-<div class="modal-actions"><button class="secondary" id="cancelModalBtn" type="button">Cancel</button><button id="saveSiteBtn" type="button">Save Site</button></div>
-</div></div>
-
-<div class="modal" id="historyModal"><div class="box">
-<h2>Booking History</h2>
-<div id="historyContent"></div>
-<div class="modal-actions">
-  <button class="secondary" id="downloadHistoryBtn" type="button" style="background:#059669;color:#fff">📥 CSV</button>
-  <button class="secondary" id="closeHistoryBtn" type="button">Close</button>
-</div>
-</div></div>
-
-<div class="modal" id="bulkModal"><div class="box" style="width:min(750px,100%)">
-<h2>📦 Bulk Upload</h2>
-<div class="bulk-tab-bar">
-  <button class="bulk-tab active" id="bulkTabSite" type="button">📄 Site Upload</button>
-  <button class="bulk-tab" id="bulkTabImage" type="button">🖼️ Image Upload</button>
-  <button class="bulk-tab" id="bulkTabLogo" type="button">🏷️ Logo</button>
-</div>
-<div class="bulk-tab-content active" id="bulkContentSite">
-  <div class="bulk-info"><b>CSV Format:</b><br><code>area,site,siteCode,siteSize,location,company,rate,from,to</code></div>
-  <div class="upload-dropzone" id="csvDropzone"><div class="dz-icon">📄</div><div class="dz-title">Click to upload CSV</div></div>
-  <input type="file" id="csvFile" accept=".csv,.txt" style="display:none">
-  <textarea id="csvText" placeholder="Paste CSV here..." style="width:100%;height:120px;padding:11px;border:1px solid #e2e8f0;border-radius:8px;font-family:monospace;font-size:12px;outline:none;margin-top:14px"></textarea>
-  <div id="csvPreview" style="margin-top:12px;display:none"></div>
-  <div class="modal-actions"><button class="secondary" id="cancelBulkSiteBtn" type="button">Cancel</button><button id="processBulkSiteBtn" type="button" style="background:#10b981">✅ Process</button></div>
-</div>
-<div class="bulk-tab-content" id="bulkContentImage">
-  <div class="bulk-info"><b>Image name = Site Code</b><br>Example: <code>CG01.jpg</code></div>
-  <div class="upload-dropzone" id="imageDropzone"><div class="dz-icon">🖼️</div><div class="dz-title">Click to select images</div></div>
-  <input type="file" id="imageFiles" accept="image/*" multiple style="display:none">
-  <div id="imagePreviewList" style="margin-top:12px;max-height:250px;overflow-y:auto;display:none"></div>
-  <div class="modal-actions"><button class="secondary" id="cancelBulkImageBtn" type="button">Cancel</button><button id="processBulkImageBtn" type="button" style="background:#10b981">🖼️ Process</button></div>
-</div>
-<div class="bulk-tab-content" id="bulkContentLogo">
-  <div class="bulk-info"><b>Company Logo:</b><br>Shows on PPT first page<br>Max 2 MB</div>
-  <div id="logoEmptyState">
-    <div class="upload-dropzone" id="logoDropzone"><div class="dz-icon">🏷️</div><div class="dz-title">Click to upload logo</div><div class="dz-sub">PNG, JPG, SVG</div></div>
-    <input type="file" id="logoFile" accept="image/*" style="display:none">
-  </div>
-  <div id="logoPreviewState" style="display:none">
-    <div class="logo-preview-box">
-      <img id="logoPreviewImg" src="" alt="Logo">
-      <div style="flex:1"><div style="font-weight:600;font-size:13px">Current Logo</div><div style="font-size:11px;color:#64748b" id="logoInfo">Uploaded</div></div>
-      <div class="logo-actions">
-        <button id="changeLogoBtn" type="button" style="padding:8px 14px;background:#3b82f6;color:#fff;border:0;border-radius:6px;font-weight:600;font-size:12px">Change</button>
-        <button id="deleteLogoBtn" type="button" style="padding:8px 14px;background:#dc2626;color:#fff;border:0;border-radius:6px;font-weight:600;font-size:12px">Delete</button>
-      </div>
-    </div>
-  </div>
-  <div class="modal-actions"><button class="secondary" id="closeBulkLogoBtn" type="button">Close</button></div>
-</div>
-</div></div>
-
-<div class="modal" id="pptModal"><div class="ppt-modal-box">
-<div class="ppt-header">
-  <h2>📊 Generate PPT Report <span class="ppt-count-badge" id="pptCount">0</span></h2>
-  <p>Sites selected — choose layout, theme, and options</p>
-</div>
-<div class="ppt-body">
-<div class="ppt-section-label">Layout Style</div>
-<div class="ppt-grid-2" id="pptStyleOptions">
-  <label class="ppt-option selected" data-style="full-detail">
-    <input type="radio" name="pptStyle" value="full-detail" checked>
-    <div class="ppt-icon">📊</div>
-    <div class="ppt-info"><div class="ppt-label">Full Detail</div><div class="ppt-desc">Image top + all details below</div></div>
-  </label>
-  <label class="ppt-option" data-style="cover">
-    <input type="radio" name="pptStyle" value="cover">
-    <div class="ppt-icon">🖼️</div>
-    <div class="ppt-info"><div class="ppt-label">Full Cover</div><div class="ppt-desc">Image fills + details bottom</div></div>
-  </label>
-  <label class="ppt-option" data-style="fit-black">
-    <input type="radio" name="pptStyle" value="fit-black">
-    <div class="ppt-icon">⬛</div>
-    <div class="ppt-info"><div class="ppt-label">Fit + Black</div><div class="ppt-desc">Image fit + black bars + details</div></div>
-  </label>
-  <label class="ppt-option" data-style="fit-blur">
-    <input type="radio" name="pptStyle" value="fit-blur">
-    <div class="ppt-icon">🌫️</div>
-    <div class="ppt-info"><div class="ppt-label">Fit + Blur</div><div class="ppt-desc">Image fit + blur bars + details</div></div>
-  </label>
-  <label class="ppt-option" data-style="center-black">
-    <input type="radio" name="pptStyle" value="center-black">
-    <div class="ppt-icon">🎯</div>
-    <div class="ppt-info"><div class="ppt-label">Center + Black</div><div class="ppt-desc">Image 70% + black sides + details</div></div>
-  </label>
-  <label class="ppt-option" data-style="center-blur">
-    <input type="radio" name="pptStyle" value="center-blur">
-    <div class="ppt-icon">✨</div>
-    <div class="ppt-info"><div class="ppt-label">Center + Blur</div><div class="ppt-desc">Image 70% + blur sides + details</div></div>
-  </label>
-</div>
-<div class="ppt-section-label" style="margin-top:20px">Color Theme</div>
-<div class="ppt-grid-2">
-  <label class="theme-card selected" data-theme="dark-navy">
-    <input type="radio" name="pptTheme" value="dark-navy" checked>
-    <div class="theme-swatch" style="background:linear-gradient(135deg,#0F172A,#1E293B)"></div>
-    <div><div class="ppt-label">🌑 Dark Navy</div><div class="ppt-desc">Deep, professional blue</div></div>
-  </label>
-  <label class="theme-card" data-theme="royal-blue">
-    <input type="radio" name="pptTheme" value="royal-blue">
-    <div class="theme-swatch" style="background:linear-gradient(135deg,#1E40AF,#1D4ED8)"></div>
-    <div><div class="ppt-label">💙 Royal Blue</div><div class="ppt-desc">Bright, vibrant blue</div></div>
-  </label>
-</div>
-<div class="ppt-section-label" style="margin-top:20px">Include in Slides</div>
-<label class="include-row"><input type="checkbox" id="pptIncludeImages" checked><span>📷 Site Images</span></label>
-<label class="include-row"><input type="checkbox" id="pptIncludeCompany" checked><span>🏢 Company & Rate Details</span></label>
-<label class="include-row"><input type="checkbox" id="pptIncludeDates" checked><span>📅 Booking Dates & Duration</span></label>
-</div>
-<div class="ppt-footer">
-  <button class="btn-cancel" id="cancelPptBtn" type="button">Cancel</button>
-  <button class="btn-generate" id="generatePptBtn" type="button">✨ Generate PPT</button>
-</div>
-</div></div>
-
-<div class="modal" id="areaModal"><div class="box" style="width:min(600px,100%)">
-<h2>Manage Areas</h2>
-<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-  <input id="newAreaName" type="text" placeholder="New area name..." style="flex:1;min-width:180px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:8px;outline:none">
-  <button id="addAreaBtn" type="button" style="padding:11px 18px;background:#3b82f6;color:#fff;border:0;border-radius:8px;font-weight:600">+ Add</button>
-</div>
-<div id="areaList" style="max-height:50vh;overflow-y:auto"></div>
-<div class="modal-actions"><button class="secondary" id="closeAreaBtn" type="button">Close</button></div>
-</div></div>
-
-<div class="image-viewer" id="imageViewer">
-  <button class="close-viewer" id="closeViewerBtn">×</button>
-  <img id="viewerImage" src="" alt="">
-</div>
-<input type="file" id="importFile" accept=".json" style="display:none">
-<div id="toastContainer"></div>
-<script>
 var API_URL = "https://api.dsent.workers.dev";
 var DEFAULT_AREAS = ["Chandigarh", "Gurgaon", "Rohtak", "Sirsa", "KMP Crossing"];
 var COMPANY_NAME = "DS Outdoor Media";
@@ -1321,155 +833,9 @@ function openPPTFormatModal(){
 }
 function closePPTModal(){ document.getElementById("pptModal").classList.remove("show"); }
 
-function createCenterBlackImage(dataUrl, targetW, targetH){
-  targetW = targetW || 2560; targetH = targetH || 1440;
-  return new Promise(function(resolve){
-    var img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = function(){
-      try {
-        var canvas = document.createElement("canvas");
-        canvas.width = targetW; canvas.height = targetH;
-        var ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, targetW, targetH);
-        var imgRatio = img.width / img.height;
-        var canvasRatio = targetW / targetH;
-        var pad = 0.70;
-        var drawW, drawH, drawX, drawY;
-        if(imgRatio > canvasRatio){
-          drawW = targetW * pad; drawH = drawW / imgRatio;
-          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
-        } else {
-          drawH = targetH * pad; drawW = drawH * imgRatio;
-          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
-        }
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = "high";
-        ctx.drawImage(img, drawX, drawY, drawW, drawH);
-        resolve(canvas.toDataURL("image/jpeg", 0.95));
-      } catch(e){ resolve(null); }
-    };
-    img.onerror = function(){ resolve(null); };
-    img.src = dataUrl;
-  });
-}
-function createCenterBlurImage(dataUrl, targetW, targetH){
-  targetW = targetW || 2560; targetH = targetH || 1440;
-  return new Promise(function(resolve){
-    var img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = function(){
-      try {
-        var canvas = document.createElement("canvas");
-        canvas.width = targetW; canvas.height = targetH;
-        var ctx = canvas.getContext("2d");
-        var imgRatio = img.width / img.height;
-        var canvasRatio = targetW / targetH;
-        var bgW, bgH, bgX, bgY;
-        if(imgRatio > canvasRatio){ bgH = targetH; bgW = img.width * (targetH / img.height); bgX = (targetW - bgW) / 2; bgY = 0; }
-        else { bgW = targetW; bgH = img.height * (targetW / img.width); bgX = 0; bgY = (targetH - bgH) / 2; }
-        var scale = 1.2;
-        ctx.filter = "blur(80px)";
-        ctx.drawImage(img, bgX - (bgW * (scale - 1) / 2), bgY - (bgH * (scale - 1) / 2), bgW * scale, bgH * scale);
-        ctx.filter = "none";
-        ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(0, 0, targetW, targetH);
-        var pad = 0.70;
-        var drawW, drawH, drawX, drawY;
-        if(imgRatio > canvasRatio){
-          drawW = targetW * pad; drawH = drawW / imgRatio;
-          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
-        } else {
-          drawH = targetH * pad; drawW = drawH * imgRatio;
-          drawX = (targetW - drawW) / 2; drawY = (targetH - drawH) / 2;
-        }
-        ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 40;
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = "high";
-        ctx.drawImage(img, drawX, drawY, drawW, drawH);
-        ctx.shadowColor = "transparent"; ctx.shadowBlur = 0;
-        resolve(canvas.toDataURL("image/jpeg", 0.95));
-      } catch(e){ resolve(null); }
-    };
-    img.onerror = function(){ resolve(null); };
-    img.src = dataUrl;
-  });
-}
-function createFitBlackImage(dataUrl, targetW, targetH){
-  targetW = targetW || 2560; targetH = targetH || 1440;
-  return new Promise(function(resolve){
-    var img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = function(){
-      try {
-        var canvas = document.createElement("canvas");
-        canvas.width = targetW; canvas.height = targetH;
-        var ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, targetW, targetH);
-        var imgRatio = img.width / img.height;
-        var canvasRatio = targetW / targetH;
-        var drawW, drawH, drawX, drawY;
-        if(imgRatio > canvasRatio){
-          drawW = targetW; drawH = targetW / imgRatio;
-          drawX = 0; drawY = (targetH - drawH) / 2;
-        } else {
-          drawH = targetH; drawW = targetH * imgRatio;
-          drawX = (targetW - drawW) / 2; drawY = 0;
-        }
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = "high";
-        ctx.drawImage(img, drawX, drawY, drawW, drawH);
-        resolve(canvas.toDataURL("image/jpeg", 0.95));
-      } catch(e){ resolve(null); }
-    };
-    img.onerror = function(){ resolve(null); };
-    img.src = dataUrl;
-  });
-}
-function createFitBlurImage(dataUrl, targetW, targetH){
-  targetW = targetW || 2560; targetH = targetH || 1440;
-  return new Promise(function(resolve){
-    var img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = function(){
-      try {
-        var canvas = document.createElement("canvas");
-        canvas.width = targetW; canvas.height = targetH;
-        var ctx = canvas.getContext("2d");
-        var imgRatio = img.width / img.height;
-        var canvasRatio = targetW / targetH;
-        var bgW, bgH, bgX, bgY;
-        if(imgRatio > canvasRatio){ bgH = targetH; bgW = img.width * (targetH / img.height); bgX = (targetW - bgW) / 2; bgY = 0; }
-        else { bgW = targetW; bgH = img.height * (targetW / img.width); bgX = 0; bgY = (targetH - bgH) / 2; }
-        var scale = 1.2;
-        ctx.filter = "blur(80px)";
-        ctx.drawImage(img, bgX - (bgW * (scale - 1) / 2), bgY - (bgH * (scale - 1) / 2), bgW * scale, bgH * scale);
-        ctx.filter = "none";
-        ctx.fillStyle = "rgba(0,0,0,0.55)"; ctx.fillRect(0, 0, targetW, targetH);
-        var drawW, drawH, drawX, drawY;
-        if(imgRatio > canvasRatio){
-          drawW = targetW; drawH = targetW / imgRatio;
-          drawX = 0; drawY = (targetH - drawH) / 2;
-        } else {
-          drawH = targetH; drawW = targetH * imgRatio;
-          drawX = (targetW - drawW) / 2; drawY = 0;
-        }
-        ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 40;
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = "high";
-        ctx.drawImage(img, drawX, drawY, drawW, drawH);
-        ctx.shadowColor = "transparent"; ctx.shadowBlur = 0;
-        resolve(canvas.toDataURL("image/jpeg", 0.95));
-      } catch(e){ resolve(null); }
-    };
-    img.onerror = function(){ resolve(null); };
-    img.src = dataUrl;
-  });
-}
-
 function generatePPT(){
   if(selectedSites.size === 0){ alert("Please select sites first"); return; }
   if(typeof PptxGenJS === "undefined"){ alert("PPT library not loaded"); return; }
-  var style = document.querySelector('input[name="pptStyle"]:checked').value;
   var theme = document.querySelector('input[name="pptTheme"]:checked').value;
   var includeImages = document.getElementById("pptIncludeImages").checked;
   var includeCompany = document.getElementById("pptIncludeCompany").checked;
@@ -1526,7 +892,7 @@ function generatePPT(){
   slide.addText("TOTAL SITES", { x: 7.3, y: bottomY, w: 2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
   slide.addText(String(list.length), { x: 7.3, y: bottomY + 0.24, w: 1.5, h: 0.3, fontSize: 14, bold: true, color: T.accent });
 
-  // ========== INDIVIDUAL SLIDES ==========
+  // ========== INDIVIDUAL SLIDES (FULL DETAIL LAYOUT) ==========
   var chain = Promise.resolve();
   list.forEach(function(x, i){
     chain = chain.then(function(){
@@ -1548,166 +914,79 @@ function generatePPT(){
       var imgPromise = (includeImages && x.hasImage) ? (imageCache[x.id] ? Promise.resolve(imageCache[x.id]) : getImage(x.id)) : Promise.resolve(null);
 
       return imgPromise.then(function(imgData){
-        // Map URL for Clickable Link
         var mapUrl = "";
         if(x.lat && x.lng){ mapUrl = "https://www.google.com/maps?q=" + x.lat + "," + x.lng; }
         else if(x.location){ mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location); }
 
-        if(style === "full-detail"){
-          // ==========================================
-          // FULL DETAIL: Image top + details box below
-          // ==========================================
-          var IMG_TOP = 0.65;
-          var IMG_H = 3.6;
-          var DET_TOP = 4.4;
-          var DET_H = 2.9;
+        var IMG_TOP = 0.65;
+        var IMG_H = 3.6;
+        var DET_TOP = 4.4;
+        var DET_H = 2.9;
 
-          // Image top with aspect preservation
-          if(imgData){
-            try {
-              s.addImage({
-                data: imgData,
-                x: 0.4, y: IMG_TOP, w: 12.53, h: IMG_H,
-                sizing: { type: "contain", align: "center" }
-              });
-            } catch(e){ console.error(e); }
-          } else {
-            s.addShape(pptx.ShapeType.rect, { x: 0.4, y: IMG_TOP, w: 12.53, h: IMG_H, fill: { color: T.card }, line: { color: T.cardBorder, width: 1 } });
-            s.addText("📷 No Image Available", { x: 0.4, y: IMG_TOP + 1.5, w: 12.53, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
-          }
-
-          // Details Box
-          s.addShape(pptx.ShapeType.roundRect, { x: 0.4, y: DET_TOP, w: 12.53, h: DET_H, fill: { color: T.card }, line: { color: T.cardBorder, width: 1 }, rectRadius: 0.1 });
-
-          // Site name + code
-          s.addText(x.site, { x: 0.7, y: DET_TOP + 0.15, w: 9.5, h: 0.4, fontSize: 16, bold: true, color: "FFFFFF" });
-          if(x.siteCode){
-            s.addShape(pptx.ShapeType.roundRect, { x: 10.8, y: DET_TOP + 0.15, w: 1.8, h: 0.35, fill: { color: T.accentDark }, rectRadius: 0.08 });
-            s.addText(x.siteCode, { x: 10.8, y: DET_TOP + 0.15, w: 1.8, h: 0.35, fontSize: 11, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-          }
-
-          // Clickable location
-          if(x.location){
-            if(mapUrl){
-              s.addText([
-                { text: "📍 Location: ", options: { bold: true, color: "38BDF8" } },
-                { text: x.location, options: { underline: true, hyperlink: { url: mapUrl }, color: "38BDF8" } }
-              ], { x: 0.7, y: DET_TOP + 0.6, w: 11.9, h: 0.35, fontSize: 11 });
-            } else {
-              s.addText("📍 Location: " + x.location, { x: 0.7, y: DET_TOP + 0.6, w: 11.9, h: 0.35, fontSize: 11, color: "38BDF8", bold: true });
-            }
-          }
-
-          // Row 1: Area | Site Size | Company | Rate
-          var colW = 12.53 / 4;
-          var r1Y = DET_TOP + 1.1;
-
-          s.addText("AREA", { x: 0.7, y: r1Y, w: colW, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-          s.addText(x.area || "—", { x: 0.7, y: r1Y + 0.22, w: colW, h: 0.3, fontSize: 11, bold: true, color: T.subtitle });
-
-          s.addText("SITE SIZE", { x: 0.7 + colW, y: r1Y, w: colW, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-          s.addText(x.siteSize || "—", { x: 0.7 + colW, y: r1Y + 0.22, w: colW, h: 0.3, fontSize: 11, bold: true, color: "C4B5FD" });
-
-          if(includeCompany){
-            s.addText("COMPANY", { x: 0.7 + colW * 2, y: r1Y, w: colW, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-            s.addText(x.customer || "—", { x: 0.7 + colW * 2, y: r1Y + 0.22, w: colW, h: 0.3, fontSize: 11, bold: true, color: "34D399" });
-
-            s.addText("RATE", { x: 0.7 + colW * 3, y: r1Y, w: colW, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-            s.addText(x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—", { x: 0.7 + colW * 3, y: r1Y + 0.22, w: colW, h: 0.3, fontSize: 11, bold: true, color: "FBBF24" });
-          }
-
-          // Row 2: Dates + Status
-          var r2Y = r1Y + 0.7;
-          if(includeDates){
-            var durText = (x.fromDate || x.toDate) ? (x.fromDate||"—") + "  to  " + (x.toDate||"—") + (days>0 ? "  (" + days + " days)" : "") : "—";
-            s.addText("BOOKING DATES & DURATION", { x: 0.7, y: r2Y, w: 6.0, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-            s.addText(durText, { x: 0.7, y: r2Y + 0.22, w: 6.0, h: 0.3, fontSize: 11, bold: true, color: "A78BFA" });
-          }
-
-          s.addText("CURRENT STATUS", { x: 7.0, y: r2Y, w: 3.0, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-          s.addText(x.status, { x: 7.0, y: r2Y + 0.22, w: 3.0, h: 0.3, fontSize: 11, bold: true, color: stColor === "059669" ? "34D399" : (stColor === "DC2626" ? "F87171" : "FBBF24") });
-
+        // Image top with aspect preservation
+        if(imgData){
+          try {
+            s.addImage({
+              data: imgData,
+              x: 0.4, y: IMG_TOP, w: 12.53, h: IMG_H,
+              sizing: { type: "contain", align: "center" }
+            });
+          } catch(e){ console.error(e); }
         } else {
-          // ==========================================
-          // ALL OTHER LAYOUTS: Image top + details bottom
-          // ==========================================
-          var IMG_TOP_S = 0.55;
-          var IMG_H_S = 4.3;
-          var DET_TOP_S = IMG_TOP_S + IMG_H_S;
-          var DET_H_S = 7.5 - DET_TOP_S;
-
-          if(style === "center-black" || style === "fit-black"){
-            var fn = style === "center-black" ? createCenterBlackImage : createFitBlackImage;
-            if(imgData){
-              return fn(imgData, 2560, 1440).then(function(p){
-                if(p) { try { s.addImage({ data: p, x: 0, y: IMG_TOP_S, w: 13.33, h: IMG_H_S }); } catch(e){ console.error(e); } }
-              });
-            } else {
-              s.addShape(pptx.ShapeType.rect, { x: 0, y: IMG_TOP_S, w: 13.33, h: IMG_H_S, fill: { color: "000000" } });
-              s.addText("No Image Available", { x: 0, y: IMG_TOP_S + IMG_H_S/2 - 0.3, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
-            }
-          } else if(style === "center-blur" || style === "fit-blur"){
-            var fn2 = style === "center-blur" ? createCenterBlurImage : createFitBlurImage;
-            if(imgData){
-              return fn2(imgData, 2560, 1440).then(function(p){
-                if(p) { try { s.addImage({ data: p, x: 0, y: IMG_TOP_S, w: 13.33, h: IMG_H_S }); } catch(e){ console.error(e); } }
-              });
-            } else {
-              s.addShape(pptx.ShapeType.rect, { x: 0, y: IMG_TOP_S, w: 13.33, h: IMG_H_S, fill: { color: "1E293B" } });
-              s.addText("No Image Available", { x: 0, y: IMG_TOP_S + IMG_H_S/2 - 0.3, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
-            }
-          } else if(style === "cover"){
-            if(imgData){ try { s.addImage({ data: imgData, x: 0, y: IMG_TOP_S, w: 13.33, h: IMG_H_S }); } catch(e){ console.error(e); } }
-            else s.addText("No Image", { x: 0, y: IMG_TOP_S + IMG_H_S/2 - 0.3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
-          }
-
-          // DETAILS SECTION (bottom box for all these layouts)
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: DET_TOP_S, w: 13.33, h: DET_H_S, fill: { color: "F8FAFC" } });
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: DET_TOP_S, w: 13.33, h: 0.06, fill: { color: T.accent } });
-
-          s.addText(x.site, { x: 0.3, y: DET_TOP_S + 0.12, w: 10.5, h: 0.35, fontSize: 14, bold: true, color: "0F172A" });
-          if(x.siteCode){
-            s.addShape(pptx.ShapeType.roundRect, { x: 11.8, y: DET_TOP_S + 0.12, w: 1.3, h: 0.32, fill: { color: T.accentDark }, rectRadius: 0.06 });
-            s.addText(x.siteCode, { x: 11.8, y: DET_TOP_S + 0.12, w: 1.3, h: 0.32, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-          }
-
-          var r1Y_S = DET_TOP_S + 0.6;
-          var colW_S = 13.33 / 4;
-
-          s.addText("AREA", { x: 0.3, y: r1Y_S, w: colW_S - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-          s.addText(x.area || "—", { x: 0.3, y: r1Y_S + 0.22, w: colW_S - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark });
-
-          s.addText("SITE SIZE", { x: colW_S + 0.3, y: r1Y_S, w: colW_S - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-          s.addText(x.siteSize || "—", { x: colW_S + 0.3, y: r1Y_S + 0.22, w: colW_S - 0.4, h: 0.3, fontSize: 11, bold: true, color: "7C3AED" });
-
-          if(includeCompany){
-            s.addText("COMPANY", { x: colW_S * 2 + 0.3, y: r1Y_S, w: colW_S - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-            s.addText(x.customer || "—", { x: colW_S * 2 + 0.3, y: r1Y_S + 0.22, w: colW_S - 0.4, h: 0.3, fontSize: 11, bold: true, color: "047857" });
-
-            s.addText("RATE", { x: colW_S * 3 + 0.3, y: r1Y_S, w: colW_S - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-            s.addText(x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", { x: colW_S * 3 + 0.3, y: r1Y_S + 0.22, w: colW_S - 0.4, h: 0.3, fontSize: 11, bold: true, color: "B45309" });
-          }
-
-          var r2Y_S = r1Y_S + 0.7;
-          if(includeDates){
-            var durText_S = (x.fromDate || x.toDate) ? (x.fromDate||"—") + "  to  " + (x.toDate||"—") + (days>0?"  ("+days+" days)":"") : "—";
-            s.addText("DURATION", { x: 0.3, y: r2Y_S, w: 2.5, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-            s.addText(durText_S, { x: 0.3, y: r2Y_S + 0.22, w: 6, h: 0.3, fontSize: 10, bold: true, color: "6D28D9" });
-          }
-
-          if(x.location){
-            s.addText("LOCATION", { x: 6.5, y: r2Y_S, w: 2.5, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-            if(mapUrl){
-              s.addText(x.location.substring(0, 55), { x: 6.5, y: r2Y_S + 0.22, w: 6.5, h: 0.3, fontSize: 10, color: "0891B2", underline: true, hyperlink: { url: mapUrl } });
-            } else {
-              s.addText(x.location.substring(0, 55), { x: 6.5, y: r2Y_S + 0.22, w: 6.5, h: 0.3, fontSize: 10, color: "0891B2" });
-            }
-          }
-
-          var r3Y_S = r2Y_S + 0.7;
-          s.addShape(pptx.ShapeType.roundRect, { x: 0.3, y: r3Y_S, w: 1.6, h: 0.3, fill: { color: stColor }, rectRadius: 0.08 });
-          s.addText(x.status.toUpperCase(), { x: 0.3, y: r3Y_S, w: 1.6, h: 0.3, fontSize: 8, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+          s.addShape(pptx.ShapeType.rect, { x: 0.4, y: IMG_TOP, w: 12.53, h: IMG_H, fill: { color: T.card }, line: { color: T.cardBorder, width: 1 } });
+          s.addText("📷 No Image Available", { x: 0.4, y: IMG_TOP + 1.5, w: 12.53, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
         }
+
+        // Details Box
+        s.addShape(pptx.ShapeType.roundRect, { x: 0.4, y: DET_TOP, w: 12.53, h: DET_H, fill: { color: T.card }, line: { color: T.cardBorder, width: 1 }, rectRadius: 0.1 });
+
+        // Site name + code
+        s.addText(x.site, { x: 0.7, y: DET_TOP + 0.15, w: 9.5, h: 0.4, fontSize: 16, bold: true, color: "FFFFFF" });
+        if(x.siteCode){
+          s.addShape(pptx.ShapeType.roundRect, { x: 10.8, y: DET_TOP + 0.15, w: 1.8, h: 0.35, fill: { color: T.accentDark }, rectRadius: 0.08 });
+          s.addText(x.siteCode, { x: 10.8, y: DET_TOP + 0.15, w: 1.8, h: 0.35, fontSize: 11, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+        }
+
+        // Clickable location
+        if(x.location){
+          if(mapUrl){
+            s.addText([
+              { text: "📍 Location: ", options: { bold: true, color: "38BDF8" } },
+              { text: x.location, options: { underline: true, hyperlink: { url: mapUrl }, color: "38BDF8" } }
+            ], { x: 0.7, y: DET_TOP + 0.6, w: 11.9, h: 0.35, fontSize: 11 });
+          } else {
+            s.addText("📍 Location: " + x.location, { x: 0.7, y: DET_TOP + 0.6, w: 11.9, h: 0.35, fontSize: 11, color: "38BDF8", bold: true });
+          }
+        }
+
+        // Row 1: Area | Site Size | Company | Rate
+        var colW = 12.53 / 4;
+        var r1Y = DET_TOP + 1.1;
+
+        s.addText("AREA", { x: 0.7, y: r1Y, w: colW, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
+        s.addText(x.area || "—", { x: 0.7, y: r1Y + 0.22, w: colW, h: 0.3, fontSize: 11, bold: true, color: T.subtitle });
+
+        s.addText("SITE SIZE", { x: 0.7 + colW, y: r1Y, w: colW, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
+        s.addText(x.siteSize || "—", { x: 0.7 + colW, y: r1Y + 0.22, w: colW, h: 0.3, fontSize: 11, bold: true, color: "C4B5FD" });
+
+        if(includeCompany){
+          s.addText("COMPANY", { x: 0.7 + colW * 2, y: r1Y, w: colW, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
+          s.addText(x.customer || "—", { x: 0.7 + colW * 2, y: r1Y + 0.22, w: colW, h: 0.3, fontSize: 11, bold: true, color: "34D399" });
+
+          s.addText("RATE", { x: 0.7 + colW * 3, y: r1Y, w: colW, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
+          s.addText(x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—", { x: 0.7 + colW * 3, y: r1Y + 0.22, w: colW, h: 0.3, fontSize: 11, bold: true, color: "FBBF24" });
+        }
+
+        // Row 2: Dates + Status
+        var r2Y = r1Y + 0.7;
+        if(includeDates){
+          var durText = (x.fromDate || x.toDate) ? (x.fromDate||"—") + "  to  " + (x.toDate||"—") + (days>0 ? "  (" + days + " days)" : "") : "—";
+          s.addText("BOOKING DATES & DURATION", { x: 0.7, y: r2Y, w: 6.0, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
+          s.addText(durText, { x: 0.7, y: r2Y + 0.22, w: 6.0, h: 0.3, fontSize: 11, bold: true, color: "A78BFA" });
+        }
+
+        s.addText("CURRENT STATUS", { x: 7.0, y: r2Y, w: 3.0, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
+        s.addText(x.status, { x: 7.0, y: r2Y + 0.22, w: 3.0, h: 0.3, fontSize: 11, bold: true, color: stColor === "059669" ? "34D399" : (stColor === "DC2626" ? "F87171" : "FBBF24") });
       });
     });
   });
@@ -2092,14 +1371,6 @@ function bindEvents(){
   if(cancelPptBtn) cancelPptBtn.onclick = closePPTModal;
   var generatePptBtn = document.getElementById("generatePptBtn");
   if(generatePptBtn) generatePptBtn.onclick = generatePPT;
-  document.querySelectorAll(".ppt-option").forEach(function(opt){
-    opt.addEventListener("click", function(){
-      document.querySelectorAll(".ppt-option").forEach(function(o){ o.classList.remove("selected"); });
-      this.classList.add("selected");
-      var radio = this.querySelector('input[type="radio"]');
-      if(radio) radio.checked = true;
-    });
-  });
   document.querySelectorAll(".theme-card").forEach(function(card){
     card.addEventListener("click", function(){
       document.querySelectorAll(".theme-card").forEach(function(c){ c.classList.remove("selected"); });
