@@ -414,45 +414,35 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="ppt-body">
 <div class="ppt-section-label">Layout Style</div>
 <div class="ppt-grid-2" id="pptStyleOptions">
-  <label class="ppt-option selected" data-style="split">
-    <input type="radio" name="pptStyle" value="split" checked>
-    <div class="ppt-icon">📋</div>
-    <div class="ppt-info"><div class="ppt-label">Split View</div><div class="ppt-desc">Image left, details right</div></div>
+  <label class="ppt-option selected" data-style="full-detail">
+    <input type="radio" name="pptStyle" value="full-detail" checked>
+    <div class="ppt-icon">📊</div>
+    <div class="ppt-info"><div class="ppt-label">Full Detail</div><div class="ppt-desc">Image top + all details below</div></div>
   </label>
   <label class="ppt-option" data-style="cover">
     <input type="radio" name="pptStyle" value="cover">
     <div class="ppt-icon">🖼️</div>
-    <div class="ppt-info"><div class="ppt-label">Full Cover</div><div class="ppt-desc">Image fills slide</div></div>
+    <div class="ppt-info"><div class="ppt-label">Full Cover</div><div class="ppt-desc">Image fills + details bottom</div></div>
   </label>
   <label class="ppt-option" data-style="fit-black">
     <input type="radio" name="pptStyle" value="fit-black">
     <div class="ppt-icon">⬛</div>
-    <div class="ppt-info"><div class="ppt-label">Fit + Black</div><div class="ppt-desc">Original image + black bars</div></div>
+    <div class="ppt-info"><div class="ppt-label">Fit + Black</div><div class="ppt-desc">Image fit + black bars + details</div></div>
   </label>
   <label class="ppt-option" data-style="fit-blur">
     <input type="radio" name="pptStyle" value="fit-blur">
     <div class="ppt-icon">🌫️</div>
-    <div class="ppt-info"><div class="ppt-label">Fit + Blur</div><div class="ppt-desc">Original image + blur bars</div></div>
+    <div class="ppt-info"><div class="ppt-label">Fit + Blur</div><div class="ppt-desc">Image fit + blur bars + details</div></div>
   </label>
   <label class="ppt-option" data-style="center-black">
     <input type="radio" name="pptStyle" value="center-black">
     <div class="ppt-icon">🎯</div>
-    <div class="ppt-info"><div class="ppt-label">Center + Black</div><div class="ppt-desc">Image 70% + black sides</div></div>
+    <div class="ppt-info"><div class="ppt-label">Center + Black</div><div class="ppt-desc">Image 70% + black sides + details</div></div>
   </label>
   <label class="ppt-option" data-style="center-blur">
     <input type="radio" name="pptStyle" value="center-blur">
     <div class="ppt-icon">✨</div>
-    <div class="ppt-info"><div class="ppt-label">Center + Blur</div><div class="ppt-desc">Image 70% + blur sides</div></div>
-  </label>
-  <label class="ppt-option" data-style="full-detail">
-    <input type="radio" name="pptStyle" value="full-detail">
-    <div class="ppt-icon">📊</div>
-    <div class="ppt-info"><div class="ppt-label">Full Detail</div><div class="ppt-desc">Image top + details below</div></div>
-  </label>
-  <label class="ppt-option" data-style="split-detail">
-    <input type="radio" name="pptStyle" value="split-detail">
-    <div class="ppt-icon">📑</div>
-    <div class="ppt-info"><div class="ppt-label">Split Detail</div><div class="ppt-desc">Image left + details right</div></div>
+    <div class="ppt-info"><div class="ppt-label">Center + Blur</div><div class="ppt-desc">Image 70% + blur sides + details</div></div>
   </label>
 </div>
 <div class="ppt-section-label" style="margin-top:20px">Color Theme</div>
@@ -1565,14 +1555,14 @@ function generatePPT(){
 
         if(style === "full-detail"){
           // ==========================================
-          // ENHANCED FULL DETAIL LAYOUT (No stretch, All Details, Clickable Link)
+          // FULL DETAIL: Image top + details box below
           // ==========================================
           var IMG_TOP = 0.65;
           var IMG_H = 3.6;
           var DET_TOP = 4.4;
           var DET_H = 2.9;
 
-          // TOP IMAGE (Preserving Real Identity & Aspect Ratio)
+          // Image top with aspect preservation
           if(imgData){
             try {
               s.addImage({
@@ -1586,17 +1576,17 @@ function generatePPT(){
             s.addText("📷 No Image Available", { x: 0.4, y: IMG_TOP + 1.5, w: 12.53, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           }
 
-          // BOTTOM SITE DETAILS BOX
+          // Details Box
           s.addShape(pptx.ShapeType.roundRect, { x: 0.4, y: DET_TOP, w: 12.53, h: DET_H, fill: { color: T.card }, line: { color: T.cardBorder, width: 1 }, rectRadius: 0.1 });
 
-          // Title & Code Inside Details Box
+          // Site name + code
           s.addText(x.site, { x: 0.7, y: DET_TOP + 0.15, w: 9.5, h: 0.4, fontSize: 16, bold: true, color: "FFFFFF" });
           if(x.siteCode){
             s.addShape(pptx.ShapeType.roundRect, { x: 10.8, y: DET_TOP + 0.15, w: 1.8, h: 0.35, fill: { color: T.accentDark }, rectRadius: 0.08 });
             s.addText(x.siteCode, { x: 10.8, y: DET_TOP + 0.15, w: 1.8, h: 0.35, fontSize: 11, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
           }
 
-          // Clickable Location Hyperlink
+          // Clickable location
           if(x.location){
             if(mapUrl){
               s.addText([
@@ -1608,7 +1598,7 @@ function generatePPT(){
             }
           }
 
-          // Details Grid (Row 1)
+          // Row 1: Area | Site Size | Company | Rate
           var colW = 12.53 / 4;
           var r1Y = DET_TOP + 1.1;
 
@@ -1626,7 +1616,7 @@ function generatePPT(){
             s.addText(x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—", { x: 0.7 + colW * 3, y: r1Y + 0.22, w: colW, h: 0.3, fontSize: 11, bold: true, color: "FBBF24" });
           }
 
-          // Details Grid (Row 2)
+          // Row 2: Dates + Status
           var r2Y = r1Y + 0.7;
           if(includeDates){
             var durText = (x.fromDate || x.toDate) ? (x.fromDate||"—") + "  to  " + (x.toDate||"—") + (days>0 ? "  (" + days + " days)" : "") : "—";
@@ -1638,7 +1628,9 @@ function generatePPT(){
           s.addText(x.status, { x: 7.0, y: r2Y + 0.22, w: 3.0, h: 0.3, fontSize: 11, bold: true, color: stColor === "059669" ? "34D399" : (stColor === "DC2626" ? "F87171" : "FBBF24") });
 
         } else {
-          // OTHER STYLES (Center Black, Center Blur, Fit Black, Fit Blur, Cover, Split)
+          // ==========================================
+          // ALL OTHER LAYOUTS: Image top + details bottom
+          // ==========================================
           var IMG_TOP_S = 0.55;
           var IMG_H_S = 4.3;
           var DET_TOP_S = IMG_TOP_S + IMG_H_S;
@@ -1667,84 +1659,54 @@ function generatePPT(){
           } else if(style === "cover"){
             if(imgData){ try { s.addImage({ data: imgData, x: 0, y: IMG_TOP_S, w: 13.33, h: IMG_H_S }); } catch(e){ console.error(e); } }
             else s.addText("No Image", { x: 0, y: IMG_TOP_S + IMG_H_S/2 - 0.3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
-          } else if(style === "split"){
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: IMG_TOP_S, w: 6.5, h: 6.4, fill: { color: "F1F5F9" } });
-            if(imgData){ try { s.addImage({ data: imgData, x: 0.3, y: IMG_TOP_S + 0.3, w: 5.9, h: 5.8 }); } catch(e){ console.error(e); } }
-            else s.addText("No Image", { x: 0.1, y: IMG_TOP_S + 3, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
-          } else if(style === "split-detail"){
-            if(imgData){ try { s.addImage({ data: imgData, x: 0, y: IMG_TOP_S, w: 13.33, h: IMG_H_S }); } catch(e){ console.error(e); } }
-            else s.addText("No Image", { x: 0, y: IMG_TOP_S + IMG_H_S/2 - 0.3, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           }
 
-          // DETAILS SECTION FOR NON-FULL-DETAIL STYLES
-          if(style === "split"){
-            var infoY = 0.75;
-            s.addText("SITE DETAILS", { x: 6.8, y: infoY, w: 6.3, h: 0.4, fontSize: 14, bold: true, color: T.accentDark });
-            infoY += 0.5;
-            var rows = [
-              { label: "Site Code", value: x.siteCode || "—" },
-              { label: "Area", value: x.area || "—" },
-              { label: "Site Size", value: x.siteSize || "—" },
-              { label: "Location", value: x.location || "—" },
-              { label: "Company", value: x.customer || "—" },
-              { label: "Rate", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—" },
-              { label: "From Date", value: x.fromDate || "—" },
-              { label: "To Date", value: x.toDate || "—" },
-              { label: "Duration", value: days > 0 ? days + " days" : "—" },
-              { label: "Status", value: x.status }
-            ];
-            rows.forEach(function(row){
-              s.addText(row.label + ":", { x: 6.8, y: infoY, w: 1.7, h: 0.3, fontSize: 9, bold: true, color: "64748B" });
-              if(row.label === "Location" && mapUrl){
-                s.addText(String(row.value).substring(0, 45), { x: 8.5, y: infoY, w: 4.6, h: 0.3, fontSize: 10, color: "38BDF8", underline: true, hyperlink: { url: mapUrl } });
-              } else {
-                s.addText(String(row.value).substring(0, 45), { x: 8.5, y: infoY, w: 4.6, h: 0.3, fontSize: 10, color: "0F172A" });
-              }
-              infoY += 0.5;
-            });
-          } else {
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: DET_TOP_S, w: 13.33, h: DET_H_S, fill: { color: "F8FAFC" } });
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: DET_TOP_S, w: 13.33, h: 0.06, fill: { color: T.accent } });
+          // DETAILS SECTION (bottom box for all these layouts)
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: DET_TOP_S, w: 13.33, h: DET_H_S, fill: { color: "F8FAFC" } });
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: DET_TOP_S, w: 13.33, h: 0.06, fill: { color: T.accent } });
 
-            s.addText(x.site, { x: 0.3, y: DET_TOP_S + 0.12, w: 10.5, h: 0.35, fontSize: 14, bold: true, color: "0F172A" });
-            if(x.siteCode){
-              s.addShape(pptx.ShapeType.roundRect, { x: 11.8, y: DET_TOP_S + 0.12, w: 1.3, h: 0.32, fill: { color: T.accentDark }, rectRadius: 0.06 });
-              s.addText(x.siteCode, { x: 11.8, y: DET_TOP_S + 0.12, w: 1.3, h: 0.32, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-            }
+          s.addText(x.site, { x: 0.3, y: DET_TOP_S + 0.12, w: 10.5, h: 0.35, fontSize: 14, bold: true, color: "0F172A" });
+          if(x.siteCode){
+            s.addShape(pptx.ShapeType.roundRect, { x: 11.8, y: DET_TOP_S + 0.12, w: 1.3, h: 0.32, fill: { color: T.accentDark }, rectRadius: 0.06 });
+            s.addText(x.siteCode, { x: 11.8, y: DET_TOP_S + 0.12, w: 1.3, h: 0.32, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+          }
 
-            var r1Y_S = DET_TOP_S + 0.6;
-            var colW_S = 13.33 / 4;
+          var r1Y_S = DET_TOP_S + 0.6;
+          var colW_S = 13.33 / 4;
 
-            s.addText("AREA", { x: 0.3, y: r1Y_S, w: colW_S - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-            s.addText(x.area || "—", { x: 0.3, y: r1Y_S + 0.22, w: colW_S - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark });
+          s.addText("AREA", { x: 0.3, y: r1Y_S, w: colW_S - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
+          s.addText(x.area || "—", { x: 0.3, y: r1Y_S + 0.22, w: colW_S - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark });
 
-            s.addText("SITE SIZE", { x: colW_S + 0.3, y: r1Y_S, w: colW_S - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-            s.addText(x.siteSize || "—", { x: colW_S + 0.3, y: r1Y_S + 0.22, w: colW_S - 0.4, h: 0.3, fontSize: 11, bold: true, color: "7C3AED" });
+          s.addText("SITE SIZE", { x: colW_S + 0.3, y: r1Y_S, w: colW_S - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
+          s.addText(x.siteSize || "—", { x: colW_S + 0.3, y: r1Y_S + 0.22, w: colW_S - 0.4, h: 0.3, fontSize: 11, bold: true, color: "7C3AED" });
 
+          if(includeCompany){
             s.addText("COMPANY", { x: colW_S * 2 + 0.3, y: r1Y_S, w: colW_S - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
             s.addText(x.customer || "—", { x: colW_S * 2 + 0.3, y: r1Y_S + 0.22, w: colW_S - 0.4, h: 0.3, fontSize: 11, bold: true, color: "047857" });
 
             s.addText("RATE", { x: colW_S * 3 + 0.3, y: r1Y_S, w: colW_S - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
             s.addText(x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", { x: colW_S * 3 + 0.3, y: r1Y_S + 0.22, w: colW_S - 0.4, h: 0.3, fontSize: 11, bold: true, color: "B45309" });
+          }
 
-            var r2Y_S = r1Y_S + 0.7;
+          var r2Y_S = r1Y_S + 0.7;
+          if(includeDates){
             var durText_S = (x.fromDate || x.toDate) ? (x.fromDate||"—") + "  to  " + (x.toDate||"—") + (days>0?"  ("+days+" days)":"") : "—";
             s.addText("DURATION", { x: 0.3, y: r2Y_S, w: 2.5, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
             s.addText(durText_S, { x: 0.3, y: r2Y_S + 0.22, w: 6, h: 0.3, fontSize: 10, bold: true, color: "6D28D9" });
-
-            if(x.location){
-              s.addText("LOCATION", { x: 6.5, y: r2Y_S, w: 2.5, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
-              if(mapUrl){
-                s.addText(x.location.substring(0, 55), { x: 6.5, y: r2Y_S + 0.22, w: 6.5, h: 0.3, fontSize: 10, color: "0891B2", underline: true, hyperlink: { url: mapUrl } });
-              } else {
-                s.addText(x.location.substring(0, 55), { x: 6.5, y: r2Y_S + 0.22, w: 6.5, h: 0.3, fontSize: 10, color: "0891B2" });
-              }
-            }
-
-            var r3Y_S = r2Y_S + 0.7;
-            s.addShape(pptx.ShapeType.roundRect, { x: 0.3, y: r3Y_S, w: 1.6, h: 0.3, fill: { color: stColor }, rectRadius: 0.08 });
-            s.addText(x.status.toUpperCase(), { x: 0.3, y: r3Y_S, w: 1.6, h: 0.3, fontSize: 8, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
           }
+
+          if(x.location){
+            s.addText("LOCATION", { x: 6.5, y: r2Y_S, w: 2.5, h: 0.2, fontSize: 8, bold: true, color: "64748B" });
+            if(mapUrl){
+              s.addText(x.location.substring(0, 55), { x: 6.5, y: r2Y_S + 0.22, w: 6.5, h: 0.3, fontSize: 10, color: "0891B2", underline: true, hyperlink: { url: mapUrl } });
+            } else {
+              s.addText(x.location.substring(0, 55), { x: 6.5, y: r2Y_S + 0.22, w: 6.5, h: 0.3, fontSize: 10, color: "0891B2" });
+            }
+          }
+
+          var r3Y_S = r2Y_S + 0.7;
+          s.addShape(pptx.ShapeType.roundRect, { x: 0.3, y: r3Y_S, w: 1.6, h: 0.3, fill: { color: stColor }, rectRadius: 0.08 });
+          s.addText(x.status.toUpperCase(), { x: 0.3, y: r3Y_S, w: 1.6, h: 0.3, fontSize: 8, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
         }
       });
     });
