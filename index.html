@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>Site Management v7</title>
+<title>Site Management v8</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
@@ -163,8 +163,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .logo-preview-box img{max-width:120px;max-height:60px;object-fit:contain;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:4px}
 .logo-preview-box .logo-actions{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
 
-/* ============ PROFESSIONAL PPT MODAL (FIXED FOOTER) ============ */
-.ppt-modal-box{background:#fff;border-radius:20px;padding:0;width:min(720px,100%);max-height:90vh;box-shadow:0 20px 80px rgba(15,23,42,.4);margin:auto;display:flex;flex-direction:column;overflow:hidden}
+/* ============ PROFESSIONAL PPT MODAL ============ */
+.ppt-modal-box{background:#fff;border-radius:20px;padding:0;width:min(760px,100%);max-height:90vh;box-shadow:0 20px 80px rgba(15,23,42,.4);margin:auto;display:flex;flex-direction:column;overflow:hidden}
 .ppt-header{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;padding:20px 26px;position:relative;overflow:hidden;flex-shrink:0}
 .ppt-header::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.08)}
 .ppt-header::after{content:'';position:absolute;bottom:-30px;left:-30px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.06)}
@@ -175,6 +175,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .ppt-section-label{font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .ppt-section-label::before{content:'';width:3px;height:14px;background:linear-gradient(180deg,#7c3aed,#6366f1);border-radius:2px}
 .ppt-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ppt-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .ppt-option{display:flex;align-items:center;gap:10px;padding:12px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:all .2s;background:#fff;position:relative;overflow:hidden}
 .ppt-option:hover{border-color:#a78bfa;background:#faf5ff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,.1)}
 .ppt-option.selected{border-color:#7c3aed;background:linear-gradient(135deg,#faf5ff,#f3e8ff);box-shadow:0 4px 16px rgba(124,58,237,.2)}
@@ -228,7 +229,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   .modal-actions button{width:100%}
   .toast{top:auto;bottom:20px;right:10px;left:10px;max-width:none}
   .bulk-tab{font-size:11px;padding:10px 12px;min-width:110px}
-  .ppt-grid-2{grid-template-columns:1fr}
+  .ppt-grid-2,.ppt-grid-3{grid-template-columns:1fr}
   .ppt-header{padding:16px 20px}
   .ppt-header h2{font-size:17px}
   .ppt-body{padding:16px 20px}
@@ -328,7 +329,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </label>
 <label class="full-width">Site Image (optional)
   <div class="image-upload-box" id="imageUploadBox">
-    <div class="iu-icon">📷</div><div class="iu-title">Click to upload image</div><div class="iu-sub">JPG, PNG - Max 8 MB</div>
+    <div class="iu-icon">📷</div><div class="iu-title">Click to upload image</div><div class="iu-sub">JPG, PNG - Max 8 MB (Auto high-res)</div>
   </div>
   <input type="file" id="fimage" accept="image/*" style="display:none">
   <div id="imagePreviewWrap" style="display:none;text-align:center"><div class="image-preview-wrap"><img id="imagePreview" src="" alt="preview"><button type="button" class="remove-img" id="removeImgBtn">×</button></div></div>
@@ -410,7 +411,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div class="ppt-body">
 
-<div class="ppt-section-label">Layout Style</div>
+<div class="ppt-section-label">Layout Style (8 Options)</div>
 <div class="ppt-grid-2" id="pptStyleOptions">
   <label class="ppt-option selected" data-style="split">
     <input type="radio" name="pptStyle" value="split" checked>
@@ -425,14 +426,14 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <div class="ppt-icon">🖼️</div>
     <div class="ppt-info">
       <div class="ppt-label">Full Cover</div>
-      <div class="ppt-desc">Image fills slide (may crop)</div>
+      <div class="ppt-desc">Image fills slide</div>
     </div>
   </label>
   <label class="ppt-option" data-style="fit-black">
     <input type="radio" name="pptStyle" value="fit-black">
     <div class="ppt-icon">⬛</div>
     <div class="ppt-info">
-      <div class="ppt-label">Fit + Black Sides</div>
+      <div class="ppt-label">Fit + Black</div>
       <div class="ppt-desc">Original image + black bars</div>
     </div>
   </label>
@@ -440,7 +441,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <input type="radio" name="pptStyle" value="fit-blur">
     <div class="ppt-icon">🌫️</div>
     <div class="ppt-info">
-      <div class="ppt-label">Fit + Blur Sides</div>
+      <div class="ppt-label">Fit + Blur</div>
       <div class="ppt-desc">Original image + blur bars</div>
     </div>
   </label>
@@ -448,16 +449,32 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <input type="radio" name="pptStyle" value="center-black">
     <div class="ppt-icon">🎯</div>
     <div class="ppt-info">
-      <div class="ppt-label">Center + Black Sides</div>
-      <div class="ppt-desc">Image 70% center, black sides</div>
+      <div class="ppt-label">Center + Black</div>
+      <div class="ppt-desc">Image 70% + black sides</div>
     </div>
   </label>
   <label class="ppt-option" data-style="center-blur">
     <input type="radio" name="pptStyle" value="center-blur">
     <div class="ppt-icon">✨</div>
     <div class="ppt-info">
-      <div class="ppt-label">Center + Blur Sides</div>
-      <div class="ppt-desc">Image 70% center, blur sides</div>
+      <div class="ppt-label">Center + Blur</div>
+      <div class="ppt-desc">Image 70% + blur sides</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="full-detail">
+    <input type="radio" name="pptStyle" value="full-detail">
+    <div class="ppt-icon">📊</div>
+    <div class="ppt-info">
+      <div class="ppt-label">Full Detail</div>
+      <div class="ppt-desc">Image top + all details below</div>
+    </div>
+  </label>
+  <label class="ppt-option" data-style="split-detail">
+    <input type="radio" name="pptStyle" value="split-detail">
+    <div class="ppt-icon">📑</div>
+    <div class="ppt-info">
+      <div class="ppt-label">Split Detail</div>
+      <div class="ppt-desc">Image left + full details right</div>
     </div>
   </label>
 </div>
@@ -912,34 +929,45 @@ function handleImageUpload(e){
   if(!file) return;
   if(!file.type.startsWith("image/")){ alert("Only images"); return; }
   if(file.size > 8*1024*1024){ alert("Max 8 MB"); return; }
-  showProgress("Processing...", "");
+  showProgress("Processing image (high quality)...", "Please wait");
   var reader = new FileReader();
   reader.onload = function(ev){
     compressImageSmart(ev.target.result, function(compressed){
       hideProgress();
       currentImageData = compressed;
       showImagePreview(compressed);
+      showToast("✅ Image Ready", "High quality image processed", "success");
     });
   };
   reader.readAsDataURL(file);
   e.target.value = "";
 }
+// ✅ HIGHER QUALITY: 2400px max, 0.95 quality, 1500KB limit
 function compressImageSmart(dataUrl, cb){
   var img = new Image();
   img.onload = function(){
-    var MAX_W = 1920, MAX_H = 1920, MAX_B = 1200 * 1024;
+    var MAX_W = 2400, MAX_H = 2400, MAX_B = 1500 * 1024;
     var w = img.width, h = img.height;
-    if(w > MAX_W || h > MAX_H){ var r = Math.min(MAX_W / w, MAX_H / h); w = Math.round(w * r); h = Math.round(h * r); }
+    // Don't upscale small images
+    if(w > MAX_W || h > MAX_H){
+      var r = Math.min(MAX_W / w, MAX_H / h);
+      w = Math.round(w * r); h = Math.round(h * r);
+    }
     var canvas = document.createElement("canvas");
     canvas.width = w; canvas.height = h;
     var ctx = canvas.getContext("2d", { alpha: false });
+    ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
     ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h);
     ctx.drawImage(img, 0, 0, w, h);
-    var quality = 0.9;
+    var quality = 0.95;
     var result = canvas.toDataURL("image/jpeg", quality);
     var attempts = 0;
-    while(result.length > MAX_B && quality > 0.6 && attempts < 10){ quality -= 0.05; result = canvas.toDataURL("image/jpeg", quality); attempts++; }
+    while(result.length > MAX_B && quality > 0.7 && attempts < 10){
+      quality -= 0.05;
+      result = canvas.toDataURL("image/jpeg", quality);
+      attempts++;
+    }
     cb(result);
   };
   img.onerror = function(){ cb(dataUrl); };
@@ -1465,6 +1493,10 @@ function generatePPT(){
   pptx.layout = "LAYOUT_WIDE";
   pptx.author = COMPANY_NAME;
   
+  var now = new Date();
+  var dateOnly = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  
+  // ========== COVER SLIDE ==========
   var slide = pptx.addSlide();
   slide.background = { color: T.bg };
   slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.15, fill: { color: T.accent } });
@@ -1486,11 +1518,10 @@ function generatePPT(){
   slide.addText("SITE REPORT", { x: 0.5, y: currentY, w: 12.33, h: 0.9, fontSize: 48, bold: true, color: "FFFFFF", align: "center", charSpacing: 3 });
   currentY += 1.0;
   
-  var now = new Date();
-  var dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
-  slide.addText(dateStr, { x: 0.5, y: currentY, w: 12.33, h: 0.35, fontSize: 13, color: T.bodyText, align: "center" });
+  slide.addText(dateOnly, { x: 0.5, y: currentY, w: 12.33, h: 0.35, fontSize: 13, color: T.bodyText, align: "center" });
   currentY += 0.7;
   
+  // AREA CARDS
   var areaCounts = {};
   list.forEach(function(s){ var a = s.area || "Unassigned"; areaCounts[a] = (areaCounts[a] || 0) + 1; });
   var areaNames = Object.keys(areaCounts);
@@ -1515,107 +1546,197 @@ function generatePPT(){
     });
   });
   
+  // ✅ BOTTOM INFO: Prepared by + Date + Total Sites + Generated
+  var bottomY = 6.4;
+  slide.addShape(pptx.ShapeType.rect, { x: 0.5, y: bottomY - 0.15, w: 12.33, h: 0.01, fill: { color: T.accent, transparency: 60 } });
+  
+  // Left: Prepared by
+  slide.addText("PREPARED BY", { x: 0.65, y: bottomY, w: 2.5, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
+  slide.addText(COMPANY_NAME, { x: 0.65, y: bottomY + 0.22, w: 3, h: 0.3, fontSize: 11, bold: true, color: "FFFFFF" });
+  
+  // Center-left: Date
+  slide.addText("DATE", { x: 4.2, y: bottomY, w: 2, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
+  slide.addText(dateOnly, { x: 4.2, y: bottomY + 0.22, w: 2.5, h: 0.3, fontSize: 11, bold: true, color: "FFFFFF" });
+  
+  // Center-right: Total Sites
+  slide.addText("TOTAL SITES", { x: 7.0, y: bottomY, w: 2, h: 0.25, fontSize: 8, bold: true, color: "64748B", charSpacing: 2 });
+  slide.addText(String(list.length), { x: 7.0, y: bottomY + 0.22, w: 2, h: 0.3, fontSize: 11, bold: true, color: T.accent });
+  
+  // Right: Generated
+  slide.addText("GENERATED", { x: 9.7, y: bottomY, w: 3, h: 0.25, fontSize: 8, bold: true, color: "64748B", align: "right", charSpacing: 2 });
+  slide.addText(dateOnly, { x: 8.7, y: bottomY + 0.22, w: 4, h: 0.3, fontSize: 11, bold: true, color: "FFFFFF", align: "right" });
+  
+  // ========== INDIVIDUAL SLIDES ==========
   var chain = Promise.resolve();
   
-  if(style === "grid"){
-    for(var gi = 0; gi < list.length; gi += 4){
-      (function(startIdx){
-        chain = chain.then(function(){
-          showProgress("Generating...", "Slide " + (Math.floor(startIdx/4) + 1));
-          var s = pptx.addSlide();
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.5, fill: { color: T.accentDark } });
-          s.addText("Grid — " + (startIdx+1) + " to " + Math.min(startIdx+4, list.length), { x: 0.3, y: 0.05, w: 12.7, h: 0.4, fontSize: 14, bold: true, color: "FFFFFF" });
-          var gs = list.slice(startIdx, startIdx+4);
-          var cW = 6.5, cH = 3.1;
-          var pos = [{ x: 0.15, y: 0.6 }, { x: 6.85, y: 0.6 }, { x: 0.15, y: 3.8 }, { x: 6.85, y: 3.8 }];
-          var innerChain = Promise.resolve();
-          gs.forEach(function(x, j){
-            innerChain = innerChain.then(function(){
-              var p = pos[j];
-              var stColor = "059669";
-              if(x.status === "Not Available") stColor = "DC2626";
-              else if(x.status === "Under Maintenance") stColor = "D97706";
-              s.addShape(pptx.ShapeType.rect, { x: p.x, y: p.y, w: cW, h: cH, fill: { color: "F8FAFC" }, line: { color: "CBD5E1", width: 1 } });
-              var imgP = (includeImages && x.hasImage) ? (imageCache[x.id] ? Promise.resolve(imageCache[x.id]) : getImage(x.id)) : Promise.resolve(null);
-              return imgP.then(function(data){
-                if(data){ try { s.addImage({ data: data, x: p.x + 0.1, y: p.y + 0.1, w: cW - 0.2, h: 1.7, sizing: { type: "contain", w: cW - 0.2, h: 1.7 } }); } catch(e){} }
-                s.addText(x.site.substring(0, 40), { x: p.x + 0.1, y: p.y + 1.85, w: cW - 0.2, h: 0.3, fontSize: 10, bold: true, color: "0F172A" });
-                s.addShape(pptx.ShapeType.roundRect, { x: p.x + 0.1, y: p.y + 2.15, w: 1.2, h: 0.25, fill: { color: stColor }, rectRadius: 0.1 });
-                s.addText(x.status.toUpperCase(), { x: p.x + 0.1, y: p.y + 2.15, w: 1.2, h: 0.25, fontSize: 7, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-                var info = x.area || "";
-                if(includeCompany && x.customer) info += " • " + x.customer;
-                if(includeDates && x.fromDate) info += "\n" + x.fromDate + " - " + x.toDate;
-                s.addText(info, { x: p.x + 1.4, y: p.y + 2.15, w: cW - 1.5, h: 0.7, fontSize: 8, color: "64748B" });
-              });
+  list.forEach(function(x, i){
+    chain = chain.then(function(){
+      showProgress("Generating...", "Slide " + (i+1) + " / " + list.length);
+      var days = calcDays(x.fromDate, x.toDate);
+      var stColor = "059669";
+      if(x.status === "Not Available") stColor = "DC2626";
+      else if(x.status === "Under Maintenance") stColor = "D97706";
+      
+      var s = pptx.addSlide();
+      s.background = { color: T.bg };
+      
+      // Header bar
+      s.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.55, fill: { color: T.accentDark } });
+      s.addText((i+1) + ". " + x.site, { x: 0.3, y: 0.1, w: 9, h: 0.4, fontSize: 13, bold: true, color: "FFFFFF" });
+      s.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.11, w: 2.15, h: 0.33, fill: { color: stColor }, rectRadius: 0.1 });
+      s.addText(x.status.toUpperCase(), { x: 11.0, y: 0.11, w: 2.15, h: 0.33, fontSize: 8, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+      
+      var imgPromise = (includeImages && x.hasImage) ? (imageCache[x.id] ? Promise.resolve(imageCache[x.id]) : getImage(x.id)) : Promise.resolve(null);
+      
+      return imgPromise.then(function(imgData){
+        // ========== LAYOUT: full-detail (NEW) ==========
+        if(style === "full-detail"){
+          // Image top 60% (4.0 inch)
+          var imgH = 4.0;
+          if(imgData){
+            return createFitBlackImage(imgData, 2560, 1100).then(function(p){
+              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: imgH });
             });
-          });
-          return innerChain;
-        });
-      })(gi);
-    }
-  } else {
-    list.forEach(function(x, i){
-      chain = chain.then(function(){
-        showProgress("Generating...", "Slide " + (i+1) + " / " + list.length);
-        var days = calcDays(x.fromDate, x.toDate);
-        var stColor = "059669";
-        if(x.status === "Not Available") stColor = "DC2626";
-        else if(x.status === "Under Maintenance") stColor = "D97706";
-        var s = pptx.addSlide();
-        s.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.65, fill: { color: T.accentDark } });
-        s.addText(x.site, { x: 0.3, y: 0.1, w: 9, h: 0.45, fontSize: 14, bold: true, color: "FFFFFF" });
-        s.addShape(pptx.ShapeType.roundRect, { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fill: { color: stColor }, rectRadius: 0.15 });
-        s.addText(x.status.toUpperCase(), { x: 11.0, y: 0.14, w: 2.15, h: 0.38, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
-        
-        var imgPromise = (includeImages && x.hasImage) ? (imageCache[x.id] ? Promise.resolve(imageCache[x.id]) : getImage(x.id)) : Promise.resolve(null);
-        
-        return imgPromise.then(function(imgData){
-          if(style === "center-black" || style === "fit-black"){
-            var fn = style === "center-black" ? createCenterBlackImage : createFitBlackImage;
-            if(imgData){
-              return fn(imgData, 2560, 1440).then(function(p){
-                if(p) s.addImage({ data: p, x: 0, y: 0.65, w: 13.33, h: 5.5 });
-              });
-            } else {
-              s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
-              s.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
-            }
-          } else if(style === "center-blur" || style === "fit-blur"){
-            var fn2 = style === "center-blur" ? createCenterBlurImage : createFitBlurImage;
-            if(imgData){
-              return fn2(imgData, 2560, 1440).then(function(p){
-                if(p) s.addImage({ data: p, x: 0, y: 0.65, w: 13.33, h: 5.5 });
-              });
-            } else {
-              s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "F1F5F9" } });
-              s.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
-            }
-          } else if(style === "split"){
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 6.5, h: 5.5, fill: { color: "F1F5F9" } });
-            if(imgData){ try { s.addImage({ data: imgData, x: 0.1, y: 0.75, w: 6.3, h: 5.3, sizing: { type: "contain", w: 6.3, h: 5.3 } }); } catch(e){} }
-            else s.addText("📷 No Image", { x: 0.1, y: 3, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
-            var infoY = 0.9;
-            s.addText("Site Details", { x: 6.8, y: infoY, w: 6.3, h: 0.4, fontSize: 16, bold: true, color: T.accentDark });
-            infoY += 0.6;
-            var rows2 = [["Site Name", x.site], ["Site Code", x.siteCode || "—"], ["Area", x.area || "—"], ["Location", x.location || "—"]];
-            if(includeCompany){
-              rows2.push(["Company", x.customer || "—"]);
-              rows2.push(["Rate", x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—"]);
-            }
-            if(includeDates){ rows2.push(["From", x.fromDate || "—"]); rows2.push(["To", x.toDate || "—"]); rows2.push(["Duration", days > 0 ? days + " days" : "—"]); }
-            rows2.push(["Status", x.status]);
-            rows2.forEach(function(row){
-              s.addText(row[0] + ":", { x: 6.8, y: infoY, w: 1.8, h: 0.35, fontSize: 10, bold: true, color: "64748B" });
-              s.addText(String(row[1]).substring(0, 50), { x: 8.6, y: infoY, w: 4.5, h: 0.35, fontSize: 11, color: "0F172A" });
-              infoY += 0.42;
-            });
-          } else if(style === "cover"){
-            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.65, w: 13.33, h: 5.5, fill: { color: "000000" } });
-            if(imgData){ try { s.addImage({ data: imgData, x: 0, y: 0.65, w: 13.33, h: 5.5, sizing: { type: "cover", w: 13.33, h: 5.5 } }); } catch(e){} }
-            else s.addText("📷 No Image", { x: 0, y: 3, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+          } else {
+            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: imgH, fill: { color: "1E293B" } });
+            s.addText("📷 No Image Available", { x: 0, y: 2.2, w: 13.33, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
           }
+          // Details section 40%
+          return new Promise(function(resolve){
+            var detY = 0.55 + imgH;
+            var detH = 7.5 - detY;
+            s.addShape(pptx.ShapeType.rect, { x: 0, y: detY, w: 13.33, h: detH, fill: { color: "F8FAFC" } });
+            
+            // Row 1: Site Name (big)
+            s.addText(x.site, { x: 0.3, y: detY + 0.1, w: 12.7, h: 0.35, fontSize: 15, bold: true, color: "0F172A" });
+            
+            // Row 2: 4 columns of details
+            var detailRowY = detY + 0.55;
+            var colW = 13.33 / 4;
+            
+            // Column 1: AREA + Location
+            s.addText("AREA", { x: 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+            s.addText(x.area || "—", { x: 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark });
+            if(x.location) s.addText(x.location.substring(0, 40), { x: 0.3, y: detailRowY + 0.55, w: colW - 0.4, h: 0.35, fontSize: 9, color: "64748B" });
+            
+            // Column 2: COMPANY
+            s.addText("COMPANY", { x: colW + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+            s.addText(x.customer || "—", { x: colW + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "047857" });
+            
+            // Column 3: RATE
+            s.addText("RATE", { x: colW * 2 + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+            s.addText(x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/mo" : "—", { x: colW * 2 + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 11, bold: true, color: "B45309" });
+            
+            // Column 4: DURATION
+            s.addText("DURATION", { x: colW * 3 + 0.3, y: detailRowY, w: colW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1.5 });
+            var durText = (x.fromDate || x.toDate) ? (x.fromDate||"—") + " to " + (x.toDate||"—") + (days>0?" ("+days+"d)":"") : "—";
+            s.addText(durText, { x: colW * 3 + 0.3, y: detailRowY + 0.22, w: colW - 0.4, h: 0.3, fontSize: 10, bold: true, color: "6D28D9" });
+            
+            // Row 3: Site Code + Status badge info
+            var row3Y = detailRowY + 1.05;
+            if(x.siteCode){
+              s.addShape(pptx.ShapeType.roundRect, { x: 0.3, y: row3Y, w: 1.3, h: 0.3, fill: { color: T.accentDark }, rectRadius: 0.08 });
+              s.addText(x.siteCode, { x: 0.3, y: row3Y, w: 1.3, h: 0.3, fontSize: 10, bold: true, color: "FFFFFF", align: "center", valign: "middle" });
+            }
+            s.addText("📍 " + (x.location || "No location").substring(0, 60), { x: 1.8, y: row3Y, w: 11.2, h: 0.3, fontSize: 9, color: "475569" });
+            
+            resolve();
+          });
+        }
+        // ========== LAYOUT: split-detail (NEW) ==========
+        else if(style === "split-detail"){
+          // Left 55% image, right 45% full details
+          var leftW = 7.3;
+          var rightX = 7.3;
+          var rightW = 13.33 - leftW;
           
-          s.addShape(pptx.ShapeType.rect, { x: 0, y: 6.15, w: 13.33, h: 1.25, fill: { color: "F8FAFC" } });
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: leftW, h: 6.95, fill: { color: "000000" } });
+          if(imgData){
+            return createFitBlackImage(imgData, 1800, 1900).then(function(p){
+              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: leftW, h: 6.95 });
+            });
+          } else {
+            s.addText("📷 No Image", { x: 0, y: 3.5, w: leftW, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
+          }
+          // Right details panel
+          return new Promise(function(resolve){
+            s.addShape(pptx.ShapeType.rect, { x: rightX, y: 0.55, w: rightW, h: 6.95, fill: { color: "F8FAFC" } });
+            s.addShape(pptx.ShapeType.rect, { x: rightX, y: 0.55, w: rightW, h: 0.05, fill: { color: T.accent } });
+            
+            var ry = 0.75;
+            s.addText("SITE DETAILS", { x: rightX + 0.2, y: ry, w: rightW - 0.4, h: 0.3, fontSize: 11, bold: true, color: T.accentDark, charSpacing: 2 });
+            ry += 0.5;
+            
+            var details = [
+              { icon: "🏷️", label: "Site Code", value: x.siteCode || "—" },
+              { icon: "📍", label: "Area", value: x.area || "—" },
+              { icon: "🗺️", label: "Location", value: (x.location || "—").substring(0, 60) },
+              { icon: "🏢", label: "Company", value: x.customer || "—" },
+              { icon: "💰", label: "Rate", value: x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—" },
+              { icon: "📅", label: "From Date", value: x.fromDate || "—" },
+              { icon: "📅", label: "To Date", value: x.toDate || "—" },
+              { icon: "⏱️", label: "Duration", value: days > 0 ? days + " days" : "—" },
+              { icon: "🔔", label: "Status", value: x.status }
+            ];
+            
+            details.forEach(function(d){
+              if(ry > 7.0) return;
+              s.addText(d.icon + " " + d.label, { x: rightX + 0.2, y: ry, w: rightW - 0.4, h: 0.2, fontSize: 8, bold: true, color: "64748B", charSpacing: 1 });
+              s.addText(String(d.value), { x: rightX + 0.2, y: ry + 0.22, w: rightW - 0.4, h: 0.35, fontSize: 11, bold: true, color: "0F172A" });
+              ry += 0.65;
+            });
+            
+            resolve();
+          });
+        }
+        // ========== EXISTING LAYOUTS ==========
+        else if(style === "center-black" || style === "fit-black"){
+          var fn = style === "center-black" ? createCenterBlackImage : createFitBlackImage;
+          if(imgData){
+            return fn(imgData, 2560, 1440).then(function(p){
+              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: 5.95 });
+            });
+          } else {
+            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: 5.95, fill: { color: "000000" } });
+            s.addText("📷 No Image Available", { x: 0, y: 3.2, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+          }
+        } else if(style === "center-blur" || style === "fit-blur"){
+          var fn2 = style === "center-blur" ? createCenterBlurImage : createFitBlurImage;
+          if(imgData){
+            return fn2(imgData, 2560, 1440).then(function(p){
+              if(p) s.addImage({ data: p, x: 0, y: 0.55, w: 13.33, h: 5.95 });
+            });
+          } else {
+            s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 13.33, h: 5.95, fill: { color: "1E293B" } });
+            s.addText("📷 No Image Available", { x: 0, y: 3.2, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+          }
+        } else if(style === "split"){
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: 0.55, w: 6.5, h: 5.95, fill: { color: "F1F5F9" } });
+          if(imgData){ try { s.addImage({ data: imgData, x: 0.1, y: 0.65, w: 6.3, h: 5.75, sizing: { type: "contain", w: 6.3, h: 5.75 } }); } catch(e){} }
+          else s.addText("📷 No Image", { x: 0.1, y: 3.5, w: 6.3, h: 0.6, fontSize: 18, color: "94A3B8", align: "center", italic: true });
+          var infoY = 0.8;
+          s.addText("Site Details", { x: 6.8, y: infoY, w: 6.3, h: 0.4, fontSize: 16, bold: true, color: T.accentDark });
+          infoY += 0.6;
+          var rows2 = [["Site Name", x.site], ["Site Code", x.siteCode || "—"], ["Area", x.area || "—"], ["Location", x.location || "—"]];
+          if(includeCompany){
+            rows2.push(["Company", x.customer || "—"]);
+            rows2.push(["Rate", x.rate ? "₹" + Number(x.rate).toLocaleString('en-IN') + "/PM" : "—"]);
+          }
+          if(includeDates){ rows2.push(["From", x.fromDate || "—"]); rows2.push(["To", x.toDate || "—"]); rows2.push(["Duration", days > 0 ? days + " days" : "—"]); }
+          rows2.push(["Status", x.status]);
+          rows2.forEach(function(row){
+            s.addText(row[0] + ":", { x: 6.8, y: infoY, w: 1.8, h: 0.35, fontSize: 10, bold: true, color: "64748B" });
+            s.addText(String(row[1]).substring(0, 50), { x: 8.6, y: infoY, w: 4.5, h: 0.35, fontSize: 11, color: "0F172A" });
+            infoY += 0.42;
+          });
+        } else if(style === "cover"){
+          if(imgData){ try { s.addImage({ data: imgData, x: 0, y: 0.55, w: 13.33, h: 5.95, sizing: { type: "cover", w: 13.33, h: 5.95 } }); } catch(e){} }
+          else s.addText("📷 No Image", { x: 0, y: 3.2, w: 13.33, h: 0.6, fontSize: 20, color: "94A3B8", align: "center", italic: true });
+        }
+        
+        // Footer for non-detail styles
+        if(style !== "full-detail" && style !== "split-detail"){
+          s.addShape(pptx.ShapeType.rect, { x: 0, y: 6.5, w: 13.33, h: 1.0, fill: { color: "F8FAFC" } });
           var cols = [{ label: "AREA", value: x.area || "—" }];
           if(includeCompany){
             cols.push({ label: "COMPANY", value: x.customer || "—" });
@@ -1625,14 +1746,15 @@ function generatePPT(){
           var colW = 13.33 / cols.length;
           cols.forEach(function(f, idx){
             var cx = idx * colW;
-            s.addText(f.label, { x: cx+0.1, y: 6.23, w: colW-0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
-            s.addText(String(f.value).substring(0, 30), { x: cx+0.1, y: 6.48, w: colW-0.2, h: 0.4, fontSize: 11, bold: true, color: T.accentDark });
+            s.addText(f.label, { x: cx+0.1, y: 6.58, w: colW-0.2, h: 0.25, fontSize: 8, bold: true, color: "64748B" });
+            s.addText(String(f.value).substring(0, 30), { x: cx+0.1, y: 6.83, w: colW-0.2, h: 0.4, fontSize: 11, bold: true, color: T.accentDark });
           });
-        });
+        }
       });
     });
-  }
+  });
   
+  // Thank you slide
   chain.then(function(){
     var s2 = pptx.addSlide();
     s2.background = { color: T.bg };
