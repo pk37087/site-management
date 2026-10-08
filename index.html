@@ -424,7 +424,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <label><input type="checkbox" name="pptField" value="siteCode" checked> <span>Site code</span></label>
 <label><input type="checkbox" name="pptField" value="siteSize" checked> <span>Site size</span></label>
 <label><input type="checkbox" name="pptField" value="location" checked> <span>Location</span></label>
-<label><input type="checkbox" name="pptField" value="company" checked> <span>Company</span></label>
+<label><input type="checkbox" name="pptField" value="company" checked> <span>Client</span></label>
 <label><input type="checkbox" name="pptField" value="rate" checked> <span>Monthly rate</span></label>
 <label><input type="checkbox" name="pptField" value="status" checked> <span>Status</span></label>
 <label><input type="checkbox" name="pptField" value="booking" checked> <span>Booking dates</span></label>
@@ -670,16 +670,17 @@ function showBookingEndingAlerts(){
 function showNewBookingAlerts(){
   var m=document.getElementById("alertsMenu"); if(m) m.style.display="none";
   var list=getNewBookingAlerts();
-  if(!list.length){ showToast("No new bookings","No new booking found.","success"); return; }
+  if(!list.length){ showToast("No new bookings","No new booking found in the last 2 days.","success"); return; }
   var msg=list.map(function(s){return (s.siteCode?s.siteCode+" — ":"")+s.site+" : "+(s.fromDate||"")+" to "+(s.toDate||"");}).join("\n");
-  alert("New bookings:\n\n"+msg);
-  var key="ds_new_booking_alerts",seen={}; try{seen=JSON.parse(localStorage.getItem(key)||"{}");}catch(e){} list.forEach(function(s){seen[String(s.id)]=true;}); try{localStorage.setItem(key,JSON.stringify(seen));}catch(e){}
+  alert("New bookings (last 2 days):\n\n"+msg);
 }
 
 function getNewBookingAlerts(){
-  var key="ds_new_booking_alerts"; var seen={}; try{seen=JSON.parse(localStorage.getItem(key)||"{}");}catch(e){}
-  var fresh=sites.filter(function(s){ return !seen[String(s.id)]; });
-  return fresh;
+  var now=Date.now(), twoDays=2*24*60*60*1000;
+  return sites.filter(function(s){
+    var created=Number(s.createdAt||0);
+    return created>0 && (now-created)>=0 && (now-created)<=twoDays;
+  }).sort(function(a,b){ return Number(b.createdAt||0)-Number(a.createdAt||0); });
 }
 
 
@@ -913,6 +914,7 @@ function saveSite(){
   var finalSiteCode = siteCodeInput || (codeMatch ? codeMatch[1].toUpperCase() : "");
   var newSite = {
     id: id, area: areaVal, site: finalSiteName, siteCode: finalSiteCode,
+    createdAt: (editIndex < 0 ? Date.now() : (sites[editIndex].createdAt || Date.now())),
     siteSize: siteSizeInput,
     location: loc.value.trim(), lat: loc.dataset.lat || "", lng: loc.dataset.lng || "",
     customer: document.getElementById("fcustomer").value.trim(),
