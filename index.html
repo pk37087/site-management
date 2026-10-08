@@ -195,7 +195,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .ppt-footer .btn-cancel:hover{background:#f1f5f9}
 .ppt-footer .btn-generate{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.35);display:inline-flex;align-items:center;gap:8px}
 .ppt-footer .btn-generate:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.45)}
-.format-swatch{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#334155;font-size:12px;font-weight:800;border:1px solid #cbd5e1;box-shadow:none}.theme-card.selected .format-swatch{background:#e2e8f0;color:#111827}.ppt-info-note{margin-top:16px;padding:12px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;color:#475569;font-size:11px;line-height:1.8}.ppt-header{background:#111827!important}.ppt-footer .btn-generate{background:#111827!important;box-shadow:none!important}.ppt-section-label::before{background:#475569!important}.theme-card.selected{border-color:#475569!important;box-shadow:0 3px 12px rgba(15,23,42,.10)!important}.theme-card.selected::after{background:#111827!important}
+.format-swatch{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#334155;font-size:12px;font-weight:800;border:1px solid #cbd5e1;box-shadow:none}.theme-card.selected .format-swatch{background:#e2e8f0;color:#111827}.ppt-info-note{margin-top:16px;padding:12px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;color:#475569;font-size:11px;line-height:1.8}.ppt-header{background:linear-gradient(135deg,#0B2F6B 0%,#123B8A 55%,#1D4ED8 100%)!important;position:relative;overflow:hidden}.ppt-header:after{content:"";position:absolute;right:-60px;top:-80px;width:230px;height:230px;border-radius:50%;background:rgba(96,165,250,.16)}.ppt-footer .btn-generate{background:linear-gradient(135deg,#0B2F6B,#1D4ED8)!important;box-shadow:0 6px 18px rgba(29,78,216,.25)!important}.ppt-section-label::before{background:#1D4ED8!important}.ppt-grid-2{gap:14px!important}.theme-card{background:linear-gradient(180deg,#ffffff,#f8fbff)!important;border:1px solid #dbe5f1!important;border-radius:14px!important;min-height:82px!important;transition:all .18s ease!important;box-shadow:0 2px 8px rgba(15,23,42,.04)!important}.theme-card:hover{transform:translateY(-2px);border-color:#93c5fd!important;box-shadow:0 8px 20px rgba(30,64,175,.10)!important}.theme-card.selected{border-color:#1D4ED8!important;box-shadow:0 8px 22px rgba(29,78,216,.16)!important;background:linear-gradient(180deg,#eff6ff,#ffffff)!important}.theme-card.selected::after{background:linear-gradient(135deg,#123B8A,#60A5FA)!important}.theme-card.selected .format-swatch{background:linear-gradient(135deg,#123B8A,#1D4ED8)!important;color:#fff!important;border-color:#123B8A!important;box-shadow:0 5px 12px rgba(29,78,216,.22)!important}.format-swatch{width:46px!important;height:46px!important;border-radius:12px!important;background:#eef4ff!important;color:#123B8A!important;border:1px solid #cbdaf2!important;box-shadow:inset 0 1px 0 #fff!important}.ppt-label{font-size:13px!important;font-weight:800!important;color:#0f274f!important}.ppt-desc{color:#64748b!important}.ppt-info-note{background:linear-gradient(90deg,#f8fbff,#eef5ff)!important;border-color:#d7e5f7!important;color:#334155!important}
 @media (max-width:768px){
   .header-actions{width:100%;justify-content:flex-start;gap:5px}
   .header-actions button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center}
@@ -903,36 +903,39 @@ function showImagePreview(data){ document.getElementById("imagePreview").src = d
 function removeImage(){ currentImageData = ""; document.getElementById("imagePreview").src = ""; document.getElementById("imagePreviewWrap").style.display = "none"; document.getElementById("imageUploadBox").style.display = "block"; }
 
 function siteMatchesDateFilter(s){
-  // A date filter is a status/availability filter, not a site-removal filter.
-  // Every site remains in the total list.
+  // Date filtering changes the availability status for the selected period;
+  // it never removes a site from the total portfolio.
   return true;
 }
 function getSiteStatusForFilter(s){
-  // The saved status is the source of truth. The date filter only asks:
-  // "Is this site's existing booking active during the selected range?"
-  var savedStatus = s.status || "Available";
+  var savedStatus = String(s.status || "Available");
   if(!activeDateFilter.from && !activeDateFilter.to) return savedStatus;
   if(savedStatus === "Under Maintenance") return "Under Maintenance";
 
-  // An Available site stays Available. Its default/edit-form dates are not a
-  // booking and must never turn it red just because the filter includes today.
+  // IMPORTANT: only a site that is actually booked (saved as Not Available)
+  // participates in date-overlap calculations. Default/edit-form dates on an
+  // Available site must not make it unavailable.
   if(savedStatus !== "Not Available") return "Available";
 
-  var fFrom=activeDateFilter.from ? parseDDMMYYYY(activeDateFilter.from) : null;
-  var fTo=activeDateFilter.to ? parseDDMMYYYY(activeDateFilter.to) : fFrom;
-  if(fFrom) fFrom.setHours(0,0,0,0);
-  if(fTo) fTo.setHours(23,59,59,999);
+  var fFrom = activeDateFilter.from ? parseDDMMYYYY(activeDateFilter.from) : null;
+  var fTo   = activeDateFilter.to ? parseDDMMYYYY(activeDateFilter.to) : null;
+  if(!fFrom && !fTo) return savedStatus;
+  if(!fFrom) fFrom = fTo;
+  if(!fTo) fTo = fFrom;
+  fFrom.setHours(0,0,0,0);
+  fTo.setHours(23,59,59,999);
 
-  var sf=parseDDMMYYYY(s.fromDate), st=parseDDMMYYYY(s.toDate);
+  var sf = parseDDMMYYYY(s.fromDate);
+  var st = parseDDMMYYYY(s.toDate);
+  if(!sf && !st) return "Not Available";
   if(sf) sf.setHours(0,0,0,0);
   if(st) st.setHours(23,59,59,999);
+  var start = sf || st;
+  var end = st || sf;
+  if(end < start){ var tmp=start; start=end; end=tmp; }
 
-  // A manually marked Not Available site without booking dates remains Not Available.
-  if(!sf && !st) return "Not Available";
-
-  var start=sf||st, end=st||sf;
-  var overlaps=(!fFrom || end>=fFrom) && (!fTo || start<=fTo);
-  return overlaps ? "Not Available" : "Available";
+  // Inclusive overlap: [bookingStart, bookingEnd] intersects [filterStart, filterEnd].
+  return (start <= fTo && end >= fFrom) ? "Not Available" : "Available";
 }
 
 function render(){
@@ -1363,9 +1366,14 @@ function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurD
   rows.forEach(function(r,i){var xx=3.35+i*2.12; slide.addShape(pptx.ShapeType.roundRect,{x:xx,y:panelY+.14,w:1.94,h:.72,rectRadius:.04,fill:{color:"123B8A"},line:{color:"2F5DAA",width:.6}}); slide.addText(r[0],{x:xx+.12,y:panelY+.25,w:1.7,h:.13,fontSize:5.5,bold:true,color:"93C5FD",margin:0}); slide.addText(r[1],{x:xx+.12,y:panelY+.46,w:1.7,h:.24,fontSize:7.8,bold:true,color:white,margin:0,fit:"shrink"});});
   slide.addShape(pptx.ShapeType.roundRect,{x:11.68,y:panelY+.27,w:.82,h:.40,rectRadius:.04,fill:{color:statusColor},line:{color:statusColor}});
   slide.addText(st.toUpperCase(),{x:11.68,y:panelY+.27,w:.82,h:.40,fontSize:5.2,bold:true,color:white,align:"center",valign:"mid",margin:0,fit:"shrink"});
-  var locText="📍 "+pptText(x.location||x.site)+ (mapUrl?"  ↗ Open Map":"");
-  slide.addText(locText,{x:.82,y:7.00,w:9.5,h:.18,fontSize:6.8,bold:!!mapUrl,color:mapUrl?"FFFFFF":muted,margin:0,fit:"shrink",hyperlink:mapUrl?{url:mapUrl}:undefined});
-  slide.addText((index+1)+" / "+total,{x:11.5,y:7.00,w:1.0,h:.18,fontSize:6.8,color:muted,align:"right",margin:0});
+  slide.addShape(pptx.ShapeType.line,{x:.82,y:6.86,w:11.55,h:0,line:{color:"3B67B7",width:1}});
+  var locText="📍 "+pptText(x.location||x.site);
+  slide.addText(locText,{x:.82,y:6.98,w:8.25,h:.22,fontSize:7,bold:true,color:white,margin:0,fit:"shrink"});
+  if(mapUrl){
+    slide.addShape(pptx.ShapeType.roundRect,{x:9.30,y:6.91,w:2.05,h:.38,rectRadius:.04,fill:{color:"60A5FA"},line:{color:"60A5FA"}});
+    slide.addText("OPEN MAP ↗",{x:9.30,y:6.91,w:2.05,h:.38,fontSize:6.5,bold:true,color:"0B2F6B",align:"center",valign:"mid",margin:0,hyperlink:{url:mapUrl}});
+  }
+  slide.addText((index+1)+" / "+total,{x:11.65,y:6.98,w:.72,h:.22,fontSize:7,color:muted,align:"right",margin:0});
 }
 
 function addPptSiteDetails(slide,pptx,x,imgData,index,total,format){
@@ -1419,6 +1427,8 @@ function generatePPT(){
   var cover=pptx.addSlide();cover.background={color:"123B8A"};
   cover.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:1.05,fill:{color:"123B8A"},line:{color:"123B8A"}});
   cover.addShape(pptx.ShapeType.rect,{x:0,y:1.05,w:W,h:.07,fill:{color:"60A5FA"},line:{color:"60A5FA"}});
+  cover.addShape(pptx.ShapeType.arc,{x:10.65,y:5.05,w:2.95,h:2.95,line:{color:"60A5FA",width:2,transparency:55},adjustPoint:.25});
+  cover.addShape(pptx.ShapeType.arc,{x:11.25,y:5.65,w:2.35,h:2.35,line:{color:"93C5FD",width:1.2,transparency:40},adjustPoint:.25});
   if(companyLogo){ try{ cover.addImage({data:companyLogo,x:.55,y:.13,w:2.65,h:.78,sizing:{type:"contain",align:"left",valign:"middle"}}); }catch(e){} }
   cover.addText("DS OUTDOOR MEDIA",{x:10.0,y:.31,w:2.65,h:.25,fontSize:10,bold:true,color:"FFFFFF",align:"right",margin:0});
     cover.addText("AREAS INCLUDED IN THIS REPORT",{x:.75,y:1.55,w:6.5,h:.22,fontSize:9,bold:true,color:"93C5FD",margin:0,charSpacing:1.4});
