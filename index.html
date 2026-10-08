@@ -262,7 +262,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <button class="btn-yellow admin-only" id="bulkBtn" type="button">📦 Bulk</button>
     <button class="btn-gray admin-only" id="backupBtn" type="button">Backup</button>
     <button class="btn-light admin-only" id="importBtn" type="button">Import</button>
-    <button class="btn-light" id="alertsBtn" type="button">🔔 Alerts <span id="alertCount" style="display:none;background:#dc2626;color:#fff;border-radius:999px;padding:1px 6px;font-size:10px;margin-left:4px">0</span></button>
+    <div style="position:relative;display:inline-block"><button class="btn-light" id="alertsBtn" type="button">🔔 Alerts <span id="alertCount" style="display:none;background:#dc2626;color:#fff;border-radius:999px;padding:1px 6px;font-size:10px;margin-left:4px">0</span></button><div id="alertsMenu" style="display:none;position:absolute;right:0;top:calc(100% + 6px);min-width:210px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,.12);z-index:9999;padding:6px"><button type="button" id="bookingEndingAlertBtn" style="display:block;width:100%;text-align:left;border:0;background:#fff;padding:10px;border-radius:7px;cursor:pointer">🔔 Booking Ending Alert</button><button type="button" id="newBookingAlertBtn" style="display:block;width:100%;text-align:left;border:0;background:#fff;padding:10px;border-radius:7px;cursor:pointer">🆕 New Booking</button></div></div>
     <button class="btn-red" id="logoutBtn" type="button">Logout</button>
   </div>
 </header>
@@ -657,12 +657,31 @@ function checkEndDateNotifications(){
   }
 }
 function openAlerts(){
+  var m=document.getElementById("alertsMenu"); if(!m) return;
+  m.style.display=m.style.display==="none"?"block":"none";
+}
+function showBookingEndingAlerts(){
+  var m=document.getElementById("alertsMenu"); if(m) m.style.display="none";
   var list=getUpcomingEndDateSites(); updateAlertBadge(list);
-  if("Notification" in window && Notification.permission==="default") Notification.requestPermission().then(function(){ checkEndDateNotifications(); }).catch(function(){});
   if(!list.length){ showToast("No upcoming expiries","No site booking ends within the next 3 days.","success"); return; }
   var msg=list.map(function(s){return (s.siteCode?s.siteCode+" — ":"")+s.site+" : ends "+s.toDate;}).join("\n");
   alert("Bookings ending within 3 days:\n\n"+msg);
 }
+function showNewBookingAlerts(){
+  var m=document.getElementById("alertsMenu"); if(m) m.style.display="none";
+  var list=getNewBookingAlerts();
+  if(!list.length){ showToast("No new bookings","No new booking found.","success"); return; }
+  var msg=list.map(function(s){return (s.siteCode?s.siteCode+" — ":"")+s.site+" : "+(s.fromDate||"")+" to "+(s.toDate||"");}).join("\n");
+  alert("New bookings:\n\n"+msg);
+  var key="ds_new_booking_alerts",seen={}; try{seen=JSON.parse(localStorage.getItem(key)||"{}");}catch(e){} list.forEach(function(s){seen[String(s.id)]=true;}); try{localStorage.setItem(key,JSON.stringify(seen));}catch(e){}
+}
+
+function getNewBookingAlerts(){
+  var key="ds_new_booking_alerts"; var seen={}; try{seen=JSON.parse(localStorage.getItem(key)||"{}");}catch(e){}
+  var fresh=sites.filter(function(s){ return !seen[String(s.id)]; });
+  return fresh;
+}
+
 
 function loadCompanyLogo(){
   return apiGet("/logo").then(function(result){
@@ -1417,10 +1436,10 @@ function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurD
   var panelY=5.25,panelH=1.78;
   slide.addShape(pptx.ShapeType.roundRect,{x:.55,y:panelY,w:12.23,h:panelH,rectRadius:.06,fill:{color:"0B2F6B"},line:{color:"4F7FD8",width:1.2}});
   slide.addShape(pptx.ShapeType.rect,{x:.55,y:panelY,w:.08,h:panelH,fill:{color:lightBlue},line:{color:lightBlue}});
-  var items=[]; if(fields.area)items.push(["AREA",pptVal(x.area)]); if(fields.siteCode)items.push(["SITE CODE",pptVal(x.siteCode)]); if(fields.siteSize)items.push(["SITE SIZE",pptVal(x.siteSize)]); if(fields.company)items.push(["COMPANY",pptVal(x.customer)]); if(fields.rate)items.push(["MONTHLY RATE",formatPptRate(x.rate)]); if(fields.booking)items.push(["BOOKING DATES",(pptText(x.fromDate)||"—")+" - "+(pptText(x.toDate)||"—")]); if(fields.duration)items.push(["DURATION",calcDays(x.fromDate,x.toDate)?calcDays(x.fromDate,x.toDate)+" days":"—"]); if(fields.status)items.push(["STATUS",st.toUpperCase()]);
+  var items=[]; if(fields.area)items.push(["AREA",pptVal(x.area)]); if(fields.siteCode)items.push(["SITE CODE",pptVal(x.siteCode)]); if(fields.siteSize)items.push(["SITE SIZE",pptVal(x.siteSize)]); if(fields.company)items.push(["CLIENT NAME",pptVal(x.customer)]); if(fields.rate)items.push(["MONTHLY RATE",formatPptRate(x.rate)]); if(fields.booking)items.push(["BOOKING DATES",(pptText(x.fromDate)||"—")+" - "+(pptText(x.toDate)||"—")]); if(fields.duration)items.push(["DURATION",calcDays(x.fromDate,x.toDate)?calcDays(x.fromDate,x.toDate)+" days":"—"]); if(fields.status)items.push(["STATUS",st.toUpperCase()]);
   var cols=Math.min(4,Math.max(1,items.length)), rows=Math.ceil(items.length/cols), gap=.12, innerW=11.72, cardW=(innerW-gap*(cols-1))/cols, cardH=rows===1?.92:.74;
   items.forEach(function(r,i){var row=Math.floor(i/cols),col=i%cols,xx=.82+col*(cardW+gap),yy=panelY+.20+row*(cardH+.10),isStatus=r[0]==="STATUS";slide.addShape(pptx.ShapeType.roundRect,{x:xx,y:yy,w:cardW,h:cardH,rectRadius:.04,fill:{color:isStatus?statusColor:"123B8A"},line:{color:isStatus?statusColor:"5B86D6",width:1}});slide.addText(r[0],{x:xx+.10,y:yy+.11,w:cardW-.20,h:.16,fontSize:6.3,bold:true,color:isStatus?"FFFFFF":"93C5FD",margin:0,fit:"shrink"});slide.addText(r[1],{x:xx+.10,y:yy+.32,w:cardW-.20,h:cardH-.38,fontSize:8.7,bold:true,color:white,margin:0,fit:"shrink",valign:"mid"});});
-  if(fields.location){var locY=6.80;slide.addText("📍 "+pptVal(x.location||x.site),{x:.82,y:locY,w:4.15,h:.22,fontSize:7.5,bold:true,color:white,margin:0,fit:"shrink"});if(mapUrl){slide.addShape(pptx.ShapeType.roundRect,{x:5.56,y:locY-.02,w:2.20,h:.40,rectRadius:.04,fill:{color:"FEE2E2"},line:{color:"EF4444",width:1},hyperlink:{url:mapUrl}});slide.addText("OPEN MAP ↗",{x:5.56,y:locY-.02,w:2.20,h:.40,fontSize:7.5,bold:true,color:"DC2626",align:"center",valign:"mid",margin:0,hyperlink:{url:mapUrl}});}}
+  if(fields.location){var locY=7.02;slide.addText("📍 "+pptVal(x.location||x.site),{x:.82,y:locY,w:4.15,h:.22,fontSize:7.5,bold:true,color:white,margin:0,fit:"shrink"});if(mapUrl){slide.addShape(pptx.ShapeType.roundRect,{x:5.56,y:locY,w:2.20,h:.36,rectRadius:.04,fill:{color:"FEE2E2"},line:{color:"EF4444",width:1},hyperlink:{url:mapUrl}});slide.addText("OPEN MAP ↗",{x:5.56,y:locY,w:2.20,h:.36,fontSize:7.5,bold:true,color:"DC2626",align:"center",valign:"mid",margin:0,hyperlink:{url:mapUrl}});}}
   slide.addText((index+1)+" / "+total,{x:11.65,y:locY,w:.72,h:.22,fontSize:7,color:muted,align:"right",margin:0});
 }
 
@@ -1454,7 +1473,7 @@ function addPptSiteDetails(slide,pptx,x,imgData,index,total,format,pptFields){
   if(fields.image && imgData){try{slide.addImage({data:imgData,x:.47,y:1.14,w:7.38,h:4.46,sizing:{type:"contain",align:"center",valign:"middle"}});}catch(e){slide.addText("Image unavailable",{x:.7,y:3.05,w:6.9,h:.35,fontSize:14,color:"FFFFFF",align:"center",margin:0});}}else{slide.addText("NO SITE IMAGE",{x:.7,y:2.85,w:6.9,h:.35,fontSize:14,bold:true,color:"CBD5E1",align:"center",margin:0});}
   slide.addShape(pptx.ShapeType.roundRect,{x:8.25,y:1.02,w:4.73,h:4.70,rectRadius:.05,fill:{color:"F8FAFC"},line:{color:border,width:1}});
   slide.addText("SITE INFORMATION",{x:8.58,y:1.32,w:3.9,h:.25,fontSize:9,bold:true,color:blue,margin:0,charSpacing:1.1});
-  var rows=[]; if(fields.siteSize) rows.push(["SITE SIZE",pptVal(x.siteSize)]); if(fields.company) rows.push(["COMPANY",pptVal(x.customer)]); if(fields.rate) rows.push(["MONTHLY RATE",formatPptRate(x.rate)]); if(fields.booking) { rows.push(["BOOKING FROM",pptVal(x.fromDate)]); rows.push(["BOOKING TO",pptVal(x.toDate)]); } if(fields.duration) rows.push(["DURATION",calcDays(x.fromDate,x.toDate)?calcDays(x.fromDate,x.toDate)+" days":"—"]);
+  var rows=[]; if(fields.siteSize) rows.push(["SITE SIZE",pptVal(x.siteSize)]); if(fields.company) rows.push(["CLIENT NAME",pptVal(x.customer)]); if(fields.rate) rows.push(["MONTHLY RATE",formatPptRate(x.rate)]); if(fields.booking) { rows.push(["BOOKING FROM",pptVal(x.fromDate)]); rows.push(["BOOKING TO",pptVal(x.toDate)]); } if(fields.duration) rows.push(["DURATION",calcDays(x.fromDate,x.toDate)?calcDays(x.fromDate,x.toDate)+" days":"—"]);
   rows.forEach(function(r,i){var y=1.76+i*.56;slide.addText(r[0],{x:8.58,y:y,w:1.35,h:.18,fontSize:7,bold:true,color:muted,margin:0});slide.addText(r[1],{x:9.92,y:y-.02,w:2.65,h:.27,fontSize:9.5,bold:true,color:text,margin:0,fit:"shrink"});if(i<rows.length-1)slide.addShape(pptx.ShapeType.line,{x:8.58,y:y+.34,w:3.98,h:0,line:{color:"E2E8F0",width:1}});});
   if(fields.status){ slide.addShape(pptx.ShapeType.roundRect,{x:8.58,y:5.05,w:3.98,h:.42,rectRadius:.03,fill:{color:statusColor},line:{color:statusColor}});slide.addText("STATUS  •  "+st.toUpperCase(),{x:8.58,y:5.05,w:3.98,h:.42,fontSize:8.5,bold:true,color:white,align:"center",valign:"mid",margin:0}); }
   slide.addShape(pptx.ShapeType.rect,{x:.35,y:6.02,w:12.63,h:1.08,fill:{color:white},line:{color:border,width:1}});
@@ -1861,6 +1880,9 @@ function bindEvents(){
   if(cancelPptBtn) cancelPptBtn.onclick = closePPTModal;
   var alertsBtn = document.getElementById("alertsBtn");
   if(alertsBtn) alertsBtn.onclick = openAlerts;
+  var endBtn=document.getElementById("bookingEndingAlertBtn"); if(endBtn) endBtn.onclick=showBookingEndingAlerts;
+  var newBtn=document.getElementById("newBookingAlertBtn"); if(newBtn) newBtn.onclick=showNewBookingAlerts;
+  document.addEventListener("click",function(e){var menu=document.getElementById("alertsMenu"),wrap=document.getElementById("alertsBtn"); if(menu && menu.style.display!=="none" && !e.target.closest("#alertsMenu") && e.target!==wrap){menu.style.display="none";}});
   var generatePptBtn = document.getElementById("generatePptBtn");
   if(generatePptBtn) generatePptBtn.onclick = generatePPT;
   document.querySelectorAll(".theme-card").forEach(function(card){
