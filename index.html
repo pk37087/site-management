@@ -406,6 +406,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <label class="theme-card" data-format="multi"><input type="radio" name="pptFormat" value="multi"><div class="theme-swatch format-swatch">02</div><div><div class="ppt-label">Multiple Areas Format</div><div class="ppt-desc">Multiple-area portfolio layout</div></div></label>
 <label class="theme-card" data-format="centerblack"><input type="radio" name="pptFormat" value="centerblack"><div class="theme-swatch format-swatch">03</div><div><div class="ppt-label">Centered Image Format</div><div class="ppt-desc">Image centered • black sides • details below</div></div></label>
 <label class="theme-card" data-format="centerblur"><input type="radio" name="pptFormat" value="centerblur"><div class="theme-swatch format-swatch">04</div><div><div class="ppt-label">Centered Blur Format</div><div class="ppt-desc">Centered image • blurred background • details below</div></div></label>
+<label class="theme-card" data-format="centerblackwide"><input type="radio" name="pptFormat" value="centerblackwide"><div class="theme-swatch format-swatch">05</div><div><div class="ppt-label">Wide Centered Image</div><div class="ppt-desc">Larger image • slim black sides • details below</div></div></label>
+<label class="theme-card" data-format="centerblurwide"><input type="radio" name="pptFormat" value="centerblurwide"><div class="theme-swatch format-swatch">06</div><div><div class="ppt-label">Wide Centered Blur</div><div class="ppt-desc">Larger image • softer blur • details below</div></div></label>
 </div>
 <div class="ppt-info-note">✓ Site image &nbsp; ✓ Area &nbsp; ✓ Site code &nbsp; ✓ Site size &nbsp; ✓ Location &nbsp; ✓ Company &nbsp; ✓ Monthly rate &nbsp; ✓ Status &nbsp; ✓ Booking dates &nbsp; ✓ Duration</div>
 </div>
@@ -1327,39 +1329,43 @@ function makePptBlurData(imgData, cb){
 }
 
 function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurData,imgMetrics){
-  var W=13.333,H=7.5, blue="123B8A", lightBlue="60A5FA", white="FFFFFF", black="000000", text="0F172A", muted="CBD5E1";
+  var W=13.333,H=7.5, blue="123B8A", lightBlue="60A5FA", white="FFFFFF", black="000000", muted="CBD5E1";
   var st=getSiteStatusForFilter(x), statusColor=st==="Not Available"?"C62828":st==="Under Maintenance"?"D97706":"15803D";
+  var wide=(format==="centerblackwide" || format==="centerblurwide");
+  var mapUrl=getPptMapUrl(x);
   slide.background={color:blue};
   slide.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:.68,fill:{color:blue},line:{color:blue}});
   slide.addText("SITE PORTFOLIO REPORT",{x:.55,y:.18,w:4.8,h:.22,fontSize:9,bold:true,color:"BFDBFE",margin:0,charSpacing:1.2});
   slide.addText(pptText(x.site),{x:5.0,y:.12,w:5.0,h:.38,fontSize:17,bold:true,color:white,align:"center",margin:0,fit:"shrink"});
   slide.addText(String(index+1).padStart(2,"0"),{x:12.05,y:.16,w:.7,h:.24,fontSize:9,bold:true,color:"BFDBFE",align:"right",margin:0});
 
-  var stageX=.55, stageY=.88, stageW=12.23, stageH=4.38;
+  var stageX=wide?.38:.55, stageY=wide?.82:.88, stageW=wide?12.57:12.23, stageH=wide?4.62:4.38;
   slide.addShape(pptx.ShapeType.rect,{x:stageX,y:stageY,w:stageW,h:stageH,fill:{color:black},line:{color:black}});
-  if(format==="centerblur" && blurData){
+  if((format==="centerblur" || format==="centerblurwide") && blurData){
     slide.addImage({data:blurData,x:stageX,y:stageY,w:stageW,h:stageH});
-    slide.addShape(pptx.ShapeType.rect,{x:stageX,y:stageY,w:stageW,h:stageH,fill:{color:black,transparency:58},line:{color:black,transparency:100}});
+    slide.addShape(pptx.ShapeType.rect,{x:stageX,y:stageY,w:stageW,h:stageH,fill:{color:black,transparency:wide?64:58},line:{color:black,transparency:100}});
   }
   if(imgData){
     try{
-      var maxW=stageW-.5, maxH=stageH-.36;
-      var iw=imgMetrics ? imgMetrics.w : maxW, ih=imgMetrics ? imgMetrics.h : maxH;
+      var maxW=stageW-(wide?.34:.5), maxH=stageH-(wide?.28:.36);
+      var iw=imgMetrics ? Math.min(imgMetrics.w,maxW) : maxW, ih=imgMetrics ? Math.min(imgMetrics.h,maxH) : maxH;
       var ix=stageX+(stageW-iw)/2, iy=stageY+(stageH-ih)/2;
       slide.addImage({data:imgData,x:ix,y:iy,w:iw,h:ih});
     }catch(e){slide.addText("IMAGE UNAVAILABLE",{x:4,y:2.8,w:5.3,h:.3,fontSize:12,bold:true,color:white,align:"center",margin:0});}
   }else{slide.addText("NO SITE IMAGE",{x:4,y:2.8,w:5.3,h:.3,fontSize:13,bold:true,color:"94A3B8",align:"center",margin:0});}
 
-  var panelY=5.52;
-  slide.addShape(pptx.ShapeType.roundRect,{x:.55,y:panelY,w:12.23,h:1.25,rectRadius:.04,fill:{color:"0F2F6B"},line:{color:"3B67B7",width:1}});
-  slide.addText("AREAS INCLUDED IN THIS REPORT",{x:.82,y:panelY+.17,w:2.55,h:.18,fontSize:6.5,bold:true,color:lightBlue,margin:0,charSpacing:.8});
-  slide.addText(pptText(x.area),{x:.82,y:panelY+.40,w:2.55,h:.30,fontSize:13,bold:true,color:white,margin:0,fit:"shrink"});
+  var panelY=wide?5.56:5.52, panelH=wide?1.16:1.25;
+  slide.addShape(pptx.ShapeType.roundRect,{x:.55,y:panelY,w:12.23,h:panelH,rectRadius:.06,fill:{color:"0B2F6B"},line:{color:"4F7FD8",width:1.2}});
+  slide.addShape(pptx.ShapeType.rect,{x:.55,y:panelY,w:.08,h:panelH,fill:{color:lightBlue},line:{color:lightBlue}});
+  slide.addText("AREA",{x:.82,y:panelY+.15,w:2.1,h:.17,fontSize:6.2,bold:true,color:lightBlue,margin:0,charSpacing:.8});
+  slide.addText(pptText(x.area),{x:.82,y:panelY+.37,w:2.15,h:.31,fontSize:13,bold:true,color:white,margin:0,fit:"shrink"});
   var rows=[["SITE CODE",pptText(x.siteCode)],["SITE SIZE",pptText(x.siteSize)],["COMPANY",pptText(x.customer)],["BOOKING",pptText(x.fromDate)+" - "+pptText(x.toDate)]];
-  rows.forEach(function(r,i){var xx=3.55+i*2.15;slide.addText(r[0],{x:xx,y:panelY+.17,w:1.9,h:.16,fontSize:6.3,bold:true,color:lightBlue,margin:0});slide.addText(r[1],{x:xx,y:panelY+.42,w:1.95,h:.28,fontSize:8.7,bold:true,color:white,margin:0,fit:"shrink"});});
-  slide.addShape(pptx.ShapeType.roundRect,{x:11.55,y:panelY+.36,w:.95,h:.42,rectRadius:.03,fill:{color:statusColor},line:{color:statusColor}});
-  slide.addText(st.toUpperCase(),{x:11.55,y:panelY+.36,w:.95,h:.42,fontSize:5.8,bold:true,color:white,align:"center",valign:"mid",margin:0,fit:"shrink"});
-  slide.addText("📍 "+pptText(x.location||x.site),{x:.82,y:7.02,w:9.2,h:.18,fontSize:6.8,color:muted,margin:0,fit:"shrink"});
-  slide.addText((index+1)+" / "+total,{x:11.5,y:7.02,w:1.0,h:.18,fontSize:6.8,color:muted,align:"right",margin:0});
+  rows.forEach(function(r,i){var xx=3.35+i*2.12; slide.addShape(pptx.ShapeType.roundRect,{x:xx,y:panelY+.14,w:1.94,h:.72,rectRadius:.04,fill:{color:"123B8A"},line:{color:"2F5DAA",width:.6}}); slide.addText(r[0],{x:xx+.12,y:panelY+.25,w:1.7,h:.13,fontSize:5.5,bold:true,color:"93C5FD",margin:0}); slide.addText(r[1],{x:xx+.12,y:panelY+.46,w:1.7,h:.24,fontSize:7.8,bold:true,color:white,margin:0,fit:"shrink"});});
+  slide.addShape(pptx.ShapeType.roundRect,{x:11.68,y:panelY+.27,w:.82,h:.40,rectRadius:.04,fill:{color:statusColor},line:{color:statusColor}});
+  slide.addText(st.toUpperCase(),{x:11.68,y:panelY+.27,w:.82,h:.40,fontSize:5.2,bold:true,color:white,align:"center",valign:"mid",margin:0,fit:"shrink"});
+  var locText="📍 "+pptText(x.location||x.site)+ (mapUrl?"  ↗ Open Map":"");
+  slide.addText(locText,{x:.82,y:7.00,w:9.5,h:.18,fontSize:6.8,bold:!!mapUrl,color:mapUrl?"FFFFFF":muted,margin:0,fit:"shrink",hyperlink:mapUrl?{url:mapUrl}:undefined});
+  slide.addText((index+1)+" / "+total,{x:11.5,y:7.00,w:1.0,h:.18,fontSize:6.8,color:muted,align:"right",margin:0});
 }
 
 function addPptSiteDetails(slide,pptx,x,imgData,index,total,format){
@@ -1413,7 +1419,7 @@ function generatePPT(){
   var cover=pptx.addSlide();cover.background={color:"123B8A"};
   cover.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:1.05,fill:{color:"123B8A"},line:{color:"123B8A"}});
   cover.addShape(pptx.ShapeType.rect,{x:0,y:1.05,w:W,h:.07,fill:{color:"60A5FA"},line:{color:"60A5FA"}});
-  if(companyLogo){ try{ cover.addImage({data:companyLogo,x:.65,y:.20,w:1.75,h:.62,sizing:{type:"contain",align:"left",valign:"middle"}}); }catch(e){} }
+  if(companyLogo){ try{ cover.addImage({data:companyLogo,x:.55,y:.13,w:2.65,h:.78,sizing:{type:"contain",align:"left",valign:"middle"}}); }catch(e){} }
   cover.addText("DS OUTDOOR MEDIA",{x:10.0,y:.31,w:2.65,h:.25,fontSize:10,bold:true,color:"FFFFFF",align:"right",margin:0});
     cover.addText("AREAS INCLUDED IN THIS REPORT",{x:.75,y:1.55,w:6.5,h:.22,fontSize:9,bold:true,color:"93C5FD",margin:0,charSpacing:1.4});
   cover.addText(coverTitle,{x:.75,y:2.02,w:11.85,h:1.25,fontSize:30,bold:true,color:"FFFFFF",margin:0,fit:"shrink"});
@@ -1422,10 +1428,10 @@ function generatePPT(){
   var summary=[ ["TOTAL SITES",String(list.length)], ["AREAS",String(areaNames.length)], ["REPORT DATE",dateOnly] ];
   summary.forEach(function(r,i){ var x=.75+i*4.05; cover.addShape(pptx.ShapeType.roundRect,{x:x,y:4.55,w:3.65,h:1.05,rectRadius:.04,fill:{color:"0F2F6B"},line:{color:"3B67B7",width:1}}); cover.addText(r[0],{x:x+.22,y:4.78,w:3.2,h:.18,fontSize:7,bold:true,color:"BFDBFE",margin:0,charSpacing:.8}); cover.addText(r[1],{x:x+.22,y:5.05,w:3.2,h:.32,fontSize:i===2?11:20,bold:true,color:"FFFFFF",margin:0,fit:"shrink"}); });
   cover.addShape(pptx.ShapeType.line,{x:.75,y:6.30,w:11.8,h:0,line:{color:"3B67B7",width:1}});
-  cover.addText("Generated "+new Date().toLocaleString("en-GB"),{x:.75,y:6.55,w:7,h:.25,fontSize:7.5,color:"BFDBFE",margin:0});
-  cover.addText("Confidential Business Report",{x:9.0,y:6.55,w:3.55,h:.25,fontSize:7.5,bold:true,color:"BFDBFE",align:"right",margin:0});
+  cover.addText("Prepared by "+COMPANY_NAME,{x:.75,y:6.55,w:6.2,h:.25,fontSize:8,bold:true,color:"BFDBFE",margin:0});
+  cover.addText(dateOnly,{x:9.55,y:6.55,w:3.2,h:.25,fontSize:8,bold:true,color:"BFDBFE",align:"right",margin:0});
   var chain=Promise.resolve();list.forEach(function(x,i){chain=chain.then(function(){return (x.hasImage?(imageCache[x.id]?Promise.resolve(imageCache[x.id]):getImage(x.id)):Promise.resolve(null)).then(function(img){return new Promise(function(resolve){
-    var useBlur=(format==="centerblur" && img);
+    var useBlur=((format==="centerblur" || format==="centerblurwide") && img);
     if(useBlur){
       makePptBlurData(img,function(blur){
         getPptImageMetrics(img,11.73,4.02,function(metrics){
@@ -1435,7 +1441,7 @@ function generatePPT(){
         });
       });
     }
-    else if(format==="centerblack"){
+    else if(format==="centerblack" || format==="centerblackwide"){
       getPptImageMetrics(img,11.73,4.02,function(metrics){
         var sl=pptx.addSlide();
         addPptCenteredSiteDetails(sl,pptx,x,img,i,list.length,format,null,metrics);
