@@ -1412,21 +1412,21 @@ function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurD
   var stageX=.38, stageY=.72, stageW=12.57, stageH=4.38;
   slide.addShape(pptx.ShapeType.rect,{x:stageX,y:stageY,w:stageW,h:stageH,fill:{color:black},line:{color:black}});
   if((format==="centerblur"||format==="centerblurwide")&&blurData){slide.addImage({data:blurData,x:stageX,y:stageY,w:stageW,h:stageH});slide.addShape(pptx.ShapeType.rect,{x:stageX,y:stageY,w:stageW,h:stageH,fill:{color:black,transparency:wide?68:60},line:{color:black,transparency:100}});}
-  if(fields.image&&imgData){try{var maxW=stageW*0.70,maxH=stageH-0.24;var iw=imgMetrics?Math.min(imgMetrics.w,maxW):maxW,ih=imgMetrics?Math.min(imgMetrics.h,maxH):maxH;var ix=stageX+(stageW-iw)/2,iy=stageY+(stageH-ih)/2;slide.addImage({data:imgData,x:ix,y:iy,w:iw,h:ih});}catch(e){}}
+  if(fields.image&&imgData){try{var maxW=stageW*0.70,maxH=stageH-0.24,ratio=(imgMetrics&&imgMetrics.ratio)?imgMetrics.ratio:(16/9);var iw=maxW,ih=iw/ratio;if(ih>maxH){ih=maxH;iw=ih*ratio;}var ix=stageX+(stageW-iw)/2,iy=stageY+(stageH-ih)/2;slide.addImage({data:imgData,x:ix,y:iy,w:iw,h:ih});}catch(e){}}
   else if(fields.image){slide.addText("NO SITE IMAGE",{x:4,y:2.7,w:5.3,h:.3,fontSize:13,bold:true,color:"94A3B8",align:"center",margin:0});}
   var panelY=5.25,panelH=1.78;
   slide.addShape(pptx.ShapeType.roundRect,{x:.55,y:panelY,w:12.23,h:panelH,rectRadius:.06,fill:{color:"0B2F6B"},line:{color:"4F7FD8",width:1.2}});
   slide.addShape(pptx.ShapeType.rect,{x:.55,y:panelY,w:.08,h:panelH,fill:{color:lightBlue},line:{color:lightBlue}});
   var items=[]; if(fields.area)items.push(["AREA",pptVal(x.area)]); if(fields.siteCode)items.push(["SITE CODE",pptVal(x.siteCode)]); if(fields.siteSize)items.push(["SITE SIZE",pptVal(x.siteSize)]); if(fields.company)items.push(["COMPANY",pptVal(x.customer)]); if(fields.rate)items.push(["MONTHLY RATE",formatPptRate(x.rate)]); if(fields.booking)items.push(["BOOKING DATES",(pptText(x.fromDate)||"—")+" - "+(pptText(x.toDate)||"—")]); if(fields.duration)items.push(["DURATION",calcDays(x.fromDate,x.toDate)?calcDays(x.fromDate,x.toDate)+" days":"—"]); if(fields.status)items.push(["STATUS",st.toUpperCase()]);
   var cols=Math.min(4,Math.max(1,items.length)), rows=Math.ceil(items.length/cols), gap=.12, innerW=11.72, cardW=(innerW-gap*(cols-1))/cols, cardH=rows===1?.92:.66;
-  items.forEach(function(r,i){var row=Math.floor(i/cols),col=i%cols,xx=.82+col*(cardW+gap),yy=panelY+.20+row*(cardH+.10),isStatus=r[0]==="STATUS";slide.addShape(pptx.ShapeType.roundRect,{x:xx,y:yy,w:cardW,h:cardH,rectRadius:.04,fill:{color:isStatus?statusColor:"123B8A"},line:{color:isStatus?statusColor:"5B86D6",width:1}});slide.addText(r[0],{x:xx+.10,y:yy+.11,w:cardW-.20,h:.16,fontSize:6.4,bold:true,color:isStatus?"FFFFFF":"93C5FD",margin:0,fit:"shrink"});slide.addText(r[1],{x:xx+.10,y:yy+.32,w:cardW-.20,h:cardH-.38,fontSize:9.2,bold:true,color:white,margin:0,fit:"shrink",valign:"mid"});});
-  if(fields.location){var locY=7.05;slide.addText("📍 "+pptVal(x.location||x.site),{x:.82,y:locY,w:8.25,h:.22,fontSize:7.5,bold:true,color:white,margin:0,fit:"shrink"});if(mapUrl){slide.addShape(pptx.ShapeType.roundRect,{x:9.30,y:locY-.05,w:2.05,h:.38,rectRadius:.04,fill:{color:"60A5FA"},line:{color:"60A5FA"},hyperlink:{url:mapUrl}});slide.addText("OPEN MAP ↗",{x:9.30,y:locY-.05,w:2.05,h:.38,fontSize:7.5,bold:true,color:"0B2F6B",align:"center",valign:"mid",margin:0,hyperlink:{url:mapUrl}});}}
+  items.forEach(function(r,i){var row=Math.floor(i/cols),col=i%cols,xx=.82+col*(cardW+gap),yy=panelY+.20+row*(cardH+.10),isStatus=r[0]==="STATUS";slide.addShape(pptx.ShapeType.roundRect,{x:xx,y:yy,w:cardW,h:cardH,rectRadius:.04,fill:{color:isStatus?statusColor:"123B8A"},line:{color:isStatus?statusColor:"5B86D6",width:1}});slide.addText(r[0],{x:xx+.10,y:yy+.11,w:cardW-.20,h:.16,fontSize:5.7,bold:true,color:isStatus?"FFFFFF":"93C5FD",margin:0,fit:"shrink"});slide.addText(r[1],{x:xx+.10,y:yy+.32,w:cardW-.20,h:cardH-.38,fontSize:7.8,bold:true,color:white,margin:0,fit:"shrink",valign:"mid"});});
+  if(fields.location){var locY=7.05;slide.addText("📍 "+pptVal(x.location||x.site),{x:.82,y:locY,w:8.25,h:.22,fontSize:7.5,bold:true,color:white,margin:0,fit:"shrink"});if(mapUrl){slide.addShape(pptx.ShapeType.roundRect,{x:5.64,y:locY-.05,w:2.05,h:.38,rectRadius:.04,fill:{color:"FEE2E2"},line:{color:"EF4444"},hyperlink:{url:mapUrl}});slide.addText("OPEN MAP ↗",{x:5.64,y:locY-.05,w:2.05,h:.38,fontSize:7.5,bold:true,color:"DC2626",align:"center",valign:"mid",margin:0,hyperlink:{url:mapUrl}});}}
   slide.addText((index+1)+" / "+total,{x:11.65,y:locY,w:.72,h:.22,fontSize:7,color:muted,align:"right",margin:0});
 }
 
 function addPptSiteDetails(slide,pptx,x,imgData,index,total,format,pptFields){
   var fields=getPptFields();
-  if(format==="centerblack" || format==="centerblur"){
+  if(format==="centerblack" || format==="centerblur" || format==="centerblackwide" || format==="centerblurwide"){
     addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,null,null,fields);
     if(format==="centerblur" && imgData){
       // Rebuild the slide's blurred background asynchronously is not possible after write;
