@@ -195,7 +195,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .ppt-footer .btn-cancel:hover{background:#f1f5f9}
 .ppt-footer .btn-generate{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.35);display:inline-flex;align-items:center;gap:8px}
 .ppt-footer .btn-generate:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.45)}
-.format-swatch{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#334155;font-size:12px;font-weight:800;border:1px solid #cbd5e1;box-shadow:none}.theme-card.selected .format-swatch{background:#e2e8f0;color:#111827}.ppt-info-note{margin-top:16px;padding:12px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;color:#475569;font-size:11px;line-height:1.8}.ppt-header{background:#111827!important}.ppt-footer .btn-generate{background:#111827!important;box-shadow:none!important}.ppt-section-label::before{background:#475569!important}.theme-card.selected{border-color:#475569!important;box-shadow:0 3px 12px rgba(15,23,42,.10)!important}.theme-card.selected::after{background:#111827!important}
+.format-swatch{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#334155;font-size:12px;font-weight:800;border:1px solid #cbd5e1;box-shadow:none}.theme-card.selected .format-swatch{background:#e2e8f0;color:#111827}.ppt-info-note{margin-top:16px;padding:12px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;color:#475569;font-size:11px;line-height:1.8}.ppt-header{background:linear-gradient(135deg,#123B8A,#1D4ED8)!important}.ppt-footer .btn-generate{background:linear-gradient(135deg,#123B8A,#1D4ED8)!important;box-shadow:0 4px 16px rgba(29,78,216,.28)!important}.ppt-section-label::before{background:#1D4ED8!important}.theme-card.selected{border-color:#1D4ED8!important;box-shadow:0 3px 12px rgba(29,78,216,.16)!important}.theme-card.selected::after{background:#1D4ED8!important}
 @media (max-width:768px){
   .header-actions{width:100%;justify-content:flex-start;gap:5px}
   .header-actions button{flex:1;min-width:calc(50% - 3px);padding:8px 6px;font-size:11px;justify-content:center}
@@ -573,6 +573,8 @@ function persistNow(){
 }
 
 function getDateFilteredSites(){
+  // The date filter is a status/availability filter, not a site-count filter.
+  // Keep all sites in the total, and calculate each site's status for the selected range.
   return sites.slice();
 }
 function getVisibleSitesForCards(){
@@ -898,17 +900,33 @@ function compressImageSmart(dataUrl, cb){
 function showImagePreview(data){ document.getElementById("imagePreview").src = data; document.getElementById("imagePreviewWrap").style.display = "block"; document.getElementById("imageUploadBox").style.display = "none"; }
 function removeImage(){ currentImageData = ""; document.getElementById("imagePreview").src = ""; document.getElementById("imagePreviewWrap").style.display = "none"; document.getElementById("imageUploadBox").style.display = "block"; }
 
-function siteMatchesDateFilter(s){ return true; }
+function siteMatchesDateFilter(s){
+  if(!activeDateFilter.from && !activeDateFilter.to) return true;
+  var fFrom = activeDateFilter.from ? parseDDMMYYYY(activeDateFilter.from) : null;
+  var fTo = activeDateFilter.to ? parseDDMMYYYY(activeDateFilter.to) : fFrom;
+  if(fFrom) fFrom.setHours(0,0,0,0);
+  if(fTo) fTo.setHours(23,59,59,999);
+
+  var sf = parseDDMMYYYY(s.fromDate);
+  var st = parseDDMMYYYY(s.toDate);
+
+  // No booking dates means the site is available for the selected range.
+  if(!sf && !st) return true;
+
+  if(sf) sf.setHours(0,0,0,0);
+  if(st) st.setHours(23,59,59,999);
+
+  var start = sf || st;
+  var end = st || sf;
+
+  // Inclusive date-range overlap: booking [start,end] intersects filter [from,to].
+  return (!fFrom || end >= fFrom) && (!fTo || start <= fTo);
+}
 function getSiteStatusForFilter(s){
-  if(!activeDateFilter.from && !activeDateFilter.to) return s.status;
-  var fFrom=activeDateFilter.from ? parseDDMMYYYY(activeDateFilter.from) : null;
-  var fTo=activeDateFilter.to ? parseDDMMYYYY(activeDateFilter.to) : fFrom;
   if(s.status === "Under Maintenance") return "Under Maintenance";
-  var sf=parseDDMMYYYY(s.fromDate), st=parseDDMMYYYY(s.toDate);
-  if(!sf && !st) return "Available";
-  var start=sf||st, end=st||sf;
-  var overlaps=(!fFrom || end>=fFrom) && (!fTo || start<=fTo);
-  return overlaps ? "Not Available" : "Available";
+  if(!activeDateFilter.from && !activeDateFilter.to) return s.status || "Available";
+
+  return siteMatchesDateFilter(s) ? "Not Available" : "Available";
 }
 
 function render(){
@@ -1270,27 +1288,80 @@ function openPPTFormatModal(){
 }
 function closePPTModal(){ document.getElementById("pptModal").classList.remove("show"); }
 function pptText(v){ return String(v==null||v===""?"—":v); }
+function getPptMapUrl(x){
+  if(x && x.lat && x.lng){
+    return "https://www.google.com/maps?q=" + encodeURIComponent(x.lat + "," + x.lng);
+  }
+  if(x && x.location){
+    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location);
+  }
+  return "";
+}
 function addPptSiteDetails(slide,pptx,x,imgData,index,total){
-  var W=13.333,H=7.5, navy="0F172A", blue="1E3A8A", white="FFFFFF", light="F3F4F6", text="111827", muted="64748B";
+  var W=13.333,H=7.5, navy="123B8A", blue="1D4ED8", white="FFFFFF", light="F3F4F6", black="000000", text="111827", muted="64748B";
   slide.background={color:white};
+
+  // Royal-blue header
   slide.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:.65,fill:{color:navy},line:{color:navy}});
   slide.addShape(pptx.ShapeType.roundRect,{x:.2,y:.08,w:.48,h:.48,rectRadius:.04,fill:{color:blue},line:{color:blue}});
   slide.addText(String(index+1),{x:.2,y:.08,w:.48,h:.48,fontSize:11,bold:true,color:white,align:"center",valign:"mid",margin:0});
   slide.addText(pptText(x.site),{x:.78,y:.05,w:8,h:.55,fontSize:11,bold:true,color:white,margin:0,fit:"shrink"});
-  slide.addShape(pptx.ShapeType.roundRect,{x:8.9,y:.12,w:1.4,h:.42,rectRadius:.03,fill:{color:"334155"},line:{color:"64748B"}});
+
+  slide.addShape(pptx.ShapeType.roundRect,{x:8.9,y:.12,w:1.4,h:.42,rectRadius:.03,fill:{color:"1E40AF"},line:{color:"93C5FD"}});
   slide.addText(pptText(x.siteCode),{x:8.9,y:.12,w:1.4,h:.42,fontSize:10,bold:true,color:white,align:"center",valign:"mid",margin:0});
+
   var st=getSiteStatusForFilter(x);
-  slide.addShape(pptx.ShapeType.roundRect,{x:11,y:.14,w:2.15,h:.38,rectRadius:.03,fill:{color:st==="Not Available"?"B91C1C":st==="Under Maintenance"?"A16207":"15803D"},line:{color:"FFFFFF",transparency:100}});
+  var statusColor=st==="Not Available"?"B91C1C":st==="Under Maintenance"?"A16207":"15803D";
+  slide.addShape(pptx.ShapeType.roundRect,{x:11,y:.14,w:2.15,h:.38,rectRadius:.03,fill:{color:statusColor},line:{color:statusColor}});
   slide.addText(st.toUpperCase(),{x:11,y:.14,w:2.15,h:.38,fontSize:9,bold:true,color:white,align:"center",valign:"mid",margin:0,fit:"shrink"});
-  slide.addShape(pptx.ShapeType.rect,{x:0,y:.65,w:W,h:5.5,fill:{color:light},line:{color:light}});
-  if(imgData){ try{slide.addImage({data:imgData,x:3.06,y:.65,w:7.2,h:5.4,sizing:{type:"contain",align:"center",valign:"middle"}});}catch(e){}} else slide.addText("No site image available",{x:3.06,y:3.0,w:7.2,h:.4,fontSize:16,color:muted,align:"center",margin:0});
+
+  // Black image canvas so contain/letterbox side areas are black, not gray.
+  slide.addShape(pptx.ShapeType.rect,{x:0,y:.65,w:W,h:5.5,fill:{color:black},line:{color:black}});
+  if(imgData){
+    try{
+      slide.addImage({
+        data:imgData,
+        x:3.06,y:.65,w:7.2,h:5.4,
+        sizing:{type:"contain",align:"center",valign:"middle"}
+      });
+    }catch(e){
+      slide.addText("Image could not be loaded",{x:3.06,y:3.0,w:7.2,h:.4,fontSize:16,color:white,align:"center",margin:0});
+    }
+  } else {
+    slide.addText("No site image available",{x:3.06,y:3.0,w:7.2,h:.4,fontSize:16,color:white,align:"center",margin:0});
+  }
+
   slide.addShape(pptx.ShapeType.rect,{x:0,y:6.15,w:W,h:1.25,fill:{color:white},line:{color:white}});
-  var vals=[pptText(x.area),pptText(x.customer),x.rate?"₹"+Number(x.rate).toLocaleString("en-IN")+"/mo":"—",(x.fromDate||x.toDate)?pptText(x.fromDate||"—")+" to "+pptText(x.toDate||"—")+(calcDays(x.fromDate,x.toDate)?" ("+calcDays(x.fromDate,x.toDate)+"d)":""):"—"];
+  var vals=[
+    pptText(x.area),
+    pptText(x.customer),
+    x.rate?"₹"+Number(x.rate).toLocaleString("en-IN")+"/mo":"—",
+    (x.fromDate||x.toDate)?pptText(x.fromDate||"—")+" to "+pptText(x.toDate||"—")+(calcDays(x.fromDate,x.toDate)?" ("+calcDays(x.fromDate,x.toDate)+"d)":""):"—"
+  ];
   var labels=["AREA","COMPANY","RATE","DURATION"], cols=[.1,3.43,6.76,10.1];
-  for(var i=0;i<4;i++){slide.addText(labels[i],{x:cols[i],y:6.23,w:3.13,h:.25,fontSize:7,bold:true,color:muted,margin:0});slide.addText(vals[i],{x:cols[i],y:6.48,w:3.13,h:.4,fontSize:10,bold:true,color:text,margin:0,fit:"shrink"});}
-  slide.addText("📍 "+pptText(x.location||x.site),{x:10.1,y:6.9,w:1.85,h:.35,fontSize:7,color:muted,margin:0,fit:"shrink"});
-  slide.addShape(pptx.ShapeType.roundRect,{x:12,y:6.9,w:1.15,h:.38,rectRadius:.03,fill:{color:blue},line:{color:blue}});
-  slide.addText("📍 Map",{x:12,y:6.9,w:1.15,h:.38,fontSize:8,bold:true,color:white,align:"center",valign:"mid",margin:0});
+  for(var i=0;i<4;i++){
+    slide.addText(labels[i],{x:cols[i],y:6.23,w:3.13,h:.25,fontSize:7,bold:true,color:muted,margin:0});
+    slide.addText(vals[i],{x:cols[i],y:6.48,w:3.13,h:.4,fontSize:10,bold:true,color:text,margin:0,fit:"shrink"});
+  }
+
+  // Clickable location text and Maps button.
+  var mapUrl=getPptMapUrl(x);
+  var locationText=x.location||x.site||"Location unavailable";
+  slide.addText("📍 "+pptText(locationText),{
+    x:10.1,y:6.9,w:1.85,h:.35,fontSize:7,color:blue,margin:0,fit:"shrink",
+    hyperlink: mapUrl ? {url:mapUrl} : undefined,
+    underline: !!mapUrl
+  });
+  slide.addShape(pptx.ShapeType.roundRect,{
+    x:12,y:6.9,w:1.15,h:.38,rectRadius:.03,
+    fill:{color:blue},line:{color:blue},
+    hyperlink: mapUrl ? {url:mapUrl} : undefined
+  });
+  slide.addText("📍 Map",{
+    x:12,y:6.9,w:1.15,h:.38,fontSize:8,bold:true,color:white,
+    align:"center",valign:"mid",margin:0,
+    hyperlink: mapUrl ? {url:mapUrl} : undefined
+  });
 }
 function generatePPT(){
   if(selectedSites.size===0){alert("Please select sites first");return;}
@@ -1303,7 +1374,7 @@ function generatePPT(){
   var dateOnly=new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"long",year:"numeric"});
   var areaNames=[];list.forEach(function(s){var a=s.area||"Unassigned";if(areaNames.indexOf(a)<0)areaNames.push(a);});
   var coverTitle=format==="single"?(areaNames[0]||"Site Portfolio"):(areaNames.join(", ")||"Multiple Areas");
-  var cover=pptx.addSlide();cover.background={color:"FFFFFF"};
+  var cover=pptx.addSlide();cover.background={color:"FFFFFF"};cover.addShape(pptx.ShapeType.rect,{x:0,y:0,w:13.333,h:.22,fill:{color:"1D4ED8"},line:{color:"1D4ED8"}});
   cover.addText("Professional Site Booking & Management",{x:.9,y:1.75,w:3.6,h:.4,fontSize:18,bold:true,color:"0F172A",margin:0});
   cover.addText(coverTitle,{x:.7,y:3.0,w:12,h:1.5,fontSize:28,bold:true,color:"0F172A",margin:0,fit:"shrink"});
   cover.addText("Report Date",{x:.7,y:5.4,w:2,h:.3,fontSize:9,bold:true,color:"64748B",margin:0});cover.addText(dateOnly,{x:.7,y:5.7,w:3,h:.4,fontSize:14,bold:true,color:"111827",margin:0});
@@ -1499,9 +1570,19 @@ function handleImportFile(e){
   reader.readAsText(file);
   e.target.value = "";
 }
+function normalizeDateFilterInput(value){
+  value = String(value || "").trim().replace(/[-.]/g,"/");
+  var m = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(!m) return value;
+  return String(m[1]).padStart(2,"0")+"/"+String(m[2]).padStart(2,"0")+"/"+m[3];
+}
 function applyDateFilter(){
-  var fromStr = document.getElementById("dateFilterFrom").value.trim();
-  var toStr = document.getElementById("dateFilterTo").value.trim();
+  var fromInput = document.getElementById("dateFilterFrom");
+  var toInput = document.getElementById("dateFilterTo");
+  var fromStr = normalizeDateFilterInput(fromInput.value);
+  var toStr = normalizeDateFilterInput(toInput.value);
+  fromInput.value = fromStr;
+  toInput.value = toStr;
   if(!fromStr && !toStr){ alert("Please enter at least one date"); return; }
   if(fromStr && !isValidDDMMYYYY(fromStr)){ alert("Invalid 'From' date"); return; }
   if(toStr && !isValidDDMMYYYY(toStr)){ alert("Invalid 'To' date"); return; }
@@ -1540,6 +1621,13 @@ function bindEvents(){
   if(importBtn) importBtn.onclick = importData;
   var logoutBtn = document.getElementById("logoutBtn");
   if(logoutBtn) logoutBtn.onclick = doLogout;
+  ["dateFilterFrom","dateFilterTo"].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){
+      el.addEventListener("keydown",function(e){ if(e.key==="Enter") applyDateFilter(); });
+      el.addEventListener("blur",function(){ this.value=normalizeDateFilterInput(this.value); });
+    }
+  });
   var searchInput = document.getElementById("search");
   if(searchInput) searchInput.addEventListener("input", debounce(function(){ render(); }, 300));
   var applyFilterBtn = document.getElementById("applyFilterBtn");
