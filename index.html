@@ -906,14 +906,16 @@ function siteMatchesDateFilter(s){
   return true;
 }
 function getSiteStatusForFilter(s){
-  // Maintenance is a hard status and is never changed by the date filter.
-  if(s.status === "Under Maintenance") return "Under Maintenance";
+  // The saved status is the source of truth. The date filter only asks:
+  // "Is this site's existing booking active during the selected range?"
+  var savedStatus = s.status || "Available";
+  if(!activeDateFilter.from && !activeDateFilter.to) return savedStatus;
+  if(savedStatus === "Under Maintenance") return "Under Maintenance";
 
-  // With no date filter, always show the saved status.
-  if(!activeDateFilter.from && !activeDateFilter.to) return s.status || "Available";
+  // An Available site stays Available. Its default/edit-form dates are not a
+  // booking and must never turn it red just because the filter includes today.
+  if(savedStatus !== "Not Available") return "Available";
 
-  // With a date filter, availability is determined ONLY by the site's booking
-  // dates. This prevents old/stale status values from making every site red.
   var fFrom=activeDateFilter.from ? parseDDMMYYYY(activeDateFilter.from) : null;
   var fTo=activeDateFilter.to ? parseDDMMYYYY(activeDateFilter.to) : fFrom;
   if(fFrom) fFrom.setHours(0,0,0,0);
@@ -923,8 +925,8 @@ function getSiteStatusForFilter(s){
   if(sf) sf.setHours(0,0,0,0);
   if(st) st.setHours(23,59,59,999);
 
-  // No booking dates = available for the selected range.
-  if(!sf && !st) return "Available";
+  // A manually marked Not Available site without booking dates remains Not Available.
+  if(!sf && !st) return "Not Available";
 
   var start=sf||st, end=st||sf;
   var overlaps=(!fFrom || end>=fFrom) && (!fTo || start<=fTo);
@@ -1295,12 +1297,26 @@ function getPptMapUrl(x){
   if(x.location) return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(x.location);
   return "";
 }
+function getPptImageMetrics(imgData, maxW, maxH, cb){
+  if(!imgData){ cb(null); return; }
+  try{
+    var im=new Image();
+    im.onload=function(){
+      var iw=im.naturalWidth || im.width || 1;
+      var ih=im.naturalHeight || im.height || 1;
+      var scale=Math.min(maxW/iw, maxH/ih, 1);
+      cb({w:iw*scale, h:ih*scale, ratio:iw/ih});
+    };
+    im.onerror=function(){cb(null);};
+    im.src=imgData;
+  }catch(e){cb(null);}
+}
 function makePptBlurData(imgData, cb){
   if(!imgData){ cb(null); return; }
   try{
     var im=new Image();
     im.onload=function(){
-      var w=Math.max(900,Math.min(1800,im.width)), h=Math.max(500,Math.min(1000,im.height));
+      var w=Math.max(900,Math.min(1800,im.naturalWidth || im.width)), h=Math.max(500,Math.min(1000,im.naturalHeight || im.height));
       var c=document.createElement("canvas"); c.width=w; c.height=h;
       var ctx=c.getContext("2d"); ctx.filter="blur(22px)";
       ctx.drawImage(im, -35, -35, w+70, h+70);
@@ -1310,7 +1326,7 @@ function makePptBlurData(imgData, cb){
   }catch(e){cb(null);}
 }
 
-function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurData){
+function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurData,imgMetrics){
   var W=13.333,H=7.5, blue="123B8A", lightBlue="60A5FA", white="FFFFFF", black="000000", text="0F172A", muted="CBD5E1";
   var st=getSiteStatusForFilter(x), statusColor=st==="Not Available"?"C62828":st==="Under Maintenance"?"D97706":"15803D";
   slide.background={color:blue};
@@ -1326,7 +1342,12 @@ function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurD
     slide.addShape(pptx.ShapeType.rect,{x:stageX,y:stageY,w:stageW,h:stageH,fill:{color:black,transparency:58},line:{color:black,transparency:100}});
   }
   if(imgData){
-    try{slide.addImage({data:imgData,x:stageX+.25,y:stageY+.18,w:stageW-.5,h:stageH-.36,sizing:{type:"contain",align:"center",valign:"middle"}});}catch(e){slide.addText("IMAGE UNAVAILABLE",{x:4,y:2.8,w:5.3,h:.3,fontSize:12,bold:true,color:white,align:"center",margin:0});}
+    try{
+      var maxW=stageW-.5, maxH=stageH-.36;
+      var iw=imgMetrics ? imgMetrics.w : maxW, ih=imgMetrics ? imgMetrics.h : maxH;
+      var ix=stageX+(stageW-iw)/2, iy=stageY+(stageH-ih)/2;
+      slide.addImage({data:imgData,x:ix,y:iy,w:iw,h:ih});
+    }catch(e){slide.addText("IMAGE UNAVAILABLE",{x:4,y:2.8,w:5.3,h:.3,fontSize:12,bold:true,color:white,align:"center",margin:0});}
   }else{slide.addText("NO SITE IMAGE",{x:4,y:2.8,w:5.3,h:.3,fontSize:13,bold:true,color:"94A3B8",align:"center",margin:0});}
 
   var panelY=5.52;
@@ -1343,7 +1364,7 @@ function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurD
 
 function addPptSiteDetails(slide,pptx,x,imgData,index,total,format){
   if(format==="centerblack" || format==="centerblur"){
-    addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,null);
+    addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,null,null);
     if(format==="centerblur" && imgData){
       // Rebuild the slide's blurred background asynchronously is not possible after write;
       // the centered image remains clean and the surrounding stage remains black.
@@ -1405,7 +1426,22 @@ function generatePPT(){
   cover.addText("Confidential Business Report",{x:9.0,y:6.55,w:3.55,h:.25,fontSize:7.5,bold:true,color:"BFDBFE",align:"right",margin:0});
   var chain=Promise.resolve();list.forEach(function(x,i){chain=chain.then(function(){return (x.hasImage?(imageCache[x.id]?Promise.resolve(imageCache[x.id]):getImage(x.id)):Promise.resolve(null)).then(function(img){return new Promise(function(resolve){
     var useBlur=(format==="centerblur" && img);
-    if(useBlur){ makePptBlurData(img,function(blur){ var sl=pptx.addSlide(); addPptCenteredSiteDetails(sl,pptx,x,img,i,list.length,format,blur); resolve(); }); }
+    if(useBlur){
+      makePptBlurData(img,function(blur){
+        getPptImageMetrics(img,11.73,4.02,function(metrics){
+          var sl=pptx.addSlide();
+          addPptCenteredSiteDetails(sl,pptx,x,img,i,list.length,format,blur,metrics);
+          resolve();
+        });
+      });
+    }
+    else if(format==="centerblack"){
+      getPptImageMetrics(img,11.73,4.02,function(metrics){
+        var sl=pptx.addSlide();
+        addPptCenteredSiteDetails(sl,pptx,x,img,i,list.length,format,null,metrics);
+        resolve();
+      });
+    }
     else { var sl=pptx.addSlide(); addPptSiteDetails(sl,pptx,x,img,i,list.length,format); resolve(); }
   });});});});
   chain.then(function(){return pptx.writeFile({fileName:"Site_Report_"+new Date().toISOString().slice(0,10)+".pptx"});}).then(function(){hideProgress();selectedSites.clear();updateSelectBar();render();showToast("PPT Generated","Reference format PPT created successfully","success");}).catch(function(e){hideProgress();alert("PPT failed: "+e.message);});
