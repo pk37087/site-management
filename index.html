@@ -287,6 +287,8 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <button type="button" class="clear-btn" id="clearFilterBtn">✕</button>
   </div>
   <button class="admin-only" id="manageAreasBtn" type="button">Manage Areas</button>
+  <button class="admin-only" id="selectAllBtn" type="button">☑ Select All</button>
+  <button class="admin-only" id="deleteAllBtn" type="button" style="background:#dc2626;color:#fff;border-color:#dc2626">🗑 Delete All</button>
   <button id="addSiteBtn" type="button">+ Add Site</button>
   <button id="historyBtn" type="button">History</button>
   <button id="exportBtn" type="button">Export</button>
@@ -311,6 +313,13 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div class="modal" id="modal"><div class="box">
 <h2 id="modalTitle">Add Site</h2>
+<div style="margin-bottom:14px;padding:10px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px">
+  <label style="display:block;font-size:12px;font-weight:700;color:#334155">Quick Search / Select Site
+    <input id="editSiteQuickSearch" list="editSiteOptions" placeholder="Type site code, site name, client or area..." style="margin-top:6px;width:100%">
+    <datalist id="editSiteOptions"></datalist>
+  </label>
+  <div style="font-size:11px;color:#64748b;margin-top:5px">Select an existing site here to open its details quickly.</div>
+</div>
 <div class="formgrid">
 <label class="full-width">Area<select id="farea"></select></label>
 <label class="full-width">Site Code / ID
@@ -336,7 +345,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <input type="file" id="fimage" accept="image/*" style="display:none">
   <div id="imagePreviewWrap" style="display:none;text-align:center"><div class="image-preview-wrap"><img id="imagePreview" src="" alt="preview"><button type="button" class="remove-img" id="removeImgBtn">×</button></div></div>
 </label>
-<label>Company<div><input id="fcustomer"></div></label>
+<label>Client<div><input id="fcustomer"></div></label>
 <label>Monthly Rate (₹)<div><input id="frate" type="number" min="0"></div></label>
 <label class="full-width">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
@@ -348,6 +357,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </label>
 <label>Booking From<div class="date-row"><select id="ffrom_d"></select><select id="ffrom_m"></select><select id="ffrom_y"></select></div></label>
 <label>Booking To<div class="date-row"><select id="fto_d"></select><select id="fto_m"></select><select id="fto_y"></select></div></label>
+<label>Display Start<div><input id="fdisplaystart" type="date"></div></label>
+<label>Display End<div><input id="fdisplayend" type="date"></div></label>
+<label class="full-width">Display Removal By<div><input id="fdisplayremovalby" placeholder="Name"></div></label>
 </div>
 <div class="calc-preview" id="calcPreview">Enter dates</div>
 <div class="modal-actions"><button class="secondary" id="cancelModalBtn" type="button">Cancel</button><button id="saveSiteBtn" type="button">Save Site</button></div>
@@ -370,7 +382,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
   <button class="bulk-tab" id="bulkTabLogo" type="button">🏷️ Logo</button>
 </div>
 <div class="bulk-tab-content active" id="bulkContentSite">
-  <div class="bulk-info"><b>CSV Format:</b><br><code>area,site,siteCode,siteSize,location,company,rate,from,to</code></div>
+  <div class="bulk-info"><b>CSV Format:</b><br><code>area,site,siteCode,siteSize,location,client,rate,from,to,displayStart,displayEnd,displayRemovalBy</code></div>
   <div class="upload-dropzone" id="csvDropzone"><div class="dz-icon">📄</div><div class="dz-title">Click to upload CSV</div></div>
   <input type="file" id="csvFile" accept=".csv,.txt" style="display:none">
   <textarea id="csvText" placeholder="Paste CSV here..." style="width:100%;height:120px;padding:11px;border:1px solid #e2e8f0;border-radius:8px;font-family:monospace;font-size:12px;outline:none;margin-top:14px"></textarea>
@@ -828,8 +840,64 @@ function updateCalcPreview(){
   }
 }
 
+function formatEditSiteOption(x){
+  if(!x) return "";
+  var parts=[];
+  if(x.siteCode) parts.push("["+x.siteCode+"]");
+  if(x.site) parts.push(x.site);
+  if(x.customer) parts.push("— "+x.customer);
+  if(x.area) parts.push("— "+x.area);
+  return parts.join(" ");
+}
+function populateEditSitePicker(){
+  var dl=document.getElementById("editSiteOptions");
+  if(!dl) return;
+  dl.innerHTML="";
+  sites.slice().sort(function(a,b){ return String(a.siteCode||a.site||"").localeCompare(String(b.siteCode||b.site||"")); }).forEach(function(x){
+    var opt=document.createElement("option");
+    opt.value=formatEditSiteOption(x);
+    opt.dataset.id=String(x.id);
+    dl.appendChild(opt);
+  });
+}
+function chooseEditSiteFromPicker(){
+  var inp=document.getElementById("editSiteQuickSearch");
+  if(!inp) return;
+  var value=inp.value.trim();
+  var match=sites.find(function(x){ return formatEditSiteOption(x)===value; });
+  if(!match) return;
+  var i=sites.findIndex(function(x){ return String(x.id)===String(match.id); });
+  if(i>=0) editSite(i);
+}
+function selectAllSites(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  selectedSites.clear();
+  sites.forEach(function(s){ if(siteMatchesDateFilter(s)) selectedSites.add(s.id); });
+  render();
+  updateSelectBar();
+  showToast("All Sites Selected", selectedSites.size + " sites selected", "success");
+}
+function deleteAllSites(){
+  if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
+  if(sites.length===0){ alert("No sites to delete"); return; }
+  if(!confirm("Delete ALL " + sites.length + " sites? This action cannot be undone.")) return;
+  showProgress("Deleting all sites...", "Please wait");
+  var chain=Promise.resolve();
+  sites.slice().forEach(function(s){ if(s.hasImage) chain=chain.then(function(){ return deleteImage(s.id); }); });
+  chain.then(function(){
+    sites=[]; selectedSites.clear();
+    return persistNow();
+  }).then(function(){
+    hideProgress();
+    render();
+    updateSelectBar();
+    showToast("All Sites Deleted", "All sites were deleted successfully", "success");
+  }).catch(function(e){ hideProgress(); alert("Delete all failed: " + e.message); });
+}
+
 function openAdd(){
   editIndex = -1;
+  populateEditSitePicker();
   document.getElementById("modalTitle").textContent = "Add New Site";
   document.getElementById("fsitecode").value = "";
   document.getElementById("fsite").value = "";
@@ -839,6 +907,10 @@ function openAdd(){
   document.getElementById("flocation").dataset.lng = "";
   document.getElementById("fcustomer").value = "";
   document.getElementById("frate").value = "";
+  document.getElementById("fdisplaystart").value = "";
+  document.getElementById("fdisplayend").value = "";
+  document.getElementById("fdisplayremovalby").value = "";
+  document.getElementById("editSiteQuickSearch").value = "";
   currentImageData = "";
   removeImage();
   document.getElementById("farea").value = areas[0] || "";
@@ -865,6 +937,11 @@ function editSite(i){
   document.getElementById("flocation").dataset.lng = x.lng || "";
   document.getElementById("fcustomer").value = x.customer || "";
   document.getElementById("frate").value = x.rate || "";
+  document.getElementById("fdisplaystart").value = x.displayStart || "";
+  document.getElementById("fdisplayend").value = x.displayEnd || "";
+  document.getElementById("fdisplayremovalby").value = x.displayRemovalBy || "";
+  populateEditSitePicker();
+  document.getElementById("editSiteQuickSearch").value = formatEditSiteOption(x);
   setDateDropdowns("ffrom", x.fromDate || "");
   setDateDropdowns("fto", x.toDate || "");
   if(x.hasImage){
@@ -920,6 +997,9 @@ function saveSite(){
     customer: document.getElementById("fcustomer").value.trim(),
     rate: rateVal,
     status: statusVal, fromDate: fromVal, toDate: toVal,
+    displayStart: document.getElementById("fdisplaystart").value || "",
+    displayEnd: document.getElementById("fdisplayend").value || "",
+    displayRemovalBy: document.getElementById("fdisplayremovalby").value.trim(),
     hasImage: !!currentImageData
   };
   showProgress("Saving...", "");
@@ -1234,7 +1314,7 @@ function parseCSV(text){
     var fromD = idx.from !== undefined ? (cells[idx.from]||"") : "";
     var toD = idx.to !== undefined ? (cells[idx.to]||"") : "";
     var autoStatus = calcStatusFromDates(fromD, toD);
-    csvParsedSites.push({ id: "id_" + Math.random().toString(36).slice(2,10), area: areaVal, site: siteName, siteCode: siteCode, siteSize: siteSize, location: idx.location !== undefined ? (cells[idx.location]||"") : "", customer: idx.company !== undefined ? (cells[idx.company]||"") : "", rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "", status: autoStatus, fromDate: fromD, toDate: toD, lat: "", lng: "", hasImage: false });
+    csvParsedSites.push({ id: "id_" + Math.random().toString(36).slice(2,10), area: areaVal, site: siteName, siteCode: siteCode, siteSize: siteSize, location: idx.location !== undefined ? (cells[idx.location]||"") : "", customer: idx.client !== undefined ? (cells[idx.client]||"") : (idx.company !== undefined ? (cells[idx.company]||"") : ""), rate: idx.rate !== undefined ? (cells[idx.rate]||"") : "", status: autoStatus, fromDate: fromD, toDate: toD, displayStart: idx.displaystart !== undefined ? (cells[idx.displaystart]||"") : "", displayEnd: idx.displayend !== undefined ? (cells[idx.displayend]||"") : "", displayRemovalBy: idx.displayremovalby !== undefined ? (cells[idx.displayremovalby]||"") : "", lat: "", lng: "", hasImage: false });
   }
   showCSVPreview();
 }
@@ -1766,6 +1846,15 @@ function bindEvents(){
   if(clearFilterBtn) clearFilterBtn.onclick = clearDateFilter;
   var manageAreasBtn = document.getElementById("manageAreasBtn");
   if(manageAreasBtn) manageAreasBtn.onclick = openAreaManager;
+  var selectAllBtn = document.getElementById("selectAllBtn");
+  if(selectAllBtn) selectAllBtn.onclick = selectAllSites;
+  var deleteAllBtn = document.getElementById("deleteAllBtn");
+  if(deleteAllBtn) deleteAllBtn.onclick = deleteAllSites;
+  var editSiteQuickSearch = document.getElementById("editSiteQuickSearch");
+  if(editSiteQuickSearch){
+    editSiteQuickSearch.addEventListener("change", chooseEditSiteFromPicker);
+    editSiteQuickSearch.addEventListener("keydown", function(e){ if(e.key === "Enter") chooseEditSiteFromPicker(); });
+  }
   var addSiteBtn = document.getElementById("addSiteBtn");
   if(addSiteBtn) addSiteBtn.onclick = openAdd;
   var historyBtn = document.getElementById("historyBtn");
