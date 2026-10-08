@@ -419,6 +419,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <div class="ppt-section-label" style="margin-top:18px">Information to Include</div>
 <div id="pptFields" class="ppt-fields-grid">
 <label><input type="checkbox" name="pptField" value="image" checked> <span>Site image</span></label>
+<label><input type="checkbox" name="pptField" value="logo" checked> <span>Company logo</span></label>
 <label><input type="checkbox" name="pptField" value="area" checked> <span>Area</span></label>
 <label><input type="checkbox" name="pptField" value="siteCode" checked> <span>Site code</span></label>
 <label><input type="checkbox" name="pptField" value="siteSize" checked> <span>Site size</span></label>
@@ -429,7 +430,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <label><input type="checkbox" name="pptField" value="booking" checked> <span>Booking dates</span></label>
 <label><input type="checkbox" name="pptField" value="duration" checked> <span>Duration</span></label>
 </div>
-<div class="ppt-info-note">Select the information you want on each site slide. Site image controls whether the image is included.</div>
+<div class="ppt-info-note">Select the information you want on each site slide. Company logo controls the logo shown on the PPT cover and site slides.</div>
 </div>
 <div class="ppt-footer"><button class="btn-cancel" id="cancelPptBtn" type="button">Cancel</button><button class="btn-generate" id="generatePptBtn" type="button">✨ Generate PPT</button></div>
 </div></div>
@@ -1449,7 +1450,7 @@ function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurD
   slide.addText((index+1)+" / "+total,{x:11.65,y:6.98,w:.72,h:.22,fontSize:7,color:muted,align:"right",margin:0});
 }
 
-function addPptSiteDetails(slide,pptx,x,imgData,index,total,format){
+function addPptSiteDetails(slide,pptx,x,imgData,index,total,format,pptFields){
   var fields=getPptFields();
   if(format==="centerblack" || format==="centerblur"){
     addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,null,null,fields);
@@ -1493,6 +1494,7 @@ function generatePPT(){
   var format=(document.querySelector('input[name="pptFormat"]:checked')||{}).value||"single";
   var fields=getPptFields();
   if(Object.keys(fields).length===0){alert("Please select at least one PPT information field");return;}
+  var pptFields=Array.from(document.querySelectorAll('input[name="pptField"]:checked')).map(function(el){return el.value;});
   var list=sites.filter(function(s){return selectedSites.has(s.id);});
   if(!list.length){alert("No sites found");return;}
   closePPTModal();showProgress("Generating PPT...","Creating reference-format presentation");
@@ -1505,7 +1507,7 @@ function generatePPT(){
   cover.addShape(pptx.ShapeType.rect,{x:0,y:1.05,w:W,h:.07,fill:{color:"60A5FA"},line:{color:"60A5FA"}});
   cover.addShape(pptx.ShapeType.arc,{x:10.65,y:5.05,w:2.95,h:2.95,line:{color:"60A5FA",width:2,transparency:55},adjustPoint:.25});
   cover.addShape(pptx.ShapeType.arc,{x:11.25,y:5.65,w:2.35,h:2.35,line:{color:"93C5FD",width:1.2,transparency:40},adjustPoint:.25});
-  if(companyLogo){ try{ cover.addImage({data:companyLogo,x:.55,y:.13,w:2.65,h:.78,sizing:{type:"contain",align:"left",valign:"middle"}}); }catch(e){} }
+  if((!pptFields || pptFields.indexOf("logo")>=0) && companyLogo){ try{ cover.addImage({data:companyLogo,x:.55,y:.13,w:2.65,h:.78,sizing:{type:"contain",align:"left",valign:"middle"}}); }catch(e){} }
   cover.addText("DS OUTDOOR MEDIA",{x:10.0,y:.31,w:2.65,h:.25,fontSize:10,bold:true,color:"FFFFFF",align:"right",margin:0});
     cover.addText("AREAS INCLUDED IN THIS REPORT",{x:.75,y:1.55,w:6.5,h:.22,fontSize:9,bold:true,color:"93C5FD",margin:0,charSpacing:1.4});
   cover.addText(coverTitle,{x:.75,y:2.02,w:11.85,h:1.25,fontSize:30,bold:true,color:"FFFFFF",margin:0,fit:"shrink"});
@@ -1534,7 +1536,7 @@ function generatePPT(){
         resolve();
       });
     }
-    else { var sl=pptx.addSlide(); addPptSiteDetails(sl,pptx,x,img,i,list.length,format); resolve(); }
+    else { var sl=pptx.addSlide(); addPptSiteDetails(sl,pptx,x,img,i,list.length,format,pptFields); resolve(); }
   });});});});
   chain.then(function(){return pptx.writeFile({fileName:"Site_Report_"+new Date().toISOString().slice(0,10)+".pptx"});}).then(function(){hideProgress();selectedSites.clear();updateSelectBar();render();showToast("PPT Generated","Reference format PPT created successfully","success");}).catch(function(e){hideProgress();alert("PPT failed: "+e.message);});
 }
