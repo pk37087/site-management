@@ -53,7 +53,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 .card.card-active{box-shadow:0 0 0 3px rgba(59,130,246,0.3),0 8px 20px rgba(15,23,42,0.1);border-color:#3b82f6}
 .toolbar{background:#fff;padding:10px;border-radius:10px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border:1px solid #e2e8f0;align-items:center}
 .toolbar #search{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;outline:none;min-width:160px;flex:1;font-size:13px!important;height:36px}
-.toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;gap:5px;min-height:36px;height:36px}
+.toolbar button{padding:8px 12px;font-size:12px;font-weight:600;border-radius:6px;background:#fff;color:#334155;border:1px solid #cbd5e1;display:inline-flex;align-items:center;gap:5px;min-height:36px;height:36px} .select-all-btn{background:#2563eb!important;color:#fff!important;border-color:#2563eb!important;font-weight:800!important}.select-all-btn:hover{background:#1d4ed8!important}
 .filter-box{display:flex;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;height:36px}
 .filter-box .date-group{display:flex;align-items:center;background:#fff;border-right:1px solid #cbd5e1;height:100%}
 .filter-box .date-input{padding:0 8px;border:0;font-size:12px!important;width:132px;background:#fff;outline:none;height:100%;font-family:inherit;color:#334155;cursor:pointer}.filter-box .date-input::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.8}
@@ -276,7 +276,9 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 </div>
 
 <div class="toolbar">
-  <input id="search" type="text" placeholder="Search sites...">
+  <div class="search-wrap" style="display:flex;gap:6px;align-items:center;flex:1;min-width:280px">
+    <input id="search" type="text" placeholder="Search by site code, site name, client, area, size, location, status or booking date..." style="flex:1">
+  </div>
   <div class="filter-box">
     <div class="date-group">
       <input type="date" class="date-input" id="dateFilterFrom" aria-label="From date">
@@ -287,17 +289,21 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
     <button type="button" class="clear-btn" id="clearFilterBtn">✕</button>
   </div>
   <button class="admin-only" id="manageAreasBtn" type="button">Manage Areas</button>
-  <button class="admin-only" id="selectAllBtn" type="button">☑ Select All</button>
-  <button class="admin-only" id="deleteAllBtn" type="button" style="background:#dc2626;color:#fff;border-color:#dc2626">🗑 Delete All</button>
   <button id="addSiteBtn" type="button">+ Add Site</button>
   <button id="historyBtn" type="button">History</button>
   <button id="exportBtn" type="button">Export</button>
 </div>
 
-<div class="select-bar" id="selectBar">
+<div class="select-bar show" id="selectBar">
   <span class="count-badge" id="selCount">0 selected</span>
+  <button class="admin-only select-all-btn" id="toggleSelectVisibleBtn" type="button">☑ Select All</button>
+  <select class="bulk-status-sel" id="bulkStatusBtn" aria-label="Bulk Status" style="padding:9px 12px;border-radius:8px;border:1px solid #0ea5e9;background:#0ea5e9;color:#fff;font-weight:700">
+    <option value="">Bulk Status</option>
+    <option value="Available">Available</option>
+    <option value="Not Available">Not Available</option>
+    <option value="Under Maintenance">Under Maintenance</option>
+  </select>
   <button class="ppt-sel" id="pptBtn" type="button">📊 Generate PPT</button>
-  <button class="bulk-status-sel" id="bulkStatusBtn" type="button">Bulk Status</button>
   <button class="clear-sel" id="clearSelBtn" type="button">Clear</button>
   <button class="delete-sel" id="deleteBtn" type="button" style="display:none">Delete</button>
 </div>
@@ -313,13 +319,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 
 <div class="modal" id="modal"><div class="box">
 <h2 id="modalTitle">Add Site</h2>
-<div style="margin-bottom:14px;padding:10px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px">
-  <label style="display:block;font-size:12px;font-weight:700;color:#334155">Quick Search / Select Site
-    <input id="editSiteQuickSearch" list="editSiteOptions" placeholder="Type site code, site name, client or area..." style="margin-top:6px;width:100%">
-    <datalist id="editSiteOptions"></datalist>
-  </label>
-  <div style="font-size:11px;color:#64748b;margin-top:5px">Select an existing site here to open its details quickly.</div>
-</div>
+
 <div class="formgrid">
 <label class="full-width">Area<select id="farea"></select></label>
 <label class="full-width">Site Code / ID
@@ -427,6 +427,7 @@ header{background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;padding:14p
 <label class="theme-card" data-format="centerblur"><input type="radio" name="pptFormat" value="centerblur"><div class="theme-swatch format-swatch">04</div><div><div class="ppt-label">Centered Blur Format</div><div class="ppt-desc">Centered image • blurred background • details below</div></div></label>
 <label class="theme-card" data-format="centerblackwide"><input type="radio" name="pptFormat" value="centerblackwide"><div class="theme-swatch format-swatch">05</div><div><div class="ppt-label">Wide Centered Image</div><div class="ppt-desc">Larger image • slim black sides • details below</div></div></label>
 <label class="theme-card" data-format="centerblurwide"><input type="radio" name="pptFormat" value="centerblurwide"><div class="theme-swatch format-swatch">06</div><div><div class="ppt-label">Wide Centered Blur</div><div class="ppt-desc">Larger image • softer blur • details below</div></div></label>
+<label class="theme-card" data-format="image8020"><input type="radio" name="pptFormat" value="image8020"><div class="theme-swatch format-swatch">07</div><div><div class="ppt-label">80% Image + 20% Details</div><div class="ppt-desc">Large site image • compact detail blocks on the side</div></div></label>
 </div>
 <div class="ppt-section-label" style="margin-top:18px">Information to Include</div>
 <div id="pptFields" class="ppt-fields-grid">
@@ -849,33 +850,55 @@ function formatEditSiteOption(x){
   if(x.area) parts.push("— "+x.area);
   return parts.join(" ");
 }
-function populateEditSitePicker(){
-  var dl=document.getElementById("editSiteOptions");
-  if(!dl) return;
-  dl.innerHTML="";
-  sites.slice().sort(function(a,b){ return String(a.siteCode||a.site||"").localeCompare(String(b.siteCode||b.site||"")); }).forEach(function(x){
-    var opt=document.createElement("option");
-    opt.value=formatEditSiteOption(x);
-    opt.dataset.id=String(x.id);
-    dl.appendChild(opt);
+function populateEditSitePicker(filter){
+  var sel=document.getElementById("editSiteQuickSelect");
+  if(!sel) return;
+  var q=String(filter||"").trim().toLowerCase();
+  sel.innerHTML="";
+  var list=sites.slice().sort(function(a,b){ return String(a.siteCode||a.site||"").localeCompare(String(b.siteCode||b.site||"")); });
+  var matches=list.filter(function(x){
+    if(!q) return true;
+    return formatEditSiteOption(x).toLowerCase().indexOf(q)!==-1;
   });
+  matches.slice(0,100).forEach(function(x){
+    var opt=document.createElement("option");
+    opt.value=String(x.id);
+    opt.textContent=formatEditSiteOption(x);
+    sel.appendChild(opt);
+  });
+  sel.style.display=(q && matches.length) ? "block" : "none";
+  if(q && !matches.length) sel.style.display="none";
 }
 function chooseEditSiteFromPicker(){
+  var sel=document.getElementById("editSiteQuickSelect");
   var inp=document.getElementById("editSiteQuickSearch");
-  if(!inp) return;
-  var value=inp.value.trim();
-  var match=sites.find(function(x){ return formatEditSiteOption(x)===value; });
-  if(!match) return;
-  var i=sites.findIndex(function(x){ return String(x.id)===String(match.id); });
-  if(i>=0) editSite(i);
+  if(!sel || !sel.value) return;
+  var i=sites.findIndex(function(x){ return String(x.id)===String(sel.value); });
+  if(i>=0){
+    if(inp) inp.value=formatEditSiteOption(sites[i]);
+    sel.style.display="none";
+    editSite(i);
+  }
 }
-function selectAllSites(){
+function getVisibleFilteredSites(){
+  var q=String((document.getElementById("search")||{}).value||"").toLowerCase().trim();
+  return sites.filter(function(s){
+    if(!siteMatchesDateFilter(s)) return false;
+    if(activeStatusFilter && getSiteStatusForFilter(s)!==activeStatusFilter) return false;
+    if(!q) return true;
+    var hay=[s.site,s.siteCode,s.customer,s.area,s.location,s.siteSize,s.status,s.fromDate,s.toDate,s.displayStart,s.displayEnd,s.displayRemovalBy].join(" ");
+    return hay.toLowerCase().indexOf(q)!==-1;
+  });
+}
+function toggleSelectVisible(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
-  selectedSites.clear();
-  sites.forEach(function(s){ if(siteMatchesDateFilter(s)) selectedSites.add(s.id); });
-  render();
-  updateSelectBar();
-  showToast("All Sites Selected", selectedSites.size + " sites selected", "success");
+  var visible=getVisibleFilteredSites();
+  if(!visible.length){ showToast("No matching sites","Search/filter returned no sites","warning"); return; }
+  var allSelected=visible.every(function(s){return selectedSites.has(s.id);});
+  if(allSelected){ visible.forEach(function(s){selectedSites.delete(s.id);}); }
+  else { visible.forEach(function(s){selectedSites.add(s.id);}); }
+  render(); updateSelectBar();
+  showToast(allSelected?"Sites Deselected":"Sites Selected", (allSelected?"Deselected ":"Selected ")+visible.length+" matching sites", "success");
 }
 function deleteAllSites(){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
@@ -897,7 +920,6 @@ function deleteAllSites(){
 
 function openAdd(){
   editIndex = -1;
-  populateEditSitePicker();
   document.getElementById("modalTitle").textContent = "Add New Site";
   document.getElementById("fsitecode").value = "";
   document.getElementById("fsite").value = "";
@@ -910,7 +932,6 @@ function openAdd(){
   document.getElementById("fdisplaystart").value = "";
   document.getElementById("fdisplayend").value = "";
   document.getElementById("fdisplayremovalby").value = "";
-  document.getElementById("editSiteQuickSearch").value = "";
   currentImageData = "";
   removeImage();
   document.getElementById("farea").value = areas[0] || "";
@@ -940,8 +961,10 @@ function editSite(i){
   document.getElementById("fdisplaystart").value = x.displayStart || "";
   document.getElementById("fdisplayend").value = x.displayEnd || "";
   document.getElementById("fdisplayremovalby").value = x.displayRemovalBy || "";
-  populateEditSitePicker();
+  populateEditSitePicker("");
   document.getElementById("editSiteQuickSearch").value = formatEditSiteOption(x);
+  var editSiteQuickSelectCurrent = document.getElementById("editSiteQuickSelect");
+  if(editSiteQuickSelectCurrent) editSiteQuickSelectCurrent.style.display="none";
   setDateDropdowns("ffrom", x.fromDate || "");
   setDateDropdowns("fto", x.toDate || "");
   if(x.hasImage){
@@ -1126,8 +1149,8 @@ function render(){
           if(sArea !== areaName) return false;
           if(!siteMatchesDateFilter(s)) return false;
           if(activeStatusFilter && getSiteStatusForFilter(s) !== activeStatusFilter) return false;
-          var hay = (s.site + " " + (s.siteCode||"") + " " + (s.customer||"") + " " + (s.location||"") + " " + (s.siteSize||"") + " " + s.status).toLowerCase();
-          if(q && hay.indexOf(q) === -1) return false;
+          var hay=[s.site,s.siteCode,s.customer,s.area,s.location,s.siteSize,s.status,s.fromDate,s.toDate,s.displayStart,s.displayEnd,s.displayRemovalBy].join(" ");
+          if(q && hay.toLowerCase().indexOf(q) === -1) return false;
           return true;
         });
         if(isFiltering && areaSites.length === 0) continue;
@@ -1171,7 +1194,7 @@ function render(){
             var imgHTML = '<div class="site-card-img no-img">📷</div>';
             if(x.hasImage && !imageFailed.has(x.id)){ imgHTML = '<img class="site-card-img" data-img-id="' + x.id + '" alt="site">'; }
             var canEdit = currentUser && currentUser.role === "Admin";
-            var editBtn = canEdit ? '<button onclick="editSite(' + globalIdx + ')">Edit</button>' : '';
+            var editBtn = canEdit ? '<button type="button" class="edit-site-btn" data-edit-index="' + globalIdx + '">Edit</button>' : '';
             var mapBtn = x.location ? '<button class="map-btn" onclick="openMap(' + globalIdx + ')">Map</button>' : '';
             cardsHTML += '<div class="' + cardCls + '" data-site-id="' + x.id + '">';
             cardsHTML += '<div class="site-card-top"><input type="checkbox" class="site-card-cb" ' + (isSel ? 'checked' : '') + ' data-id="' + x.id + '"><span class="site-card-num">#' + (idx + 1) + '</span>' + imgHTML + '</div>';
@@ -1230,14 +1253,20 @@ function toggleSelect(id){
     }
   });
 }
-function clearSelection(){ selectedSites.clear(); render(); }
+function clearSelection(){ selectedSites.clear(); render(); updateSelectBar(); }
 function updateSelectBar(){
   var bar = document.getElementById("selectBar");
-  document.getElementById("selCount").textContent = selectedSites.size + " selected";
-  if(selectedSites.size > 0) bar.classList.add("show");
-  else bar.classList.remove("show");
+  if(bar) bar.classList.add("show");
+  var count=document.getElementById("selCount");
+  if(count) count.textContent = selectedSites.size + " selected";
+  var btn=document.getElementById("toggleSelectVisibleBtn");
+  if(btn){
+    var visible=getVisibleFilteredSites();
+    var allSelected=visible.length>0 && visible.every(function(s){return selectedSites.has(s.id);});
+    btn.textContent=allSelected?"☐ Deselect All":"☑ Select All";
+  }
   var delBtn = document.getElementById("deleteBtn");
-  if(delBtn){ if(currentUser && currentUser.role === "Admin") delBtn.style.display = "inline-flex"; else delBtn.style.display = "none"; }
+  if(delBtn){ delBtn.style.display=(currentUser && currentUser.role === "Admin" && selectedSites.size>0) ? "inline-flex" : "none"; }
 }
 function toggleAreaCollapse(areaName){
   if(collapsedAreas.has(areaName)) collapsedAreas.delete(areaName);
@@ -1525,8 +1554,51 @@ function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurD
   slide.addText((index+1)+" / "+total,{x:11.65,y:locY,w:.72,h:.22,fontSize:7,color:muted,align:"right",margin:0});
 }
 
+function addPpt8020SiteDetails(slide,pptx,x,imgData,index,total,fields){
+  fields=fields||getPptFields();
+  var W=13.333,H=7.5,blue="123B8A",light="60A5FA",white="FFFFFF",text="172033",muted="64748B",border="D9E1EC";
+  var st=getSiteStatusForFilter(x), statusColor=st==="Not Available"?"C62828":st==="Under Maintenance"?"D97706":"15803D";
+  var mapUrl=getPptMapUrl(x);
+  slide.background={color:"F8FAFC"};
+  slide.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:.72,fill:{color:blue},line:{color:blue}});
+  slide.addText("SITE PORTFOLIO REPORT",{x:.48,y:.18,w:3.2,h:.20,fontSize:8.5,bold:true,color:"BFDBFE",margin:0,charSpacing:1.1});
+  slide.addText(pptText(x.site),{x:3.2,y:.10,w:7.2,h:.40,fontSize:17,bold:true,color:white,align:"center",margin:0,fit:"shrink"});
+  slide.addText(String(index+1).padStart(2,"0"),{x:12.0,y:.18,w:.75,h:.20,fontSize:8.5,bold:true,color:"BFDBFE",align:"right",margin:0});
+  // 80% image area / 20% detail area
+  var imgX=.32,imgY=.95,imgW=10.05,imgH=5.85;
+  slide.addShape(pptx.ShapeType.roundRect,{x:imgX,y:imgY,w:imgW,h:imgH,rectRadius:.04,fill:{color:"111827"},line:{color:"CBD5E1",width:1}});
+  if(fields.image&&imgData){
+    try{slide.addImage({data:imgData,x:imgX+.12,y:imgY+.12,w:imgW-.24,h:imgH-.24,sizing:{type:"contain",align:"center",valign:"middle"}});}catch(e){slide.addText("Image unavailable",{x:1.2,y:3.55,w:8.2,h:.35,fontSize:14,color:white,align:"center",margin:0});}
+  }else if(fields.image){slide.addText("NO SITE IMAGE",{x:2.0,y:3.55,w:6.8,h:.35,fontSize:14,bold:true,color:"CBD5E1",align:"center",margin:0});}
+  var dx=10.60,dy=.95,dw=2.40,dh=5.85;
+  slide.addShape(pptx.ShapeType.roundRect,{x:dx,y:dy,w:dw,h:dh,rectRadius:.05,fill:{color:white},line:{color:border,width:1}});
+  slide.addText("SITE DETAILS",{x:dx+.18,y:dy+.18,w:dw-.36,h:.22,fontSize:8,bold:true,color:blue,margin:0,charSpacing:.8});
+  var rows=[];
+  if(fields.area)rows.push(["AREA",pptVal(x.area)]);
+  if(fields.siteCode)rows.push(["SITE CODE",pptVal(x.siteCode)]);
+  if(fields.siteSize)rows.push(["SITE SIZE",pptVal(x.siteSize)]);
+  if(fields.company)rows.push(["CLIENT",pptVal(x.customer)]);
+  if(fields.rate)rows.push(["MONTHLY RATE",formatPptRate(x.rate)]);
+  if(fields.booking){rows.push(["FROM",pptVal(x.fromDate)]);rows.push(["TO",pptVal(x.toDate)]);}
+  if(fields.duration)rows.push(["DURATION",calcDays(x.fromDate,x.toDate)?calcDays(x.fromDate,x.toDate)+" days":"—"]);
+  if(fields.status)rows.push(["STATUS",st.toUpperCase()]);
+  var usable=dh-.75, rowH=Math.min(.57,usable/Math.max(rows.length,1));
+  rows.forEach(function(r,i){
+    var yy=dy+.58+i*rowH, isStatus=r[0]==="STATUS";
+    slide.addShape(pptx.ShapeType.roundRect,{x:dx+.14,y:yy,w:dw-.28,h:rowH-.08,rectRadius:.03,fill:{color:isStatus?statusColor:"EFF5FF"},line:{color:isStatus?statusColor:"C9D9F2",width:1}});
+    slide.addText(r[0],{x:dx+.25,y:yy+.08,w:dw-.50,h:.13,fontSize:5.6,bold:true,color:isStatus?white:muted,margin:0,fit:"shrink"});
+    slide.addText(r[1],{x:dx+.25,y:yy+.23,w:dw-.50,h:rowH-.30,fontSize:7.5,bold:true,color:isStatus?white:text,margin:0,fit:"shrink",valign:"mid"});
+  });
+  if(fields.location){
+    slide.addText("📍 "+pptVal(x.location||x.site),{x:imgX,y:6.94,w:7.7,h:.22,fontSize:6.8,bold:true,color:muted,margin:0,fit:"shrink"});
+    if(mapUrl){slide.addShape(pptx.ShapeType.roundRect,{x:8.45,y:6.89,w:1.75,h:.30,rectRadius:.03,fill:{color:"FEE2E2"},line:{color:"EF4444",width:1},hyperlink:{url:mapUrl}});slide.addText("OPEN MAP ↗",{x:8.45,y:6.89,w:1.75,h:.30,fontSize:6.7,bold:true,color:"DC2626",align:"center",valign:"mid",margin:0,hyperlink:{url:mapUrl}});}
+  }
+  slide.addText((index+1)+" / "+total,{x:11.95,y:6.94,w:.75,h:.20,fontSize:6.5,color:muted,align:"right",margin:0});
+}
+
 function addPptSiteDetails(slide,pptx,x,imgData,index,total,format,pptFields){
   var fields=getPptFields();
+  if(format==="image8020"){ addPpt8020SiteDetails(slide,pptx,x,imgData,index,total,fields); return; }
   if(format==="centerblack" || format==="centerblur" || format==="centerblackwide" || format==="centerblurwide"){
     addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,null,null,fields);
     if(format==="centerblur" && imgData){
@@ -1667,21 +1739,19 @@ function bulkDeleteSelected(){
     alert("✅ " + toDelete.length + " sites deleted");
   });
 }
-function openBulkStatusModal(){
+function applyBulkStatus(newStatus){
   if(!currentUser || currentUser.role !== "Admin"){ alert("Admin access only"); return; }
   if(selectedSites.size === 0){ alert("Please select sites first"); return; }
-  var status = prompt("Enter status: Available / Not Available / Under Maintenance");
-  if(!status) return;
-  var newStatus = status.trim();
-  if(["Available","Not Available","Under Maintenance"].indexOf(newStatus) === -1){ alert("Invalid status"); return; }
   var ids = new Set(Array.from(selectedSites).map(String));
   var targets = sites.filter(function(s){ return ids.has(String(s.id)); });
+  if(!targets.length) return;
+  if(!confirm("Set status to '"+newStatus+"' for "+targets.length+" selected sites?")) return;
   targets.forEach(function(s){ s.status = newStatus; });
   persistNow().then(function(){
     updateCards();
     render();
     clearSelection();
-    alert("✅ " + targets.length + " sites updated");
+    alert("✅ " + targets.length + " sites updated to " + newStatus);
   });
 }
 function openAreaManager(){
@@ -1839,22 +1909,15 @@ function bindEvents(){
   var logoutBtn = document.getElementById("logoutBtn");
   if(logoutBtn) logoutBtn.onclick = doLogout;
   var searchInput = document.getElementById("search");
-  if(searchInput) searchInput.addEventListener("input", debounce(function(){ render(); }, 300));
+  if(searchInput) searchInput.addEventListener("input", debounce(function(){ render(); updateSelectBar(); }, 200));
   var applyFilterBtn = document.getElementById("applyFilterBtn");
   if(applyFilterBtn) applyFilterBtn.onclick = applyDateFilter;
   var clearFilterBtn = document.getElementById("clearFilterBtn");
   if(clearFilterBtn) clearFilterBtn.onclick = clearDateFilter;
   var manageAreasBtn = document.getElementById("manageAreasBtn");
   if(manageAreasBtn) manageAreasBtn.onclick = openAreaManager;
-  var selectAllBtn = document.getElementById("selectAllBtn");
-  if(selectAllBtn) selectAllBtn.onclick = selectAllSites;
-  var deleteAllBtn = document.getElementById("deleteAllBtn");
-  if(deleteAllBtn) deleteAllBtn.onclick = deleteAllSites;
-  var editSiteQuickSearch = document.getElementById("editSiteQuickSearch");
-  if(editSiteQuickSearch){
-    editSiteQuickSearch.addEventListener("change", chooseEditSiteFromPicker);
-    editSiteQuickSearch.addEventListener("keydown", function(e){ if(e.key === "Enter") chooseEditSiteFromPicker(); });
-  }
+  var toggleSelectVisibleBtn = document.getElementById("toggleSelectVisibleBtn");
+  if(toggleSelectVisibleBtn) toggleSelectVisibleBtn.onclick = toggleSelectVisible;
   var addSiteBtn = document.getElementById("addSiteBtn");
   if(addSiteBtn) addSiteBtn.onclick = openAdd;
   var historyBtn = document.getElementById("historyBtn");
@@ -1864,7 +1927,10 @@ function bindEvents(){
   var pptBtn = document.getElementById("pptBtn");
   if(pptBtn) pptBtn.onclick = openPPTFormatModal;
   var bulkStatusBtn = document.getElementById("bulkStatusBtn");
-  if(bulkStatusBtn) bulkStatusBtn.onclick = openBulkStatusModal;
+  if(bulkStatusBtn) bulkStatusBtn.onchange = function(){
+    var v=this.value;
+    if(v){ applyBulkStatus(v); this.value=""; }
+  };
   var clearSelBtn = document.getElementById("clearSelBtn");
   if(clearSelBtn) clearSelBtn.onclick = clearSelection;
   var deleteBtn = document.getElementById("deleteBtn");
@@ -1997,6 +2063,14 @@ function bindEvents(){
   var importFile = document.getElementById("importFile");
   if(importFile) importFile.addEventListener("change", handleImportFile);
   document.addEventListener("click", function(e){
+    var editBtn=e.target.closest ? e.target.closest(".edit-site-btn") : null;
+    if(editBtn){
+      e.preventDefault();
+      e.stopPropagation();
+      var idx=parseInt(editBtn.getAttribute("data-edit-index"),10);
+      if(!isNaN(idx)) editSite(idx);
+      return;
+    }
     if(e.target.classList && e.target.classList.contains("site-card-img") && !e.target.classList.contains("no-img")){
       if(e.target.src) openImageViewer(e.target.src);
     }
