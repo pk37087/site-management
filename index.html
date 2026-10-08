@@ -495,7 +495,8 @@ function calcDays(f, t){
   if(!fd || !td || td < fd) return 0;
   return Math.floor((td - fd) / 86400000) + 1;
 }
-function formatRate(v){ var n = parseFloat(v); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN') + "/PM"; }
+function formatRate(v){ var n = parseFloat(String(v||"").replace(/[^0-9.]/g,"")); if(isNaN(n)) return ""; return "₹" + n.toLocaleString('en-IN') + "/PM"; }
+function formatPptRate(v){ var raw=String(v||"").trim(); if(!raw) return "—"; var n=parseFloat(raw.replace(/[^0-9.]/g,"")); if(isNaN(n)) return raw; return "₹"+n.toLocaleString("en-IN")+" / month"; }
 
 function apiGet(path){ return fetch(API_URL + path, { cache: "no-store" }).then(function(r){ return r.json(); }).catch(function(e){ return { success: false, error: e.message }; }); }
 function apiPost(path, body){ return fetch(API_URL + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), cache: "no-store" }).then(function(r){ return r.json(); }).catch(function(e){ return { success: false, error: e.message }; }); }
@@ -1362,8 +1363,8 @@ function addPptCenteredSiteDetails(slide,pptx,x,imgData,index,total,format,blurD
   slide.addShape(pptx.ShapeType.rect,{x:.55,y:panelY,w:.08,h:panelH,fill:{color:lightBlue},line:{color:lightBlue}});
   slide.addText("AREA",{x:.82,y:panelY+.15,w:2.1,h:.17,fontSize:6.2,bold:true,color:lightBlue,margin:0,charSpacing:.8});
   slide.addText(pptText(x.area),{x:.82,y:panelY+.37,w:2.15,h:.31,fontSize:13,bold:true,color:white,margin:0,fit:"shrink"});
-  var rows=[["SITE CODE",pptText(x.siteCode)],["SITE SIZE",pptText(x.siteSize)],["COMPANY",pptText(x.customer)],["BOOKING",pptText(x.fromDate)+" - "+pptText(x.toDate)]];
-  rows.forEach(function(r,i){var xx=3.35+i*2.12; slide.addShape(pptx.ShapeType.roundRect,{x:xx,y:panelY+.14,w:1.94,h:.72,rectRadius:.04,fill:{color:"123B8A"},line:{color:"2F5DAA",width:.6}}); slide.addText(r[0],{x:xx+.12,y:panelY+.25,w:1.7,h:.13,fontSize:5.5,bold:true,color:"93C5FD",margin:0}); slide.addText(r[1],{x:xx+.12,y:panelY+.46,w:1.7,h:.24,fontSize:7.8,bold:true,color:white,margin:0,fit:"shrink"});});
+  var rows=[["SITE CODE",pptText(x.siteCode)],["SITE SIZE",pptText(x.siteSize)],["COMPANY",pptText(x.customer)],["MONTHLY RATE",formatPptRate(x.rate)],["BOOKING",pptText(x.fromDate)+" - "+pptText(x.toDate)]];
+  rows.forEach(function(r,i){var xx=3.15+i*1.68; slide.addShape(pptx.ShapeType.roundRect,{x:xx,y:panelY+.14,w:1.52,h:.72,rectRadius:.04,fill:{color:"123B8A"},line:{color:"2F5DAA",width:.6}}); slide.addText(r[0],{x:xx+.09,y:panelY+.25,w:1.34,h:.13,fontSize:5.0,bold:true,color:"93C5FD",margin:0,fit:"shrink"}); slide.addText(r[1],{x:xx+.09,y:panelY+.46,w:1.34,h:.24,fontSize:7.2,bold:true,color:white,margin:0,fit:"shrink"});});
   slide.addShape(pptx.ShapeType.roundRect,{x:11.68,y:panelY+.27,w:.82,h:.40,rectRadius:.04,fill:{color:statusColor},line:{color:statusColor}});
   slide.addText(st.toUpperCase(),{x:11.68,y:panelY+.27,w:.82,h:.40,fontSize:5.2,bold:true,color:white,align:"center",valign:"mid",margin:0,fit:"shrink"});
   slide.addShape(pptx.ShapeType.line,{x:.82,y:6.86,w:11.55,h:0,line:{color:"3B67B7",width:1}});
@@ -1405,7 +1406,7 @@ function addPptSiteDetails(slide,pptx,x,imgData,index,total,format){
   if(imgData){try{slide.addImage({data:imgData,x:.47,y:1.14,w:7.38,h:4.46,sizing:{type:"contain",align:"center",valign:"middle"}});}catch(e){slide.addText("Image unavailable",{x:.7,y:3.05,w:6.9,h:.35,fontSize:14,color:"FFFFFF",align:"center",margin:0});}}else{slide.addText("NO SITE IMAGE",{x:.7,y:2.85,w:6.9,h:.35,fontSize:14,bold:true,color:"CBD5E1",align:"center",margin:0});}
   slide.addShape(pptx.ShapeType.roundRect,{x:8.25,y:1.02,w:4.73,h:4.70,rectRadius:.05,fill:{color:"F8FAFC"},line:{color:border,width:1}});
   slide.addText("SITE INFORMATION",{x:8.58,y:1.32,w:3.9,h:.25,fontSize:9,bold:true,color:blue,margin:0,charSpacing:1.1});
-  var rows=[["SITE SIZE",pptText(x.siteSize)],["COMPANY",pptText(x.customer)],["MONTHLY RATE",x.rate?"₹"+Number(x.rate).toLocaleString("en-IN")+" / month":"—"],["BOOKING FROM",pptText(x.fromDate)],["BOOKING TO",pptText(x.toDate)],["DURATION",calcDays(x.fromDate,x.toDate)?calcDays(x.fromDate,x.toDate)+" days":"—"]];
+  var rows=[["SITE SIZE",pptText(x.siteSize)],["COMPANY",pptText(x.customer)],["MONTHLY RATE",formatPptRate(x.rate)],["BOOKING FROM",pptText(x.fromDate)],["BOOKING TO",pptText(x.toDate)],["DURATION",calcDays(x.fromDate,x.toDate)?calcDays(x.fromDate,x.toDate)+" days":"—"]];
   rows.forEach(function(r,i){var y=1.76+i*.56;slide.addText(r[0],{x:8.58,y:y,w:1.35,h:.18,fontSize:7,bold:true,color:muted,margin:0});slide.addText(r[1],{x:9.92,y:y-.02,w:2.65,h:.27,fontSize:9.5,bold:true,color:text,margin:0,fit:"shrink"});if(i<rows.length-1)slide.addShape(pptx.ShapeType.line,{x:8.58,y:y+.34,w:3.98,h:0,line:{color:"E2E8F0",width:1}});});
   slide.addShape(pptx.ShapeType.roundRect,{x:8.58,y:5.05,w:3.98,h:.42,rectRadius:.03,fill:{color:statusColor},line:{color:statusColor}});slide.addText("STATUS  •  "+st.toUpperCase(),{x:8.58,y:5.05,w:3.98,h:.42,fontSize:8.5,bold:true,color:white,align:"center",valign:"mid",margin:0});
   slide.addShape(pptx.ShapeType.rect,{x:.35,y:6.02,w:12.63,h:1.08,fill:{color:white},line:{color:border,width:1}});
